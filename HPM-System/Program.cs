@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using HPM_System.Data; // Замени на своё пространство имён, если нужно
+using Microsoft.Extensions.DependencyInjection;
+
 namespace HPM_System
 {
     public class Program
@@ -6,19 +10,18 @@ namespace HPM_System
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            // Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РєРѕРЅС‚РµРєСЃС‚ EF Core СЃ PostgreSQL
+            // Регистрируем контекст EF Core с PostgreSQL
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
