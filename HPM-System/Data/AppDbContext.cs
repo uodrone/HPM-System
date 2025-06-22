@@ -10,6 +10,11 @@ namespace HPM_System.Data
         {
         }
 
+        public DbSet<Community> Communities { get; set; }
         public DbSet<PersonRole> PersonRoles { get; set; }
+
+        public DbSet<Apartment> Apartments { get; set; }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
     }
 }
