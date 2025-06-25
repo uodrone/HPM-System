@@ -12,9 +12,9 @@ namespace HPM_System.Models
         public string MiddleName { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public string Phone { get; set; }
-        //public List<Community> CommunitiesList { get; set; } TODO
-        public List<string> CarsList { get; set; }
-        public List<Flat> FlatsList { get; set; }
+        public List<Community> CommunitiesList { get; set; }
+        public List<Car> CarsList { get; set; }
+        public List<Apartment> ApartmentsList { get; set; }
 
         public Person(
             int iD,
@@ -24,8 +24,8 @@ namespace HPM_System.Models
             string middleName,
             string phone,
             DateOnly dateOfBirth,
-            List<string> carsList, 
-            List<Flat> flatsList
+            List<Car> carsList,
+            List<Apartment> apartmentsList
             )
         {
             ID = iD;
@@ -36,7 +36,7 @@ namespace HPM_System.Models
             Phone = phone;
             DateOfBirth = dateOfBirth;
             CarsList = carsList;
-            FlatsList = flatsList;
+            ApartmentsList = apartmentsList;
         }
     }
 }
