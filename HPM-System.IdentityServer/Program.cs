@@ -12,6 +12,11 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+
+            // Регистрируем логгер
+            builder.Services.AddLogging(configure => configure.AddConsole());
 
             // Добавляем DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -23,22 +28,47 @@ namespace HPM_System.IdentityServer
                 .AddDefaultTokenProviders();
 
             // Добавляем IdentityServer
-            builder.Services.AddIdentityServer()
+            builder.Services.AddIdentityServer(options =>
+            {
+                options.EmitStaticAudienceClaim = true;
+            })
                 .AddInMemoryClients(IdentityConfiguration.Clients)
                 .AddInMemoryIdentityResources(IdentityConfiguration.IdentityResources)
                 .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddDeveloperSigningCredential(); // Только для разработки
 
-            // Add services to the container.
+            // Настройка параметров Identity
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false; // Можно отключить спецсимволы
+                options.Password.RequiredLength = 8;
+                options.User.RequireUniqueEmail = true;
+            });
 
+            // Поддержка CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader();
+                });
+            });
+
+            // MVC / API / Controllers
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+            // OpenAPI/Swagger
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Middleware pipeline
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
@@ -46,8 +76,17 @@ namespace HPM_System.IdentityServer
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            // Важные middleware: именно в этом порядке!
 
+            app.UseCors("AllowAll"); // Перед UseIdentityServer()
+
+            app.UseRouting();       // Нужен для IdentityServer
+
+            app.UseIdentityServer(); // ТОЛЬКО ТАК!
+
+            app.UseAuthentication(); // После UseIdentityServer()
+
+            app.UseAuthorization();   // После UseAuthentication()
 
             app.MapControllers();
 
