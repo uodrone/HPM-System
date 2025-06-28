@@ -60,6 +60,14 @@ namespace HPM_System.IdentityServer
                 });
             });
 
+            builder.Services.AddAuthentication()
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.LoginPath = "/api/account/login";
+            });
+
             // MVC / API / Controllers
             builder.Services.AddControllers();
 
