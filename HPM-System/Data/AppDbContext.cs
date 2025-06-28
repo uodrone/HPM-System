@@ -1,4 +1,5 @@
 ﻿using HPM_System.Models;
+using HPM_System.Models.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HPM_System.Data
