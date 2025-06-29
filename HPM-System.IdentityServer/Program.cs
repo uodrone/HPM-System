@@ -91,9 +91,9 @@ namespace HPM_System.IdentityServer
                     var pendingMigrations = context.Database.GetPendingMigrations();
                     if (pendingMigrations.Any())
                     {
-                        logger.LogInformation($"Applying {pendingMigrations.Count()} pending migrations...");
+                        logger.LogInformation($"ѕрименение {pendingMigrations.Count()} миграций...");
                         context.Database.Migrate();
-                        logger.LogInformation("Identity migrations applied successfully.");
+                        logger.LogInformation("Identity миграции успешны");
                     }
                     else
                     {
