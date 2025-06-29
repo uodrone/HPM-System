@@ -25,9 +25,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=HPM-System;Username=postgres;Password=Morr92631043
-      - IdentityServer__Authority=https://hpm-system.identityserver:8081
+      - IdentityServer__Authority=https://localhost:55676
     ports:
-      - "32799:8080"
+      - "55670:8080"   # HTTP
+      - "55671:8081"   # HTTPS
     networks:
       - hpm-network
 
@@ -42,8 +43,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=postgres;Password=Morr92631043
     ports:
-      - "32797:8080"
-      - "32798:8081"
+      - "55675:8080"   # HTTP
+      - "55676:8081"   # HTTPS
     networks:
       - hpm-network
 

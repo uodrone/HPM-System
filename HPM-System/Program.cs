@@ -1,10 +1,13 @@
 using HPM_System.Data; // Замени на своё пространство имён, если нужно
 using HPM_System.Models.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Duende.IdentityServer.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace HPM_System
 {
@@ -59,11 +62,14 @@ namespace HPM_System
             // Применяем миграции при старте
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                var context = services.GetRequiredService<AppDbContext>();
                 try
                 {
+                    logger.LogInformation($"Применение миграций...");
                     context.Database.Migrate();
-                    Console.WriteLine("HPM-System migrations applied successfully.");
+                    logger.LogInformation("HPM миграции успешны");
                 }
                 catch (Exception ex)
                 {
