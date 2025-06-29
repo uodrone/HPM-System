@@ -2,6 +2,7 @@ using Duende.IdentityServer.Models;
 using Duende.IdentityServer.AspNetIdentity;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
+using HPM_System.IdentityServer.Services; // Добавляем namespace для CustomProfileService
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,11 +32,18 @@ namespace HPM_System.IdentityServer
             builder.Services.AddIdentityServer(options =>
             {
                 options.EmitStaticAudienceClaim = true;
+                // Включаем детальное логирование
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
             })
                 .AddInMemoryClients(IdentityConfiguration.Clients)
                 .AddInMemoryIdentityResources(IdentityConfiguration.IdentityResources)
+                .AddInMemoryApiResources(IdentityConfiguration.ApiResources) // Добавляем API Resources
                 .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
                 .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<CustomProfileService>() // Регистрируем наш профильный сервис
                 .AddDeveloperSigningCredential(); // Только для разработки
 
             // Настройка параметров Identity
