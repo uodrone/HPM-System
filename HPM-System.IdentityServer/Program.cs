@@ -76,6 +76,37 @@ namespace HPM_System.IdentityServer
 
             var app = builder.Build();
 
+            // Применяем миграции при старте
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+
+                try
+                {
+                    // Применяем миграции Identity
+                    var context = services.GetRequiredService<AppDbContext>();
+
+                    // Проверяем состояние миграций
+                    var pendingMigrations = context.Database.GetPendingMigrations();
+                    if (pendingMigrations.Any())
+                    {
+                        logger.LogInformation($"Applying {pendingMigrations.Count()} pending migrations...");
+                        context.Database.Migrate();
+                        logger.LogInformation("Identity migrations applied successfully.");
+                    }
+                    else
+                    {
+                        logger.LogInformation("Identity database is up to date.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred while applying Identity migrations.");
+                    throw;
+                }
+            }
+
             // Middleware pipeline
             if (app.Environment.IsDevelopment())
             {
