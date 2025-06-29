@@ -15,14 +15,26 @@ namespace HPM_System.IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Email(), // Добавляем email ресурс
             };
 
-        // Облачка доступа к API
+        // Области доступа к API
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
                 new ApiScope("api.read", "Read Access to API"),
                 new ApiScope("api.write", "Write Access to API")
+            };
+
+        // API Resources для включения claims в Access Token
+        public static IEnumerable<ApiResource> ApiResources =>
+            new List<ApiResource>
+            {
+                new ApiResource("hpm.api", "HPM System API")
+                {
+                    Scopes = { "api.read", "api.write" },
+                    UserClaims = { "email", "given_name", "family_name", "phone_number", "patronymic" }
+                }
             };
 
         // Клиенты, которые могут использовать этот IdentityServer
@@ -35,11 +47,17 @@ namespace HPM_System.IdentityServer
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowOfflineAccess = true,
                     AccessTokenLifetime = 3600,
+                    
+                    // Включаем claims в токены
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AlwaysSendClientClaims = true,
+                    IncludeJwtId = true,
 
                     AllowedScopes =
                     {
                         "openid",
                         "profile",
+                        "email", // Добавляем email scope
                         "api.read"
                     },
                     ClientSecrets =
