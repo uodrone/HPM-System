@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Morr92631043
+      POSTGRES_DB: IdentityServer
+      POSTGRES_MULTIPLE_DATABASES: HPM-System,IdentityServer
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hpm-network
+
+  hpm-system:
+    image: ${DOCKER_REGISTRY-}hpmsystem
+    build:
+      context: .
+      dockerfile: HPM-System/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=HPM-System;Username=postgres;Password=Morr92631043
+      - IdentityServer__Authority=https://hpm-system.identityserver:8081
+    ports:
+      - "32799:8080"
+    networks:
+      - hpm-network
+
+  hpm-system.identityserver:
+    image: ${DOCKER_REGISTRY-}hpmsystemidentityserver
+    build:
+      context: .
+      dockerfile: HPM-System.IdentityServer/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=postgres;Password=Morr92631043
+    ports:
+      - "32797:8080"
+      - "32798:8081"
+    networks:
+      - hpm-network
+
+volumes:
+  postgres_data:
+
+networks:
+  hpm-network:

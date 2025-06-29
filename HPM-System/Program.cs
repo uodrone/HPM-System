@@ -56,6 +56,21 @@ namespace HPM_System
             // 6. Сборка приложения
             var app = builder.Build();
 
+            // Применяем миграции при старте
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                try
+                {
+                    context.Database.Migrate();
+                    Console.WriteLine("HPM-System migrations applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error applying HPM-System migrations: {ex.Message}");
+                }
+            }
+
             // 7. Middleware pipeline
             if (!app.Environment.IsDevelopment())
             {
