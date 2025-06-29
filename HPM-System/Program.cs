@@ -32,6 +32,17 @@ namespace HPM_System
             // 3. Добавляем MVC / контроллеры
             builder.Services.AddControllersWithViews();
 
+            // Поддержка CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader();
+                });
+            });
+
             // 4. Настройка аутентификации через JWT Bearer
             builder.Services.AddAuthentication(options =>
             {
@@ -89,7 +100,10 @@ namespace HPM_System
 
             app.UseRouting();
 
-            app.UseAuthentication(); // После UseRouting()
+            // ВАЖНО: Добавляем CORS middleware ПОСЛЕ UseRouting(), но ПЕРЕД UseAuthentication()
+            app.UseCors("AllowAll");
+
+            app.UseAuthentication(); // После UseRouting() и UseCors()
             app.UseAuthorization();   // После UseAuthentication()
 
             // 8. Маршруты MVC + API
