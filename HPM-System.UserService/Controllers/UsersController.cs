@@ -140,28 +140,20 @@ namespace HPM_System.UserService.Controllers
             try
             {
                 var user = await _context.Users
-                    .Include(u => u.Cars) // Загружаем связанные машины
-                    .FirstOrDefaultAsync(u => u.Id == id);
+                .Include(u => u.Cars)
+                .FirstOrDefaultAsync(u => u.Id == id);
 
                 if (user == null)
                     return NotFound();
 
-                // Удалить все автомобили пользователя
-                if (user.Cars.Any())
-                {
-                    _context.Cars.RemoveRange(user.Cars);
-                }
-
-                // Удалить самого пользователя
                 _context.Users.Remove(user);
-
                 await _context.SaveChangesAsync();
 
                 return NoContent(); // 204 - успешно удалено
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при удалении пользователя с ID {Id}", id);
+                _logger.LogError(ex, "Ошибка при удалении пользователя с ID {id}", id);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
         }
