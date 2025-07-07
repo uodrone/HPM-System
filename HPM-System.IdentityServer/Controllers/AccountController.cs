@@ -8,11 +8,11 @@ namespace HPM_System.IdentityServer.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountController> _logger;
 
         public AccountController(
-            UserManager<ApplicationUser> userManager,
+            UserManager<IdentityUser> userManager,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
@@ -30,12 +30,10 @@ namespace HPM_System.IdentityServer.Controllers
 
             _logger.LogInformation("Попытка регистрации: {Email}", model.Email);
 
-            var user = new ApplicationUser
+            var user = new IdentityUser
             {
                 UserName = model.Email,
                 Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber
             };
 
