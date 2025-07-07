@@ -24,7 +24,7 @@ namespace HPM_System.IdentityServer
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Добавляем Identity
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -42,7 +42,7 @@ namespace HPM_System.IdentityServer
                 .AddInMemoryIdentityResources(IdentityConfiguration.IdentityResources)
                 .AddInMemoryApiResources(IdentityConfiguration.ApiResources) // Добавляем API Resources
                 .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
-                .AddAspNetIdentity<ApplicationUser>()
+                .AddAspNetIdentity<IdentityUser>()
                 .AddProfileService<CustomProfileService>() // Регистрируем наш профильный сервис
                 .AddDeveloperSigningCredential(); // Только для разработки
 
