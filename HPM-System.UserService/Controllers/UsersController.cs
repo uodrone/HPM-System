@@ -58,28 +58,6 @@ namespace HPM_System.UserService.Controllers
             }
         }
 
-        // GET: api/Users/by-apartment/{apartmentId}
-        [HttpGet("by-apartment/{apartmentId}")]
-        public async Task<IActionResult> GetUsersByApartmentId(int apartmentId)
-        {
-            try
-            {
-                var users = await _context.Users
-                    .Where(u => u.ApartmentId.Contains(apartmentId))
-                    .ToListAsync();
-
-                if (!users.Any())
-                    return NotFound(new { Message = $"Пользователи с ApartmentId={apartmentId} не найдены" });
-
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка при получении пользователей по id квартиры={ApartmentId}", apartmentId);
-                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
-            }
-        }
-
         // GET: api/Users/by-car-number/{carNumber}
         [HttpGet("by-car-number/{carNumber}")]
         public async Task<IActionResult> GetUserByCarNumber(string carNumber)
@@ -141,11 +119,6 @@ namespace HPM_System.UserService.Controllers
                 existingUser.Email = updatedUser.Email;
                 existingUser.PhoneNumber = updatedUser.PhoneNumber;
                 existingUser.Age = updatedUser.Age;
-                existingUser.ApartmentId = updatedUser.ApartmentId;
-                existingUser.EventId = updatedUser.EventId;
-                existingUser.NotificationtId = updatedUser.NotificationtId;
-                existingUser.VotingId = updatedUser.VotingId;
-                existingUser.CommunityId = updatedUser.CommunityId;
                 existingUser.Cars = updatedUser.Cars;
 
                 _context.Users.Update(existingUser);
