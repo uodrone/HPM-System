@@ -53,7 +53,7 @@ namespace HPM_System.UserService.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при получении пользователя с ID {Id}", request.Id);
+                _logger.LogError(ex, "Ошибка при получении пользователя с ID {Id}", id);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
         }
