@@ -58,6 +58,39 @@ namespace HPM_System.UserService.Controllers
             }
         }
 
+        // GET: /api/users/by-ids?ids=1,2,3
+        [HttpGet("by-ids")]
+        public async Task<IActionResult> GetUsersByIds([FromQuery] int[] ids)
+        {
+            try
+            {
+                if (ids == null || !ids.Any())
+                {
+                    _logger.LogWarning("Не переданы ID пользователей");
+                    return BadRequest(new { Message = "Не переданы ID пользователей" });
+                }
+
+                var users = await _context.Users
+                    .Where(u => ids.Contains(u.Id))
+                    .ToListAsync();
+
+                if (!users.Any())
+                {
+                    _logger.LogInformation("Пользователи с указанными ID не найдены: {@Ids}", ids);
+                    return NotFound(new { Message = "Пользователи не найдены" });
+                }
+
+                _logger.LogInformation("Найдено {Count} пользователей по списку ID", users.Count);
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении пользователей по ID");
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
+        }
+
         // GET: api/Users/by-car-number/{carNumber}
         [HttpGet("by-car-number/{carNumber}")]
         public async Task<IActionResult> GetUserByCarNumber(string carNumber)

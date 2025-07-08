@@ -11,6 +11,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.UserService", "HPM-System.UserService\HPM-System.UserService.csproj", "{A326260A-8AAF-B9E4-71C8-E8487A0E2229}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentService", "ApartmentService\ApartmentService.csproj", "{301A1F2F-8CBA-49CD-B4CD-BCC0A0D219D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A326260A-8AAF-B9E4-71C8-E8487A0E2229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A326260A-8AAF-B9E4-71C8-E8487A0E2229}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A326260A-8AAF-B9E4-71C8-E8487A0E2229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{301A1F2F-8CBA-49CD-B4CD-BCC0A0D219D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{301A1F2F-8CBA-49CD-B4CD-BCC0A0D219D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{301A1F2F-8CBA-49CD-B4CD-BCC0A0D219D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{301A1F2F-8CBA-49CD-B4CD-BCC0A0D219D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

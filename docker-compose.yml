@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Morr92631043
       POSTGRES_DB: IdentityServer
-      POSTGRES_MULTIPLE_DATABASES: HPM-System,IdentityServer,UserService
+      POSTGRES_MULTIPLE_DATABASES: HPM-System,IdentityServer,UserService,ApartmentService
     ports:
       - "5433:5432"
     volumes:
@@ -62,6 +62,22 @@ services:
     ports:
       - "55680:8080"   # HTTP
       - "55681:8081"   # HTTPS
+    networks:
+      - hpm-network
+
+  hpm-system.apartmentservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemapartmentservice
+    build:
+      context: .
+      dockerfile: HPM-System.ApartmentService/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ApartmentService;Username=postgres;Password=Morr92631043
+    ports:
+      - "55682:8080"   # HTTP
+      - "55683:8081"   # HTTPS
     networks:
       - hpm-network
 
