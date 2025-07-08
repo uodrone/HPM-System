@@ -28,15 +28,47 @@ namespace HPM_System.UserService.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                // Проверяем, существует ли пользователь
+                var userExists = await _context.Users.AnyAsync(u => u.Id == car.UserId);
+                if (!userExists)
+                {
+                    return BadRequest(new { Message = $"Пользователь с ID {car.UserId} не найден" });
+                }
+
+                // Проверяем уникальность номера
+                var existingCar = await _context.Cars.FirstOrDefaultAsync(c => c.Number == car.Number);
+                if (existingCar != null)
+                {
+                    return BadRequest(new { Message = $"Автомобиль с номером {car.Number} уже существует" });
+                }
+
                 _context.Cars.Add(car);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
             }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Ошибка базы данных при создании автомобиля");
+
+                // Более детальная обработка ошибок базы данных
+                if (dbEx.InnerException?.Message.Contains("UNIQUE constraint failed") == true ||
+                    dbEx.InnerException?.Message.Contains("duplicate key") == true)
+                {
+                    return BadRequest(new { Message = "Автомобиль с таким номером уже существует" });
+                }
+
+                if (dbEx.InnerException?.Message.Contains("FOREIGN KEY constraint failed") == true)
+                {
+                    return BadRequest(new { Message = "Указанный пользователь не существует" });
+                }
+
+                return StatusCode(500, new { Message = "Ошибка при сохранении в базу данных", Details = dbEx.Message });
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при создании автомобиля");
-                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера", Details = ex.Message });
             }
         }
 
@@ -82,14 +114,14 @@ namespace HPM_System.UserService.Controllers
 
         // PUT: api/Cars/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCar(int id, [FromBody] Car updatedCar)
+        public async Task<IActionResult> UpdateCar([FromBody] Car updatedCar)
         {
             try
             {
-                if (id != updatedCar.Id || !ModelState.IsValid)
+                if (!ModelState.IsValid)
                     return BadRequest();
 
-                var existingCar = await _context.Cars.FindAsync(id);
+                var existingCar = await _context.Cars.FindAsync(updatedCar.Id);
 
                 if (existingCar == null)
                     return NotFound();
@@ -107,7 +139,7 @@ namespace HPM_System.UserService.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при обновлении автомобиля с ID {Id}", id);
+                _logger.LogError(ex, "Ошибка при обновлении автомобиля с ID {Id}", updatedCar.Id);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
         }

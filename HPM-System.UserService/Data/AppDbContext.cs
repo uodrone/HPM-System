@@ -20,8 +20,13 @@ namespace HPM_System.UserService.Data
             // Настройка сущности User
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(u => u.Id); // Указываем первичный ключ
-                entity.Property(u => u.Id).ValueGeneratedOnAdd(); // автоинкремент                
+                // Указываем первичный ключ
+                entity.HasKey(u => u.Id);
+
+                // Настройка автоинкремента для PostgreSQL
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .UseIdentityByDefaultColumn();
 
                 // Опционально: настройка других полей
                 entity.Property(u => u.FirstName).IsRequired();
@@ -36,11 +41,16 @@ namespace HPM_System.UserService.Data
             // Настройка сущности Car
             modelBuilder.Entity<Car>(entity =>
             {
-                entity.HasKey(c => c.Id); // Указываем первичный ключ
-                entity.Property(c => c.Id).ValueGeneratedOnAdd(); // автоинкремент
+                // Указываем первичный ключ
+                entity.HasKey(c => c.Id);
+
+                // Настройка автоинкремента для PostgreSQL
+                entity.Property(c => c.Id)
+                    .ValueGeneratedOnAdd()
+                    .UseIdentityByDefaultColumn();
 
                 // Связь один ко многим: User -> Car
-                entity.HasOne(c => c.User)
+                entity.HasOne<User>()
                       .WithMany(u => u.Cars)
                       .HasForeignKey(c => c.UserId)
                       .OnDelete(DeleteBehavior.Cascade); // каскадное удаление при удалении User
