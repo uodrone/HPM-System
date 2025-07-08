@@ -2,272 +2,305 @@
 using Microsoft.EntityFrameworkCore;
 using HPM_System.ApartmentService.Data;
 using HPM_System.ApartmentService.Models;
-using Microsoft.Extensions.Logging;
 
 namespace HPM_System.ApartmentService.Controllers
 {
-    /// <summary>
-    /// Контроллер для управления квартирами (CRUD операции).
-    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class ApartmentsController : ControllerBase
+    public class ApartmentController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<ApartmentsController> _logger;
+        private readonly ILogger<ApartmentController> _logger;
 
-        /// <summary>
-        /// Конструктор контроллера. Инициализирует контекст БД и логгер.
-        /// </summary>
-        /// <param name="context">Контекст базы данных.</param>
-        /// <param name="logger">Интерфейс для логирования.</param>
-        public ApartmentsController(AppDbContext context, ILogger<ApartmentsController> logger)
+        public ApartmentController(AppDbContext context, ILogger<ApartmentController> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        // GET: api/Apartments
         /// <summary>
-        /// Получает список всех квартир.
+        /// Получить все квартиры
         /// </summary>
-        /// <returns>Список квартир.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetApartments()
+        public async Task<ActionResult<IEnumerable<Apartment>>> GetApartments()
         {
             try
             {
-                _logger.LogInformation("Получение списка всех квартир.");
-
                 var apartments = await _context.Apartment.ToListAsync();
+                return Ok(apartments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении списка квартир");
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
 
-                _logger.LogInformation("Успешно получено {Count} квартир.", apartments.Count);
+        /// <summary>
+        /// Получить квартиру по ID
+        /// </summary>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Apartment>> GetApartment(int id)
+        {
+            try
+            {
+                var apartment = await _context.Apartment.FindAsync(id);
+
+                if (apartment == null)
+                {
+                    return NotFound($"Квартира с ID {id} не найдена");
+                }
+
+                return Ok(apartment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении квартиры с ID {Id}", id);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
+        /// Получить квартиры по ID пользователя
+        /// </summary>
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<Apartment>>> GetApartmentsByUserId(int userId)
+        {
+            try
+            {
+                var apartments = await _context.Apartment
+                    .Where(a => a.UserId != null && a.UserId.Contains(userId))
+                    .ToListAsync();
 
                 return Ok(apartments);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при получении списка квартир.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Произошла ошибка при получении данных.");
+                _logger.LogError(ex, "Ошибка при получении квартир для пользователя {UserId}", userId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
 
-        // GET: api/Apartments/5
         /// <summary>
-        /// Получает квартиру по ID.
+        /// Создать новую квартиру
         /// </summary>
-        /// <param name="id">ID квартиры.</param>
-        /// <returns>Квартира или 404 Not Found.</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetApartment(int id)
+        [HttpPost]
+        public async Task<ActionResult<Apartment>> CreateApartment(Apartment apartment)
         {
             try
             {
-                _logger.LogInformation("Получение квартиры с ID: {Id}", id);
-
-                var apartment = await _context.Apartment.FindAsync(id);
-
-                if (apartment == null)
+                if (!ModelState.IsValid)
                 {
-                    _logger.LogWarning("Квартира с ID: {Id} не найдена.", id);
-                    return NotFound();
+                    return BadRequest(ModelState);
                 }
 
-                _logger.LogInformation("Квартира с ID: {Id} успешно найдена.", id);
-                return Ok(apartment);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка при получении квартиры с ID: {Id}.", id);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Произошла ошибка при получении данных.");
-            }
-        }
+                // Валидация данных
+                if (apartment.Number <= 0)
+                {
+                    return BadRequest("Номер квартиры должен быть положительным числом");
+                }
 
-        // POST: api/Apartments
-        /// <summary>
-        /// Создает новую квартиру.
-        /// </summary>
-        /// <param name="apartment">Модель квартиры.</param>
-        /// <returns>Созданную квартиру и ссылку на нее.</returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateApartment(Apartment apartment)
-        {
-            try
-            {
-                _logger.LogInformation("Создание новой квартиры.");
+                if (apartment.NumbersOfRooms <= 0)
+                {
+                    return BadRequest("Количество комнат должно быть положительным числом");
+                }
+
+                if (apartment.ResidentialArea <= 0 || apartment.TotalArea <= 0)
+                {
+                    return BadRequest("Площадь должна быть положительным числом");
+                }
+
+                if (apartment.ResidentialArea > apartment.TotalArea)
+                {
+                    return BadRequest("Жилая площадь не может быть больше общей площади");
+                }
 
                 _context.Apartment.Add(apartment);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Квартира создана успешно. ID: {Id}", apartment.Id);
-
-                return CreatedAtAction(
-                    nameof(GetApartment),
-                    new { id = apartment.Id },
-                    apartment
-                );
-            }
-            catch (DbUpdateException dbEx)
-            {
-                _logger.LogError(dbEx, "Ошибка сохранения квартиры в базе данных.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Ошибка при сохранении данных в БД.");
+                return CreatedAtAction(nameof(GetApartment), new { id = apartment.Id }, apartment);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Неизвестная ошибка при создании квартиры.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Произошла критическая ошибка.");
+                _logger.LogError(ex, "Ошибка при создании квартиры");
+                return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
 
-        // PUT: api/Apartments/5
         /// <summary>
-        /// Обновляет существующую квартиру.
+        /// Обновить квартиру
         /// </summary>
-        /// <param name="id">ID квартиры для обновления.</param>
-        /// <param name="apartment">Обновленные данные.</param>
-        /// <returns>204 No Content при успехе.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateApartment(int id, Apartment apartment)
         {
-            if (id != apartment.Id)
-            {
-                _logger.LogWarning("Несовпадение ID в запросе и теле модели: {RequestedId} vs {ModelId}", id, apartment.Id);
-                return BadRequest("ID в URL и в теле запроса не совпадают.");
-            }
-
             try
             {
-                _logger.LogInformation("Обновление квартиры с ID: {Id}", id);
-
-                var existingApartment = await _context.Apartment.FindAsync(id);
-                if (existingApartment == null)
+                if (id != apartment.Id)
                 {
-                    _logger.LogWarning("Попытка обновить несуществующую квартиру с ID: {Id}", id);
-                    return NotFound();
+                    return BadRequest("ID в URL не совпадает с ID в теле запроса");
                 }
 
-                // Обновляем поля
-                existingApartment.Number = apartment.Number;
-                existingApartment.NumbersOfRooms = apartment.NumbersOfRooms;
-                existingApartment.ResidentialArea = apartment.ResidentialArea;
-                existingApartment.TotalArea = apartment.TotalArea;
-                existingApartment.Floor = apartment.Floor;
-                existingApartment.UserId = apartment.UserId;
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-                _context.Entry(existingApartment).State = EntityState.Modified;
+                // Валидация данных
+                if (apartment.Number <= 0)
+                {
+                    return BadRequest("Номер квартиры должен быть положительным числом");
+                }
+
+                if (apartment.NumbersOfRooms <= 0)
+                {
+                    return BadRequest("Количество комнат должно быть положительным числом");
+                }
+
+                if (apartment.ResidentialArea <= 0 || apartment.TotalArea <= 0)
+                {
+                    return BadRequest("Площадь должна быть положительным числом");
+                }
+
+                if (apartment.ResidentialArea > apartment.TotalArea)
+                {
+                    return BadRequest("Жилая площадь не может быть больше общей площади");
+                }
+
+
+
+
+
+                _context.Entry(apartment).State = EntityState.Modified;
+
                 await _context.SaveChangesAsync();
-
-                _logger.LogInformation("Квартира с ID: {Id} успешно обновлена.", id);
 
                 return NoContent();
             }
-            catch (DbUpdateConcurrencyException conEx)
+            catch (DbUpdateConcurrencyException)
             {
-                if (!await ApartmentExists(id))
+                if (!ApartmentExists(id))
                 {
-                    _logger.LogWarning("Попытка обновить несуществующую квартиру с ID: {Id}", id);
-                    return NotFound();
+                    return NotFound($"Квартира с ID {id} не найдена");
                 }
-
-                _logger.LogError(conEx, "Ошибка параллелизма при обновлении квартиры с ID: {Id}", id);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Ошибка параллелизма при обновлении данных.");
+                else
+                {
+                    throw;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при обновлении квартиры с ID: {Id}", id);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Произошла ошибка при обновлении данных.");
+                _logger.LogError(ex, "Ошибка при обновлении квартиры с ID {Id}", id);
+                return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
 
-        // DELETE: api/Apartments/5
         /// <summary>
-        /// Удаляет квартиру по ID.
+        /// Удалить квартиру
         /// </summary>
-        /// <param name="id">ID квартиры.</param>
-        /// <returns>204 No Content при успехе.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteApartment(int id)
         {
             try
             {
-                _logger.LogInformation("Удаление квартиры с ID: {Id}", id);
-
                 var apartment = await _context.Apartment.FindAsync(id);
                 if (apartment == null)
                 {
-                    _logger.LogWarning("Попытка удалить несуществующую квартиру с ID: {Id}", id);
-                    return NotFound();
+                    return NotFound($"Квартира с ID {id} не найдена");
                 }
 
                 _context.Apartment.Remove(apartment);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Квартира с ID: {Id} успешно удалена.", id);
-
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при удалении квартиры с ID: {Id}", id);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Произошла ошибка при удалении данных.");
+                _logger.LogError(ex, "Ошибка при удалении квартиры с ID {Id}", id);
+                return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
 
-        // GET: api/Apartments/by-user-id?userId=123
         /// <summary>
-        /// Получает список квартир, связанных с указанным UserId.
+        /// Добавить пользователя к квартире
         /// </summary>
-        /// <param name="userId">ID пользователя</param>
-        /// <returns>Список квартир или ошибку</returns>
-        [HttpGet("by-user-id")]
-        public async Task<IActionResult> GetApartmentsByUserId(int userId)
+        [HttpPost("{apartmentId}/users/{userId}")]
+        public async Task<IActionResult> AddUserToApartment(int apartmentId, int userId)
         {
-            if (userId <= 0)
-            {
-                _logger.LogWarning("Получен недопустимый UserId: {UserId}", userId);
-                return BadRequest("UserId должен быть положительным числом.");
-            }
-
             try
             {
-                _logger.LogInformation("Поиск квартир для пользователя с ID: {UserId}", userId);
-
-                var apartments = await _context.Apartment
-                    .Where(a => a.UserId.Contains(userId))
-                    .ToListAsync();
-
-                if (!apartments.Any())
+                var apartment = await _context.Apartment.FindAsync(apartmentId);
+                if (apartment == null)
                 {
-                    _logger.LogInformation("Для пользователя с ID: {UserId} квартиры не найдены.", userId);
-                    return NotFound($"Квартиры для пользователя с ID {userId} не найдены.");
+                    return NotFound($"Квартира с ID {apartmentId} не найдена");
                 }
 
-                _logger.LogInformation("Найдено {Count} квартир для пользователя с ID: {UserId}", apartments.Count, userId);
-                return Ok(apartments);
+                if (apartment.UserId == null)
+                {
+                    apartment.UserId = new List<int>();
+                }
+
+                if (apartment.UserId.Contains(userId))
+                {
+                    return Conflict($"Пользователь {userId} уже привязан к квартире {apartmentId}");
+                }
+
+                apartment.UserId.Add(userId);
+                await _context.SaveChangesAsync();
+
+                return Ok($"Пользователь {userId} успешно добавлен к квартире {apartmentId}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при получении квартир для пользователя с ID: {UserId}", userId);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Произошла ошибка при обработке запроса: {ex.Message}");
+                _logger.LogError(ex, "Ошибка при добавлении пользователя {UserId} к квартире {ApartmentId}", userId, apartmentId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
 
         /// <summary>
-        /// Проверяет, существует ли квартира с заданным ID.
+        /// Удалить пользователя из квартиры
         /// </summary>
-        /// <param name="id">ID квартиры.</param>
-        /// <returns>true если существует, иначе false</returns>
-        private async Task<bool> ApartmentExists(int id)
+        [HttpDelete("{apartmentId}/users/{userId}")]
+        public async Task<IActionResult> RemoveUserFromApartment(int apartmentId, int userId)
         {
-            return await _context.Apartment.AnyAsync(e => e.Id == id);
+            try
+            {
+                var apartment = await _context.Apartment.FindAsync(apartmentId);
+                if (apartment == null)
+                {
+                    return NotFound($"Квартира с ID {apartmentId} не найдена");
+                }
+
+                if (apartment.UserId == null || !apartment.UserId.Contains(userId))
+                {
+                    return NotFound($"Пользователь {userId} не найден в квартире {apartmentId}");
+                }
+
+                if (apartment.UserId.Count == 1)
+                {
+                    // Просто очищаем список пользователей вместо удаления квартиры
+                    apartment.UserId.Clear();
+                }
+                else
+                {
+                    apartment.UserId.Remove(userId);
+                }
+                await _context.SaveChangesAsync();
+
+                return Ok($"Пользователь {userId} успешно удален из квартиры {apartmentId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при удалении пользователя {UserId} из квартиры {ApartmentId}", userId, apartmentId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
+        /// Проверить существование квартиры
+        /// </summary>
+        private bool ApartmentExists(int id)
+        {
+            return _context.Apartment.Any(e => e.Id == id);
         }
     }
 }
