@@ -7,11 +7,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Morr92631043
       POSTGRES_DB: IdentityServer
-      POSTGRES_MULTIPLE_DATABASES: HPM-System,IdentityServer
+      POSTGRES_MULTIPLE_DATABASES: HPM-System,IdentityServer,UserService
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
     networks:
       - hpm-network
 
@@ -45,6 +46,22 @@ services:
     ports:
       - "55675:8080"   # HTTP
       - "55676:8081"   # HTTPS
+    networks:
+      - hpm-network
+
+  hpm-system.userservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemuserservice
+    build:
+      context: .
+      dockerfile: HPM-System.UserService/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=UserService;Username=postgres;Password=Morr92631043
+    ports:
+      - "55680:8080"   # HTTP
+      - "55681:8081"   # HTTPS
     networks:
       - hpm-network
 

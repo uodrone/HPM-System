@@ -8,11 +8,11 @@ namespace HPM_System.IdentityServer.Services
 {
     public class CustomProfileService : IProfileService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<CustomProfileService> _logger;
 
         public CustomProfileService(
-            UserManager<ApplicationUser> userManager,
+            UserManager<IdentityUser> userManager,
             ILogger<CustomProfileService> logger)
         {
             _userManager = userManager;
@@ -30,23 +30,13 @@ namespace HPM_System.IdentityServer.Services
                 var claims = new List<Claim>
                 {
                     new Claim("email", user.Email ?? string.Empty),
-                    new Claim("given_name", user.FirstName ?? string.Empty),
-                    new Claim("family_name", user.LastName ?? string.Empty),
                     new Claim("phone_number", user.PhoneNumber ?? string.Empty),
                     new Claim("sub", user.Id), // Subject ID
                     // Добавляем стандартные claims
                     new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                     new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                    new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
-                    new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
                     new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
                 };
-
-                // Добавляем отчество если есть
-                if (!string.IsNullOrEmpty(user.Patronymic))
-                {
-                    claims.Add(new Claim("patronymic", user.Patronymic));
-                }
 
                 // Добавляем все claims без фильтрации для отладки
                 context.IssuedClaims.AddRange(claims);
