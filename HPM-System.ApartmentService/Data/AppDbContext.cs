@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HPM_System.ApartmentService.Models;
-using System.Text.Json;
 
 namespace HPM_System.ApartmentService.Data
 {
@@ -11,7 +10,12 @@ namespace HPM_System.ApartmentService.Data
         {
         }
 
+        // DbSet для работы с квартирами
         public DbSet<Apartment> Apartment { get; set; }
+
+        // DbSet для связи Many-to-Many (если используется)
+        public DbSet<ApartmentUser> ApartmentUsers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,36 +24,44 @@ namespace HPM_System.ApartmentService.Data
             // Настройка сущности Apartment
             modelBuilder.Entity<Apartment>(entity =>
             {
-                // Указываем первичный ключ
-                entity.HasKey(u => u.Id);
+                entity.HasKey(a => a.Id);
+                entity.Property(a => a.Id)
+                    .ValueGeneratedOnAdd()
+                    .UseIdentityByDefaultColumn();
 
-                // Настройка автоинкремента для PostgreSQL
+                entity.Property(a => a.Number).IsRequired();
+                entity.Property(a => a.NumbersOfRooms).IsRequired();
+                entity.Property(a => a.ResidentialArea).IsRequired();
+                entity.Property(a => a.TotalArea).IsRequired();
+                entity.Property(a => a.Floor).IsRequired(false);
+            });
+
+            // Настройка сущности User (если используется)
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
                 entity.Property(u => u.Id)
                     .ValueGeneratedOnAdd()
                     .UseIdentityByDefaultColumn();
 
-                // Настройка обязательных полей
-                entity.Property(u => u.Number).IsRequired();
-                entity.Property(u => u.NumbersOfRooms).IsRequired();
-                entity.Property(u => u.ResidentialArea).IsRequired();
-                entity.Property(u => u.TotalArea).IsRequired();
-                entity.Property(u => u.Floor);
-
-                // Настройка для List<int> - сохраняем как JSON
-                entity.Property(u => u.UserId)
-                    .HasConversion(
-                        v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                        v => JsonSerializer.Deserialize<List<int>>(v, (JsonSerializerOptions)null))
-                    .HasColumnType("jsonb"); // Используем jsonb для лучшей производительности в PostgreSQL
-
-                // Можно также использовать более простой подход с массивом PostgreSQL:
-                // entity.Property(u => u.UserId)
-                //     .HasColumnType("integer[]");
-
-                // Индекс для поиска по пользователям
-                entity.HasIndex(u => u.UserId)
-                    .HasMethod("gin"); // GIN индекс для jsonb в PostgreSQL
+                entity.Property(u => u.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(30);
             });
+
+            // Настройка отношения Many-to-Many: Apartment <-> User через ApartmentUser
+            modelBuilder.Entity<ApartmentUser>()
+                .HasKey(au => new { au.ApartmentId, au.UserId });
+
+            modelBuilder.Entity<ApartmentUser>()
+                .HasOne(au => au.Apartment)
+                .WithMany(a => a.Users)
+                .HasForeignKey(au => au.ApartmentId);
+
+            modelBuilder.Entity<ApartmentUser>()
+                .HasOne(au => au.User)
+                .WithMany(u => u.Apartments)
+                .HasForeignKey(au => au.UserId);
         }
     }
 }

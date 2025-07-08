@@ -8,6 +8,6 @@
         public decimal ResidentialArea { get; set; }
         public decimal TotalArea { get; set; }
         public int? Floor {  get; set; }
-        public List<int>? UserId { get; set; }
+        public ICollection<ApartmentUser> Users { get; set; } = new List<ApartmentUser>();
     }
 }

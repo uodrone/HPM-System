@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HPM_System.ApartmentService.Data;
+﻿using HPM_System.ApartmentService.Data;
 using HPM_System.ApartmentService.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace HPM_System.ApartmentService.Controllers
 {
@@ -19,14 +20,18 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
-        /// Получить все квартиры
+        /// Получить все квартиры (с пользователями)
         /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Apartment>>> GetApartments()
         {
             try
             {
-                var apartments = await _context.Apartment.ToListAsync();
+                var apartments = await _context.Apartment
+                    .Include(a => a.Users)
+                    .ThenInclude(au => au.User)
+                    .ToListAsync();
+
                 return Ok(apartments);
             }
             catch (Exception ex)
@@ -37,14 +42,17 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
-        /// Получить квартиру по ID
+        /// Получить квартиру по ID (с пользователями)
         /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Apartment>> GetApartment(int id)
         {
             try
             {
-                var apartment = await _context.Apartment.FindAsync(id);
+                var apartment = await _context.Apartment
+                    .Include(a => a.Users)
+                    .ThenInclude(au => au.User)
+                    .FirstOrDefaultAsync(a => a.Id == id);
 
                 if (apartment == null)
                 {
@@ -69,7 +77,9 @@ namespace HPM_System.ApartmentService.Controllers
             try
             {
                 var apartments = await _context.Apartment
-                    .Where(a => a.UserId != null && a.UserId.Contains(userId))
+                    .Where(a => a.Users.Any(u => u.UserId == userId))
+                    .Include(a => a.Users)
+                    .ThenInclude(au => au.User)
                     .ToListAsync();
 
                 return Ok(apartments);
@@ -99,20 +109,23 @@ namespace HPM_System.ApartmentService.Controllers
                 {
                     return BadRequest("Номер квартиры должен быть положительным числом");
                 }
-
                 if (apartment.NumbersOfRooms <= 0)
                 {
                     return BadRequest("Количество комнат должно быть положительным числом");
                 }
-
                 if (apartment.ResidentialArea <= 0 || apartment.TotalArea <= 0)
                 {
                     return BadRequest("Площадь должна быть положительным числом");
                 }
-
                 if (apartment.ResidentialArea > apartment.TotalArea)
                 {
                     return BadRequest("Жилая площадь не может быть больше общей площади");
+                }
+
+                // Инициализируем связь, если она была передана как null
+                if (apartment.Users == null)
+                {
+                    apartment.Users = new List<ApartmentUser>();
                 }
 
                 _context.Apartment.Add(apartment);
@@ -122,8 +135,15 @@ namespace HPM_System.ApartmentService.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при создании квартиры");
-                return StatusCode(500, "Внутренняя ошибка сервера");
+                var errorMessage = new StringBuilder("Ошибка при создании квартиры");
+                Exception inner = ex;
+                while (inner.InnerException != null)
+                {
+                    inner = inner.InnerException;
+                }
+                errorMessage.AppendLine(": " + inner.Message);
+                _logger.LogError(ex, errorMessage.ToString());
+                return StatusCode(500, errorMessage.ToString());
             }
         }
 
@@ -139,7 +159,6 @@ namespace HPM_System.ApartmentService.Controllers
                 {
                     return BadRequest("ID в URL не совпадает с ID в теле запроса");
                 }
-
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -150,30 +169,21 @@ namespace HPM_System.ApartmentService.Controllers
                 {
                     return BadRequest("Номер квартиры должен быть положительным числом");
                 }
-
                 if (apartment.NumbersOfRooms <= 0)
                 {
                     return BadRequest("Количество комнат должно быть положительным числом");
                 }
-
                 if (apartment.ResidentialArea <= 0 || apartment.TotalArea <= 0)
                 {
                     return BadRequest("Площадь должна быть положительным числом");
                 }
-
                 if (apartment.ResidentialArea > apartment.TotalArea)
                 {
                     return BadRequest("Жилая площадь не может быть больше общей площади");
                 }
 
-
-
-
-
                 _context.Entry(apartment).State = EntityState.Modified;
-
                 await _context.SaveChangesAsync();
-
                 return NoContent();
             }
             catch (DbUpdateConcurrencyException)
@@ -202,7 +212,10 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment.FindAsync(id);
+                var apartment = await _context.Apartment
+                    .Include(a => a.Users)
+                    .FirstOrDefaultAsync(a => a.Id == id);
+
                 if (apartment == null)
                 {
                     return NotFound($"Квартира с ID {id} не найдена");
@@ -210,7 +223,6 @@ namespace HPM_System.ApartmentService.Controllers
 
                 _context.Apartment.Remove(apartment);
                 await _context.SaveChangesAsync();
-
                 return NoContent();
             }
             catch (Exception ex)
@@ -228,30 +240,35 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment.FindAsync(apartmentId);
-                if (apartment == null)
+                var apartment = await _context.Apartment
+                    .Include(a => a.Users)
+                    .FirstOrDefaultAsync(a => a.Id == apartmentId);
+
+                var user = await _context.Users.FindAsync(userId);
+
+                if (apartment == null || user == null)
                 {
-                    return NotFound($"Квартира с ID {apartmentId} не найдена");
+                    return NotFound("Квартира или пользователь не найдены");
                 }
 
-                if (apartment.UserId == null)
+                if (apartment.Users.Any(u => u.UserId == userId))
                 {
-                    apartment.UserId = new List<int>();
+                    return Conflict("Пользователь уже привязан к этой квартире");
                 }
 
-                if (apartment.UserId.Contains(userId))
+                apartment.Users.Add(new ApartmentUser
                 {
-                    return Conflict($"Пользователь {userId} уже привязан к квартире {apartmentId}");
-                }
+                    ApartmentId = apartmentId,
+                    UserId = userId
+                });
 
-                apartment.UserId.Add(userId);
                 await _context.SaveChangesAsync();
 
-                return Ok($"Пользователь {userId} успешно добавлен к квартире {apartmentId}");
+                return Ok("Пользователь успешно добавлен к квартире");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при добавлении пользователя {UserId} к квартире {ApartmentId}", userId, apartmentId);
+                _logger.LogError(ex, "Ошибка при добавлении пользователя к квартире");
                 return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
@@ -264,33 +281,22 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment.FindAsync(apartmentId);
-                if (apartment == null)
+                var apartmentUser = await _context.ApartmentUsers
+                    .FindAsync(apartmentId, userId);
+
+                if (apartmentUser == null)
                 {
-                    return NotFound($"Квартира с ID {apartmentId} не найдена");
+                    return NotFound("Пользователь не связан с указанной квартирой");
                 }
 
-                if (apartment.UserId == null || !apartment.UserId.Contains(userId))
-                {
-                    return NotFound($"Пользователь {userId} не найден в квартире {apartmentId}");
-                }
-
-                if (apartment.UserId.Count == 1)
-                {
-                    // Просто очищаем список пользователей вместо удаления квартиры
-                    apartment.UserId.Clear();
-                }
-                else
-                {
-                    apartment.UserId.Remove(userId);
-                }
+                _context.ApartmentUsers.Remove(apartmentUser);
                 await _context.SaveChangesAsync();
 
-                return Ok($"Пользователь {userId} успешно удален из квартиры {apartmentId}");
+                return Ok("Пользователь успешно удален из квартиры");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при удалении пользователя {UserId} из квартиры {ApartmentId}", userId, apartmentId);
+                _logger.LogError(ex, "Ошибка при удалении пользователя из квартиры");
                 return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
