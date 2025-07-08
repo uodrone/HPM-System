@@ -28,7 +28,6 @@ namespace HPM_System.ApartmentService.Data
                     .UseIdentityByDefaultColumn();
 
                 // Опционально: настройка других полей
-                entity.Property(u => u.CommunityId).IsRequired();
                 entity.Property(u => u.Number).IsRequired();
                 entity.Property(u => u.NumbersOfRooms).IsRequired();
                 entity.Property(u => u.ResidentialArea).IsRequired();
@@ -36,7 +35,7 @@ namespace HPM_System.ApartmentService.Data
                 entity.Property(u => u.Floor);
                 entity.Property(u => u.UserId).IsRequired();
 
-                entity.HasIndex(u => u.CommunityId);  // индекс на Сообщество                
+                entity.HasIndex(u => u.UserId);  // индекс на id пользователя    
             });
         }
     }
