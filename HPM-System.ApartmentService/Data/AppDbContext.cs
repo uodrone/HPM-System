@@ -34,6 +34,7 @@ namespace HPM_System.ApartmentService.Data
                 entity.Property(a => a.ResidentialArea).IsRequired();
                 entity.Property(a => a.TotalArea).IsRequired();
                 entity.Property(a => a.Floor).IsRequired(false);
+                entity.Property(a => a.HouseId).IsRequired();
             });
 
             // Настройка сущности User (если используется)
@@ -43,10 +44,6 @@ namespace HPM_System.ApartmentService.Data
                 entity.Property(u => u.Id)
                     .ValueGeneratedOnAdd()
                     .UseIdentityByDefaultColumn();
-
-                entity.Property(u => u.PhoneNumber)
-                    .IsRequired()
-                    .HasMaxLength(30);
             });
 
             // Настройка отношения Many-to-Many: Apartment <-> User через ApartmentUser
