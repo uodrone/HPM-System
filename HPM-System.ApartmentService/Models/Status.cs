@@ -3,6 +3,6 @@
     public class Status
     {
         public int Id { get; set; }
-        public string Name { get; set; } // Например: "Владелец", "Жилец", "Прописан"
+        public string Name { get; set; } = string.Empty; // Например: "Владелец", "Жилец", "Прописан"
     }
 }

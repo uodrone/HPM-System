@@ -1,6 +1,7 @@
 using HPM_System.ApartmentService.Data;
 using HPM_System.ApartmentService.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace ApartmentService
 {
@@ -13,6 +14,21 @@ namespace ApartmentService
             // Настройка EF Core (если нужен доступ к БД в основном приложении)
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Настройка JSON для минимальных API
+            builder.Services.ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.SerializerOptions.WriteIndented = true;
+            });
+
+            // Настройка JSON для контроллеров MVC - ЕДИНСТВЕННЫЙ правильный способ
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    options.JsonSerializerOptions.WriteIndented = true;
+                });
 
             // Регистрация HttpClient для взаимодействия с UserService
             builder.Services.AddHttpClient<IUserServiceClient, UserServiceClient>();

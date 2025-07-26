@@ -109,6 +109,49 @@ namespace HPM_System.UserService.Controllers
             }
         }
 
+        // GET: api/Users/by-phone/{phone}
+        [HttpGet("by-phone/{phone}")]
+        public async Task<IActionResult> GetUserByPhone(string phone)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(phone))
+                {
+                    _logger.LogWarning("Получен пустой номер телефона");
+                    return BadRequest(new { Message = "Номер телефона не может быть пустым" });
+                }
+
+                // Декодируем URL-кодированный номер телефона
+                string decodedPhone = Uri.UnescapeDataString(phone);
+                _logger.LogDebug("Поиск пользователя по телефону. Исходный: {OriginalPhone}, декодированный: {DecodedPhone}", phone, decodedPhone);
+
+                // Нормализуем номер телефона для поиска (убираем пробелы, дефисы и скобки)
+                string normalizedPhone = NormalizePhoneNumber(decodedPhone);
+                string normalizedSearchPhone = NormalizePhoneNumber(phone);
+
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u =>
+                        u.PhoneNumber == decodedPhone ||
+                        u.PhoneNumber == phone ||
+                        u.PhoneNumber == normalizedPhone ||
+                        u.PhoneNumber == normalizedSearchPhone);
+
+                if (user == null)
+                {
+                    _logger.LogInformation("Пользователь с номером телефона {Phone} не найден", decodedPhone);
+                    return NotFound(new { Message = $"Пользователь с номером телефона {decodedPhone} не найден" });
+                }
+
+                _logger.LogInformation("Найден пользователь {UserId} по номеру телефона {Phone}", user.Id, decodedPhone);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении пользователя по номеру телефона {Phone}", phone);
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
+        }
+
         // GET: api/Users/by-car-number/{carNumber}
         [HttpGet("by-car-number/{carNumber}")]
         public async Task<IActionResult> GetUserByCarNumber(string carNumber)
@@ -207,6 +250,18 @@ namespace HPM_System.UserService.Controllers
                 _logger.LogError(ex, "Ошибка при удалении пользователя с ID {id}", id);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
+        }
+
+        /// <summary>
+        /// Нормализует номер телефона для поиска
+        /// </summary>
+        private string NormalizePhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                return phoneNumber;
+
+            // Убираем все символы кроме цифр и знака +
+            return System.Text.RegularExpressions.Regex.Replace(phoneNumber, @"[^\d+]", "");
         }
     }
 }

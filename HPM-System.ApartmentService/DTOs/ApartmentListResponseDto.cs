@@ -1,17 +1,15 @@
-﻿using System.Text.Json.Serialization;
-
-namespace HPM_System.ApartmentService.Models
+﻿namespace HPM_System.ApartmentService.DTOs
 {
-    public class Apartment
+    public class ApartmentListResponseDto
     {
         public int Id { get; set; }
         public int Number { get; set; }
         public int NumbersOfRooms { get; set; }
         public decimal ResidentialArea { get; set; }
         public decimal TotalArea { get; set; }
-        public int? Floor {  get; set; }
+        public int? Floor { get; set; }
         public int HouseId { get; set; }
-        [JsonIgnore]
-        public ICollection<ApartmentUser> Users { get; set; } = new List<ApartmentUser>();
+        public int UsersCount { get; set; }
+        public int OwnersCount { get; set; }
     }
 }

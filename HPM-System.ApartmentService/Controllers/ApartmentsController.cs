@@ -25,19 +25,29 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
-        /// Получить все квартиры (с пользователями и их статусами)
+        /// Получить все квартиры (краткая информация)
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Apartment>>> GetApartments()
+        public async Task<ActionResult<IEnumerable<ApartmentListResponseDto>>> GetApartments()
         {
             try
             {
                 var apartments = await _context.Apartment
                     .Include(a => a.Users)
-                        .ThenInclude(au => au.User)
-                    .Include(a => a.Users)
                         .ThenInclude(au => au.Statuses)
                             .ThenInclude(aus => aus.Status)
+                    .Select(a => new ApartmentListResponseDto
+                    {
+                        Id = a.Id,
+                        Number = a.Number,
+                        NumbersOfRooms = a.NumbersOfRooms,
+                        ResidentialArea = a.ResidentialArea,
+                        TotalArea = a.TotalArea,
+                        Floor = a.Floor,
+                        HouseId = a.HouseId,
+                        UsersCount = a.Users.Count,
+                        OwnersCount = a.Users.Count(au => au.Statuses.Any(s => s.Status.Name == "Владелец"))
+                    })
                     .ToListAsync();
 
                 return Ok(apartments);
@@ -50,16 +60,14 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
-        /// Получить квартиру по ID (с пользователями и их статусами)
+        /// Получить квартиру по ID (с полной информацией о пользователях)
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Apartment>> GetApartment(int id)
+        public async Task<ActionResult<ApartmentResponseDto>> GetApartment(int id)
         {
             try
             {
                 var apartment = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.User)
                     .Include(a => a.Users)
                         .ThenInclude(au => au.Statuses)
                             .ThenInclude(aus => aus.Status)
@@ -70,7 +78,8 @@ namespace HPM_System.ApartmentService.Controllers
                     return NotFound($"Квартира с ID {id} не найдена");
                 }
 
-                return Ok(apartment);
+                var result = await MapToApartmentResponseDto(apartment);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -83,7 +92,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить квартиры по ID пользователя
         /// </summary>
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Apartment>>> GetApartmentsByUserId(int userId)
+        public async Task<ActionResult<IEnumerable<ApartmentResponseDto>>> GetApartmentsByUserId(int userId)
         {
             try
             {
@@ -97,25 +106,27 @@ namespace HPM_System.ApartmentService.Controllers
                 var apartments = await _context.Apartment
                     .Where(a => a.Users.Any(u => u.UserId == userId))
                     .Include(a => a.Users)
-                        .ThenInclude(au => au.User)
-                    .Include(a => a.Users)
                         .ThenInclude(au => au.Statuses)
                             .ThenInclude(aus => aus.Status)
                     .ToListAsync();
 
-                return Ok(apartments);
+                var result = new List<ApartmentResponseDto>();
+                foreach (var apartment in apartments)
+                {
+                    var dto = await MapToApartmentResponseDto(apartment);
+                    result.Add(dto);
+                }
+
+                return Ok(result);
             }
             catch (HttpRequestException ex)
             {
-                // Это означает, что UserService недоступен (DNS, отказ в подключении, 502/503 от прокси и т.д.)
                 _logger.LogError(ex, "Ошибка связи с UserService при проверке пользователя {UserId}", userId);
-                // Можно вернуть более конкретный статус, например, 503 если точно знаем, что UserService недоступен
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
                     new { Message = "В данный момент невозможно проверить пользователя. Сервис пользователей недоступен.", Details = ex.Message });
             }
-            catch (TaskCanceledException ex) // Таймаут
+            catch (TaskCanceledException ex)
             {
-                // Это означает, что UserService не ответил вовремя
                 _logger.LogError(ex, "Таймаут при связи с UserService при проверке пользователя {UserId}", userId);
                 return StatusCode(StatusCodes.Status504GatewayTimeout,
                     new { Message = "Превышено время ожидания ответа от сервиса пользователей.", Details = ex.Message });
@@ -131,11 +142,10 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить квартиры по номеру телефона пользователя
         /// </summary>
         [HttpGet("phone/{phone}")]
-        public async Task<ActionResult<IEnumerable<Apartment>>> GetApartmentsByUserPhone(string phone)
+        public async Task<ActionResult<IEnumerable<ApartmentResponseDto>>> GetApartmentsByUserPhone(string phone)
         {
             try
             {
-                // Получаем пользователя из UserService по номеру телефона
                 var user = await _userServiceClient.GetUserByPhoneAsync(phone);
                 if (user == null)
                 {
@@ -145,13 +155,18 @@ namespace HPM_System.ApartmentService.Controllers
                 var apartments = await _context.Apartment
                     .Where(a => a.Users.Any(u => u.UserId == user.Id))
                     .Include(a => a.Users)
-                        .ThenInclude(au => au.User)
-                    .Include(a => a.Users)
                         .ThenInclude(au => au.Statuses)
                             .ThenInclude(aus => aus.Status)
                     .ToListAsync();
 
-                return Ok(apartments);
+                var result = new List<ApartmentResponseDto>();
+                foreach (var apartment in apartments)
+                {
+                    var dto = await MapToApartmentResponseDto(apartment);
+                    result.Add(dto);
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -164,7 +179,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Создать новую квартиру
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Apartment>> CreateApartment(Apartment apartment)
+        public async Task<ActionResult<ApartmentResponseDto>> CreateApartment(Apartment apartment)
         {
             try
             {
@@ -195,7 +210,6 @@ namespace HPM_System.ApartmentService.Controllers
                     return BadRequest("ID дома должен быть положительным числом");
                 }
 
-                // Инициализируем связь, если она была передана как null
                 if (apartment.Users == null)
                 {
                     apartment.Users = new List<ApartmentUser>();
@@ -204,7 +218,15 @@ namespace HPM_System.ApartmentService.Controllers
                 _context.Apartment.Add(apartment);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetApartment), new { id = apartment.Id }, apartment);
+                // Загружаем созданную квартиру с включенными связями
+                var createdApartment = await _context.Apartment
+                    .Include(a => a.Users)
+                        .ThenInclude(au => au.Statuses)
+                            .ThenInclude(aus => aus.Status)
+                    .FirstOrDefaultAsync(a => a.Id == apartment.Id);
+
+                var result = await MapToApartmentResponseDto(createdApartment!);
+                return CreatedAtAction(nameof(GetApartment), new { id = apartment.Id }, result);
             }
             catch (Exception ex)
             {
@@ -543,6 +565,50 @@ namespace HPM_System.ApartmentService.Controllers
         private bool ApartmentExists(int id)
         {
             return _context.Apartment.Any(e => e.Id == id);
+        }
+
+        // Вспомогательный метод для маппинга в DTO
+        private async Task<ApartmentResponseDto> MapToApartmentResponseDto(Apartment apartment)
+        {
+            var result = new ApartmentResponseDto
+            {
+                Id = apartment.Id,
+                Number = apartment.Number,
+                NumbersOfRooms = apartment.NumbersOfRooms,
+                ResidentialArea = apartment.ResidentialArea,
+                TotalArea = apartment.TotalArea,
+                Floor = apartment.Floor,
+                HouseId = apartment.HouseId
+            };
+
+            foreach (var apartmentUser in apartment.Users)
+            {
+                UserDto? userDetails = null;
+                try
+                {
+                    userDetails = await _userServiceClient.GetUserByIdAsync(apartmentUser.UserId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Не удалось получить данные пользователя {UserId}", apartmentUser.UserId);
+                }
+
+                var userDto = new ApartmentUserResponseDto
+                {
+                    UserId = apartmentUser.UserId,
+                    Share = apartmentUser.Share,
+                    UserDetails = userDetails,
+                    Statuses = apartmentUser.Statuses.Select(s => new StatusDto
+                    {
+                        Id = s.Status.Id,
+                        Name = s.Status.Name
+                    }).ToList()
+                };
+
+                result.Users.Add(userDto);
+            }
+
+            return result;
         }
     }
 }
