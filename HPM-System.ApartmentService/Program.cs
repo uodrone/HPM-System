@@ -1,4 +1,5 @@
 using HPM_System.ApartmentService.Data;
+using HPM_System.ApartmentService.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApartmentService
@@ -12,6 +13,10 @@ namespace ApartmentService
             // Настройка EF Core (если нужен доступ к БД в основном приложении)
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Регистрация HttpClient для взаимодействия с UserService
+            builder.Services.AddHttpClient<IUserServiceClient, UserServiceClient>();
+            builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 
             // Поддержка CORS
             builder.Services.AddCors(options =>

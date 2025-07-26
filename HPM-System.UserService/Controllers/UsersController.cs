@@ -28,15 +28,33 @@ namespace HPM_System.UserService.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                // Проверка на уникальность Email перед добавлением
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == user.Email.ToLower());
+
+                if (existingUser != null)
+                {
+                    // Возвращаем 409 Conflict с понятным сообщением
+                    return Conflict(new { Message = $"Пользователь с email '{user.Email}' уже существует." });
+                }
+
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            }
+            // Явная обработка ошибки уникальности из БД (на случай, если проверка выше как-то "проскочила")
+            catch (DbUpdateException dbEx) when (dbEx.InnerException?.Message.Contains("duplicate key value violates unique constraint \"IX_Users_Email\"") == true)
+            {
+                _logger.LogWarning(dbEx, "Попытка создания пользователя с уже существующим email: {Email}", user.Email);
+                // Возвращаем 409 Conflict с понятным сообщением
+                return Conflict(new { Message = $"Пользователь с email '{user.Email}' уже существует." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при создании пользователя");
-                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+                // Возвращаем 500 Internal Server Error с общим сообщением
+                // (детали логируются на сервере)
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера при создании пользователя." });
             }
         }
 
