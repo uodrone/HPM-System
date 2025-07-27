@@ -28,15 +28,33 @@ namespace HPM_System.UserService.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                // Проверка на уникальность Email перед добавлением
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == user.Email.ToLower());
+
+                if (existingUser != null)
+                {
+                    // Возвращаем 409 Conflict с понятным сообщением
+                    return Conflict(new { Message = $"Пользователь с email '{user.Email}' уже существует." });
+                }
+
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            }
+            // Явная обработка ошибки уникальности из БД (на случай, если проверка выше как-то "проскочила")
+            catch (DbUpdateException dbEx) when (dbEx.InnerException?.Message.Contains("duplicate key value violates unique constraint \"IX_Users_Email\"") == true)
+            {
+                _logger.LogWarning(dbEx, "Попытка создания пользователя с уже существующим email: {Email}", user.Email);
+                // Возвращаем 409 Conflict с понятным сообщением
+                return Conflict(new { Message = $"Пользователь с email '{user.Email}' уже существует." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при создании пользователя");
-                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+                // Возвращаем 500 Internal Server Error с общим сообщением
+                // (детали логируются на сервере)
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера при создании пользователя." });
             }
         }
 
@@ -54,6 +72,82 @@ namespace HPM_System.UserService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при получении пользователя с ID {Id}", id);
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
+        }
+
+        // GET: /api/users/by-ids?ids=1,2,3
+        [HttpGet("by-ids")]
+        public async Task<IActionResult> GetUsersByIds([FromQuery] int[] ids)
+        {
+            try
+            {
+                if (ids == null || !ids.Any())
+                {
+                    _logger.LogWarning("Не переданы ID пользователей");
+                    return BadRequest(new { Message = "Не переданы ID пользователей" });
+                }
+
+                var users = await _context.Users
+                    .Where(u => ids.Contains(u.Id))
+                    .ToListAsync();
+
+                if (!users.Any())
+                {
+                    _logger.LogInformation("Пользователи с указанными ID не найдены: {@Ids}", ids);
+                    return NotFound(new { Message = "Пользователи не найдены" });
+                }
+
+                _logger.LogInformation("Найдено {Count} пользователей по списку ID", users.Count);
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении пользователей по ID");
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
+        }
+
+        // GET: api/Users/by-phone/{phone}
+        [HttpGet("by-phone/{phone}")]
+        public async Task<IActionResult> GetUserByPhone(string phone)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(phone))
+                {
+                    _logger.LogWarning("Получен пустой номер телефона");
+                    return BadRequest(new { Message = "Номер телефона не может быть пустым" });
+                }
+
+                // Декодируем URL-кодированный номер телефона
+                string decodedPhone = Uri.UnescapeDataString(phone);
+                _logger.LogDebug("Поиск пользователя по телефону. Исходный: {OriginalPhone}, декодированный: {DecodedPhone}", phone, decodedPhone);
+
+                // Нормализуем номер телефона для поиска (убираем пробелы, дефисы и скобки)
+                string normalizedPhone = NormalizePhoneNumber(decodedPhone);
+                string normalizedSearchPhone = NormalizePhoneNumber(phone);
+
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u =>
+                        u.PhoneNumber == decodedPhone ||
+                        u.PhoneNumber == phone ||
+                        u.PhoneNumber == normalizedPhone ||
+                        u.PhoneNumber == normalizedSearchPhone);
+
+                if (user == null)
+                {
+                    _logger.LogInformation("Пользователь с номером телефона {Phone} не найден", decodedPhone);
+                    return NotFound(new { Message = $"Пользователь с номером телефона {decodedPhone} не найден" });
+                }
+
+                _logger.LogInformation("Найден пользователь {UserId} по номеру телефона {Phone}", user.Id, decodedPhone);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении пользователя по номеру телефона {Phone}", phone);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
         }
@@ -156,6 +250,18 @@ namespace HPM_System.UserService.Controllers
                 _logger.LogError(ex, "Ошибка при удалении пользователя с ID {id}", id);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
+        }
+
+        /// <summary>
+        /// Нормализует номер телефона для поиска
+        /// </summary>
+        private string NormalizePhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                return phoneNumber;
+
+            // Убираем все символы кроме цифр и знака +
+            return System.Text.RegularExpressions.Regex.Replace(phoneNumber, @"[^\d+]", "");
         }
     }
 }
