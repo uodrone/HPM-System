@@ -342,7 +342,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Добавить пользователя к квартире
         /// </summary>
         [HttpPost("{apartmentId}/users/{userId}")]
-        public async Task<IActionResult> AddUserToApartment(int apartmentId, int userId, [FromBody] AddUserToApartmentDto? dto = null)
+        public async Task<IActionResult> AddUserToApartment(int apartmentId, int userId)
         {
             try
             {
@@ -379,8 +379,7 @@ namespace HPM_System.ApartmentService.Controllers
                 var apartmentUser = new ApartmentUser
                 {
                     ApartmentId = apartmentId,
-                    UserId = userId,
-                    Share = dto?.Share ?? 0m
+                    UserId = userId
                 };
 
                 apartment.Users.Add(apartmentUser);
