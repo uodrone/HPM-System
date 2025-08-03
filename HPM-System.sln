@@ -5,13 +5,17 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HPM-System", "HPM-System\HPM-System.csproj", "{CDE6B3B1-B051-4F5E-BB9C-8D28433C5311}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.IdentityServer", "HPM-System.IdentityServer\HPM-System.IdentityServer.csproj", "{B78D6278-F5D2-4252-8156-C9D4487F849F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HPM-System.IdentityServer", "HPM-System.IdentityServer\HPM-System.IdentityServer.csproj", "{B78D6278-F5D2-4252-8156-C9D4487F849F}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.UserService", "HPM-System.UserService\HPM-System.UserService.csproj", "{A326260A-8AAF-B9E4-71C8-E8487A0E2229}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HPM-System.UserService", "HPM-System.UserService\HPM-System.UserService.csproj", "{A326260A-8AAF-B9E4-71C8-E8487A0E2229}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.ApartmentService", "HPM-System.ApartmentService\HPM-System.ApartmentService.csproj", "{F0D484DB-DAED-60DB-4033-2803CAD01534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HPM-System.ApartmentService", "HPM-System.ApartmentService\HPM-System.ApartmentService.csproj", "{F0D484DB-DAED-60DB-4033-2803CAD01534}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.NotificationService", "HPM-System.NotificationService\HPM-System.NotificationService.csproj", "{DEB489F6-45CE-4F49-B8E4-CF43CA583606}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{F0D484DB-DAED-60DB-4033-2803CAD01534}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0D484DB-DAED-60DB-4033-2803CAD01534}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0D484DB-DAED-60DB-4033-2803CAD01534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEB489F6-45CE-4F49-B8E4-CF43CA583606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEB489F6-45CE-4F49-B8E4-CF43CA583606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEB489F6-45CE-4F49-B8E4-CF43CA583606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEB489F6-45CE-4F49-B8E4-CF43CA583606}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

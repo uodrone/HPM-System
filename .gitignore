@@ -364,3 +364,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Gateway/appsettings.Development.json
+/HPM-System.NotificationService/appsettings.Development.json
+/HPM-System.NotificationService/.env
