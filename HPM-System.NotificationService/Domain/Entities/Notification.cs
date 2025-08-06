@@ -8,8 +8,8 @@ namespace HPM_System.NotificationService.Domain.Entities
         public string Title { get; set; }
         public string Message { get; set; }
         public string? ImageUrl { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public string CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public Guid CreatedBy { get; set; }
         public NotificationType Type { get; set; }
         public bool IsReadable { get; set; } = true;
 

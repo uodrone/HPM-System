@@ -29,7 +29,6 @@ namespace HPM_System.NotificationService.Application.Services
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    AssignedAt = DateTime.UtcNow
                 }).ToList()
             };
 

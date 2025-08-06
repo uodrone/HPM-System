@@ -7,7 +7,7 @@ namespace HPM_System.NotificationService.Application.DTO
         public string Title { get; set; } = null!;
         public string Message { get; set; } = null!;
         public string? ImageUrl { get; set; }
-        public string CreatedBy { get; set; } = null!;
+        public Guid CreatedBy { get; set; }
         public NotificationType Type { get; set; } = NotificationType.Info;
         public bool IsReadable { get; set; } = true;
         public List<Guid> UserIdList { get; set; } = new();

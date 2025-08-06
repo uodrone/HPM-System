@@ -1,6 +1,8 @@
 
+using HPM_System.NotificationService.Application.Handlers;
 using HPM_System.NotificationService.Application.Interfaces;
 using HPM_System.NotificationService.Application.Services;
+using HPM_System.NotificationService.Infrastructure.RabbitMQ;
 using HPM_System.NotificationService.Infrastructure.Repositories;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -11,11 +13,17 @@ namespace HPM_System.NotificationService
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            DotNetEnv.Env.Load();
+
+            var builder = WebApplication.CreateBuilder(args);                       
 
             //Подгружаем зависимости всякие
             builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
             builder.Services.AddSingleton<INotificationRepository, InMemoryNotificationRepository>();
+            builder.Services.AddScoped<IRabbitUserHandler, RabbitUserHandler>();
+
+            //Подгружаем BackgroundService
+            builder.Services.AddHostedService<RabbitUserConsumer>();
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -28,9 +36,7 @@ namespace HPM_System.NotificationService
                     );
                 });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            DotNetEnv.Env.Load();
+            builder.Services.AddSwaggerGen();            
 
             var app = builder.Build();
 
