@@ -6,10 +6,13 @@ using System.Text.Json;
 
 namespace HPM_System.NotificationService.Application.Handlers
 {    
-    public class RabbitUserHandler : IRabbitUserHandler
+    public class RabbitUserHandler : IRabbitMQHandler
     {
         private INotificationAppService _notificationAppService;
         private readonly Dictionary<string, Func<string, Task>> _handlers;
+
+        public string QueueName => "notification.user";
+        public string RoutingKeyPattern => "notification.user.*";
 
         public RabbitUserHandler(INotificationAppService notificationAppService)
         {
@@ -21,7 +24,7 @@ namespace HPM_System.NotificationService.Application.Handlers
             };
         }
 
-        public async Task ExecuteAsync(RabbitDTO dto)
+        public async Task ExecuteAsync(RabbitMQDTO dto)
         {
             if (!_handlers.TryGetValue(dto.RoutingKey, out var handler))
             {
