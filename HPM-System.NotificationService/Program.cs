@@ -20,10 +20,10 @@ namespace HPM_System.NotificationService
             //Подгружаем зависимости всякие
             builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
             builder.Services.AddSingleton<INotificationRepository, InMemoryNotificationRepository>();
-            builder.Services.AddScoped<IRabbitUserHandler, RabbitUserHandler>();
+            builder.Services.AddScoped<IRabbitMQHandler, RabbitUserHandler>();
 
             //Подгружаем BackgroundService
-            builder.Services.AddHostedService<RabbitUserConsumer>();
+            builder.Services.AddHostedService<RabbitMQConsumer>();
 
             // Add services to the container.
             builder.Services.AddControllers();
