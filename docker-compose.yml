@@ -13,6 +13,19 @@ services:
       - ./init-db:/docker-entrypoint-initdb.d
     networks: [hpm-network]
 
+  postgres-notification:
+    image: postgres:latest
+    container_name: postgres-notification
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: NotificationService
+    ports:
+        - "${POSTGRES_NOTIFICATION_PORT}:5432"
+    volumes:
+        - postgres_notification_data:/var/lib/postgresql/data
+    networks: [hpm-network]
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -30,20 +43,7 @@ services:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
       timeout: 5s
-      retries: 5
-
-  postgres-notification:
-    image: postgres:latest
-    container_name: postgres-notification
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: NotificationService
-    ports:
-      - "${POSTGRES_NOTIFICATION_PORT}:5432"   # уникальный хост-порт, напр. 5440
-    volumes:
-      - postgres_notification_data:/var/lib/postgresql/data
-    networks: [hpm-network]
+      retries: 5  
 
   hpm-system:
     image: ${DOCKER_REGISTRY-}hpmsystem
