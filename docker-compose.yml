@@ -32,7 +32,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ⬇️ ОТДЕЛЬНЫЙ POSTGRES ДЛЯ NOTIFICATION
   postgres-notification:
     image: postgres:latest
     container_name: postgres-notification
@@ -56,8 +55,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=HPM-System;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - IdentityServer__Authority=https://localhost:${IDENTITYSERVER_HTTPS}
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Port=5672
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
@@ -74,8 +73,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Port=5672
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
@@ -92,8 +91,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=UserService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Port=5672
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
@@ -113,8 +112,8 @@ services:
       - ASPNETCORE_HTTPS_PORT=${APARTMENTSERVICE_HTTPS}
       - ASPNETCORE_HTTP_PORT=${APARTMENTSERVICE_HTTP}
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ApartmentService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Port=5672
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
@@ -122,7 +121,6 @@ services:
       - "${APARTMENTSERVICE_HTTPS}:8081"
     networks: [hpm-network]
 
-  # ⬇️ НОВЫЙ СЕРВИС NOTIFICATION
   hpm-system.notificationservice:
     image: ${DOCKER_REGISTRY-}hpmsystemnotificationservice
     build:
@@ -136,13 +134,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=Host=postgres-notification;Port=5432;Database=NotificationService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      - RabbitMQ__HostName=rabbitmq
-      - RabbitMQ__Port=5672
+      - RabbitMQ__HostName=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
-      - "${NOTIFICATIONSERVICE_HTTP}:8080"   # уникальные порты, напр. 55710
-      - "${NOTIFICATIONSERVICE_HTTPS}:8081"  # напр. 55711
+      - "${NOTIFICATIONSERVICE_HTTP}:8080"
+      - "${NOTIFICATIONSERVICE_HTTPS}:8081"
     networks: [hpm-network]
 
 volumes:

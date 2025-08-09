@@ -25,7 +25,7 @@ public class RabbitMQConsumer : BackgroundService
         var factory = new ConnectionFactory
         {
             HostName = _configuration["RabbitMQ:HostName"],
-            Port = int.Parse(_configuration["RabbitMQ:Port_AMQP"] ?? "5672"),
+            Port = int.Parse(_configuration["RabbitMQ:Port"] ?? "5672"),
             UserName = _configuration["RabbitMQ:UserName"], 
             Password = _configuration["RabbitMQ:Password"], 
             DispatchConsumersAsync = true
