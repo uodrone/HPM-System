@@ -13,8 +13,6 @@ namespace HPM_System.NotificationService
     {
         public static void Main(string[] args)
         {
-            DotNetEnv.Env.Load();
-
             var builder = WebApplication.CreateBuilder(args);                       
 
             //Подгружаем зависимости всякие

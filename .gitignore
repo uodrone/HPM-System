@@ -11,7 +11,9 @@
 *.sln.docstates
 
 # Игнорировать файл appsettings.json
-appsettings.json
+# Лучше игнорить .Development
+#appsettings.json
+**/appsettings.Development.json
 
 # Игнорировать файлы .env
 .env
