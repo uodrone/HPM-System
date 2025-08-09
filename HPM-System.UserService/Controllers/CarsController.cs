@@ -92,7 +92,7 @@ namespace HPM_System.UserService.Controllers
 
         // GET: api/Cars/by-user/{userId}
         [HttpGet("by-user/{userId}")]
-        public async Task<IActionResult> GetAllCarsByUserId(int userId)
+        public async Task<IActionResult> GetAllCarsByUserId(Guid userId)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace HPM_System.UserService.Controllers
 
         // DELETE: api/Cars/by-user/{userId}
         [HttpDelete("by-user/{userId}")]
-        public async Task<IActionResult> DeleteAllCarsByUserId(int userId)
+        public async Task<IActionResult> DeleteAllCarsByUserId(Guid userId)
         {
             try
             {

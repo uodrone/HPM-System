@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -8,30 +9,28 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HPMSystem.ApartmentService.Migrations
 {
     /// <inheritdoc />
-    public partial class AddNewModels : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "PhoneNumber",
-                table: "Users");
-
-            migrationBuilder.AddColumn<decimal>(
-                name: "Share",
-                table: "ApartmentUsers",
-                type: "numeric(5,4)",
-                precision: 5,
-                scale: 4,
-                nullable: false,
-                defaultValue: 0m);
-
-            migrationBuilder.AddColumn<int>(
-                name: "HouseId",
-                table: "Apartment",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.CreateTable(
+                name: "Apartment",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Number = table.Column<int>(type: "integer", nullable: false),
+                    NumbersOfRooms = table.Column<int>(type: "integer", nullable: false),
+                    ResidentialArea = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalArea = table.Column<decimal>(type: "numeric", nullable: false),
+                    Floor = table.Column<int>(type: "integer", nullable: true),
+                    HouseId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Apartment", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Statuses",
@@ -47,13 +46,49 @@ namespace HPMSystem.ApartmentService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApartmentUsers",
+                columns: table => new
+                {
+                    ApartmentId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Share = table.Column<decimal>(type: "numeric(5,4)", precision: 5, scale: 4, nullable: false, defaultValue: 0m)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApartmentUsers", x => new { x.ApartmentId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_ApartmentUsers_Apartment_ApartmentId",
+                        column: x => x.ApartmentId,
+                        principalTable: "Apartment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApartmentUsers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ApartmentUserStatuses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ApartmentId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ApartmentId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     StatusId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -85,6 +120,11 @@ namespace HPMSystem.ApartmentService.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ApartmentUsers_UserId",
+                table: "ApartmentUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ApartmentUserStatuses_ApartmentId_UserId_StatusId",
                 table: "ApartmentUserStatuses",
                 columns: new[] { "ApartmentId", "UserId", "StatusId" },
@@ -109,23 +149,16 @@ namespace HPMSystem.ApartmentService.Migrations
                 name: "ApartmentUserStatuses");
 
             migrationBuilder.DropTable(
+                name: "ApartmentUsers");
+
+            migrationBuilder.DropTable(
                 name: "Statuses");
 
-            migrationBuilder.DropColumn(
-                name: "Share",
-                table: "ApartmentUsers");
+            migrationBuilder.DropTable(
+                name: "Apartment");
 
-            migrationBuilder.DropColumn(
-                name: "HouseId",
-                table: "Apartment");
-
-            migrationBuilder.AddColumn<string>(
-                name: "PhoneNumber",
-                table: "Users",
-                type: "character varying(30)",
-                maxLength: 30,
-                nullable: false,
-                defaultValue: "");
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

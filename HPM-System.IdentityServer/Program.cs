@@ -1,10 +1,11 @@
-using Duende.IdentityServer.Models;
 using Duende.IdentityServer.AspNetIdentity;
+using Duende.IdentityServer.Models;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
 using HPM_System.IdentityServer.Services; // Добавляем namespace для CustomProfileService
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace HPM_System.IdentityServer
 {
@@ -81,6 +82,8 @@ namespace HPM_System.IdentityServer
 
             // OpenAPI/Swagger
             builder.Services.AddOpenApi();
+            // HTTP клиент для передачси User в UserService после реги
+            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 

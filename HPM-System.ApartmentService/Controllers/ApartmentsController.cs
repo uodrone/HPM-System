@@ -63,7 +63,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить квартиру по ID (с полной информацией о пользователях)
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApartmentResponseDto>> GetApartment(int id)
+        public async Task<ActionResult<ApartmentResponseDto>> GetApartment(long id)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить квартиры по ID пользователя
         /// </summary>
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<ApartmentResponseDto>>> GetApartmentsByUserId(int userId)
+        public async Task<ActionResult<IEnumerable<ApartmentResponseDto>>> GetApartmentsByUserId(Guid userId)
         {
             try
             {
@@ -342,7 +342,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Добавить пользователя к квартире
         /// </summary>
         [HttpPost("{apartmentId}/users/{userId}")]
-        public async Task<IActionResult> AddUserToApartment(int apartmentId, int userId)
+        public async Task<IActionResult> AddUserToApartment(int apartmentId, Guid userId)
         {
             try
             {
@@ -410,7 +410,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Удалить пользователя из квартиры
         /// </summary>
         [HttpDelete("{apartmentId}/users/{userId}")]
-        public async Task<IActionResult> RemoveUserFromApartment(int apartmentId, int userId)
+        public async Task<IActionResult> RemoveUserFromApartment(int apartmentId, Guid userId)
         {
             try
             {
@@ -443,7 +443,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Установить или обновить долю владения пользователя (только для владельцев)
         /// </summary>
         [HttpPut("{apartmentId}/users/{userId}/share")]
-        public async Task<IActionResult> UpdateUserShare(int apartmentId, int userId, [FromBody] UpdateShareDto updateShareDto)
+        public async Task<IActionResult> UpdateUserShare(int apartmentId, Guid userId, [FromBody] UpdateShareDto updateShareDto)
         {
             try
             {
