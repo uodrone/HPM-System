@@ -1,0 +1,60 @@
+﻿@model HPM_System.IdentityServer.Models.LoginModel
+@{
+    ViewData["Title"] = "Вход в систему";
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+@await Component.InvokeAsync("Head")
+<body>
+    <div class="main-container">
+        <div class="form-container">
+            <div class="form-header">
+                <h2><i class="fas fa-home"></i> HPM System</h2>
+                <p>Добро пожаловать! Войдите в свой аккаунт</p>
+            </div>
+
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <div class="form-floating">
+                        <input asp-for="EmailOrPhone" class="form-control" placeholder="Email или телефон" autocomplete="username" />
+                        <label asp-for="EmailOrPhone">Email или телефон</label>
+                        <span asp-validation-for="EmailOrPhone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <div class="form-floating">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Пароль" autocomplete="current-password" />
+                        <label asp-for="Password">Пароль</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                    <label asp-for="RememberMe" class="form-check-label">
+                        Запомнить меня
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+
+                <input name="ReturnUrl" type="hidden" value="@ViewData["ReturnUrl"]" />
+            </form>
+
+            <div class="register-link">
+                <p>Нет аккаунта? <a asp-action="Register">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </div>
+
+    @await Component.InvokeAsync("JSConnection")
+</body>
+</html>
