@@ -5,37 +5,50 @@ namespace HPM_System.NotificationService.Infrastructure.Repositories
 {
     public class InMemoryNotificationRepository : INotificationRepository
     {
+        private readonly object _lock = new();
         private readonly List<Notification> _notifies = new();
 
         public Task<Notification> AddAsync(Notification notification)
         {
-            _notifies.Add(notification);
-            return Task.FromResult(notification);
+            lock (_lock)
+            {
+                _notifies.Add(notification);
+                return Task.FromResult(notification);
+            }
         }
 
         public Task<IEnumerable<Notification>> GetAllAsync(bool notReadOnly)
         {
-            var result = notReadOnly ? _notifies.Where(x => x.Recipients.Any(y => y.ReadAt == null)) : _notifies;
+            lock (_lock)
+            {
+                var result = notReadOnly ? _notifies.Where(x => x.Recipients.Any(y => y.ReadAt == null)) : _notifies;
 
-            return Task.FromResult(result.AsEnumerable());
+                return Task.FromResult(result.ToList().AsEnumerable());
+            }
         }
 
         public Task<Notification?> GetByIdAsync(Guid id)
         {
-            var notification = _notifies.FirstOrDefault(n => n.Id == id);
-            return Task.FromResult(notification);
+            lock (_lock)
+            {
+                var notification = _notifies.FirstOrDefault(n => n.Id == id);
+                return Task.FromResult(notification);
+            }
         }
 
         public Task<bool> MarkAsReadAsync(Guid id)
         {
-            var recipient = _notifies.SelectMany(n => n.Recipients).FirstOrDefault(r => r.Id == id);
-
-            if (recipient != null && recipient.ReadAt == null)
+            lock (_lock)
             {
-                recipient.ReadAt = DateTime.UtcNow;
-            }
+                var recipient = _notifies.SelectMany(n => n.Recipients).FirstOrDefault(r => r.Id == id);
 
-            return Task.FromResult(true);
+                if (recipient != null && recipient.ReadAt == null)
+                {
+                    recipient.ReadAt = DateTime.UtcNow;
+                }
+
+                return Task.FromResult(true);
+            }
         }
     }
 }
