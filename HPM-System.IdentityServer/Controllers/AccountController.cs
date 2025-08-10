@@ -1,6 +1,9 @@
 ﻿using HPM_System.IdentityServer.Models;
-using Microsoft.AspNetCore.Identity;
+using HPM_System.IdentityServer.Services;
+using HPM_System.IdentityServer.Services.AccountService;
+using HPM_System.IdentityServer.Services.ErrorHandlingService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HPM_System.IdentityServer.Controllers
 {
@@ -8,15 +11,48 @@ namespace HPM_System.IdentityServer.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountController> _logger;
+        private readonly IAccountService _accountService;
+        private readonly IErrorHandlingService _errorHandlingService;
 
         public AccountController(
-            UserManager<IdentityUser> userManager,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            IAccountService accountService,
+            IErrorHandlingService errorHandlingService)
         {
-            _userManager = userManager;
             _logger = logger;
+            _accountService = accountService;
+            _errorHandlingService = errorHandlingService;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _accountService.LoginAsync(model);
+
+            if (result.IsSuccess && result.Data != null)
+            {
+                return Ok(new
+                {
+                    Message = "Успешный вход",
+                    Token = result.Data.Token,
+                    UserId = result.Data.UserId,
+                    Email = result.Data.Email,
+                    PhoneNumber = result.Data.PhoneNumber
+                });
+            }
+
+            if (result.IsUnauthorized)
+            {
+                return Unauthorized(new { Message = result.ErrorMessage ?? "Неверные учетные данные" });
+            }
+
+            return BadRequest(new { Message = result.ErrorMessage ?? "Ошибка при входе" });
         }
 
         [HttpPost("register")]
@@ -24,35 +60,81 @@ namespace HPM_System.IdentityServer.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Неверная модель запроса");
                 return BadRequest(ModelState);
             }
 
-            _logger.LogInformation("Попытка регистрации: {Email}", model.Email);
+            var result = await _accountService.RegisterAsync(model);
 
-            var user = new IdentityUser
+            if (result.IsSuccess && result.Data != null)
             {
-                UserName = model.Email,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber
-            };
+                return Ok(new
+                {
+                    Message = "Пользователь зарегистрирован",
+                    UserServiceCreated = result.Data.UserServiceCreated,
+                    UserId = result.Data.UserId
+                });
+            }
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            // Формируем детальные ошибки для API ответа
+            var errorDetails = new List<object>();
 
-            if (!result.Succeeded)
+            if (result.Errors != null)
             {
                 foreach (var error in result.Errors)
                 {
-                    _logger.LogError("Ошибка регистрации: {Code} — {Description}",
-                        error.Code, error.Description);
+                    var errorDetail = _errorHandlingService.GetDetailedErrorMessage(error);
+                    errorDetails.Add(new
+                    {
+                        Code = error.Code,
+                        Description = error.Description,
+                        DetailedMessage = errorDetail
+                    });
                 }
-
-                return BadRequest(result.Errors);
             }
 
-            _logger.LogInformation("✅ Пользователь {Email} зарегистрирован", model.Email);
+            return BadRequest(new
+            {
+                Message = result.ErrorMessage ?? "Ошибка регистрации пользователя",
+                Errors = errorDetails
+            });
+        }
 
-            return Ok(new { Message = "Пользователь зарегистрирован" });
+        /// <summary>
+        /// Обменивает временный код аутентификации на токен
+        /// </summary>
+        [HttpPost("exchange-auth-code")]
+        public IActionResult ExchangeAuthCode([FromBody] AuthCodeExchangeModel model)
+        {
+            try
+            {
+                var cache = HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Caching.Memory.IMemoryCache>();
+                var cacheKey = $"auth_code_{model.AuthCode}";
+
+                if (cache.TryGetValue(cacheKey, out AuthTransferData? authData) && authData != null)
+                {
+                    // Удаляем код из кеша (одноразовое использование)
+                    cache.Remove(cacheKey);
+
+                    _logger.LogInformation("Успешный обмен кода аутентификации для пользователя: {UserId}", authData.UserId);
+
+                    return Ok(new
+                    {
+                        Message = "Токен получен",
+                        Token = authData.Token,
+                        UserId = authData.UserId,
+                        Email = authData.Email,
+                        PhoneNumber = authData.PhoneNumber
+                    });
+                }
+
+                _logger.LogWarning("Недействительный или истекший код аутентификации: {AuthCode}", model.AuthCode);
+                return BadRequest(new { Message = "Недействительный или истекший код аутентификации" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при обмене кода аутентификации");
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
         }
     }
 }

@@ -20,20 +20,20 @@ namespace HPM_System.UserService.Data
             // Настройка сущности User
             modelBuilder.Entity<User>(entity =>
             {
-                // Указываем первичный ключ
+                // Указываем первичный ключ как UUID
                 entity.HasKey(u => u.Id);
 
-                // Настройка автоинкремента для PostgreSQL
                 entity.Property(u => u.Id)
                     .ValueGeneratedOnAdd()
-                    .UseIdentityByDefaultColumn();
+                    .HasDefaultValueSql("gen_random_uuid()"); // Для PostgreSQL
 
                 // Опционально: настройка других полей
-                entity.Property(u => u.FirstName).IsRequired();
-                entity.Property(u => u.LastName).IsRequired();
+                entity.Property(u => u.FirstName);
+                entity.Property(u => u.LastName);
+                entity.Property(u => u.Patronymic);
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.PhoneNumber).IsRequired();
-
+                entity.Property(u => u.Age);
                 entity.HasIndex(u => u.Email).IsUnique();  // Уникальный индекс на Email
                 entity.HasIndex(u => u.PhoneNumber).IsUnique();  // Уникальный индекс на Номер телефона
             });

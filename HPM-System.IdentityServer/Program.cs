@@ -1,10 +1,16 @@
-using Duende.IdentityServer.Models;
 using Duende.IdentityServer.AspNetIdentity;
+using Duende.IdentityServer.Models;
+using HPM_System.IdentityServer.Services.AccountService;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
-using HPM_System.IdentityServer.Services; // Добавляем namespace для CustomProfileService
+using HPM_System.IdentityServer.Services; // Г…Г¤ГЁГ­Г®ГҐ ГЇГ°Г®Г±ГІГ°Г Г­Г±ГІГўГ® ГЁГ¬ГҐГ­ Г¤Г«Гї ГўГ±ГҐГµ Г±ГҐГ°ГўГЁГ±Г®Гў
+using HPM_System.IdentityServer.Services.ErrorHandlingService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HPM_System.IdentityServer
 {
@@ -13,26 +19,63 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddControllers();
+
+            // ГђГҐГЈГЁГ±ГІГ°ГЁГ°ГіГҐГ¬ ГЎГЁГ§Г­ГҐГ±-Г±ГҐГ°ГўГЁГ±Г»
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IErrorHandlingService, ErrorHandlingService>();
+
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ MVC Г± Views
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.AddEndpointsApiExplorer();
 
-            // Регистрируем логгер
+            // ГђГҐГЈГЁГ±ГІГ°ГЁГ°ГіГҐГ¬ Г«Г®ГЈГЈГҐГ°
             builder.Services.AddLogging(configure => configure.AddConsole());
 
-            // Добавляем DbContext
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Добавляем Identity
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Identity
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Добавляем IdentityServer
+            // JWT Configuration
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"] ?? "your-very-long-secret-key-here-minimum-256-bits";
+            var issuer = jwtSettings["Issuer"] ?? "HPM_System.IdentityServer";
+            var audience = jwtSettings["Audience"] ?? "HPM_System.Clients";
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                };
+            })
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.LoginPath = "/Auth/Login";
+                options.LogoutPath = "/Auth/Logout";
+            });
+
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ IdentityServer
             builder.Services.AddIdentityServer(options =>
             {
                 options.EmitStaticAudienceClaim = true;
-                // Включаем детальное логирование
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -40,24 +83,24 @@ namespace HPM_System.IdentityServer
             })
                 .AddInMemoryClients(IdentityConfiguration.Clients)
                 .AddInMemoryIdentityResources(IdentityConfiguration.IdentityResources)
-                .AddInMemoryApiResources(IdentityConfiguration.ApiResources) // Добавляем API Resources
+                .AddInMemoryApiResources(IdentityConfiguration.ApiResources)
                 .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
                 .AddAspNetIdentity<IdentityUser>()
-                .AddProfileService<CustomProfileService>() // Регистрируем наш профильный сервис
-                .AddDeveloperSigningCredential(); // Только для разработки
+                .AddProfileService<CustomProfileService>()
+                .AddDeveloperSigningCredential();
 
-            // Настройка параметров Identity
+            // ГЌГ Г±ГІГ°Г®Г©ГЄГ  ГЇГ Г°Г Г¬ГҐГІГ°Г®Гў Identity
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
-                options.Password.RequireNonAlphanumeric = false; // Можно отключить спецсимволы
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 8;
                 options.User.RequireUniqueEmail = true;
             });
 
-            // Поддержка CORS
+            // ГЏГ®Г¤Г¤ГҐГ°Г¦ГЄГ  CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -68,23 +111,16 @@ namespace HPM_System.IdentityServer
                 });
             });
 
-            builder.Services.AddAuthentication()
-            .AddCookie("Cookies", options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.LoginPath = "/api/account/login";
-            });
-
-            // MVC / API / Controllers
-            builder.Services.AddControllers();
-
             // OpenAPI/Swagger
             builder.Services.AddOpenApi();
 
+            // HTTP ГЄГ«ГЁГҐГ­ГІ Г¤Г«Гї ГўГ­ГҐГёГ­ГЁГµ ГўГ»Г§Г®ГўГ®Гў (UserService)
+            builder.Services.AddHttpClient();
+            builder.Services.AddMemoryCache();
+
             var app = builder.Build();
 
-            // Применяем миграции при старте
+            // ГЏГ°ГЁГ¬ГҐГ­ГїГҐГ¬ Г¬ГЁГЈГ°Г Г¶ГЁГЁ ГЇГ°ГЁ Г±ГІГ Г°ГІГҐ
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -92,16 +128,13 @@ namespace HPM_System.IdentityServer
 
                 try
                 {
-                    // Применяем миграции Identity
                     var context = services.GetRequiredService<AppDbContext>();
-
-                    // Проверяем состояние миграций
                     var pendingMigrations = context.Database.GetPendingMigrations();
                     if (pendingMigrations.Any())
                     {
-                        logger.LogInformation($"Применение {pendingMigrations.Count()} миграций...");
+                        logger.LogInformation($"ГЏГ°ГЁГ¬ГҐГ­ГҐГ­ГЁГҐ {pendingMigrations.Count()} Г¬ГЁГЈГ°Г Г¶ГЁГ©...");
                         context.Database.Migrate();
-                        logger.LogInformation("Identity миграции успешны");
+                        logger.LogInformation("Identity Г¬ГЁГЈГ°Г Г¶ГЁГЁ ГіГ±ГЇГҐГёГ­Г»");
                     }
                     else
                     {
@@ -119,22 +152,24 @@ namespace HPM_System.IdentityServer
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
-            // Важные middleware: именно в этом порядке!
+            app.UseCors("AllowAll");
+            app.UseRouting();
+            app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseCors("AllowAll"); // Перед UseIdentityServer()
+            // ГЊГ Г°ГёГ°ГіГІГ» MVC
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.UseRouting();       // Нужен для IdentityServer
-
-            app.UseIdentityServer(); // ТОЛЬКО ТАК!
-
-            app.UseAuthentication(); // После UseIdentityServer()
-
-            app.UseAuthorization();   // После UseAuthentication()
-
+            // API Г¬Г Г°ГёГ°ГіГІГ»
             app.MapControllers();
 
             app.Run();

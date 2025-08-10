@@ -1,53 +1,149 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Morr92631043
-      POSTGRES_DB: IdentityServer
-      POSTGRES_MULTIPLE_DATABASES: HPM-System,IdentityServer,UserService
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
     ports:
-      - "5433:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d
-    networks:
-      - hpm-network
+    networks: [hpm-network]
+
+  postgres-notification:
+    image: postgres:latest
+    container_name: postgres-notification
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: NotificationService
+    ports:
+        - "${POSTGRES_NOTIFICATION_PORT}:5432"
+    volumes:
+        - postgres_notification_data:/var/lib/postgresql/data
+    networks: [hpm-network]
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: ${RABBITMQ_HOSTNAME}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    ports:
+      - "${RABBITMQ_PORT_AMQP}:5672"
+      - "${RABBITMQ_PORT_HTTP}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks: [hpm-network]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
 
   hpm-system:
     image: ${DOCKER_REGISTRY-}hpmsystem
     build:
       context: .
       dockerfile: HPM-System/Dockerfile
-    depends_on:
-      - postgres
+    depends_on: [postgres, rabbitmq]
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=HPM-System;Username=postgres;Password=Morr92631043
-      - IdentityServer__Authority=https://localhost:55676
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=HPM-System;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - IdentityServer__Authority=https://localhost:${IDENTITYSERVER_HTTPS}
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
-      - "55670:8080"   # HTTP
-      - "55671:8081"   # HTTPS
-    networks:
-      - hpm-network
+      - "${HPM_SYSTEM_HTTP}:8080"
+      - "${HPM_SYSTEM_HTTPS}:8081"
+    networks: [hpm-network]
 
   hpm-system.identityserver:
     image: ${DOCKER_REGISTRY-}hpmsystemidentityserver
     build:
       context: .
       dockerfile: HPM-System.IdentityServer/Dockerfile
-    depends_on:
-      - postgres
+    depends_on: [postgres, rabbitmq]
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=postgres;Password=Morr92631043
+      - UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ApiSettings__BaseUrl=http://hpm-system.identityserver:8080
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__Username=admin
+      - RabbitMQ__Password=Morr92631043
     ports:
-      - "55675:8080"   # HTTP
-      - "55676:8081"   # HTTPS
-    networks:
-      - hpm-network
+      - "${IDENTITYSERVER_HTTP}:8080"
+      - "${IDENTITYSERVER_HTTPS}:8081"
+    networks: [hpm-network]
+
+  hpm-system.userservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemuserservice
+    build:
+      context: .
+      dockerfile: HPM-System.UserService/Dockerfile
+    depends_on: [postgres, rabbitmq]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=UserService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
+    ports:
+      - "${USERSERVICE_HTTP}:8080"
+      - "${USERSERVICE_HTTPS}:8081"
+    networks: [hpm-network]
+
+  hpm-system.apartmentservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemapartmentservice
+    build:
+      context: .
+      dockerfile: HPM-System.ApartmentService/Dockerfile
+    depends_on: [postgres, rabbitmq]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_HTTPS_PORT=${APARTMENTSERVICE_HTTPS}
+      - ASPNETCORE_HTTP_PORT=${APARTMENTSERVICE_HTTP}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ApartmentService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
+    ports:
+      - "${APARTMENTSERVICE_HTTP}:8080"
+      - "${APARTMENTSERVICE_HTTPS}:8081"
+    networks: [hpm-network]
+
+  hpm-system.notificationservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemnotificationservice
+    build:
+      context: .
+      dockerfile: HPM-System.NotificationService/Dockerfile
+    depends_on:
+        rabbitmq:
+            condition: service_healthy
+        postgres-notification:
+            condition: service_started
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Host=postgres-notification;Port=5432;Database=NotificationService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - RabbitMQ__HostName=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
+    ports:
+      - "${NOTIFICATIONSERVICE_HTTP}:8080"
+      - "${NOTIFICATIONSERVICE_HTTPS}:8081"
+    networks: [hpm-network]
 
   hpm-system.userservice:
     image: ${DOCKER_REGISTRY-}hpmsystemuserservice
@@ -67,6 +163,8 @@ services:
 
 volumes:
   postgres_data:
+  rabbitmq_data:
+  postgres_notification_data:
 
 networks:
   hpm-network:
