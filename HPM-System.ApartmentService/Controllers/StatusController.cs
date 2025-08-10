@@ -181,7 +181,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Назначить статус пользователю для квартиры
         /// </summary>
         [HttpPost("apartment/{apartmentId}/user/{userId}/status/{statusId}")]
-        public async Task<IActionResult> AssignStatusToUser(int apartmentId, int userId, int statusId)
+        public async Task<IActionResult> AssignStatusToUser(int apartmentId, Guid userId, int statusId)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Отозвать статус у пользователя для квартиры
         /// </summary>
         [HttpDelete("apartment/{apartmentId}/user/{userId}/status/{statusId}")]
-        public async Task<IActionResult> RevokeStatusFromUser(int apartmentId, int userId, int statusId)
+        public async Task<IActionResult> RevokeStatusFromUser(int apartmentId, Guid userId, int statusId)
         {
             try
             {
@@ -272,7 +272,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить все статусы пользователя для квартиры
         /// </summary>
         [HttpGet("apartment/{apartmentId}/user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Status>>> GetUserStatusesForApartment(int apartmentId, int userId)
+        public async Task<ActionResult<IEnumerable<Status>>> GetUserStatusesForApartment(int apartmentId, Guid userId)
         {
             try
             {

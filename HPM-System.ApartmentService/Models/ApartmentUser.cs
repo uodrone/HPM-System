@@ -4,10 +4,10 @@ namespace HPM_System.ApartmentService.Models
 {
     public class ApartmentUser
     {
-        public int ApartmentId { get; set; }
+        public long ApartmentId { get; set; }
         [JsonIgnore]
         public Apartment Apartment { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         [JsonIgnore]
         public User User { get; set; }
         // Доля собственности (например, 0.5 — 50%)

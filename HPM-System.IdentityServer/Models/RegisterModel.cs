@@ -11,6 +11,8 @@ namespace HPM_System.IdentityServer.Models
         [Required(ErrorMessage = "Пароль обязателен")]
         public string? Password { get; set; }
 
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         public string? Patronymic { get; set; }
 
         [Required(ErrorMessage = "Телефон обязателен")]

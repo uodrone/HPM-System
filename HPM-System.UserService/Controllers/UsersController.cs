@@ -78,7 +78,7 @@ namespace HPM_System.UserService.Controllers
 
         // GET: /api/users/by-ids?ids=1,2,3
         [HttpGet("by-ids")]
-        public async Task<IActionResult> GetUsersByIds([FromQuery] int[] ids)
+        public async Task<IActionResult> GetUsersByIds([FromQuery] Guid[] ids)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace HPM_System.UserService.Controllers
 
         // PUT: api/Users/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User updatedUser)
+        public async Task<IActionResult> UpdateUser(Guid id, User updatedUser)
         {
             try
             {
@@ -229,7 +229,7 @@ namespace HPM_System.UserService.Controllers
 
         // DELETE: api/Users/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
             {

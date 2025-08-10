@@ -1,10 +1,16 @@
-using Duende.IdentityServer.Models;
 using Duende.IdentityServer.AspNetIdentity;
+using Duende.IdentityServer.Models;
+using HPM_System.IdentityServer.Services.AccountService;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
-using HPM_System.IdentityServer.Services; // Добавляем namespace для CustomProfileService
+using HPM_System.IdentityServer.Services; // Единое пространство имен для всех сервисов
+using HPM_System.IdentityServer.Services.ErrorHandlingService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HPM_System.IdentityServer
 {
@@ -13,7 +19,13 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddControllers();
+
+            // Регистрируем бизнес-сервисы
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IErrorHandlingService, ErrorHandlingService>();
+
+            // Добавляем MVC с Views
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.AddEndpointsApiExplorer();
 
             // Регистрируем логгер
@@ -28,11 +40,42 @@ namespace HPM_System.IdentityServer
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            // JWT Configuration
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"] ?? "your-very-long-secret-key-here-minimum-256-bits";
+            var issuer = jwtSettings["Issuer"] ?? "HPM_System.IdentityServer";
+            var audience = jwtSettings["Audience"] ?? "HPM_System.Clients";
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                };
+            })
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.LoginPath = "/Auth/Login";
+                options.LogoutPath = "/Auth/Logout";
+            });
+
             // Добавляем IdentityServer
             builder.Services.AddIdentityServer(options =>
             {
                 options.EmitStaticAudienceClaim = true;
-                // Включаем детальное логирование
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -40,11 +83,11 @@ namespace HPM_System.IdentityServer
             })
                 .AddInMemoryClients(IdentityConfiguration.Clients)
                 .AddInMemoryIdentityResources(IdentityConfiguration.IdentityResources)
-                .AddInMemoryApiResources(IdentityConfiguration.ApiResources) // Добавляем API Resources
+                .AddInMemoryApiResources(IdentityConfiguration.ApiResources)
                 .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
                 .AddAspNetIdentity<IdentityUser>()
-                .AddProfileService<CustomProfileService>() // Регистрируем наш профильный сервис
-                .AddDeveloperSigningCredential(); // Только для разработки
+                .AddProfileService<CustomProfileService>()
+                .AddDeveloperSigningCredential();
 
             // Настройка параметров Identity
             builder.Services.Configure<IdentityOptions>(options =>
@@ -52,7 +95,7 @@ namespace HPM_System.IdentityServer
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
-                options.Password.RequireNonAlphanumeric = false; // Можно отключить спецсимволы
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 8;
                 options.User.RequireUniqueEmail = true;
             });
@@ -68,19 +111,12 @@ namespace HPM_System.IdentityServer
                 });
             });
 
-            builder.Services.AddAuthentication()
-            .AddCookie("Cookies", options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.LoginPath = "/api/account/login";
-            });
-
-            // MVC / API / Controllers
-            builder.Services.AddControllers();
-
             // OpenAPI/Swagger
             builder.Services.AddOpenApi();
+
+            // HTTP клиент для внешних вызовов (UserService)
+            builder.Services.AddHttpClient();
+            builder.Services.AddMemoryCache();
 
             var app = builder.Build();
 
@@ -92,10 +128,7 @@ namespace HPM_System.IdentityServer
 
                 try
                 {
-                    // Применяем миграции Identity
                     var context = services.GetRequiredService<AppDbContext>();
-
-                    // Проверяем состояние миграций
                     var pendingMigrations = context.Database.GetPendingMigrations();
                     if (pendingMigrations.Any())
                     {
@@ -119,22 +152,24 @@ namespace HPM_System.IdentityServer
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
-            // Важные middleware: именно в этом порядке!
+            app.UseCors("AllowAll");
+            app.UseRouting();
+            app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseCors("AllowAll"); // Перед UseIdentityServer()
+            // Маршруты MVC
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.UseRouting();       // Нужен для IdentityServer
-
-            app.UseIdentityServer(); // ТОЛЬКО ТАК!
-
-            app.UseAuthentication(); // После UseIdentityServer()
-
-            app.UseAuthorization();   // После UseAuthentication()
-
+            // API маршруты
             app.MapControllers();
 
             app.Run();

@@ -4,7 +4,7 @@ namespace HPM_System.UserService.Models
 {
     public class Car
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [StringLength(100, ErrorMessage = "Марка не может быть длиннее 50 символов")]
         public string? Mark { get; set; }
@@ -22,6 +22,6 @@ namespace HPM_System.UserService.Models
         // Владелец автомобиля
         [Required(ErrorMessage = "ID пользователя обязателен")]
         [Range(1, int.MaxValue, ErrorMessage = "ID пользователя должен быть больше 0")]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

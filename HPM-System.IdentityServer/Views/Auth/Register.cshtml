@@ -1,0 +1,108 @@
+﻿@model HPM_System.IdentityServer.Models.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+@await Component.InvokeAsync("Head")
+<body>
+    <div class="main-container">
+        <div class="form-container">
+            <div class="form-header">
+                <h2><i class="fas fa-user-plus"></i> Регистрация</h2>
+                <p>Создайте новый аккаунт в HPM System</p>
+            </div>
+
+            @if (TempData["Warning"] != null)
+            {
+                <div class="alert alert-warning" role="alert">
+                    @TempData["Warning"]
+                </div>
+            }
+
+            <form asp-action="Register" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <div class="form-floating">
+                                <input asp-for="FirstName" class="form-control" placeholder="Имя" />
+                                <label asp-for="FirstName">Имя</label>
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <div class="form-floating">
+                                <input asp-for="LastName" class="form-control" placeholder="Фамилия" />
+                                <label asp-for="LastName">Фамилия</label>
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <div class="form-floating">
+                        <input asp-for="Patronymic" class="form-control" placeholder="Отчество" />
+                        <label asp-for="Patronymic">Отчество</label>
+                        <span asp-validation-for="Patronymic" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="input-icon">
+                    <i class="fas fa-envelope"></i>
+                    <div class="form-floating">
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email" autocomplete="email" />
+                        <label asp-for="Email">Email *</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="input-icon">
+                    <i class="fas fa-phone"></i>
+                    <div class="form-floating">
+                        <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="Телефон" />
+                        <label asp-for="PhoneNumber">Телефон *</label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <div class="form-floating">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Пароль" autocomplete="new-password" />
+                        <label asp-for="Password">Пароль *</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-info-circle"></i>
+                        Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, цифры.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Зарегистрироваться
+                </button>
+
+                <input name="ReturnUrl" type="hidden" value="@ViewData["ReturnUrl"]" />
+            </form>
+
+            <div class="login-link">
+                <p>Уже есть аккаунт? <a asp-action="Login">Войти в систему</a></p>
+            </div>
+        </div>
+    </div>
+
+    @await Component.InvokeAsync("JSConnection")
+</body>
+</html>

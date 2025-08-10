@@ -71,12 +71,14 @@ services:
       dockerfile: HPM-System.IdentityServer/Dockerfile
     depends_on: [postgres, rabbitmq]
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
-      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
-      - RabbitMQ__Username=${RABBITMQ_USER}
-      - RabbitMQ__Password=${RABBITMQ_PASS}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=postgres;Password=Morr92631043
+      - UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ApiSettings__BaseUrl=http://hpm-system.identityserver:8080
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__Username=admin
+      - RabbitMQ__Password=Morr92631043
     ports:
       - "${IDENTITYSERVER_HTTP}:8080"
       - "${IDENTITYSERVER_HTTPS}:8081"

@@ -8,8 +8,8 @@ namespace HPM_System.ApartmentService.Models
         public int Id { get; set; }
 
         // Ссылка на составной ключ ApartmentUser
-        public int ApartmentId { get; set; }
-        public int UserId { get; set; }
+        public long ApartmentId { get; set; }
+        public Guid UserId { get; set; }
         [JsonIgnore]
         public ApartmentUser ApartmentUser { get; set; }
 

@@ -4,7 +4,7 @@ namespace HPM_System.ApartmentService.Models
 {
     public class Apartment
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int Number { get; set; }
         public int NumbersOfRooms { get; set; }
         public decimal ResidentialArea { get; set; }

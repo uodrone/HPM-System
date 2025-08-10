@@ -18,9 +18,9 @@ namespace HPM_System.ApartmentService.Services
         }
 
         /// <inheritdoc />
-        public async Task<UserDto?> GetUserByIdAsync(int userId)
+        public async Task<UserDto?> GetUserByIdAsync(Guid userId)
         {
-            if (userId <= 0)
+            if (userId == null)
             {
                 _logger.LogWarning("Некорректный ID пользователя: {UserId}", userId);
                 // Можно выбросить ArgumentException, если это предпочтительнее
@@ -138,9 +138,9 @@ namespace HPM_System.ApartmentService.Services
             }
         }
 
-        public async Task<bool> UserExistsAsync(int userId)
+        public async Task<bool> UserExistsAsync(Guid userId)
         {
-            if (userId <= 0)
+            if (userId == null)
             {
                 _logger.LogWarning("Некорректный ID пользователя для проверки существования: {UserId}", userId);
                 // Можно выбросить ArgumentException, если это предпочтительнее

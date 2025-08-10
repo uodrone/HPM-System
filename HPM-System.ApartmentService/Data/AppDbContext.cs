@@ -10,14 +10,9 @@ namespace HPM_System.ApartmentService.Data
         {
         }
 
-        // DbSet для работы с квартирами
         public DbSet<Apartment> Apartment { get; set; }
-
-        // DbSet для связи Many-to-Many
         public DbSet<ApartmentUser> ApartmentUsers { get; set; }
         public DbSet<User> Users { get; set; }
-
-        // DbSet для статусов
         public DbSet<Status> Statuses { get; set; }
         public DbSet<ApartmentUserStatus> ApartmentUserStatuses { get; set; }
 
@@ -45,9 +40,6 @@ namespace HPM_System.ApartmentService.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
-                entity.Property(u => u.Id)
-                    .ValueGeneratedOnAdd()
-                    .UseIdentityByDefaultColumn();
             });
 
             // Настройка сущности Status
@@ -71,7 +63,7 @@ namespace HPM_System.ApartmentService.Data
                 entity.HasKey(au => new { au.ApartmentId, au.UserId });
 
                 entity.Property(au => au.Share)
-                    .HasPrecision(5, 4) // Точность для долей владения (например, 0.45)
+                    .HasPrecision(5, 4)
                     .HasDefaultValue(0m);
 
                 entity.HasOne(au => au.Apartment)
@@ -103,11 +95,10 @@ namespace HPM_System.ApartmentService.Data
                     .HasForeignKey(aus => aus.StatusId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                // Один пользователь не может иметь один и тот же статус дважды для одной квартиры
                 entity.HasIndex(aus => new { aus.ApartmentId, aus.UserId, aus.StatusId }).IsUnique();
             });
 
-            // Определяем тут возможные статусы пользователей квартиры
+            // Seed данных для статусов
             modelBuilder.Entity<Status>().HasData(
                 new Status { Id = 1, Name = "Владелец" },
                 new Status { Id = 2, Name = "Жилец" },
