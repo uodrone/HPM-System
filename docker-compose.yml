@@ -145,6 +145,22 @@ services:
       - "${NOTIFICATIONSERVICE_HTTPS}:8081"
     networks: [hpm-network]
 
+  hpm-system.userservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemuserservice
+    build:
+      context: .
+      dockerfile: HPM-System.UserService/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=UserService;Username=postgres;Password=Morr92631043
+    ports:
+      - "55680:8080"   # HTTP
+      - "55681:8081"   # HTTPS
+    networks:
+      - hpm-network
+
 volumes:
   postgres_data:
   rabbitmq_data:

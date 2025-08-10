@@ -3,7 +3,7 @@ using Duende.IdentityServer.Models;
 using HPM_System.IdentityServer.Services.AccountService;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
-using HPM_System.IdentityServer.Services; // Единое пространство имен для всех сервисов
+using HPM_System.IdentityServer.Services; // Г…Г¤ГЁГ­Г®ГҐ ГЇГ°Г®Г±ГІГ°Г Г­Г±ГІГўГ® ГЁГ¬ГҐГ­ Г¤Г«Гї ГўГ±ГҐГµ Г±ГҐГ°ГўГЁГ±Г®Гў
 using HPM_System.IdentityServer.Services.ErrorHandlingService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -20,22 +20,22 @@ namespace HPM_System.IdentityServer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Регистрируем бизнес-сервисы
+            // ГђГҐГЈГЁГ±ГІГ°ГЁГ°ГіГҐГ¬ ГЎГЁГ§Г­ГҐГ±-Г±ГҐГ°ГўГЁГ±Г»
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IErrorHandlingService, ErrorHandlingService>();
 
-            // Добавляем MVC с Views
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ MVC Г± Views
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.AddEndpointsApiExplorer();
 
-            // Регистрируем логгер
+            // ГђГҐГЈГЁГ±ГІГ°ГЁГ°ГіГҐГ¬ Г«Г®ГЈГЈГҐГ°
             builder.Services.AddLogging(configure => configure.AddConsole());
 
-            // Добавляем DbContext
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Добавляем Identity
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Identity
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
@@ -72,7 +72,7 @@ namespace HPM_System.IdentityServer
                 options.LogoutPath = "/Auth/Logout";
             });
 
-            // Добавляем IdentityServer
+            // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ IdentityServer
             builder.Services.AddIdentityServer(options =>
             {
                 options.EmitStaticAudienceClaim = true;
@@ -89,7 +89,7 @@ namespace HPM_System.IdentityServer
                 .AddProfileService<CustomProfileService>()
                 .AddDeveloperSigningCredential();
 
-            // Настройка параметров Identity
+            // ГЌГ Г±ГІГ°Г®Г©ГЄГ  ГЇГ Г°Г Г¬ГҐГІГ°Г®Гў Identity
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -100,7 +100,7 @@ namespace HPM_System.IdentityServer
                 options.User.RequireUniqueEmail = true;
             });
 
-            // Поддержка CORS
+            // ГЏГ®Г¤Г¤ГҐГ°Г¦ГЄГ  CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -114,13 +114,13 @@ namespace HPM_System.IdentityServer
             // OpenAPI/Swagger
             builder.Services.AddOpenApi();
 
-            // HTTP клиент для внешних вызовов (UserService)
+            // HTTP ГЄГ«ГЁГҐГ­ГІ Г¤Г«Гї ГўГ­ГҐГёГ­ГЁГµ ГўГ»Г§Г®ГўГ®Гў (UserService)
             builder.Services.AddHttpClient();
             builder.Services.AddMemoryCache();
 
             var app = builder.Build();
 
-            // Применяем миграции при старте
+            // ГЏГ°ГЁГ¬ГҐГ­ГїГҐГ¬ Г¬ГЁГЈГ°Г Г¶ГЁГЁ ГЇГ°ГЁ Г±ГІГ Г°ГІГҐ
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -132,9 +132,9 @@ namespace HPM_System.IdentityServer
                     var pendingMigrations = context.Database.GetPendingMigrations();
                     if (pendingMigrations.Any())
                     {
-                        logger.LogInformation($"Применение {pendingMigrations.Count()} миграций...");
+                        logger.LogInformation($"ГЏГ°ГЁГ¬ГҐГ­ГҐГ­ГЁГҐ {pendingMigrations.Count()} Г¬ГЁГЈГ°Г Г¶ГЁГ©...");
                         context.Database.Migrate();
-                        logger.LogInformation("Identity миграции успешны");
+                        logger.LogInformation("Identity Г¬ГЁГЈГ°Г Г¶ГЁГЁ ГіГ±ГЇГҐГёГ­Г»");
                     }
                     else
                     {
@@ -164,12 +164,12 @@ namespace HPM_System.IdentityServer
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Маршруты MVC
+            // ГЊГ Г°ГёГ°ГіГІГ» MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            // API маршруты
+            // API Г¬Г Г°ГёГ°ГіГІГ»
             app.MapControllers();
 
             app.Run();
