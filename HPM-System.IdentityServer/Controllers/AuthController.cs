@@ -1,31 +1,29 @@
-﻿using HPM_System.IdentityServer.Models;
+﻿using HPM_System.IdentityServer.Services.AccountService;
+using HPM_System.IdentityServer.Models;
+using HPM_System.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Text.Json;
+using HPM_System.IdentityServer.Services.ErrorHandlingService;
 
 namespace HPM_System.IdentityServer.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<AuthController> _logger;
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+        private readonly IAccountService _accountService;
+        private readonly IErrorHandlingService _errorHandlingService;
 
         public AuthController(
-            UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<AuthController> logger,
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration)
+            IAccountService accountService,
+            IErrorHandlingService errorHandlingService)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _httpClient = httpClientFactory.CreateClient();
-            _configuration = configuration;
+            _accountService = accountService;
+            _errorHandlingService = errorHandlingService;
         }
 
         [HttpGet]
@@ -46,34 +44,28 @@ namespace HPM_System.IdentityServer.Controllers
                 return View(model);
             }
 
-            // Находим пользователя по email или телефону
-            var user = await FindUserByEmailOrPhone(model.EmailOrPhone);
+            var result = await _accountService.LoginAsync(model);
 
-            if (user == null)
+            if (result.IsSuccess && result.Data != null)
+            {
+                var user = await _accountService.FindUserByEmailOrPhoneAsync(model.EmailOrPhone);
+                if (user != null)
+                {
+                    await _signInManager.SignInAsync(user, model.RememberMe);
+                    return RedirectToLocal(returnUrl);
+                }
+            }
+
+            if (result.IsUnauthorized)
             {
                 ModelState.AddModelError(string.Empty, "Неверные учетные данные.");
-                return View(model);
-            }
-
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
-
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("Пользователь вошел в систему.");
-                return RedirectToLocal(returnUrl);
-            }
-
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("Аккаунт пользователя заблокирован.");
-                ModelState.AddModelError(string.Empty, "Аккаунт заблокирован.");
-                return View(model);
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Неверные учетные данные.");
-                return View(model);
+                ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "Ошибка при входе в систему.");
             }
+
+            return View(model);
         }
 
         [HttpGet]
@@ -94,34 +86,35 @@ namespace HPM_System.IdentityServer.Controllers
                 return View(model);
             }
 
-            var user = new IdentityUser
+            var result = await _accountService.RegisterAsync(model);
+
+            if (result.IsSuccess && result.Data != null)
             {
-                UserName = model.Email,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("Пользователь создал новый аккаунт с паролем.");
-
-                // Создаем пользователя в UserService
-                var userServiceCreateResult = await CreateUserServiceUser(model, user.Id);
-                if (!userServiceCreateResult.IsSuccess)
+                if (!result.Data.UserServiceCreated)
                 {
-                    _logger.LogError("Не удалось создать пользователя в UserService: {Error}", userServiceCreateResult.ErrorMessage);
                     TempData["Warning"] = "Аккаунт создан, но произошла ошибка при синхронизации данных.";
                 }
 
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToLocal(returnUrl);
+                var user = await _accountService.FindUserByEmailOrPhoneAsync(model.Email ?? "");
+                if (user != null)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToLocal(returnUrl);
+                }
             }
 
-            foreach (var error in result.Errors)
+            // Обрабатываем ошибки
+            if (result.Errors != null)
             {
-                ModelState.AddModelError(string.Empty, GetDetailedErrorMessage(error));
+                foreach (var error in result.Errors)
+                {
+                    var errorDetail = _errorHandlingService.GetDetailedErrorMessage(error);
+                    ModelState.AddModelError(string.Empty, errorDetail);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "Ошибка регистрации пользователя");
             }
 
             return View(model);
@@ -136,73 +129,6 @@ namespace HPM_System.IdentityServer.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        private async Task<IdentityUser?> FindUserByEmailOrPhone(string emailOrPhone)
-        {
-            var userByEmail = await _userManager.FindByEmailAsync(emailOrPhone);
-            if (userByEmail != null)
-                return userByEmail;
-
-            var users = _userManager.Users.Where(u => u.PhoneNumber == emailOrPhone);
-            return users.FirstOrDefault();
-        }
-
-        private string GetDetailedErrorMessage(IdentityError error)
-        {
-            return error.Code switch
-            {
-                "DuplicateUserName" => "Пользователь с таким email уже существует",
-                "DuplicateEmail" => "Пользователь с таким email уже зарегистрирован",
-                "InvalidUserName" => "Некорректный формат email",
-                "InvalidEmail" => "Некорректный email адрес",
-                "PasswordTooShort" => "Пароль должен содержать минимум 8 символов",
-                "PasswordRequiresNonAlphanumeric" => "Пароль должен содержать хотя бы один специальный символ",
-                "PasswordRequiresDigit" => "Пароль должен содержать хотя бы одну цифру",
-                "PasswordRequiresUpper" => "Пароль должен содержать хотя бы одну заглавную букву",
-                "PasswordRequiresLower" => "Пароль должен содержать хотя бы одну строчную букву",
-                "PasswordTooCommon" => "Пароль слишком простой, выберите более сложный пароль",
-                "InvalidPassword" => "Пароль не соответствует требованиям безопасности",
-                "InvalidPhoneNumber" => "Некорректный формат номера телефона",
-                _ => error.Description
-            };
-        }
-
-        private async Task<(bool IsSuccess, string ErrorMessage)> CreateUserServiceUser(RegisterModel model, string identityUserId)
-        {
-            try
-            {
-                var userServiceUser = new UserServiceUserModel
-                {
-                    Id = Guid.Parse(identityUserId),
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Patronymic = model.Patronymic,
-                    Email = model.Email ?? string.Empty,
-                    PhoneNumber = model.PhoneNumber ?? string.Empty,
-                    Age = null
-                };
-
-                var json = JsonSerializer.Serialize(userServiceUser);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var userServiceUrl = _configuration["UserService:BaseUrl"] ?? "http://hpm-system.userservice:8080";
-                var response = await _httpClient.PostAsync($"{userServiceUrl}/api/Users", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return (true, string.Empty);
-                }
-                else
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    return (false, $"UserService error: {response.StatusCode} - {errorContent}");
-                }
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
-        }
-
         private IActionResult RedirectToLocal(string? returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -211,7 +137,7 @@ namespace HPM_System.IdentityServer.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction("Index", "Home");
             }
         }
     }

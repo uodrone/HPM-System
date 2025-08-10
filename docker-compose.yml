@@ -70,6 +70,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=postgres;Password=Morr92631043
       - UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ApiSettings__BaseUrl=http://hpm-system.identityserver:8080
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Port=5672
       - RabbitMQ__Username=admin

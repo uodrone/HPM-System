@@ -1,8 +1,10 @@
 using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Models;
+using HPM_System.IdentityServer.Services.AccountService;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
-using HPM_System.IdentityServer.Services;
+using HPM_System.IdentityServer.Services; // Единое пространство имен для всех сервисов
+using HPM_System.IdentityServer.Services.ErrorHandlingService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
@@ -17,13 +19,14 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Чтоб вьюхи менялись в реалтайме
-            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            // Регистрируем бизнес-сервисы
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IErrorHandlingService, ErrorHandlingService>();
 
             // Добавляем MVC с Views
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.AddEndpointsApiExplorer();
-
 
             // Регистрируем логгер
             builder.Services.AddLogging(configure => configure.AddConsole());
@@ -65,8 +68,8 @@ namespace HPM_System.IdentityServer
             {
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                options.LoginPath = "/Account/Login";
-                options.LogoutPath = "/Account/Logout";
+                options.LoginPath = "/Auth/Login";
+                options.LogoutPath = "/Auth/Logout";
             });
 
             // Добавляем IdentityServer
@@ -111,7 +114,7 @@ namespace HPM_System.IdentityServer
             // OpenAPI/Swagger
             builder.Services.AddOpenApi();
 
-            // HTTP клиент для передачи User в UserService после регистрации
+            // HTTP клиент для внешних вызовов (UserService)
             builder.Services.AddHttpClient();
 
             var app = builder.Build();
@@ -152,9 +155,8 @@ namespace HPM_System.IdentityServer
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles(); // Для MVC статических файлов
+            app.UseStaticFiles();
 
-            //СТРОГО В ТАКОМ ПОРЯДКЕ!11
             app.UseCors("AllowAll");
             app.UseRouting();
             app.UseIdentityServer();
