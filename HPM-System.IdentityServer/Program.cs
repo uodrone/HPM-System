@@ -116,6 +116,7 @@ namespace HPM_System.IdentityServer
 
             // HTTP клиент для внешних вызовов (UserService)
             builder.Services.AddHttpClient();
+            builder.Services.AddMemoryCache();
 
             var app = builder.Build();
 

@@ -1,8 +1,9 @@
-﻿using HPM_System.IdentityServer.Services.AccountService;
-using HPM_System.IdentityServer.Models;
+﻿using HPM_System.IdentityServer.Models;
 using HPM_System.IdentityServer.Services;
-using Microsoft.AspNetCore.Mvc;
+using HPM_System.IdentityServer.Services.AccountService;
 using HPM_System.IdentityServer.Services.ErrorHandlingService;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HPM_System.IdentityServer.Controllers
 {
@@ -96,6 +97,44 @@ namespace HPM_System.IdentityServer.Controllers
                 Message = result.ErrorMessage ?? "Ошибка регистрации пользователя",
                 Errors = errorDetails
             });
+        }
+
+        /// <summary>
+        /// Обменивает временный код аутентификации на токен
+        /// </summary>
+        [HttpPost("exchange-auth-code")]
+        public IActionResult ExchangeAuthCode([FromBody] AuthCodeExchangeModel model)
+        {
+            try
+            {
+                var cache = HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Caching.Memory.IMemoryCache>();
+                var cacheKey = $"auth_code_{model.AuthCode}";
+
+                if (cache.TryGetValue(cacheKey, out AuthTransferData? authData) && authData != null)
+                {
+                    // Удаляем код из кеша (одноразовое использование)
+                    cache.Remove(cacheKey);
+
+                    _logger.LogInformation("Успешный обмен кода аутентификации для пользователя: {UserId}", authData.UserId);
+
+                    return Ok(new
+                    {
+                        Message = "Токен получен",
+                        Token = authData.Token,
+                        UserId = authData.UserId,
+                        Email = authData.Email,
+                        PhoneNumber = authData.PhoneNumber
+                    });
+                }
+
+                _logger.LogWarning("Недействительный или истекший код аутентификации: {AuthCode}", model.AuthCode);
+                return BadRequest(new { Message = "Недействительный или истекший код аутентификации" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при обмене кода аутентификации");
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
         }
     }
 }
