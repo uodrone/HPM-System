@@ -34,13 +34,23 @@ namespace HPM_System.Controllers
         {
             try
             {
-                var identityServerUrl = _configuration["IdentityServer:BaseUrl"] ?? "http://hpm-system.identityserver:8080";
+                var baseUrlFromConfig = _configuration["IdentityServer:BaseUrl"];
+                var authorityFromConfig = _configuration["IdentityServer:Authority"];
+
+                _logger.LogInformation("IdentityServer:BaseUrl = {BaseUrl}", baseUrlFromConfig);
+                _logger.LogInformation("IdentityServer:Authority = {Authority}", authorityFromConfig);
+
+                var identityServerUrl = baseUrlFromConfig ?? "http://hpm-system.identityserver:8080";
+                _logger.LogInformation("Используемый URL: {Url}", identityServerUrl);
+
                 var content = new StringContent(
                     System.Text.Json.JsonSerializer.Serialize(new { AuthCode = model.AuthCode }),
                     Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync(
-                    $"{identityServerUrl}/api/Account/exchange-auth-code", content);
+                var fullUrl = $"{identityServerUrl}/api/Account/exchange-auth-code";
+                _logger.LogInformation("Полный URL запроса: {FullUrl}", fullUrl);
+
+                var response = await _httpClient.PostAsync(fullUrl, content);
 
                 if (response.IsSuccessStatusCode)
                 {
