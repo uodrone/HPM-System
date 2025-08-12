@@ -36,9 +36,9 @@
                         </button>
 
                         <!-- Для неавторизованных -->
-                        <button data-login-btn class="btn btn-secondary guest-only" onclick="redirectToLogin()">
+                        <a href="https://localhost:55676/auth/login" " data-login-btn class="btn btn-secondary guest-only">
                             Войти
-                        </button>
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -54,67 +54,6 @@
                     <h2>Добро пожаловать в HPM System!</h2>
                     <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
                     <p>ID пользователя: <code data-user-id>не определен</code></p>
-                </div>
-
-                <div class="dashboard-preview">
-                    <h3>Краткий обзор</h3>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number">12</div>
-                            <div>Квартир</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">3</div>
-                            <div>Новых уведомлений</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">8</div>
-                            <div>Активных заявок</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">€ 2,450</div>
-                            <div>Месячный доход</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="features">
-                    <div class="feature-card">
-                        <div class="feature-icon">🏠</div>
-                        <h3>Управление квартирами</h3>
-                        <p>Полный контроль над вашей недвижимостью</p>
-                        <a href="/apartments" class="btn btn-secondary" style="margin-top: 1rem;">Перейти</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">👥</div>
-                        <h3>Управление арендаторами</h3>
-                        <p>Ведите учет арендаторов и договоров</p>
-                        <a href="/tenants" class="btn btn-secondary" style="margin-top: 1rem;">Перейти</a>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Аналитика и отчеты</h3>
-                        <p>Детальные отчеты о доходах и расходах</p>
-                        <a href="/analytics" class="btn btn-secondary" style="margin-top: 1rem;">Перейти</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Контент для неавторизованных пользователей -->
-            <div data-guest-only class="guest-only">
-                <div class="hero">
-                    <h1>Добро пожаловать в HPM System</h1>
-                    <p>Современная система управления жилыми сообществами</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-4">
-                        <a href="https://localhost:55676/auth/login" class="btn btn-secondary" style="font-size: 1.1rem; padding: 12px 24px;">
-                            Войти в систему
-                        </a>
-                        <a href="https://localhost:55676/auth/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 24px;">
-                            Зарегистрироваться
-                        </a>
-                    </div>
                 </div>
 
                 <div class="features">
@@ -133,7 +72,23 @@
                     <div class="feature-card">
                         <div class="feature-icon">🔔</div>
                         <h3>Уведомления</h3>
-                        <p>Будьте в курсе всех важных событий и платежей</p>
+                        <p>Будьте в курсе всех важных уведомлений и событий</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контент для неавторизованных пользователей -->
+            <div data-guest-only class="guest-only">
+                <div class="hero">
+                    <h1>Добро пожаловать в HPM System</h1>
+                    <p>Современная система управления жилыми сообществами</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-4">
+                        <a href="https://localhost:55676/auth/login" class="btn btn-secondary" style="font-size: 1.1rem; padding: 12px 24px;">
+                            Войти в систему
+                        </a>
+                        <a href="https://localhost:55676/auth/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 24px;">
+                            Зарегистрироваться
+                        </a>
                     </div>
                 </div>
             </div>
