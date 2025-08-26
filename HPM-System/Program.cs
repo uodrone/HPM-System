@@ -1,5 +1,4 @@
 using HPM_System.Data; // Замени на своё пространство имён, если нужно
-using HPM_System.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,19 +17,69 @@ namespace HPM_System
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1. Чтение настроек IdentityServer
-            var identityOptions = builder.Configuration.GetSection("IdentityServer").Get<IdentityServerSettings>();
-            if (identityOptions == null)
-            {
-                throw new InvalidOperationException("Не найдены настройки IdentityServer в appsettings.json");
-            }
-
-            // 2. Настройка EF Core (если нужен доступ к БД в основном приложении)
+            // 1. Настройка EF Core (если нужен доступ к БД в основном приложении)
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // 3. Добавляем MVC / контроллеры
-            builder.Services.AddControllersWithViews();
+            // 2. Добавляем MVC / контроллеры
+            builder.Services.AddRazorPages();
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            // Добавляем HttpClient
+            builder.Services.AddHttpClient();
+
+            // Настраиваем JWT Authentication
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"] ?? "your-very-long-secret-key-here-minimum-256-bits";
+            var issuer = jwtSettings["Issuer"] ?? "HPM_System.IdentityServer";
+            var audience = jwtSettings["Audience"] ?? "HPM_System.Clients";
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                        ClockSkew = TimeSpan.FromMinutes(5)
+                    };
+
+                    // Настраиваем получение токена из cookie и заголовков
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            // Сначала пытаемся получить токен из заголовка Authorization
+                            var token = context.Request.Headers.Authorization
+                                .FirstOrDefault()?.Split(" ").LastOrDefault();
+
+                            // Если токена нет в заголовке, пытаемся получить из cookie
+                            if (string.IsNullOrEmpty(token))
+                            {
+                                token = context.Request.Cookies["auth_token"];
+                            }
+
+                            if (!string.IsNullOrEmpty(token))
+                            {
+                                context.Token = token;
+                            }
+
+                            return Task.CompletedTask;
+                        },
+                        OnAuthenticationFailed = context =>
+                        {
+                            var logger = context.HttpContext.RequestServices
+                                .GetRequiredService<ILogger<Program>>();
+                            logger.LogWarning("JWT Authentication failed: {Error}", context.Exception.Message);
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             // Поддержка CORS
             builder.Services.AddCors(options =>
@@ -43,31 +92,13 @@ namespace HPM_System
                 });
             });
 
-            // 4. Настройка аутентификации через JWT Bearer
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.Authority = identityOptions.Authority; // https://localhost:32797
-                options.RequireHttpsMetadata = false; // только для разработки
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = false,
-                    ValidateIssuer = true,
-                    ValidIssuer = identityOptions.Authority, // должен совпадать с Authority
-                    ValidateAudience = false,
-                    RequireExpirationTime = false,
-                    RequireSignedTokens = true
-                };
-            });
-
-            // 5. Включение авторизации
+            // 3. Включение авторизации
             builder.Services.AddAuthorization();
 
-            // 6. Сборка приложения
+            // Добавляем кеширование в памяти
+            builder.Services.AddMemoryCache();
+
+            // 4. Сборка приложения
             var app = builder.Build();
 
             // Применяем миграции при старте

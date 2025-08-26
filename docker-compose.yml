@@ -72,13 +72,15 @@ services:
     depends_on: [postgres, rabbitmq]
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_HTTPS_PORT=8081
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=IdentityServer;Username=postgres;Password=Morr92631043
       - UserService__BaseUrl=http://hpm-system.userservice:8080
       - ApiSettings__BaseUrl=http://hpm-system.identityserver:8080
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Port=5672
-      - RabbitMQ__Username=admin
-      - RabbitMQ__Password=Morr92631043
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
       - "${IDENTITYSERVER_HTTP}:8080"
       - "${IDENTITYSERVER_HTTPS}:8081"
@@ -144,22 +146,6 @@ services:
       - "${NOTIFICATIONSERVICE_HTTP}:8080"
       - "${NOTIFICATIONSERVICE_HTTPS}:8081"
     networks: [hpm-network]
-
-  hpm-system.userservice:
-    image: ${DOCKER_REGISTRY-}hpmsystemuserservice
-    build:
-      context: .
-      dockerfile: HPM-System.UserService/Dockerfile
-    depends_on:
-      - postgres
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=UserService;Username=postgres;Password=Morr92631043
-    ports:
-      - "55680:8080"   # HTTP
-      - "55681:8081"   # HTTPS
-    networks:
-      - hpm-network
 
 volumes:
   postgres_data:

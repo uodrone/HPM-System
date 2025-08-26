@@ -49,6 +49,7 @@ namespace HPM_System.UserService.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Number")

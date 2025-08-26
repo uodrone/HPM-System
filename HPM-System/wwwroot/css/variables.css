@@ -1,0 +1,28 @@
+﻿:root {
+    --gray: #606060;
+    --grayworm: #8B9EB7;
+    --graywormhover: #5E789B;
+    --anothergray: #F6F6F6;
+    --light-gray: #F8F8F8;
+    --medium-gray: #EBEBEB;
+    --light-orange: #F79D65;
+    --orange: #FE8B55;
+    --orange-hover: #F86A3C;
+    --biege-orange: #FFF9F5;
+    --burgundy: #A4305A;
+    --light-gray: #F8F8F8;
+    --lillow: #A882DD;
+    --light-lillow: #FAF6FF;
+    --white-lillow: #FFFBFF;
+    --green: #70AC30;
+    --light-green: #79c713;
+    --syntetic-green: #44DD97;
+    --syntetic-light-green: #F4FFF7;
+    --magenta: #BB59B2;
+    --light-blue: #67AAF9;
+    --tag-blue: #E8F2FF;
+    --white-blue: #F6FAFF;
+    --pink: #FEDEEA;
+    --standard-transition: .4s ease-in-out all;
+    --radius-16: 16px;
+}
