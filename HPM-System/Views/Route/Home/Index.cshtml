@@ -1,100 +1,54 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HPM System - Главная</title>
-</head>
-<body>
-    <!-- Заголовок -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">HPM System</div>
-
-                <nav class="nav-menu">
-                    <!-- Элементы для авторизованных пользователей -->
-                    <div data-auth-required class="auth-required">
-                        <a href="/dashboard" class="nav-link">Панель управления</a>
-                        <a href="/apartments" class="nav-link">Квартиры</a>
-                        <a href="/notifications" class="nav-link">Уведомления</a>
-                    </div>
-
-                    <!-- Информация о пользователе и кнопки управления -->
-                    <div class="user-menu">
-                        <!-- Для авторизованных -->
-                        <div data-auth-required class="auth-required user-info">
-                            Привет, <span data-user-email>пользователь</span>!
-                        </div>
-
-                        <button data-logout-btn class="btn btn-danger auth-required" style="display: none;">
-                            Выйти
-                        </button>
-
-                        <!-- Для неавторизованных -->
-                        <a href="https://localhost:55676/auth/login" " data-login-btn class="btn btn-secondary guest-only">
-                            Войти
-                        </a>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
+  
 
     <!-- Основной контент -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Приветствие для авторизованных пользователей -->
-            <div data-auth-required class="auth-required">
-                <div class="welcome-section">
-                    <h2>Добро пожаловать в HPM System!</h2>
-                    <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
-                    <p>ID пользователя: <code data-user-id>не определен</code></p>
-                </div>
-
-                <div class="features">
-                    <div class="feature-card">
-                        <div class="feature-icon">&#127939;</div>
-                        <h3>Профиль пользователя</h3>
-                        <p>Персональные данные пользователя и его автомобилей</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">🏢</div>
-                        <h3>Недвижимость</h3>
-                        <p>Данные о квартирах и домах пользователя</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">🔔</div>
-                        <h3>Уведомления</h3>
-                        <p>Будьте в курсе всех важных уведомлений и событий</p>
-                    </div>
-                </div>
+<main class="main-content">
+    <div class="container">
+        <!-- Приветствие для авторизованных пользователей -->
+        <div data-auth-required class="auth-required">
+            <div class="welcome-section">
+                <h2>Добро пожаловать в HPM System!</h2>
+                <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
+                <p>ID пользователя: <code data-user-id>не определен</code></p>
             </div>
 
-            <!-- Контент для неавторизованных пользователей -->
-            <div data-guest-only class="guest-only">
-                <div class="hero">
-                    <h1>Добро пожаловать в HPM System</h1>
-                    <p>Современная система управления жилыми сообществами</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-4">
-                        <a href="https://localhost:55676/auth/login" class="btn btn-secondary" style="font-size: 1.1rem; padding: 12px 24px;">
-                            Войти в систему
-                        </a>
-                        <a href="https://localhost:55676/auth/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 24px;">
-                            Зарегистрироваться
-                        </a>
-                    </div>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">&#127939;</div>
+                    <h3>Профиль пользователя</h3>
+                    <p>Персональные данные пользователя и его автомобилей</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3>Недвижимость</h3>
+                    <p>Данные о квартирах и домах пользователя</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Уведомления</h3>
+                    <p>Будьте в курсе всех важных уведомлений и событий</p>
                 </div>
             </div>
         </div>
-    </main>
 
-   
-</body>
-</html>
+        <!-- Контент для неавторизованных пользователей -->
+        <div data-guest-only class="guest-only">
+            <div class="hero">
+                <h1>Добро пожаловать в HPM System</h1>
+                <p>Современная система управления жилыми сообществами</p>
+                <div class="d-flex flex-wrap justify-content-center gap-4">
+                    <a href="https://localhost:55676/auth/login" class="btn btn-secondary" style="font-size: 1.1rem; padding: 12px 24px;">
+                        Войти в систему
+                    </a>
+                    <a href="https://localhost:55676/auth/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 24px;">
+                        Зарегистрироваться
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

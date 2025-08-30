@@ -1,5 +1,4 @@
-﻿// wwwroot/js/auth.js
-class AuthManager {
+﻿class AuthManager {
     constructor() {
         this.tokenKey = 'hpm_auth_token';
         this.userDataKey = 'hpm_user_data';
