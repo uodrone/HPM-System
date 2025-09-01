@@ -60,14 +60,20 @@ namespace HPM_System.UserService.Controllers
 
         // GET: api/Users/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public async Task<IActionResult> GetUser(string id)
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
+                Guid userId = Guid.Parse(id);
+                var user = await _context.Users.FindAsync(userId);
                 if (user == null) return NotFound();
 
                 return Ok(user);
+            }
+            catch (FormatException fm)
+            {
+                _logger.LogError(fm, "Неверный формат ID пользователя {Id}", id);
+                return StatusCode(500, new { Message = "Неверный формат ID пользователя" });
             }
             catch (Exception ex)
             {

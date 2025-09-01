@@ -4,40 +4,57 @@
   
 
     <!-- Основной контент -->
-<main class="main-content">
+<div class="main-content align-content-center">
     <div class="container">
         <!-- Приветствие для авторизованных пользователей -->
-        <div data-auth-required class="auth-required">
-            <div class="welcome-section">
-                <h2>Добро пожаловать в HPM System!</h2>
-                <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
-                <p>ID пользователя: <code data-user-id>не определен</code></p>
-            </div>
+        <section data-auth-required class="auth-required">
+            <div class="my-5">
+                <div class="start-secreen-greed">
+                    <div class="profile-card" id="user-card">
+                        <h3 class="text-center">Профиль пользователя</h3>
 
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">&#127939;</div>
-                    <h3>Профиль пользователя</h3>
-                    <p>Персональные данные пользователя и его автомобилей</p>
-                </div>
+                        <div data-user-firstname></div>
+                        <div data-user-lastname></div>
 
-                <div class="feature-card">
-                    <div class="feature-icon">🏢</div>
-                    <h3>Недвижимость</h3>
-                    <p>Данные о квартирах и домах пользователя</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔔</div>
-                    <h3>Уведомления</h3>
-                    <p>Будьте в курсе всех важных уведомлений и событий</p>
+                        <div class="text-center">
+                            <a data-user-id href="/user/">Редактировать профиль</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="my-5">
+                <div class="welcome-section">
+                    <h2>Добро пожаловать в HPM System!</h2>
+                    <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
+                    <p>ID пользователя: <code data-user-id>не определен</code></p>
+                </div>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">&#127939;</div>
+                        <h3>Профиль пользователя</h3>
+                        <p>Персональные данные пользователя и его автомобилей</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🏢</div>
+                        <h3>Недвижимость</h3>
+                        <p>Данные о квартирах и домах пользователя</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔔</div>
+                        <h3>Уведомления</h3>
+                        <p>Будьте в курсе всех важных уведомлений и событий</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Контент для неавторизованных пользователей -->
-        <div data-guest-only class="guest-only">
-            <div class="hero">
+        <section data-guest-only class="guest-only">
+            <div class="text-center">
                 <h1>Добро пожаловать в HPM System</h1>
                 <p>Современная система управления жилыми сообществами</p>
                 <div class="d-flex flex-wrap justify-content-center gap-4">
@@ -49,6 +66,6 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
-</main>
+</div>
