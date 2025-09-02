@@ -185,45 +185,11 @@
 
         // Обновляем информацию о пользователе
         if (this.isAuthenticated && this.userData) {
-            const userEmailElements = document.querySelectorAll('[data-user-email]');
-            const userIdLinks = document.querySelectorAll('a[data-user-id]');
+            const userEmailElements = document.querySelectorAll('[data-user-email]');            
 
             userEmailElements.forEach(element => {
                 element.textContent = this.userData.email;
-            });
-
-            userIdLinks.forEach(element => {
-                element.href = `/user/${this.userData.userId}`;
-            });
-
-            try {
-                const userData = new GetDataFromUserService();
-
-                userData.getUserById(this.userData.userId).then(user => {
-                    console.log('Данные пользователя:', user);
-                    console.log('Email:', user.email);
-                    console.log('Имя:', user.firstName);
-                    console.log('Фамилия:', user.lastName);
-                    console.log('Отчество:', user.patronymic);
-                    
-                    // Здесь можно обновить DOM с полными данными пользователя
-                    // Например, найти элементы и заполнить их данными
-                    const firstNameElements = document.querySelectorAll('[data-user-firstname]');
-                    const lastNameElements = document.querySelectorAll('[data-user-lastname]');
-                    
-                    firstNameElements.forEach(element => {
-                        element.textContent = user.firstName;
-                    });
-                    
-                    lastNameElements.forEach(element => {
-                        element.textContent = user.lastName;
-                    });
-                }).catch(error => {
-                    console.error('Ошибка получения данных пользователя:', error);
-                });
-            } catch (e) {
-                console.log(e);
-            }
+            });            
         }
 
         // Обновляем состояние кнопок
@@ -301,5 +267,3 @@ window.authManager = new AuthManager();
 window.isAuthenticated = () => window.authManager.isAuthenticated;
 window.getCurrentUser = () => window.authManager.userData;
 window.logout = () => window.authManager.logout();
-
-import { GetDataFromUserService } from './getDataFromUserService.js';
