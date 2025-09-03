@@ -170,6 +170,10 @@ h3 {
     border-radius: 24px;
     padding: 16px;
     border: 1px solid #d8d8d8;
+
+    [data-user-fullname] {
+        font-weight: 700;
+    }
 }
 /*!***********************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/btn.css ***!

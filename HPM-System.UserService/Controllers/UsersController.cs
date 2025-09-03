@@ -65,7 +65,9 @@ namespace HPM_System.UserService.Controllers
             try
             {
                 Guid userId = Guid.Parse(id);
-                var user = await _context.Users.FindAsync(userId);
+                //грузим пользака сразу с его автомобилями
+                var user = await _context.Users.Include(u => u.Cars.Take(3)).FirstOrDefaultAsync(u => u.Id == userId);
+
                 if (user == null) return NotFound();
 
                 return Ok(user);

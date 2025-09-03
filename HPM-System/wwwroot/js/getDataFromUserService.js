@@ -18,6 +18,21 @@ class GetDataFromUserService {
         }
     }
 
+    async getCarsByUserId(id) {
+        try {
+            const response = await fetch(`${this.userApiAddress}/api/Cars/by-user/${id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const data = await response.json();
+            console.log(`Автомобили пользователя ${id}:`, data);
+            return data;
+        } catch (error) {
+            console.error(`Ошибка получения автомобилей пользователя ${id}:`, error);
+        }
+    }
+
     async InsertUserDataToProfile () {
         const userIdLinks = document.querySelectorAll('a[data-user-id]');
         userIdLinks.forEach(element => {
@@ -29,18 +44,23 @@ class GetDataFromUserService {
             await this.GetUserById(window.authManager.userData.userId).then(user => {
                 console.log('Данные пользователя:', user);
                 
-                // Здесь можно обновить DOM с полными данными пользователя
-                // Например, найти элементы и заполнить их данными
-                const firstNameElements = document.querySelectorAll('[data-user-firstname]');
-                const lastNameElements = document.querySelectorAll('[data-user-lastname]');
+                const fullName = document.querySelector('[data-user-fullname]');
+                const phone = document.querySelector('[data-user-phone]')
+                const carsCount = document.querySelector('[data-user-carslist]');
+
                 
-                firstNameElements.forEach(element => {
-                    element.textContent = user.firstName;
-                });
-                
-                lastNameElements.forEach(element => {
-                    element.textContent = user.lastName;
-                });
+                fullName.textContent = `${user.firstName} ${user.lastName} ${user.patronymic}`;
+                phone.textContent = user.phoneNumber;
+
+                if (user.cars.length == 0) {
+                    carsCount.remove();
+                } else if (user.cars.length == 1) {
+                    const car = user.cars[0];
+
+                    carsCount.textContent = `${car.color} ${car.mark} ${car.model}, №${car.number}`;
+                } else {
+                    carsCount.textContent = `${user.cars.length} машины`;
+                }
             }).catch(error => {
                 console.error('Ошибка получения данных пользователя:', error);
             });
