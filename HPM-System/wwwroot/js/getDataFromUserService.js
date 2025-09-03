@@ -57,7 +57,7 @@ class GetDataFromUserService {
                 } else if (user.cars.length == 1) {
                     const car = user.cars[0];
 
-                    carsCount.textContent = `${car.color} ${car.mark} ${car.model}, №${car.number}`;
+                    carsCount.textContent = `${car.color} ${car.mark} ${car.model}, ${car.number}`;
                 } else {
                     carsCount.textContent = `${user.cars.length} машины`;
                 }

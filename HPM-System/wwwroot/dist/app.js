@@ -160,7 +160,7 @@ var GetDataFromUserService = /*#__PURE__*/function () {
                   carsCount.remove();
                 } else if (user.cars.length == 1) {
                   var car = user.cars[0];
-                  carsCount.textContent = "".concat(car.color, " ").concat(car.mark, " ").concat(car.model, ", \u2116").concat(car.number);
+                  carsCount.textContent = "".concat(car.color, " ").concat(car.mark, " ").concat(car.model, ", ").concat(car.number);
                 } else {
                   carsCount.textContent = "".concat(user.cars.length, " \u043C\u0430\u0448\u0438\u043D\u044B");
                 }
