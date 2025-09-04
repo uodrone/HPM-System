@@ -33,8 +33,8 @@ class GetDataFromUserService {
         }
     }
 
-    async InsertUserDataToProfile () {
-        const userIdLinks = document.querySelectorAll('a[data-user-id]');
+    async InsertUserDataToCardOnMainPage () {
+        const userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
         userIdLinks.forEach(element => {
             const link = element.href;
             element.href = `/user/${window.authManager.userData.userId}`;
@@ -75,6 +75,9 @@ document.addEventListener('authStateChanged', () => {
 
     if (isAuthenticated && userData) {
         const userDataService = new GetDataFromUserService();
-        userDataService.InsertUserDataToProfile();
+
+        if (window.location.pathname == '/') {
+            userDataService.InsertUserDataToCardOnMainPage();
+        }        
     }
 });

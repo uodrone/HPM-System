@@ -25,4 +25,6 @@
     --pink: #FEDEEA;
     --standard-transition: .4s ease-in-out all;
     --radius-16: 16px;
+    --label-focus-size: 10px;
+    --label-focus-top: -15px;
 }

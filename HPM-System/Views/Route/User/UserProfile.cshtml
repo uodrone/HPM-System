@@ -3,47 +3,54 @@
 }
 
 <div>
-	<div class="container">
-		<h1 class="mb-5">Профиль пользователя</h1>
+	<div class="container pb-5">
+		<h1 class="my-5 text-center">Профиль пользователя</h1>
 		
-		<div class="profile-group">
-			<h3>Данные пользователя</h3>
+		<div class="d-flex flex-wrap flex-lg-nowrap gap-4">
+			<div class="profile-group">
+				<h3 class="text-center">Данные пользователя</h3>
 
-			<div class="form-group">
-				<input type="text" name="firstName" id="firstName" value="" />
-				<label for="firstName">Имя</label>
+				<div class="form-group">
+					<input type="text" placeholder=" " name="firstName" id="firstName" value="" />
+					<label for="firstName">Имя</label>
+					<div class="error invisible" data-error="firstName">Неверное имя</div>
+				</div>
+				<div class="form-group">
+					<input type="text" placeholder=" " name="lastName" id="firstName" value="" />
+					<label for="lastName">Фамилия</label>
+					<div class="error invisible" data-error="lastName">Неверная фамилия</div>
+				</div>
+				<div class="form-group">
+					<input type="text" placeholder=" " name="patronymic" id="patronymic" value="" />
+					<label for="patronymic">Отчество</label>
+					<div class="error invisible" data-error="patronymic">Неверное отчество</div>
+				</div>
+				<!--Переделать в модели пользователя Age на дату рождения-->
+				<div class="form-group">
+					<input type="date" name="birthday" id="birthday" value="" />
+					<label for="birthday">Дата рождения</label>
+					<div class="error invisible" data-error="birthday">Неверная дата рождения</div>
+				</div>
+				<div class="form-group">
+					<input type="text" placeholder=" " name="phoneNumber" id="phoneNumber" value="" />
+					<label for="phoneNumber">Номер телефона</label>
+					<div class="error invisible" data-error="phoneNumber">Неверный номер телефона</div>
+				</div>
+				<div class="form-group">
+					<input type="text" placeholder=" " name="email" id="email" value="" />
+					<label for="email">E-mail</label>
+					<div class="error invisible" data-error="email">Неверный Email</div>
+				</div>
+				<div class="btn btn_primary" data-action="save-user-data">Сохранить</div>
 			</div>
-			<div class="form-group">
-				<input type="text" name="lastName" id="firstName" value="" />
-				<label for="lastName">Фамилия</label>
-			</div>
-			<div class="form-group">
-				<input type="text" name="patronymic" id="patronymic" value="" />
-				<label for="patronymic">Отчество</label>
-			</div>
-			<!--Переделать в модели пользователя Age на дату рождения-->
-			<div class="form-group">
-				<input type="date" name="birthday" id="birthday" value="" />
-				<label for="birthday">Дата рождения</label>
-			</div>
-			<div class="form-group">
-				<input type="text" name="phoneNumber" id="phoneNumber" value="" />
-				<label for="phoneNumber">Номер телефона</label>
-			</div>
-			<div class="form-group">
-				<input type="text" name="email" id="email" value="" />
-				<label for="email">E-mail</label>
-			</div>
-			<div class="btn" data-action="save-user-data">Сохранить данные пользователя</div>
-		</div>
-		<div class="profile-group">
-			<h3>Автомобили пользователя</h3>
+			<div class="profile-group">
+				<h3 class="text-center">Автомобили пользователя</h3>
 
-			<div class="cars-list">
+				<div class="cars-list">
+				</div>
 
+				<div class="btn" data-action="add-car-to-user">Добавить автомобиль</div>
 			</div>
-
-			<div class="btn" data-action="add-car-to-user">Добавить автомобиль</div>			
 		</div>
 	</div>
 </div>

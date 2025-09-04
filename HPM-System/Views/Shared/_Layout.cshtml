@@ -28,18 +28,18 @@
                     </div>
 
                     <!-- Информация о пользователе и кнопки управления -->
-                    <div class="user-menu">
+                    <div class="d-flex gap-3 align-items-center">
                         <!-- Для авторизованных -->
                         <div data-auth-required class="auth-required user-info">
-                            Привет, <span data-user-email>пользователь</span>!
+                            <span data-user-email>пользователь</span>
                         </div>
 
-                        <button data-logout-btn class="btn btn-danger auth-required" style="display: none;">
+                        <button data-logout-btn class="btn btn_danger auth-required" style="display: none;">
                             Выйти
                         </button>
 
                         <!-- Для неавторизованных -->
-                        <a href="https://localhost:55676/auth/login" " data-login-btn class="btn btn-secondary guest-only">
+                        <a href="https://localhost:55676/auth/login" " data-login-btn class="btn btn_secondary guest-only">
                             Войти
                         </a>
                     </div>

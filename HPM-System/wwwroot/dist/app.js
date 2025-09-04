@@ -135,14 +135,14 @@ var GetDataFromUserService = /*#__PURE__*/function () {
       return getCarsByUserId;
     }()
   }, {
-    key: "InsertUserDataToProfile",
+    key: "InsertUserDataToCardOnMainPage",
     value: function () {
-      var _InsertUserDataToProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var _InsertUserDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
         var userIdLinks, _t7;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
-              userIdLinks = document.querySelectorAll('a[data-user-id]');
+              userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
               userIdLinks.forEach(function (element) {
                 var link = element.href;
                 element.href = "/user/".concat(window.authManager.userData.userId);
@@ -179,10 +179,10 @@ var GetDataFromUserService = /*#__PURE__*/function () {
           }
         }, _callee3, this, [[1, 3]]);
       }));
-      function InsertUserDataToProfile() {
-        return _InsertUserDataToProfile.apply(this, arguments);
+      function InsertUserDataToCardOnMainPage() {
+        return _InsertUserDataToCardOnMainPage.apply(this, arguments);
       }
-      return InsertUserDataToProfile;
+      return InsertUserDataToCardOnMainPage;
     }()
   }]);
 }();
@@ -192,7 +192,9 @@ document.addEventListener('authStateChanged', function () {
     userData = _event$detail.userData;
   if (isAuthenticated && userData) {
     var userDataService = new GetDataFromUserService();
-    userDataService.InsertUserDataToProfile();
+    if (window.location.pathname == '/') {
+      userDataService.InsertUserDataToCardOnMainPage();
+    }
   }
 });
 })();
@@ -580,6 +582,18 @@ var __webpack_exports__ = {};
 /*!***********************************!*\
   !*** ./wwwroot/css/variables.css ***!
   \***********************************/
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+})();
+
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
+(() => {
+"use strict";
+var __webpack_exports__ = {};
+/*!***************************************!*\
+  !*** ./wwwroot/css/profile-group.css ***!
+  \***************************************/
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
