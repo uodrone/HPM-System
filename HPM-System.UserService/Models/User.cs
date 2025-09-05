@@ -10,7 +10,7 @@ namespace HPM_System.UserService.Models
         public string? Patronymic { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public int? Age { get; set; }
+        public DateTime? Age { get; set; }
         // Список автомобилей
         public ICollection<Car> Cars { get; set; } = new List<Car>();
         

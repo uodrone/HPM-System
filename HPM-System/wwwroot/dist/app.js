@@ -39,14 +39,14 @@ var GetDataFromUserService = /*#__PURE__*/function () {
   return _createClass(GetDataFromUserService, [{
     key: "GetUserById",
     value: function () {
-      var _GetUserById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(id) {
+      var _GetUserById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
         var response, data, _t, _t2, _t3;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
               _context.p = 0;
               _context.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(id), {
+              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(userId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -69,12 +69,12 @@ var GetDataFromUserService = /*#__PURE__*/function () {
               return response.json();
             case 4:
               data = _context.v;
-              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(id, ":"), data);
+              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(userId, ":"), data);
               return _context.a(2, data);
             case 5:
               _context.p = 5;
               _t3 = _context.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), _t3);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
             case 6:
               return _context.a(2);
           }
@@ -88,14 +88,14 @@ var GetDataFromUserService = /*#__PURE__*/function () {
   }, {
     key: "getCarsByUserId",
     value: function () {
-      var _getCarsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
+      var _getCarsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(userId) {
         var response, data, _t4, _t5, _t6;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
               _context2.p = 0;
               _context2.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Cars/by-user/").concat(id), {
+              return fetch("".concat(this.userApiAddress, "/api/Cars/by-user/").concat(userId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -118,12 +118,12 @@ var GetDataFromUserService = /*#__PURE__*/function () {
               return response.json();
             case 4:
               data = _context2.v;
-              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), data);
+              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
               return _context2.a(2, data);
             case 5:
               _context2.p = 5;
               _t6 = _context2.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0435\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), _t6);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0435\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t6);
             case 6:
               return _context2.a(2);
           }
@@ -137,7 +137,7 @@ var GetDataFromUserService = /*#__PURE__*/function () {
   }, {
     key: "InsertUserDataToCardOnMainPage",
     value: function () {
-      var _InsertUserDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var _InsertUserDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
         var userIdLinks, _t7;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
@@ -145,12 +145,11 @@ var GetDataFromUserService = /*#__PURE__*/function () {
               userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
               userIdLinks.forEach(function (element) {
                 var link = element.href;
-                element.href = "/user/".concat(window.authManager.userData.userId);
+                element.href = "/user/".concat(userId);
               });
               _context3.p = 1;
               _context3.n = 2;
-              return this.GetUserById(window.authManager.userData.userId).then(function (user) {
-                console.log('Данные пользователя:', user);
+              return this.GetUserById(userId).then(function (user) {
                 var fullName = document.querySelector('[data-user-fullname]');
                 var phone = document.querySelector('[data-user-phone]');
                 var carsCount = document.querySelector('[data-user-carslist]');
@@ -179,11 +178,84 @@ var GetDataFromUserService = /*#__PURE__*/function () {
           }
         }, _callee3, this, [[1, 3]]);
       }));
-      function InsertUserDataToCardOnMainPage() {
+      function InsertUserDataToCardOnMainPage(_x3) {
         return _InsertUserDataToCardOnMainPage.apply(this, arguments);
       }
       return InsertUserDataToCardOnMainPage;
     }()
+  }, {
+    key: "InsertUserDataToProfile",
+    value: function () {
+      var _InsertUserDataToProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId) {
+        var _this = this;
+        var _t8;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _context4.p = 0;
+              _context4.n = 1;
+              return this.GetUserById(userId).then(function (user) {
+                var setValue = function setValue(id, value) {
+                  document.getElementById(id).value = value !== null && value !== '' ? value : '';
+                };
+                setValue('firstName', user.firstName);
+                setValue('lastName', user.lastName);
+                setValue('patronymic', user.patronymic);
+                setValue('birthday', user.age);
+                setValue('phoneNumber', user.phoneNumber);
+                setValue('email', user.email);
+                user.cars.forEach(function (car) {
+                  _this.SetUserCarInProfile(car);
+                });
+              })["catch"](function (error) {
+                console.error('Ошибка получения данных пользователя:', error);
+              });
+            case 1:
+              _context4.n = 3;
+              break;
+            case 2:
+              _context4.p = 2;
+              _t8 = _context4.v;
+              console.log(_t8);
+            case 3:
+              return _context4.a(2);
+          }
+        }, _callee4, this, [[0, 2]]);
+      }));
+      function InsertUserDataToProfile(_x4) {
+        return _InsertUserDataToProfile.apply(this, arguments);
+      }
+      return InsertUserDataToProfile;
+    }()
+  }, {
+    key: "SetUserCarInProfile",
+    value: function SetUserCarInProfile(car) {
+      var carTemplate = "\n            <div class=\"car\" data-car-id=\"".concat(car.id, "\">\n                <div class=\"form-group d-none\">\n                    <input type=\"text\" placeholder=\" \" name=\"car-id\" id=\"car-id-").concat(car.id, "\" value=\"").concat(car.id, "\" />\n                    <label for=\"car-id-").concat(car.id, "\">id-\u043C\u0430\u0448\u0438\u043D\u044B</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" placeholder=\" \" name=\"mark\" id=\"mark-").concat(car.id, "\" value=\"").concat(car.mark, "\" />\n                    <label for=\"mark-").concat(car.id, "\">\u041C\u0430\u0440\u043A\u0430</label>\n                    <div class=\"error invisible\" data-error=\"mark\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u0430\u0440\u043A\u0430 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" placeholder=\" \" name=\"model\" id=\"model-").concat(car.id, "\" value=\"").concat(car.model, "\" />\n                    <label for=\"model-").concat(car.id, "\">\u041C\u043E\u0434\u0435\u043B\u044C</label>\n                    <div class=\"error invisible\" data-error=\"model\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" placeholder=\" \" name=\"color\" id=\"color-").concat(car.id, "\" value=\"").concat(car.color, "\" />\n                    <label for=\"color-").concat(car.id, "\">\u041C\u043E\u0434\u0435\u043B\u044C</label>\n                    <div class=\"error invisible\" data-error=\"firstName\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(car.id, "\" value=\"").concat(car.number, "\" />\n                    <label for=\"number-").concat(car.id, "\">\u041D\u043E\u043C\u0435\u0440</label>\n                    <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group d-none\">\n                    <input type=\"text\" placeholder=\" \" name=\"car-user-id\" id=\"car-user-id-").concat(car.id, "\" value=\"").concat(car.userId, "\" />\n                    <label for=\"car-user-id-").concat(car.id, "\">id \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n            </div>\n        ");
+      var carsList = document.querySelector('.cars-list');
+      if (carsList) {
+        carsList.insertAdjacentHTML('beforeend', carTemplate);
+      }
+    }
+  }, {
+    key: "collectUserDataFromProfile",
+    value: function collectUserDataFromProfile() {
+      var cars = document.querySelectorAll('.cars-list .car');
+      var carsData = [];
+      cars.forEach(function (car) {
+        var _car$querySelector, _car$querySelector2, _car$querySelector3, _car$querySelector4, _car$querySelector5, _car$querySelector6;
+        var carId = car.dataset.carId || ((_car$querySelector = car.querySelector('input[name="car-id"]')) === null || _car$querySelector === void 0 ? void 0 : _car$querySelector.value) || null;
+        var userId = ((_car$querySelector2 = car.querySelector('input[name="car-user-id"]')) === null || _car$querySelector2 === void 0 ? void 0 : _car$querySelector2.value) || null;
+        var carData = {
+          id: carId ? parseInt(carId) : null,
+          mark: ((_car$querySelector3 = car.querySelector('input[name="mark"]')) === null || _car$querySelector3 === void 0 ? void 0 : _car$querySelector3.value) || '',
+          model: ((_car$querySelector4 = car.querySelector('input[name="model"]')) === null || _car$querySelector4 === void 0 ? void 0 : _car$querySelector4.value) || '',
+          color: ((_car$querySelector5 = car.querySelector('input[name="color"]')) === null || _car$querySelector5 === void 0 ? void 0 : _car$querySelector5.value) || '',
+          number: ((_car$querySelector6 = car.querySelector('input[name="number"]')) === null || _car$querySelector6 === void 0 ? void 0 : _car$querySelector6.value) || '',
+          userId: userId
+        };
+        carsData.push(carData);
+      });
+    }
   }]);
 }();
 document.addEventListener('authStateChanged', function () {
@@ -193,7 +265,13 @@ document.addEventListener('authStateChanged', function () {
   if (isAuthenticated && userData) {
     var userDataService = new GetDataFromUserService();
     if (window.location.pathname == '/') {
-      userDataService.InsertUserDataToCardOnMainPage();
+      userDataService.InsertUserDataToCardOnMainPage(window.authManager.userData.userId);
+    }
+    if (document.getElementById('user-profile')) {
+      userDataService.InsertUserDataToProfile(window.authManager.userData.userId);
+      document.querySelectorAll('#user-profile .form-group input').forEach(function (el) {
+        el.addEventListener('change', function () {});
+      });
     }
   }
 });
@@ -257,9 +335,6 @@ var AuthManager = /*#__PURE__*/function () {
               _context.n = 3;
               return this.checkStoredToken();
             case 3:
-              // Обновляем UI в зависимости от состояния авторизации
-              this.updateUI();
-            case 4:
               return _context.a(2);
           }
         }, _callee, this);
@@ -522,6 +597,7 @@ var AuthManager = /*#__PURE__*/function () {
         }
       });
       document.dispatchEvent(authEvent);
+      console.log("\u0433\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044F \u0441\u043E\u0431\u044B\u0442\u0438\u044F");
     }
 
     /**

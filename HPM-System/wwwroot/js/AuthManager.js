@@ -28,9 +28,6 @@
             // Проверяем сохраненный токен
             await this.checkStoredToken();
         }
-
-        // Обновляем UI в зависимости от состояния авторизации
-        this.updateUI();
     }
 
     /**
@@ -213,6 +210,7 @@
             }
         });
         document.dispatchEvent(authEvent);
+        console.log(`генерация события`);
     }
 
     /**
