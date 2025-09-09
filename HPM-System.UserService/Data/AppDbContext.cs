@@ -33,7 +33,7 @@ namespace HPM_System.UserService.Data
                 entity.Property(u => u.Patronymic);
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.PhoneNumber).IsRequired();
-                entity.Property(u => u.Age);
+                entity.Property(u => u.Birthday);
                 entity.HasIndex(u => u.Email).IsUnique();  // Уникальный индекс на Email
                 entity.HasIndex(u => u.PhoneNumber).IsUnique();  // Уникальный индекс на Номер телефона
             });

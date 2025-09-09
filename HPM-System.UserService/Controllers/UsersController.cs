@@ -220,7 +220,7 @@ namespace HPM_System.UserService.Controllers
                 existingUser.Patronymic = updatedUser.Patronymic;
                 existingUser.Email = updatedUser.Email;
                 existingUser.PhoneNumber = updatedUser.PhoneNumber;
-                existingUser.Age = updatedUser.Age;
+                existingUser.Birthday = updatedUser.Birthday;
                 existingUser.Cars = updatedUser.Cars;
 
                 _context.Users.Update(existingUser);

@@ -1,4 +1,4 @@
-class GetDataFromUserService {
+class UserProfile {
     constructor () {
         this.userApiAddress = 'http://localhost:55680';
     }
@@ -72,13 +72,26 @@ class GetDataFromUserService {
         try {
             await this.GetUserById(userId).then(user => {
                 const setValue = (id, value) => {
-                    document.getElementById(id).value = value !== null && value !== '' ? value : '';
+                    const element = document.getElementById(id);
+                    if (element) {
+                        // Специальная обработка для даты рождения
+                        if (id === 'birthday' && value) {
+                            // Преобразуем ISO строку в формат YYYY-MM-DD
+                            const date = new Date(value);
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            element.value = `${year}-${month}-${day}`;
+                        } else {
+                            element.value = value !== null && value !== '' ? value : '';
+                        }
+                    }
                 };
                 
                 setValue('firstName', user.firstName);
                 setValue('lastName', user.lastName);
                 setValue('patronymic', user.patronymic);
-                setValue('birthday', user.age);
+                setValue('birthday', user.birthday);
                 setValue('phoneNumber', user.phoneNumber);
                 setValue('email', user.email);  
                 
@@ -135,10 +148,12 @@ class GetDataFromUserService {
     }
 
     collectUserDataFromProfile() {
-        const cars = document.querySelectorAll('.cars-list .car');
-        const carsData = [];
+        let userData = {};
+        let carsData = [];
 
-        
+        // собираем данные по машинам
+        const cars = document.querySelectorAll('.cars-list .car');
+
         cars.forEach(car => {
             const carId = car.dataset.carId || car.querySelector('input[name="car-id"]')?.value || null;
             const userId = car.querySelector('input[name="car-user-id"]')?.value || null;
@@ -155,7 +170,40 @@ class GetDataFromUserService {
             carsData.push(carData);
         });
         
-        
+        //Собираем данные по пользователю
+        const userProfileInputs = document.querySelectorAll('.profile-group[data-group="user"] input');
+        userProfileInputs.forEach(input => {
+            const inputKey = input.id;
+            let inputValue = input.value;
+
+            // Обработка даты рождения
+            if (inputKey === 'birthday' && inputValue) {
+                // Преобразуем дату в формат ISO с UTC
+                let date = new Date(inputValue);
+                // Устанавливаем время в 00:00:00 и конвертируем в UTC
+                date.setHours(0, 0, 0, 0);
+                inputValue = date.toISOString();
+            }
+
+            userData[inputKey] = inputValue;
+        });
+
+        userData.cars = carsData;
+        return userData;
+    }
+
+    async updateUserToDB (id, userData) {        
+        try {
+            const response = await fetch(`${this.userApiAddress}/api/Users/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...userData, id })
+            });
+            if (!response.ok) throw new Error(await response.text());
+            console.log(`Пользователь ${id} обновлён`);
+        } catch (error) {
+            console.error(`Ошибка обновления пользователя ${id}:`, error);
+        }
     }
 }
 
@@ -163,19 +211,18 @@ document.addEventListener('authStateChanged', () => {
     const { isAuthenticated, userData } = event.detail;
 
     if (isAuthenticated && userData) {
-        const userDataService = new GetDataFromUserService();
+        const userProfile = new UserProfile();
+        const userId = window.authManager.userData.userId;
 
         if (window.location.pathname == '/') {
-            userDataService.InsertUserDataToCardOnMainPage(window.authManager.userData.userId);
+            userProfile.InsertUserDataToCardOnMainPage(userId);
         }
         
         if (document.getElementById('user-profile')) {
-            userDataService.InsertUserDataToProfile (window.authManager.userData.userId);
+            userProfile.InsertUserDataToProfile (userId);
 
-            document.querySelectorAll('#user-profile .form-group input').forEach(el => {
-                el.addEventListener('change', () => {
-
-                });
+            document.querySelector(`.btn[data-action="save-user-data"]`).addEventListener('click', () => {
+                userProfile.updateUserToDB(window.authManager.userData.userId, userProfile.collectUserDataFromProfile());
             })
         }
     }

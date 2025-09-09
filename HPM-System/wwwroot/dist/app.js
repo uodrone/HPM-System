@@ -18,10 +18,562 @@
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other entry modules.
 (() => {
+/*!*************************************!*\
+  !*** ./wwwroot/js/UserValidator.js ***!
+  \*************************************/
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var UserValidator = /*#__PURE__*/function () {
+  function UserValidator() {
+    _classCallCheck(this, UserValidator);
+    // Разрешенные буквы в российских номерах (совпадают с латинскими)
+    this.allowedLetters = 'АВЕКМНОРСТУХ';
+
+    // Коды регионов России
+    this.validRegionCodes = [
+    // Основные регионы
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99',
+    // Трёхзначные коды для крупных регионов
+    '102', '113', '116', '117', '118', '119', '121', '122', '123', '124', '125', '126', '134', '136', '138', '142', '150', '152', '154', '159', '161', '163', '164', '173', '174', '177', '178', '186', '190', '196', '197', '198', '199', '702', '716', '750', '761', '763', '774', '777', '790', '799'];
+
+    // Запрещенные комбинации
+    this.forbiddenCombinations = [/.*ХУ[ЙИ].*/, /.*БЛ[ЯА].*/, /.*П[ИИ]З.*/, /.*МУД.*/, /.*ГОВ.*/];
+  }
+
+  /**
+   * Валидация имени/фамилии/отчества
+   */
+  return _createClass(UserValidator, [{
+    key: "validateName",
+    value: function validateName(name, fieldName) {
+      var required = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      if (!name || name.trim() === '') {
+        if (required) {
+          return {
+            isValid: false,
+            error: "".concat(fieldName, " \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0437\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F")
+          };
+        }
+        return {
+          isValid: true
+        };
+      }
+      if (name.length > 50) {
+        return {
+          isValid: false,
+          error: "".concat(fieldName, " \u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u0434\u043B\u0438\u043D\u043D\u0435\u0435 50 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432")
+        };
+      }
+      if (!/^[а-яё\s\-']+$/i.test(name)) {
+        return {
+          isValid: false,
+          error: "".concat(fieldName, " \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u0442\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u0440\u0443\u0441\u0441\u043A\u0438\u0435 \u0431\u0443\u043A\u0432\u044B, \u043F\u0440\u043E\u0431\u0435\u043B\u044B, \u0434\u0435\u0444\u0438\u0441\u044B \u0438 \u0430\u043F\u043E\u0441\u0442\u0440\u043E\u0444\u044B")
+        };
+      }
+
+      // Проверка на слишком много пробелов подряд
+      if (/\s{2,}/.test(name)) {
+        return {
+          isValid: false,
+          error: "".concat(fieldName, " \u043D\u0435 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u0442\u044C \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E \u043F\u0440\u043E\u0431\u0435\u043B\u043E\u0432 \u043F\u043E\u0434\u0440\u044F\u0434")
+        };
+      }
+
+      // Проверка на пробелы в начале/конце
+      if (name !== name.trim()) {
+        return {
+          isValid: false,
+          error: "".concat(fieldName, " \u043D\u0435 \u0434\u043E\u043B\u0436\u043D\u043E \u043D\u0430\u0447\u0438\u043D\u0430\u0442\u044C\u0441\u044F \u0438\u043B\u0438 \u0437\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0442\u044C\u0441\u044F \u043F\u0440\u043E\u0431\u0435\u043B\u043E\u043C")
+        };
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация даты рождения
+     */
+  }, {
+    key: "validateBirthday",
+    value: function validateBirthday(birthday) {
+      if (!birthday) {
+        return {
+          isValid: true
+        }; // Дата рождения необязательна
+      }
+      var birthDate = new Date(birthday);
+      var today = new Date();
+      var minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
+      var maxDate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate()); // Минимальный возраст 14 лет
+
+      if (isNaN(birthDate.getTime())) {
+        return {
+          isValid: false,
+          error: 'Неверный формат даты'
+        };
+      }
+      if (birthDate > today) {
+        return {
+          isValid: false,
+          error: 'Дата рождения не может быть в будущем'
+        };
+      }
+      if (birthDate < minDate) {
+        return {
+          isValid: false,
+          error: 'Дата рождения не может быть более 120 лет назад'
+        };
+      }
+      if (birthDate > maxDate) {
+        return {
+          isValid: false,
+          error: 'Минимальный возраст должен быть 14 лет'
+        };
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация номера телефона
+     */
+  }, {
+    key: "validatePhoneNumber",
+    value: function validatePhoneNumber(phone) {
+      if (!phone || phone.trim() === '') {
+        return {
+          isValid: false,
+          error: 'Номер телефона обязателен для заполнения'
+        };
+      }
+
+      // Убираем все символы кроме цифр и +
+      var cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+
+      // Различные форматы российских номеров
+      var phonePatterns = [/^(\+7|8)\d{10}$/,
+      // +7XXXXXXXXXX или 8XXXXXXXXXX
+      /^\+7\d{10}$/,
+      // +7XXXXXXXXXX
+      /^8\d{10}$/,
+      // 8XXXXXXXXXX
+      /^7\d{10}$/ // 7XXXXXXXXXX
+      ];
+      var isValidFormat = false;
+      for (var _i = 0, _phonePatterns = phonePatterns; _i < _phonePatterns.length; _i++) {
+        var pattern = _phonePatterns[_i];
+        if (pattern.test(cleanPhone)) {
+          isValidFormat = true;
+          break;
+        }
+      }
+      if (!isValidFormat) {
+        return {
+          isValid: false,
+          error: 'Неверный формат номера телефона. Используйте российский формат'
+        };
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация email
+     */
+  }, {
+    key: "validateEmail",
+    value: function validateEmail(email) {
+      if (!email || email.trim() === '') {
+        return {
+          isValid: false,
+          error: 'Email обязателен для заполнения'
+        };
+      }
+      if (email.length > 100) {
+        return {
+          isValid: false,
+          error: 'Email не может быть длиннее 100 символов'
+        };
+      }
+      var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        return {
+          isValid: false,
+          error: 'Неверный формат email'
+        };
+      }
+
+      // Проверка на запрещенные символы в локальной части
+      var localPart = email.split('@')[0];
+      if (localPart.startsWith('.') || localPart.endsWith('.') || localPart.includes('..')) {
+        return {
+          isValid: false,
+          error: 'Неверный формат email'
+        };
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация номера автомобиля
+     */
+  }, {
+    key: "validateCarNumber",
+    value: function validateCarNumber(number) {
+      if (!number || number.trim() === '') {
+        return {
+          isValid: false,
+          error: 'Номер автомобиля обязателен'
+        };
+      }
+      var cleanNumber = number.replace(/[\s\-]/g, '').toUpperCase();
+
+      // Проверка длины
+      if (cleanNumber.length < 8 || cleanNumber.length > 9) {
+        return {
+          isValid: false,
+          error: 'Неверная длина номера (должно быть 8-9 символов)'
+        };
+      }
+
+      // Различные форматы российских номеров
+      var patterns = [{
+        pattern: /^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}$/,
+        type: 'стандартный'
+      }, {
+        pattern: /^[АВЕКМНОРСТУХ]{2}\d{3}[АВЕКМНОРСТУХ]\d{2,3}$/,
+        type: 'такси'
+      }, {
+        pattern: /^[АВЕКМНОРСТУХ]{2}\d{4}\d{2,3}$/,
+        type: 'прицеп'
+      }, {
+        pattern: /^\d{4}[АВЕКМНОРСТУХ]{2}\d{2,3}$/,
+        type: 'мотоцикл'
+      }, {
+        pattern: /^Т\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}$/,
+        type: 'транзит'
+      }];
+      var isValidFormat = false;
+      for (var _i2 = 0, _patterns = patterns; _i2 < _patterns.length; _i2++) {
+        var pattern = _patterns[_i2].pattern;
+        if (pattern.test(cleanNumber)) {
+          isValidFormat = true;
+          break;
+        }
+      }
+      if (!isValidFormat) {
+        return {
+          isValid: false,
+          error: 'Неверный формат российского номера'
+        };
+      }
+
+      // Проверка кода региона
+      var regionCode = cleanNumber.slice(-3);
+      var twoDigitCode = regionCode.slice(-2);
+      var threeDigitCode = regionCode;
+      if (!this.validRegionCodes.includes(twoDigitCode) && !this.validRegionCodes.includes(threeDigitCode)) {
+        return {
+          isValid: false,
+          error: 'Неверный код региона'
+        };
+      }
+
+      // Проверка на запрещенные комбинации
+      var _iterator = _createForOfIteratorHelper(this.forbiddenCombinations),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var forbidden = _step.value;
+          if (forbidden.test(cleanNumber)) {
+            return {
+              isValid: false,
+              error: 'Недопустимая комбинация символов в номере'
+            };
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация марки/модели автомобиля
+     */
+  }, {
+    key: "validateCarBrand",
+    value: function validateCarBrand(value, fieldName) {
+      if (!value || value.trim() === '') {
+        return {
+          isValid: true
+        }; // Необязательное поле
+      }
+      if (value.length > 100) {
+        return {
+          isValid: false,
+          error: "".concat(fieldName, " \u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u0434\u043B\u0438\u043D\u043D\u0435\u0435 100 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432")
+        };
+      }
+      if (!/^[а-яёa-z0-9\s\-._]+$/i.test(value)) {
+        return {
+          isValid: false,
+          error: "".concat(fieldName, " \u0434\u043E\u043B\u0436\u043D\u0430 \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u0442\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u0431\u0443\u043A\u0432\u044B, \u0446\u0438\u0444\u0440\u044B, \u043F\u0440\u043E\u0431\u0435\u043B\u044B, \u0434\u0435\u0444\u0438\u0441\u044B, \u0442\u043E\u0447\u043A\u0438 \u0438 \u043F\u043E\u0434\u0447\u0435\u0440\u043A\u0438\u0432\u0430\u043D\u0438\u044F")
+        };
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация цвета автомобиля
+     */
+  }, {
+    key: "validateCarColor",
+    value: function validateCarColor(color) {
+      if (!color || color.trim() === '') {
+        return {
+          isValid: true
+        }; // Необязательное поле
+      }
+      if (color.length > 50) {
+        return {
+          isValid: false,
+          error: 'Цвет не может быть длиннее 50 символов'
+        };
+      }
+      if (!/^[а-яёa-z\s\-]+$/i.test(color)) {
+        return {
+          isValid: false,
+          error: 'Цвет должен содержать только буквы, пробелы и дефисы'
+        };
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Валидация одного автомобиля
+     */
+  }, {
+    key: "validateCar",
+    value: function validateCar(car) {
+      var errors = {};
+      var isValid = true;
+
+      // Валидация марки
+      var markValidation = this.validateCarBrand(car.mark, 'Марка');
+      if (!markValidation.isValid) {
+        errors.mark = markValidation.error;
+        isValid = false;
+      }
+
+      // Валидация модели
+      var modelValidation = this.validateCarBrand(car.model, 'Модель');
+      if (!modelValidation.isValid) {
+        errors.model = modelValidation.error;
+        isValid = false;
+      }
+
+      // Валидация цвета
+      var colorValidation = this.validateCarColor(car.color);
+      if (!colorValidation.isValid) {
+        errors.color = colorValidation.error;
+        isValid = false;
+      }
+
+      // Валидация номера
+      var numberValidation = this.validateCarNumber(car.number);
+      if (!numberValidation.isValid) {
+        errors.number = numberValidation.error;
+        isValid = false;
+      }
+      return {
+        isValid: isValid,
+        errors: errors
+      };
+    }
+
+    /**
+     * Проверка уникальности номеров автомобилей
+     */
+  }, {
+    key: "validateUniqueCarNumbers",
+    value: function validateUniqueCarNumbers(cars) {
+      var numbers = cars.map(function (car) {
+        var _car$number;
+        return (_car$number = car.number) === null || _car$number === void 0 ? void 0 : _car$number.replace(/[\s\-]/g, '').toUpperCase();
+      }).filter(Boolean);
+      var duplicates = [];
+      var seen = new Set();
+      numbers.forEach(function (number, index) {
+        if (seen.has(number)) {
+          duplicates.push(index);
+        } else {
+          seen.add(number);
+          // Также добавляем индекс первого вхождения дубликата
+          var firstIndex = numbers.indexOf(number);
+          if (firstIndex !== index && !duplicates.includes(firstIndex)) {
+            duplicates.push(firstIndex);
+          }
+        }
+      });
+      return duplicates;
+    }
+
+    /**
+     * Полная валидация данных пользователя
+     */
+  }, {
+    key: "validateUserData",
+    value: function validateUserData(userData) {
+      var _this = this;
+      var errors = {
+        user: {},
+        cars: []
+      };
+      var isValid = true;
+
+      // Валидация данных пользователя
+      var firstNameValidation = this.validateName(userData.firstName, 'Имя', true);
+      if (!firstNameValidation.isValid) {
+        errors.user.firstName = firstNameValidation.error;
+        isValid = false;
+      }
+      var lastNameValidation = this.validateName(userData.lastName, 'Фамилия', true);
+      if (!lastNameValidation.isValid) {
+        errors.user.lastName = lastNameValidation.error;
+        isValid = false;
+      }
+      var patronymicValidation = this.validateName(userData.patronymic, 'Отчество', false);
+      if (!patronymicValidation.isValid) {
+        errors.user.patronymic = patronymicValidation.error;
+        isValid = false;
+      }
+      var birthdayValidation = this.validateBirthday(userData.birthday);
+      if (!birthdayValidation.isValid) {
+        errors.user.birthday = birthdayValidation.error;
+        isValid = false;
+      }
+      var phoneValidation = this.validatePhoneNumber(userData.phoneNumber);
+      if (!phoneValidation.isValid) {
+        errors.user.phoneNumber = phoneValidation.error;
+        isValid = false;
+      }
+      var emailValidation = this.validateEmail(userData.email);
+      if (!emailValidation.isValid) {
+        errors.user.email = emailValidation.error;
+        isValid = false;
+      }
+
+      // Валидация автомобилей
+      if (userData.cars && userData.cars.length > 0) {
+        userData.cars.forEach(function (car, index) {
+          var carValidation = _this.validateCar(car);
+          if (!carValidation.isValid) {
+            errors.cars[index] = carValidation.errors;
+            isValid = false;
+          }
+        });
+
+        // Проверка уникальности номеров
+        var duplicateIndexes = this.validateUniqueCarNumbers(userData.cars);
+        duplicateIndexes.forEach(function (index) {
+          if (!errors.cars[index]) errors.cars[index] = {};
+          errors.cars[index].number = 'Номер автомобиля должен быть уникальным';
+          isValid = false;
+        });
+      }
+      return {
+        isValid: isValid,
+        errors: errors
+      };
+    }
+
+    /**
+     * Форматирование номера автомобиля
+     */
+  }, {
+    key: "formatCarNumber",
+    value: function formatCarNumber(input) {
+      var value = input.value.replace(/[^а-яёА-ЯЁ0-9ТтTt]/g, '').toUpperCase();
+
+      // Заменяем русские буквы на допустимые
+      var letterMap = {
+        'А': 'А',
+        'В': 'В',
+        'Е': 'Е',
+        'К': 'К',
+        'М': 'М',
+        'Н': 'Н',
+        'О': 'О',
+        'Р': 'Р',
+        'С': 'С',
+        'Т': 'Т',
+        'У': 'У',
+        'Х': 'Х',
+        'T': 'Т' // Латинская T заменяется на русскую Т
+      };
+      value = value.split('').map(function (_char) {
+        return letterMap[_char] || _char;
+      }).join('');
+
+      // Ограничиваем длину
+      if (value.length > 9) {
+        value = value.slice(0, 9);
+      }
+      input.value = value;
+    }
+
+    /**
+     * Форматирование номера телефона
+     */
+  }, {
+    key: "formatPhoneNumber",
+    value: function formatPhoneNumber(input) {
+      var value = input.value.replace(/\D/g, '');
+      if (value.startsWith('8') && value.length > 1) {
+        value = '7' + value.slice(1);
+      }
+      if (value.startsWith('7') && value.length <= 11) {
+        var formatted = value.replace(/^7(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 ($1) $2-$3-$4');
+        input.value = formatted;
+      } else if (value.length <= 10) {
+        var _formatted = value.replace(/^(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 ($1) $2-$3-$4');
+        input.value = _formatted;
+      }
+    }
+  }]);
+}();
+})();
+
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other entry modules.
+(() => {
 /*!**********************************************!*\
   !*** ./wwwroot/js/GetDataFromUserService.js ***!
   \**********************************************/
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -31,12 +583,12 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var GetDataFromUserService = /*#__PURE__*/function () {
-  function GetDataFromUserService() {
-    _classCallCheck(this, GetDataFromUserService);
+var UserProfile = /*#__PURE__*/function () {
+  function UserProfile() {
+    _classCallCheck(this, UserProfile);
     this.userApiAddress = 'http://localhost:55680';
   }
-  return _createClass(GetDataFromUserService, [{
+  return _createClass(UserProfile, [{
     key: "GetUserById",
     value: function () {
       var _GetUserById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
@@ -196,12 +748,25 @@ var GetDataFromUserService = /*#__PURE__*/function () {
               _context4.n = 1;
               return this.GetUserById(userId).then(function (user) {
                 var setValue = function setValue(id, value) {
-                  document.getElementById(id).value = value !== null && value !== '' ? value : '';
+                  var element = document.getElementById(id);
+                  if (element) {
+                    // Специальная обработка для даты рождения
+                    if (id === 'birthday' && value) {
+                      // Преобразуем ISO строку в формат YYYY-MM-DD
+                      var date = new Date(value);
+                      var year = date.getFullYear();
+                      var month = String(date.getMonth() + 1).padStart(2, '0');
+                      var day = String(date.getDate()).padStart(2, '0');
+                      element.value = "".concat(year, "-").concat(month, "-").concat(day);
+                    } else {
+                      element.value = value !== null && value !== '' ? value : '';
+                    }
+                  }
                 };
                 setValue('firstName', user.firstName);
                 setValue('lastName', user.lastName);
                 setValue('patronymic', user.patronymic);
-                setValue('birthday', user.age);
+                setValue('birthday', user.birthday);
                 setValue('phoneNumber', user.phoneNumber);
                 setValue('email', user.email);
                 user.cars.forEach(function (car) {
@@ -239,8 +804,11 @@ var GetDataFromUserService = /*#__PURE__*/function () {
   }, {
     key: "collectUserDataFromProfile",
     value: function collectUserDataFromProfile() {
-      var cars = document.querySelectorAll('.cars-list .car');
+      var userData = {};
       var carsData = [];
+
+      // собираем данные по машинам
+      var cars = document.querySelectorAll('.cars-list .car');
       cars.forEach(function (car) {
         var _car$querySelector, _car$querySelector2, _car$querySelector3, _car$querySelector4, _car$querySelector5, _car$querySelector6;
         var carId = car.dataset.carId || ((_car$querySelector = car.querySelector('input[name="car-id"]')) === null || _car$querySelector === void 0 ? void 0 : _car$querySelector.value) || null;
@@ -255,7 +823,75 @@ var GetDataFromUserService = /*#__PURE__*/function () {
         };
         carsData.push(carData);
       });
+
+      //Собираем данные по пользователю
+      var userProfileInputs = document.querySelectorAll('.profile-group[data-group="user"] input');
+      userProfileInputs.forEach(function (input) {
+        var inputKey = input.id;
+        var inputValue = input.value;
+
+        // Обработка даты рождения
+        if (inputKey === 'birthday' && inputValue) {
+          // Преобразуем дату в формат ISO с UTC
+          var date = new Date(inputValue);
+          // Устанавливаем время в 00:00:00 и конвертируем в UTC
+          date.setHours(0, 0, 0, 0);
+          inputValue = date.toISOString();
+        }
+        userData[inputKey] = inputValue;
+      });
+      userData.cars = carsData;
+      return userData;
     }
+  }, {
+    key: "updateUserToDB",
+    value: function () {
+      var _updateUserToDB = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id, userData) {
+        var response, _t9, _t0, _t1;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(id), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(_objectSpread(_objectSpread({}, userData), {}, {
+                  id: id
+                }))
+              });
+            case 1:
+              response = _context5.v;
+              if (response.ok) {
+                _context5.n = 3;
+                break;
+              }
+              _t9 = Error;
+              _context5.n = 2;
+              return response.text();
+            case 2:
+              _t0 = _context5.v;
+              throw new _t9(_t0);
+            case 3:
+              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D"));
+              _context5.n = 5;
+              break;
+            case 4:
+              _context5.p = 4;
+              _t1 = _context5.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), _t1);
+            case 5:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 4]]);
+      }));
+      function updateUserToDB(_x5, _x6) {
+        return _updateUserToDB.apply(this, arguments);
+      }
+      return updateUserToDB;
+    }()
   }]);
 }();
 document.addEventListener('authStateChanged', function () {
@@ -263,14 +899,15 @@ document.addEventListener('authStateChanged', function () {
     isAuthenticated = _event$detail.isAuthenticated,
     userData = _event$detail.userData;
   if (isAuthenticated && userData) {
-    var userDataService = new GetDataFromUserService();
+    var userProfile = new UserProfile();
+    var userId = window.authManager.userData.userId;
     if (window.location.pathname == '/') {
-      userDataService.InsertUserDataToCardOnMainPage(window.authManager.userData.userId);
+      userProfile.InsertUserDataToCardOnMainPage(userId);
     }
     if (document.getElementById('user-profile')) {
-      userDataService.InsertUserDataToProfile(window.authManager.userData.userId);
-      document.querySelectorAll('#user-profile .form-group input').forEach(function (el) {
-        el.addEventListener('change', function () {});
+      userProfile.InsertUserDataToProfile(userId);
+      document.querySelector(".btn[data-action=\"save-user-data\"]").addEventListener('click', function () {
+        userProfile.updateUserToDB(window.authManager.userData.userId, userProfile.collectUserDataFromProfile());
       });
     }
   }
