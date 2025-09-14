@@ -1,4 +1,4 @@
-﻿class UserValidator {
+﻿export class UserValidator {
     constructor() {
         // Разрешенные буквы в российских номерах (совпадают с латинскими)
         this.allowedLetters = 'АВЕКМНОРСТУХ';

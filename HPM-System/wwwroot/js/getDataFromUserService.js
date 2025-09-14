@@ -1,3 +1,5 @@
+import { UserValidator } from './UserValidator.js';
+
 class UserProfile {
     constructor () {
         this.userApiAddress = 'http://localhost:55680';
@@ -18,7 +20,7 @@ class UserProfile {
         }
     }
 
-    async getCarsByUserId(userId) {
+    async GetCarsByUserId(userId) {
         try {
             const response = await fetch(`${this.userApiAddress}/api/Cars/by-user/${userId}`, {
                 method: 'GET',
@@ -68,6 +70,15 @@ class UserProfile {
         }
     }
 
+    async InsertCarsToUserProfile (userId) {
+        const cars = await this.GetCarsByUserId(userId);
+        const carsContainer = document.querySelector('.profile-group[data-group="cars"] .cars-list');
+        carsContainer.innerHTML = '';     
+        cars.forEach(car => {
+            this.SetUserCar(car, carsContainer);
+        });
+    }
+
     async InsertUserDataToProfile (userId) {
         try {
             await this.GetUserById(userId).then(user => {
@@ -93,83 +104,79 @@ class UserProfile {
                 setValue('patronymic', user.patronymic);
                 setValue('birthday', user.birthday);
                 setValue('phoneNumber', user.phoneNumber);
-                setValue('email', user.email);  
-                
-                user.cars.forEach(car => {
-                    this.SetUserCarInProfile(car);
-                });
-               
+                setValue('email', user.email);
             }).catch(error => {
                 console.error('Ошибка получения данных пользователя:', error);
             });
+
+            await this.InsertCarsToUserProfile(userId);
         } catch (e) {
             console.log(e);
         }
     }
 
-    SetUserCarInProfile (car) {
+    SetCarTemplate (car) {
+        let buttonDelCar = `
+        <div class="remove-car" title="Удалить этот автомобиль">
+            &#10060;
+        </div>`;
+        let disabledOrNot = 'disabled';
+
+        if (!Object.keys(car).length) {
+            car.id = '';
+            car.mark = '';
+            car.model = '';
+            car.color = '';
+            car.number = '';
+            car.userId = window.authManager.userData.userId;
+
+            buttonDelCar = '';
+            disabledOrNot = '';
+        }
+
+        
+
         const carTemplate = `
             <div class="car" data-car-id="${car.id}">
-                <div class="form-group d-none">
-                    <input type="text" placeholder=" " name="car-id" id="car-id-${car.id}" value="${car.id}" />
-                    <label for="car-id-${car.id}">id-машины</label>
-                </div>
                 <div class="form-group">
-                    <input type="text" placeholder=" " name="mark" id="mark-${car.id}" value="${car.mark}" />
+                    <input ${disabledOrNot} type="text" placeholder=" " name="mark" id="mark-${car.id}" value="${car.mark}" />
                     <label for="mark-${car.id}">Марка</label>
                     <div class="error invisible" data-error="mark">Неверная марка машины</div>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder=" " name="model" id="model-${car.id}" value="${car.model}" />
+                    <input ${disabledOrNot} type="text" placeholder=" " name="model" id="model-${car.id}" value="${car.model}" />
                     <label for="model-${car.id}">Модель</label>
                     <div class="error invisible" data-error="model">Неверная модель машины</div>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder=" " name="color" id="color-${car.id}" value="${car.color}" />
-                    <label for="color-${car.id}">Модель</label>
-                    <div class="error invisible" data-error="firstName">Неверная модель машины</div>
+                    <input ${disabledOrNot} type="text" placeholder=" " name="color" id="color-${car.id}" value="${car.color}" />
+                    <label for="color-${car.id}">Цвет</label>
+                    <div class="error invisible" data-error="firstName">Неверный цвет машины</div>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder=" " name="number" id="number-${car.id}" value="${car.number}" />
+                    <input ${disabledOrNot} type="text" placeholder=" " name="number" id="number-${car.id}" value="${car.number}" />
                     <label for="number-${car.id}">Номер</label>
                     <div class="error invisible" data-error="number">Неверный номер машины</div>
                 </div>
-                <div class="form-group d-none">
-                    <input type="text" placeholder=" " name="car-user-id" id="car-user-id-${car.id}" value="${car.userId}" />
-                    <label for="car-user-id-${car.id}">id пользователя</label>
-                </div>
+                ${buttonDelCar}
             </div>
         `;
 
-        const carsList = document.querySelector('.cars-list');
+        return carTemplate;
+    }
+
+    SetUserCar (car, carsList) {
+        
+        let carTemplate = this.SetCarTemplate(car);        
+       
         if (carsList) {
             carsList.insertAdjacentHTML('beforeend', carTemplate);
         }
     }
 
-    collectUserDataFromProfile() {
+    CollectUserDataFromProfile() {
         let userData = {};
-        let carsData = [];
 
-        // собираем данные по машинам
-        const cars = document.querySelectorAll('.cars-list .car');
-
-        cars.forEach(car => {
-            const carId = car.dataset.carId || car.querySelector('input[name="car-id"]')?.value || null;
-            const userId = car.querySelector('input[name="car-user-id"]')?.value || null;
-            
-            const carData = {
-                id: carId ? parseInt(carId) : null,
-                mark: car.querySelector('input[name="mark"]')?.value || '',
-                model: car.querySelector('input[name="model"]')?.value || '',
-                color: car.querySelector('input[name="color"]')?.value || '',
-                number: car.querySelector('input[name="number"]')?.value || '',
-                userId: userId
-            };
-            
-            carsData.push(carData);
-        });
-        
         //Собираем данные по пользователю
         const userProfileInputs = document.querySelectorAll('.profile-group[data-group="user"] input');
         userProfileInputs.forEach(input => {
@@ -188,21 +195,63 @@ class UserProfile {
             userData[inputKey] = inputValue;
         });
 
-        userData.cars = carsData;
         return userData;
     }
 
-    async updateUserToDB (id, userData) {        
+    CollectCarsDataFromModal () {
+        let carData = {};
+
+        // собираем данные по машинам
+        let cars = document.querySelectorAll('.car-modal .car');
+        cars.forEach(car => {            
+            carData = {
+                mark: car.querySelector('input[name="mark"]')?.value || '',
+                model: car.querySelector('input[name="model"]')?.value || '',
+                color: car.querySelector('input[name="color"]')?.value || '',
+                number: car.querySelector('input[name="number"]')?.value || '',
+                userId: window.authManager.userData.userId
+            };
+        });
+
+        console.log(`Добавляемые машины:`);
+        console.log(carData);
+        return carData;
+    }
+
+    async UpdateUserToDB (id, userData) {        
         try {
             const response = await fetch(`${this.userApiAddress}/api/Users/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...userData, id })
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...userData, id })
             });
             if (!response.ok) throw new Error(await response.text());
             console.log(`Пользователь ${id} обновлён`);
         } catch (error) {
             console.error(`Ошибка обновления пользователя ${id}:`, error);
+        }
+    }
+
+    async AddCarToUser (userId) {
+        try {
+            const response = await fetch(`${this.userApiAddress}/api/Cars`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.CollectCarsDataFromModal ())
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const data = await response.json();
+            console.log('Автомобиль создан:', data);
+            //инсертим автомобиль в список
+            await this.InsertCarsToUserProfile(userId);
+            //зачищаем модалку и закрываем её
+            document.querySelectorAll('.car-modal input').forEach(input => {
+                input.value = '';
+            });
+            document.querySelector('.car-modal').closest('.modal-overview').classList.remove('active');
+            return data;
+        } catch (error) {
+            console.error('Ошибка создания автомобиля:', error);
         }
     }
 }
@@ -222,8 +271,12 @@ document.addEventListener('authStateChanged', () => {
             userProfile.InsertUserDataToProfile (userId);
 
             document.querySelector(`.btn[data-action="save-user-data"]`).addEventListener('click', () => {
-                userProfile.updateUserToDB(window.authManager.userData.userId, userProfile.collectUserDataFromProfile());
-            })
+                userProfile.UpdateUserToDB(window.authManager.userData.userId, userProfile.CollectUserDataFromProfile());
+            });
+
+            document.querySelector(`.btn[data-action="add-car-to-user"]`).addEventListener('click', () => {
+                userProfile.AddCarToUser(window.authManager.userData.userId);
+            });
         }
     }
 });

@@ -48,12 +48,48 @@
 				<div class="cars-list">
 				</div>
 
-				<a href="#" onclick="return false;" data-action="add-car-to-user">Добавить автомобиль</a>
+				<a href="#" onclick="return false;" data-modal="open">Добавить автомобиль</a>
 			</div>
 		</div>
 
 		<div class="my-5 text-center">
 			<div class="btn btn_primary" data-action="save-user-data">Сохранить</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal-overview">
+	<div class="modal-inner">
+		<div class="modal-content-wrapper car-modal">
+			<div class="modal-close" title="Закрыть"></div>
+			<div class="cars-list mt-5">
+				<div class="car" data-car-id="">
+					<div class="form-group">
+						<input type="text" placeholder=" " name="mark" id="mark-" value="">
+						<label for="mark-">Марка</label>
+						<div class="error invisible" data-error="mark">Неверная марка машины</div>
+					</div>
+					<div class="form-group">
+						<input type="text" placeholder=" " name="model" id="model-" value="">
+						<label for="model-">Модель</label>
+						<div class="error invisible" data-error="model">Неверная модель машины</div>
+					</div>
+					<div class="form-group">
+						<input type="text" placeholder=" " name="color" id="color-" value="">
+						<label for="color-">Цвет</label>
+						<div class="error invisible" data-error="firstName">Неверный цвет машины</div>
+					</div>
+					<div class="form-group">
+						<input type="text" placeholder=" " name="number" id="number-" value="">
+						<label for="number-">Номер</label>
+						<div class="error invisible" data-error="number">Неверный номер машины</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="mt-4 text-center">
+				<div class="btn btn_secondary" data-action="add-car-to-user">Добавить</div>
+			</div>
 		</div>
 	</div>
 </div>
