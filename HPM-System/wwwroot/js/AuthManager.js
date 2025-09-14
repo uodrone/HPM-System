@@ -1,5 +1,4 @@
-﻿// wwwroot/js/auth.js
-class AuthManager {
+﻿class AuthManager {
     constructor() {
         this.tokenKey = 'hpm_auth_token';
         this.userDataKey = 'hpm_user_data';
@@ -29,9 +28,6 @@ class AuthManager {
             // Проверяем сохраненный токен
             await this.checkStoredToken();
         }
-
-        // Обновляем UI в зависимости от состояния авторизации
-        this.updateUI();
     }
 
     /**
@@ -186,16 +182,11 @@ class AuthManager {
 
         // Обновляем информацию о пользователе
         if (this.isAuthenticated && this.userData) {
-            const userEmailElements = document.querySelectorAll('[data-user-email]');
-            const userIdElements = document.querySelectorAll('[data-user-id]');
+            const userEmailElements = document.querySelectorAll('[data-user-email]');            
 
             userEmailElements.forEach(element => {
                 element.textContent = this.userData.email;
-            });
-
-            userIdElements.forEach(element => {
-                element.textContent = this.userData.userId;
-            });
+            });            
         }
 
         // Обновляем состояние кнопок
@@ -219,6 +210,7 @@ class AuthManager {
             }
         });
         document.dispatchEvent(authEvent);
+        console.log(`генерация события`);
     }
 
     /**

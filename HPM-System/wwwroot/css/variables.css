@@ -23,6 +23,9 @@
     --tag-blue: #E8F2FF;
     --white-blue: #F6FAFF;
     --pink: #FEDEEA;
+    --modal-bg: rgba(47, 68, 86, .8);
     --standard-transition: .4s ease-in-out all;
     --radius-16: 16px;
+    --label-focus-size: 10px;
+    --label-focus-top: -15px;
 }

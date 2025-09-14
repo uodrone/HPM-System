@@ -1,0 +1,5 @@
+.start-secreen-greed {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    gap: 16px;
+}
