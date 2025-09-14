@@ -363,25 +363,6 @@
             isValid = false;
         }
 
-        // Валидация автомобилей
-        if (userData.cars && userData.cars.length > 0) {
-            userData.cars.forEach((car, index) => {
-                const carValidation = this.validateCar(car);
-                if (!carValidation.isValid) {
-                    errors.cars[index] = carValidation.errors;
-                    isValid = false;
-                }
-            });
-
-            // Проверка уникальности номеров
-            const duplicateIndexes = this.validateUniqueCarNumbers(userData.cars);
-            duplicateIndexes.forEach(index => {
-                if (!errors.cars[index]) errors.cars[index] = {};
-                errors.cars[index].number = 'Номер автомобиля должен быть уникальным';
-                isValid = false;
-            });
-        }
-
         return {
             isValid,
             errors

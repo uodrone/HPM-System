@@ -481,6 +481,608 @@ window.logout = function () {
 
 /***/ }),
 
+/***/ "./wwwroot/js/Modal.js":
+/*!*****************************!*\
+  !*** ./wwwroot/js/Modal.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Modal: () => (/* binding */ Modal)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var Modal = /*#__PURE__*/function () {
+  function Modal() {
+    _classCallCheck(this, Modal);
+    this.OpenModal();
+    this.CloseModal();
+    this.CloseModalOnOutsideClick();
+  }
+  return _createClass(Modal, [{
+    key: "OpenModal",
+    value: function OpenModal() {
+      document.querySelectorAll('[data-modal="open"]').forEach(function (modalCall) {
+        modalCall.addEventListener('click', function () {
+          document.querySelector('.modal-overview').classList.add('active');
+        });
+      });
+    }
+  }, {
+    key: "CloseModal",
+    value: function CloseModal() {
+      var crossModal = document.querySelectorAll('.modal-close');
+      crossModal.forEach(function (cross) {
+        cross.addEventListener('click', function () {
+          cross.closest('.modal-overview').classList.remove('active');
+        });
+      });
+    }
+  }, {
+    key: "CloseModalOnOutsideClick",
+    value: function CloseModalOnOutsideClick() {
+      var modalOverview = document.querySelector('.modal-overview');
+      modalOverview.addEventListener('click', function (event) {
+        if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {
+          modalOverview.classList.remove('active');
+        }
+      });
+    }
+  }], [{
+    key: "ShowNotification",
+    value: function ShowNotification(text, color) {
+      var notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = text;
+      notification.style.backgroundColor = color;
+
+      // Добавляем уведомление в документ
+      document.body.appendChild(notification);
+
+      // Через 2 секунды удаляем уведомление
+      setTimeout(function () {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 2000);
+    }
+  }]);
+}();
+document.addEventListener('DOMContentLoaded', function () {
+  new Modal();
+});
+
+/***/ }),
+
+/***/ "./wwwroot/js/UserProfile.js":
+/*!***********************************!*\
+  !*** ./wwwroot/js/UserProfile.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserValidator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserValidator.js */ "./wwwroot/js/UserValidator.js");
+/* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+var UserProfile = /*#__PURE__*/function () {
+  function UserProfile() {
+    _classCallCheck(this, UserProfile);
+    this.userApiAddress = 'http://localhost:55680';
+  }
+  return _createClass(UserProfile, [{
+    key: "GetUserById",
+    value: function () {
+      var _GetUserById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
+        var response, data, _t, _t2, _t3;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(userId), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context.v;
+              if (response.ok) {
+                _context.n = 3;
+                break;
+              }
+              _t = Error;
+              _context.n = 2;
+              return response.text();
+            case 2:
+              _t2 = _context.v;
+              throw new _t(_t2);
+            case 3:
+              _context.n = 4;
+              return response.json();
+            case 4:
+              data = _context.v;
+              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(userId, ":"), data);
+              return _context.a(2, data);
+            case 5:
+              _context.p = 5;
+              _t3 = _context.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
+            case 6:
+              return _context.a(2);
+          }
+        }, _callee, this, [[0, 5]]);
+      }));
+      function GetUserById(_x) {
+        return _GetUserById.apply(this, arguments);
+      }
+      return GetUserById;
+    }()
+  }, {
+    key: "GetCarsByUserId",
+    value: function () {
+      var _GetCarsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(userId) {
+        var response, data, _t4, _t5, _t6;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              _context2.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Cars/by-user/").concat(userId), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context2.v;
+              if (response.ok) {
+                _context2.n = 3;
+                break;
+              }
+              _t4 = Error;
+              _context2.n = 2;
+              return response.text();
+            case 2:
+              _t5 = _context2.v;
+              throw new _t4(_t5);
+            case 3:
+              _context2.n = 4;
+              return response.json();
+            case 4:
+              data = _context2.v;
+              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
+              return _context2.a(2, data);
+            case 5:
+              _context2.p = 5;
+              _t6 = _context2.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0435\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t6);
+            case 6:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[0, 5]]);
+      }));
+      function GetCarsByUserId(_x2) {
+        return _GetCarsByUserId.apply(this, arguments);
+      }
+      return GetCarsByUserId;
+    }()
+  }, {
+    key: "InsertUserDataToCardOnMainPage",
+    value: function () {
+      var _InsertUserDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
+        var userIdLinks, _t7;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
+              userIdLinks.forEach(function (element) {
+                var link = element.href;
+                element.href = "/user/".concat(userId);
+              });
+              _context3.p = 1;
+              _context3.n = 2;
+              return this.GetUserById(userId).then(function (user) {
+                var fullName = document.querySelector('[data-user-fullname]');
+                var phone = document.querySelector('[data-user-phone]');
+                var carsCount = document.querySelector('[data-user-carslist]');
+                fullName.textContent = "".concat(user.firstName, " ").concat(user.lastName, " ").concat(user.patronymic);
+                phone.textContent = user.phoneNumber;
+                if (user.cars.length == 0) {
+                  carsCount.remove();
+                } else if (user.cars.length == 1) {
+                  var car = user.cars[0];
+                  carsCount.textContent = "".concat(car.color, " ").concat(car.mark, " ").concat(car.model, ", ").concat(car.number);
+                } else {
+                  carsCount.textContent = "".concat(user.cars.length, " \u043C\u0430\u0448\u0438\u043D\u044B");
+                }
+              })["catch"](function (error) {
+                console.error('Ошибка получения данных пользователя:', error);
+              });
+            case 2:
+              _context3.n = 4;
+              break;
+            case 3:
+              _context3.p = 3;
+              _t7 = _context3.v;
+              console.log(_t7);
+            case 4:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[1, 3]]);
+      }));
+      function InsertUserDataToCardOnMainPage(_x3) {
+        return _InsertUserDataToCardOnMainPage.apply(this, arguments);
+      }
+      return InsertUserDataToCardOnMainPage;
+    }()
+  }, {
+    key: "InsertCarsToUserProfile",
+    value: function () {
+      var _InsertCarsToUserProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId) {
+        var _this = this;
+        var cars, carsContainer;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              _context4.n = 1;
+              return this.GetCarsByUserId(userId);
+            case 1:
+              cars = _context4.v;
+              carsContainer = document.querySelector('.profile-group[data-group="cars"] .cars-list');
+              carsContainer.innerHTML = '';
+              cars.forEach(function (car) {
+                _this.SetUserCar(car, carsContainer);
+              });
+            case 2:
+              return _context4.a(2);
+          }
+        }, _callee4, this);
+      }));
+      function InsertCarsToUserProfile(_x4) {
+        return _InsertCarsToUserProfile.apply(this, arguments);
+      }
+      return InsertCarsToUserProfile;
+    }()
+  }, {
+    key: "InsertUserDataToProfile",
+    value: function () {
+      var _InsertUserDataToProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
+        var _t8;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return this.GetUserById(userId).then(function (user) {
+                var setValue = function setValue(id, value) {
+                  var element = document.getElementById(id);
+                  if (element) {
+                    // Специальная обработка для даты рождения
+                    if (id === 'birthday' && value) {
+                      // Преобразуем ISO строку в формат YYYY-MM-DD
+                      var date = new Date(value);
+                      var year = date.getFullYear();
+                      var month = String(date.getMonth() + 1).padStart(2, '0');
+                      var day = String(date.getDate()).padStart(2, '0');
+                      element.value = "".concat(year, "-").concat(month, "-").concat(day);
+                    } else {
+                      element.value = value !== null && value !== '' ? value : '';
+                    }
+                  }
+                };
+                setValue('firstName', user.firstName);
+                setValue('lastName', user.lastName);
+                setValue('patronymic', user.patronymic);
+                setValue('birthday', user.birthday);
+                setValue('phoneNumber', user.phoneNumber);
+                setValue('email', user.email);
+              })["catch"](function (error) {
+                console.error('Ошибка получения данных пользователя:', error);
+              });
+            case 1:
+              _context5.n = 2;
+              return this.InsertCarsToUserProfile(userId);
+            case 2:
+              _context5.n = 4;
+              break;
+            case 3:
+              _context5.p = 3;
+              _t8 = _context5.v;
+              console.log(_t8);
+            case 4:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 3]]);
+      }));
+      function InsertUserDataToProfile(_x5) {
+        return _InsertUserDataToProfile.apply(this, arguments);
+      }
+      return InsertUserDataToProfile;
+    }()
+  }, {
+    key: "SetCarTemplate",
+    value: function SetCarTemplate(car) {
+      var buttonDelCar = "\n        <div class=\"remove-car\" data-action=\"remove-car-from-user\" data-car-id=\"".concat(car.id, "\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u044D\u0442\u043E\u0442 \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C\">\n            &#10060;\n        </div>");
+      var disabledOrNot = 'disabled';
+      if (!Object.keys(car).length) {
+        car.id = '';
+        car.mark = '';
+        car.model = '';
+        car.color = '';
+        car.number = '';
+        car.userId = window.authManager.userData.userId;
+        buttonDelCar = '';
+        disabledOrNot = '';
+      }
+      var carTemplate = "\n            <div class=\"car\" data-car-id=\"".concat(car.id, "\">\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"mark\" id=\"mark-").concat(car.id, "\" value=\"").concat(car.mark, "\" />\n                    <label for=\"mark-").concat(car.id, "\">\u041C\u0430\u0440\u043A\u0430</label>\n                    <div class=\"error invisible\" data-error=\"mark\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u0430\u0440\u043A\u0430 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"model\" id=\"model-").concat(car.id, "\" value=\"").concat(car.model, "\" />\n                    <label for=\"model-").concat(car.id, "\">\u041C\u043E\u0434\u0435\u043B\u044C</label>\n                    <div class=\"error invisible\" data-error=\"model\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"color\" id=\"color-").concat(car.id, "\" value=\"").concat(car.color, "\" />\n                    <label for=\"color-").concat(car.id, "\">\u0426\u0432\u0435\u0442</label>\n                    <div class=\"error invisible\" data-error=\"firstName\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0446\u0432\u0435\u0442 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(car.id, "\" value=\"").concat(car.number, "\" />\n                    <label for=\"number-").concat(car.id, "\">\u041D\u043E\u043C\u0435\u0440</label>\n                    <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                ").concat(buttonDelCar, "\n            </div>\n        ");
+      return carTemplate;
+    }
+  }, {
+    key: "SetUserCar",
+    value: function SetUserCar(car, carsList) {
+      var carTemplate = this.SetCarTemplate(car);
+      if (carsList) {
+        carsList.insertAdjacentHTML('beforeend', carTemplate);
+      }
+    }
+  }, {
+    key: "CollectUserDataFromProfile",
+    value: function CollectUserDataFromProfile() {
+      var userData = {};
+
+      //Собираем данные по пользователю
+      var userProfileInputs = document.querySelectorAll('.profile-group[data-group="user"] input');
+      userProfileInputs.forEach(function (input) {
+        var inputKey = input.id;
+        var inputValue = input.value;
+
+        // Обработка даты рождения
+        if (inputKey === 'birthday' && inputValue) {
+          // Преобразуем дату в формат ISO с UTC
+          var date = new Date(inputValue);
+          // Устанавливаем время в 00:00:00 и конвертируем в UTC
+          date.setHours(0, 0, 0, 0);
+          inputValue = date.toISOString();
+        }
+        userData[inputKey] = inputValue;
+      });
+      return userData;
+    }
+  }, {
+    key: "CollectCarsDataFromModal",
+    value: function CollectCarsDataFromModal() {
+      var carData = {};
+
+      // собираем данные по машинам
+      var cars = document.querySelectorAll('.car-modal .car');
+      cars.forEach(function (car) {
+        var _car$querySelector, _car$querySelector2, _car$querySelector3, _car$querySelector4;
+        carData = {
+          mark: ((_car$querySelector = car.querySelector('input[name="mark"]')) === null || _car$querySelector === void 0 ? void 0 : _car$querySelector.value) || '',
+          model: ((_car$querySelector2 = car.querySelector('input[name="model"]')) === null || _car$querySelector2 === void 0 ? void 0 : _car$querySelector2.value) || '',
+          color: ((_car$querySelector3 = car.querySelector('input[name="color"]')) === null || _car$querySelector3 === void 0 ? void 0 : _car$querySelector3.value) || '',
+          number: ((_car$querySelector4 = car.querySelector('input[name="number"]')) === null || _car$querySelector4 === void 0 ? void 0 : _car$querySelector4.value) || '',
+          userId: window.authManager.userData.userId
+        };
+      });
+      console.log("\u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C\u044B\u0435 \u043C\u0430\u0448\u0438\u043D\u044B:");
+      console.log(carData);
+      return carData;
+    }
+  }, {
+    key: "UpdateUserToDB",
+    value: function () {
+      var _UpdateUserToDB = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id, userData) {
+        var response, _t9, _t0, _t1;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(id), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(_objectSpread(_objectSpread({}, userData), {}, {
+                  id: id
+                }))
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 3;
+                break;
+              }
+              _t9 = Error;
+              _context6.n = 2;
+              return response.text();
+            case 2:
+              _t0 = _context6.v;
+              throw new _t9(_t0);
+            case 3:
+              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D"));
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Данные пользователя сохранены', 'green');
+              _context6.n = 5;
+              break;
+            case 4:
+              _context6.p = 4;
+              _t1 = _context6.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), _t1);
+            case 5:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 4]]);
+      }));
+      function UpdateUserToDB(_x6, _x7) {
+        return _UpdateUserToDB.apply(this, arguments);
+      }
+      return UpdateUserToDB;
+    }()
+  }, {
+    key: "AddCarToUser",
+    value: function () {
+      var _AddCarToUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
+        var response, data, _t10, _t11, _t12;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Cars"), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.CollectCarsDataFromModal())
+              });
+            case 1:
+              response = _context7.v;
+              if (response.ok) {
+                _context7.n = 3;
+                break;
+              }
+              _t10 = Error;
+              _context7.n = 2;
+              return response.text();
+            case 2:
+              _t11 = _context7.v;
+              throw new _t10(_t11);
+            case 3:
+              _context7.n = 4;
+              return response.json();
+            case 4:
+              data = _context7.v;
+              console.log('Автомобиль создан:', data);
+
+              //инсертим автомобиль в список
+              _context7.n = 5;
+              return this.InsertCarsToUserProfile(userId);
+            case 5:
+              //зачищаем модалку и закрываем её
+              document.querySelectorAll('.car-modal input').forEach(function (input) {
+                input.value = '';
+              });
+              document.querySelector('.car-modal').closest('.modal-overview').classList.remove('active');
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно добавлен', 'green');
+              return _context7.a(2, data);
+            case 6:
+              _context7.p = 6;
+              _t12 = _context7.v;
+              console.error('Ошибка создания автомобиля:', _t12);
+            case 7:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 6]]);
+      }));
+      function AddCarToUser(_x8) {
+        return _AddCarToUser.apply(this, arguments);
+      }
+      return AddCarToUser;
+    }()
+  }, {
+    key: "RemoveCarFromUser",
+    value: function () {
+      var _RemoveCarFromUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(carId) {
+        var response, _t13, _t14, _t15;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
+            case 0:
+              _context8.p = 0;
+              _context8.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Cars/").concat(carId), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context8.v;
+              if (response.ok) {
+                _context8.n = 3;
+                break;
+              }
+              _t13 = Error;
+              _context8.n = 2;
+              return response.text();
+            case 2:
+              _t14 = _context8.v;
+              throw new _t13(_t14);
+            case 3:
+              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C ".concat(carId, " \u0443\u0434\u0430\u043B\u0451\u043D"));
+              //удоляем строку с отображением авто из профиля
+              document.querySelector(".profile-group .car[data-car-id=\"".concat(carId, "\"]")).remove();
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно удалён', 'green');
+              _context8.n = 5;
+              break;
+            case 4:
+              _context8.p = 4;
+              _t15 = _context8.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044F ".concat(carId, ":"), _t15);
+            case 5:
+              return _context8.a(2);
+          }
+        }, _callee8, this, [[0, 4]]);
+      }));
+      function RemoveCarFromUser(_x9) {
+        return _RemoveCarFromUser.apply(this, arguments);
+      }
+      return RemoveCarFromUser;
+    }()
+  }]);
+}();
+document.addEventListener('authStateChanged', function () {
+  var _event$detail = event.detail,
+    isAuthenticated = _event$detail.isAuthenticated,
+    userData = _event$detail.userData;
+  if (isAuthenticated && userData) {
+    var userProfile = new UserProfile();
+    var userId = window.authManager.userData.userId;
+    if (window.location.pathname == '/') {
+      userProfile.InsertUserDataToCardOnMainPage(userId);
+    }
+    if (document.getElementById('user-profile')) {
+      userProfile.InsertUserDataToProfile(userId);
+      document.querySelector("[data-action=\"save-user-data\"]").addEventListener('click', function () {
+        userProfile.UpdateUserToDB(window.authManager.userData.userId, userProfile.CollectUserDataFromProfile());
+      });
+      document.querySelector("[data-action=\"add-car-to-user\"]").addEventListener('click', function () {
+        userProfile.AddCarToUser(window.authManager.userData.userId);
+      });
+      document.addEventListener('click', function (e) {
+        if (e.target.dataset.action == 'remove-car-from-user') {
+          var carId = e.target.dataset.carId;
+          userProfile.RemoveCarFromUser(carId);
+        }
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./wwwroot/js/UserValidator.js":
 /*!*************************************!*\
   !*** ./wwwroot/js/UserValidator.js ***!
@@ -916,7 +1518,6 @@ var UserValidator = /*#__PURE__*/function () {
   }, {
     key: "validateUserData",
     value: function validateUserData(userData) {
-      var _this = this;
       var errors = {
         user: {},
         cars: []
@@ -953,25 +1554,6 @@ var UserValidator = /*#__PURE__*/function () {
       if (!emailValidation.isValid) {
         errors.user.email = emailValidation.error;
         isValid = false;
-      }
-
-      // Валидация автомобилей
-      if (userData.cars && userData.cars.length > 0) {
-        userData.cars.forEach(function (car, index) {
-          var carValidation = _this.validateCar(car);
-          if (!carValidation.isValid) {
-            errors.cars[index] = carValidation.errors;
-            isValid = false;
-          }
-        });
-
-        // Проверка уникальности номеров
-        var duplicateIndexes = this.validateUniqueCarNumbers(userData.cars);
-        duplicateIndexes.forEach(function (index) {
-          if (!errors.cars[index]) errors.cars[index] = {};
-          errors.cars[index].number = 'Номер автомобиля должен быть уникальным';
-          isValid = false;
-        });
       }
       return {
         isValid: isValid,
@@ -1034,608 +1616,6 @@ var UserValidator = /*#__PURE__*/function () {
     }
   }]);
 }();
-
-/***/ }),
-
-/***/ "./wwwroot/js/getDataFromUserService.js":
-/*!**********************************************!*\
-  !*** ./wwwroot/js/getDataFromUserService.js ***!
-  \**********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _UserValidator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserValidator.js */ "./wwwroot/js/UserValidator.js");
-/* harmony import */ var _modal_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modal.js */ "./wwwroot/js/modal.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-
-
-var UserProfile = /*#__PURE__*/function () {
-  function UserProfile() {
-    _classCallCheck(this, UserProfile);
-    this.userApiAddress = 'http://localhost:55680';
-  }
-  return _createClass(UserProfile, [{
-    key: "GetUserById",
-    value: function () {
-      var _GetUserById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
-        var response, data, _t, _t2, _t3;
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.p = _context.n) {
-            case 0:
-              _context.p = 0;
-              _context.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(userId), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context.v;
-              if (response.ok) {
-                _context.n = 3;
-                break;
-              }
-              _t = Error;
-              _context.n = 2;
-              return response.text();
-            case 2:
-              _t2 = _context.v;
-              throw new _t(_t2);
-            case 3:
-              _context.n = 4;
-              return response.json();
-            case 4:
-              data = _context.v;
-              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(userId, ":"), data);
-              return _context.a(2, data);
-            case 5:
-              _context.p = 5;
-              _t3 = _context.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
-            case 6:
-              return _context.a(2);
-          }
-        }, _callee, this, [[0, 5]]);
-      }));
-      function GetUserById(_x) {
-        return _GetUserById.apply(this, arguments);
-      }
-      return GetUserById;
-    }()
-  }, {
-    key: "GetCarsByUserId",
-    value: function () {
-      var _GetCarsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(userId) {
-        var response, data, _t4, _t5, _t6;
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.p = _context2.n) {
-            case 0:
-              _context2.p = 0;
-              _context2.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Cars/by-user/").concat(userId), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context2.v;
-              if (response.ok) {
-                _context2.n = 3;
-                break;
-              }
-              _t4 = Error;
-              _context2.n = 2;
-              return response.text();
-            case 2:
-              _t5 = _context2.v;
-              throw new _t4(_t5);
-            case 3:
-              _context2.n = 4;
-              return response.json();
-            case 4:
-              data = _context2.v;
-              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
-              return _context2.a(2, data);
-            case 5:
-              _context2.p = 5;
-              _t6 = _context2.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u0435\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t6);
-            case 6:
-              return _context2.a(2);
-          }
-        }, _callee2, this, [[0, 5]]);
-      }));
-      function GetCarsByUserId(_x2) {
-        return _GetCarsByUserId.apply(this, arguments);
-      }
-      return GetCarsByUserId;
-    }()
-  }, {
-    key: "InsertUserDataToCardOnMainPage",
-    value: function () {
-      var _InsertUserDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
-        var userIdLinks, _t7;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.p = _context3.n) {
-            case 0:
-              userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
-              userIdLinks.forEach(function (element) {
-                var link = element.href;
-                element.href = "/user/".concat(userId);
-              });
-              _context3.p = 1;
-              _context3.n = 2;
-              return this.GetUserById(userId).then(function (user) {
-                var fullName = document.querySelector('[data-user-fullname]');
-                var phone = document.querySelector('[data-user-phone]');
-                var carsCount = document.querySelector('[data-user-carslist]');
-                fullName.textContent = "".concat(user.firstName, " ").concat(user.lastName, " ").concat(user.patronymic);
-                phone.textContent = user.phoneNumber;
-                if (user.cars.length == 0) {
-                  carsCount.remove();
-                } else if (user.cars.length == 1) {
-                  var car = user.cars[0];
-                  carsCount.textContent = "".concat(car.color, " ").concat(car.mark, " ").concat(car.model, ", ").concat(car.number);
-                } else {
-                  carsCount.textContent = "".concat(user.cars.length, " \u043C\u0430\u0448\u0438\u043D\u044B");
-                }
-              })["catch"](function (error) {
-                console.error('Ошибка получения данных пользователя:', error);
-              });
-            case 2:
-              _context3.n = 4;
-              break;
-            case 3:
-              _context3.p = 3;
-              _t7 = _context3.v;
-              console.log(_t7);
-            case 4:
-              return _context3.a(2);
-          }
-        }, _callee3, this, [[1, 3]]);
-      }));
-      function InsertUserDataToCardOnMainPage(_x3) {
-        return _InsertUserDataToCardOnMainPage.apply(this, arguments);
-      }
-      return InsertUserDataToCardOnMainPage;
-    }()
-  }, {
-    key: "InsertCarsToUserProfile",
-    value: function () {
-      var _InsertCarsToUserProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId) {
-        var _this = this;
-        var cars, carsContainer;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.n) {
-            case 0:
-              _context4.n = 1;
-              return this.GetCarsByUserId(userId);
-            case 1:
-              cars = _context4.v;
-              carsContainer = document.querySelector('.profile-group[data-group="cars"] .cars-list');
-              carsContainer.innerHTML = '';
-              cars.forEach(function (car) {
-                _this.SetUserCar(car, carsContainer);
-              });
-            case 2:
-              return _context4.a(2);
-          }
-        }, _callee4, this);
-      }));
-      function InsertCarsToUserProfile(_x4) {
-        return _InsertCarsToUserProfile.apply(this, arguments);
-      }
-      return InsertCarsToUserProfile;
-    }()
-  }, {
-    key: "InsertUserDataToProfile",
-    value: function () {
-      var _InsertUserDataToProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
-        var _t8;
-        return _regenerator().w(function (_context5) {
-          while (1) switch (_context5.p = _context5.n) {
-            case 0:
-              _context5.p = 0;
-              _context5.n = 1;
-              return this.GetUserById(userId).then(function (user) {
-                var setValue = function setValue(id, value) {
-                  var element = document.getElementById(id);
-                  if (element) {
-                    // Специальная обработка для даты рождения
-                    if (id === 'birthday' && value) {
-                      // Преобразуем ISO строку в формат YYYY-MM-DD
-                      var date = new Date(value);
-                      var year = date.getFullYear();
-                      var month = String(date.getMonth() + 1).padStart(2, '0');
-                      var day = String(date.getDate()).padStart(2, '0');
-                      element.value = "".concat(year, "-").concat(month, "-").concat(day);
-                    } else {
-                      element.value = value !== null && value !== '' ? value : '';
-                    }
-                  }
-                };
-                setValue('firstName', user.firstName);
-                setValue('lastName', user.lastName);
-                setValue('patronymic', user.patronymic);
-                setValue('birthday', user.birthday);
-                setValue('phoneNumber', user.phoneNumber);
-                setValue('email', user.email);
-              })["catch"](function (error) {
-                console.error('Ошибка получения данных пользователя:', error);
-              });
-            case 1:
-              _context5.n = 2;
-              return this.InsertCarsToUserProfile(userId);
-            case 2:
-              _context5.n = 4;
-              break;
-            case 3:
-              _context5.p = 3;
-              _t8 = _context5.v;
-              console.log(_t8);
-            case 4:
-              return _context5.a(2);
-          }
-        }, _callee5, this, [[0, 3]]);
-      }));
-      function InsertUserDataToProfile(_x5) {
-        return _InsertUserDataToProfile.apply(this, arguments);
-      }
-      return InsertUserDataToProfile;
-    }()
-  }, {
-    key: "SetCarTemplate",
-    value: function SetCarTemplate(car) {
-      var buttonDelCar = "\n        <div class=\"remove-car\" data-action=\"remove-car-from-user\" data-car-id=\"".concat(car.id, "\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u044D\u0442\u043E\u0442 \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C\">\n            &#10060;\n        </div>");
-      var disabledOrNot = 'disabled';
-      if (!Object.keys(car).length) {
-        car.id = '';
-        car.mark = '';
-        car.model = '';
-        car.color = '';
-        car.number = '';
-        car.userId = window.authManager.userData.userId;
-        buttonDelCar = '';
-        disabledOrNot = '';
-      }
-      var carTemplate = "\n            <div class=\"car\" data-car-id=\"".concat(car.id, "\">\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"mark\" id=\"mark-").concat(car.id, "\" value=\"").concat(car.mark, "\" />\n                    <label for=\"mark-").concat(car.id, "\">\u041C\u0430\u0440\u043A\u0430</label>\n                    <div class=\"error invisible\" data-error=\"mark\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u0430\u0440\u043A\u0430 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"model\" id=\"model-").concat(car.id, "\" value=\"").concat(car.model, "\" />\n                    <label for=\"model-").concat(car.id, "\">\u041C\u043E\u0434\u0435\u043B\u044C</label>\n                    <div class=\"error invisible\" data-error=\"model\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"color\" id=\"color-").concat(car.id, "\" value=\"").concat(car.color, "\" />\n                    <label for=\"color-").concat(car.id, "\">\u0426\u0432\u0435\u0442</label>\n                    <div class=\"error invisible\" data-error=\"firstName\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0446\u0432\u0435\u0442 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(car.id, "\" value=\"").concat(car.number, "\" />\n                    <label for=\"number-").concat(car.id, "\">\u041D\u043E\u043C\u0435\u0440</label>\n                    <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                ").concat(buttonDelCar, "\n            </div>\n        ");
-      return carTemplate;
-    }
-  }, {
-    key: "SetUserCar",
-    value: function SetUserCar(car, carsList) {
-      var carTemplate = this.SetCarTemplate(car);
-      if (carsList) {
-        carsList.insertAdjacentHTML('beforeend', carTemplate);
-      }
-    }
-  }, {
-    key: "CollectUserDataFromProfile",
-    value: function CollectUserDataFromProfile() {
-      var userData = {};
-
-      //Собираем данные по пользователю
-      var userProfileInputs = document.querySelectorAll('.profile-group[data-group="user"] input');
-      userProfileInputs.forEach(function (input) {
-        var inputKey = input.id;
-        var inputValue = input.value;
-
-        // Обработка даты рождения
-        if (inputKey === 'birthday' && inputValue) {
-          // Преобразуем дату в формат ISO с UTC
-          var date = new Date(inputValue);
-          // Устанавливаем время в 00:00:00 и конвертируем в UTC
-          date.setHours(0, 0, 0, 0);
-          inputValue = date.toISOString();
-        }
-        userData[inputKey] = inputValue;
-      });
-      return userData;
-    }
-  }, {
-    key: "CollectCarsDataFromModal",
-    value: function CollectCarsDataFromModal() {
-      var carData = {};
-
-      // собираем данные по машинам
-      var cars = document.querySelectorAll('.car-modal .car');
-      cars.forEach(function (car) {
-        var _car$querySelector, _car$querySelector2, _car$querySelector3, _car$querySelector4;
-        carData = {
-          mark: ((_car$querySelector = car.querySelector('input[name="mark"]')) === null || _car$querySelector === void 0 ? void 0 : _car$querySelector.value) || '',
-          model: ((_car$querySelector2 = car.querySelector('input[name="model"]')) === null || _car$querySelector2 === void 0 ? void 0 : _car$querySelector2.value) || '',
-          color: ((_car$querySelector3 = car.querySelector('input[name="color"]')) === null || _car$querySelector3 === void 0 ? void 0 : _car$querySelector3.value) || '',
-          number: ((_car$querySelector4 = car.querySelector('input[name="number"]')) === null || _car$querySelector4 === void 0 ? void 0 : _car$querySelector4.value) || '',
-          userId: window.authManager.userData.userId
-        };
-      });
-      console.log("\u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C\u044B\u0435 \u043C\u0430\u0448\u0438\u043D\u044B:");
-      console.log(carData);
-      return carData;
-    }
-  }, {
-    key: "UpdateUserToDB",
-    value: function () {
-      var _UpdateUserToDB = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id, userData) {
-        var response, _t9, _t0, _t1;
-        return _regenerator().w(function (_context6) {
-          while (1) switch (_context6.p = _context6.n) {
-            case 0:
-              _context6.p = 0;
-              _context6.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Users/").concat(id), {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(_objectSpread(_objectSpread({}, userData), {}, {
-                  id: id
-                }))
-              });
-            case 1:
-              response = _context6.v;
-              if (response.ok) {
-                _context6.n = 3;
-                break;
-              }
-              _t9 = Error;
-              _context6.n = 2;
-              return response.text();
-            case 2:
-              _t0 = _context6.v;
-              throw new _t9(_t0);
-            case 3:
-              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D"));
-              _modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Данные пользователя сохранены', 'green');
-              _context6.n = 5;
-              break;
-            case 4:
-              _context6.p = 4;
-              _t1 = _context6.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), _t1);
-            case 5:
-              return _context6.a(2);
-          }
-        }, _callee6, this, [[0, 4]]);
-      }));
-      function UpdateUserToDB(_x6, _x7) {
-        return _UpdateUserToDB.apply(this, arguments);
-      }
-      return UpdateUserToDB;
-    }()
-  }, {
-    key: "AddCarToUser",
-    value: function () {
-      var _AddCarToUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
-        var response, data, _t10, _t11, _t12;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.p = _context7.n) {
-            case 0:
-              _context7.p = 0;
-              _context7.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Cars"), {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.CollectCarsDataFromModal())
-              });
-            case 1:
-              response = _context7.v;
-              if (response.ok) {
-                _context7.n = 3;
-                break;
-              }
-              _t10 = Error;
-              _context7.n = 2;
-              return response.text();
-            case 2:
-              _t11 = _context7.v;
-              throw new _t10(_t11);
-            case 3:
-              _context7.n = 4;
-              return response.json();
-            case 4:
-              data = _context7.v;
-              console.log('Автомобиль создан:', data);
-
-              //инсертим автомобиль в список
-              _context7.n = 5;
-              return this.InsertCarsToUserProfile(userId);
-            case 5:
-              //зачищаем модалку и закрываем её
-              document.querySelectorAll('.car-modal input').forEach(function (input) {
-                input.value = '';
-              });
-              document.querySelector('.car-modal').closest('.modal-overview').classList.remove('active');
-              _modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно добавлен', 'green');
-              return _context7.a(2, data);
-            case 6:
-              _context7.p = 6;
-              _t12 = _context7.v;
-              console.error('Ошибка создания автомобиля:', _t12);
-            case 7:
-              return _context7.a(2);
-          }
-        }, _callee7, this, [[0, 6]]);
-      }));
-      function AddCarToUser(_x8) {
-        return _AddCarToUser.apply(this, arguments);
-      }
-      return AddCarToUser;
-    }()
-  }, {
-    key: "RemoveCarFromUser",
-    value: function () {
-      var _RemoveCarFromUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(carId) {
-        var response, _t13, _t14, _t15;
-        return _regenerator().w(function (_context8) {
-          while (1) switch (_context8.p = _context8.n) {
-            case 0:
-              _context8.p = 0;
-              _context8.n = 1;
-              return fetch("".concat(this.userApiAddress, "/api/Cars/").concat(carId), {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context8.v;
-              if (response.ok) {
-                _context8.n = 3;
-                break;
-              }
-              _t13 = Error;
-              _context8.n = 2;
-              return response.text();
-            case 2:
-              _t14 = _context8.v;
-              throw new _t13(_t14);
-            case 3:
-              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C ".concat(carId, " \u0443\u0434\u0430\u043B\u0451\u043D"));
-              //удоляем строку с отображением авто из профиля
-              document.querySelector(".profile-group .car[data-car-id=\"".concat(carId, "\"]")).remove();
-              _modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно удалён', 'green');
-              _context8.n = 5;
-              break;
-            case 4:
-              _context8.p = 4;
-              _t15 = _context8.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044F ".concat(carId, ":"), _t15);
-            case 5:
-              return _context8.a(2);
-          }
-        }, _callee8, this, [[0, 4]]);
-      }));
-      function RemoveCarFromUser(_x9) {
-        return _RemoveCarFromUser.apply(this, arguments);
-      }
-      return RemoveCarFromUser;
-    }()
-  }]);
-}();
-document.addEventListener('authStateChanged', function () {
-  var _event$detail = event.detail,
-    isAuthenticated = _event$detail.isAuthenticated,
-    userData = _event$detail.userData;
-  if (isAuthenticated && userData) {
-    var userProfile = new UserProfile();
-    var userId = window.authManager.userData.userId;
-    if (window.location.pathname == '/') {
-      userProfile.InsertUserDataToCardOnMainPage(userId);
-    }
-    if (document.getElementById('user-profile')) {
-      userProfile.InsertUserDataToProfile(userId);
-      document.querySelector("[data-action=\"save-user-data\"]").addEventListener('click', function () {
-        userProfile.UpdateUserToDB(window.authManager.userData.userId, userProfile.CollectUserDataFromProfile());
-      });
-      document.querySelector("[data-action=\"add-car-to-user\"]").addEventListener('click', function () {
-        userProfile.AddCarToUser(window.authManager.userData.userId);
-      });
-      document.addEventListener('click', function (e) {
-        if (e.target.dataset.action == 'remove-car-from-user') {
-          var carId = e.target.dataset.carId;
-          userProfile.RemoveCarFromUser(carId);
-        }
-      });
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./wwwroot/js/modal.js":
-/*!*****************************!*\
-  !*** ./wwwroot/js/modal.js ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Modal: () => (/* binding */ Modal)
-/* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var Modal = /*#__PURE__*/function () {
-  function Modal() {
-    _classCallCheck(this, Modal);
-    this.OpenModal();
-    this.CloseModal();
-    this.CloseModalOnOutsideClick();
-  }
-  return _createClass(Modal, [{
-    key: "OpenModal",
-    value: function OpenModal() {
-      document.querySelectorAll('[data-modal="open"]').forEach(function (modalCall) {
-        modalCall.addEventListener('click', function () {
-          document.querySelector('.modal-overview').classList.add('active');
-        });
-      });
-    }
-  }, {
-    key: "CloseModal",
-    value: function CloseModal() {
-      var crossModal = document.querySelectorAll('.modal-close');
-      crossModal.forEach(function (cross) {
-        cross.addEventListener('click', function () {
-          cross.closest('.modal-overview').classList.remove('active');
-        });
-      });
-    }
-  }, {
-    key: "CloseModalOnOutsideClick",
-    value: function CloseModalOnOutsideClick() {
-      var modalOverview = document.querySelector('.modal-overview');
-      modalOverview.addEventListener('click', function (event) {
-        if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {
-          modalOverview.classList.remove('active');
-        }
-      });
-    }
-  }], [{
-    key: "ShowNotification",
-    value: function ShowNotification(text, color) {
-      var notification = document.createElement('div');
-      notification.className = 'notification';
-      notification.textContent = text;
-      notification.style.backgroundColor = color;
-
-      // Добавляем уведомление в документ
-      document.body.appendChild(notification);
-
-      // Через 2 секунды удаляем уведомление
-      setTimeout(function () {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
-        }
-      }, 2000);
-    }
-  }]);
-}();
-document.addEventListener('DOMContentLoaded', function () {
-  new Modal();
-});
 
 /***/ })
 
@@ -1700,8 +1680,8 @@ document.addEventListener('DOMContentLoaded', function () {
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
 /******/ 	__webpack_require__("./wwwroot/js/UserValidator.js");
-/******/ 	__webpack_require__("./wwwroot/js/modal.js");
-/******/ 	__webpack_require__("./wwwroot/js/getDataFromUserService.js");
+/******/ 	__webpack_require__("./wwwroot/js/UserProfile.js");
+/******/ 	__webpack_require__("./wwwroot/js/Modal.js");
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
 /******/ 	__webpack_require__("./wwwroot/css/variables.css");
 /******/ 	__webpack_require__("./wwwroot/css/profile-group.css");

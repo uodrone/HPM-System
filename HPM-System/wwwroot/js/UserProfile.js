@@ -1,5 +1,5 @@
 import { UserValidator } from './UserValidator.js';
-import { Modal } from './modal.js';
+import { Modal } from './Modal.js';
 
 class UserProfile {
     constructor () {
