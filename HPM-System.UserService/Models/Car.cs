@@ -21,7 +21,6 @@ namespace HPM_System.UserService.Models
 
         // Владелец автомобиля
         [Required(ErrorMessage = "ID пользователя обязателен")]
-        [Range(1, int.MaxValue, ErrorMessage = "ID пользователя должен быть больше 0")]
         public Guid UserId { get; set; }
     }
 }

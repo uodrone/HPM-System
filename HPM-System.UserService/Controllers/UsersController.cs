@@ -60,14 +60,22 @@ namespace HPM_System.UserService.Controllers
 
         // GET: api/Users/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public async Task<IActionResult> GetUser(string id)
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
+                Guid userId = Guid.Parse(id);
+                //грузим пользака сразу с его автомобилями
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
                 if (user == null) return NotFound();
 
                 return Ok(user);
+            }
+            catch (FormatException fm)
+            {
+                _logger.LogError(fm, "Неверный формат ID пользователя {Id}", id);
+                return StatusCode(500, new { Message = "Неверный формат ID пользователя" });
             }
             catch (Exception ex)
             {
@@ -200,7 +208,6 @@ namespace HPM_System.UserService.Controllers
                     return BadRequest();
 
                 var existingUser = await _context.Users
-                    .Include(u => u.Cars) // Сохраняем связь с автомобилями
                     .FirstOrDefaultAsync(u => u.Id == id);
 
                 if (existingUser == null)
@@ -212,8 +219,7 @@ namespace HPM_System.UserService.Controllers
                 existingUser.Patronymic = updatedUser.Patronymic;
                 existingUser.Email = updatedUser.Email;
                 existingUser.PhoneNumber = updatedUser.PhoneNumber;
-                existingUser.Age = updatedUser.Age;
-                existingUser.Cars = updatedUser.Cars;
+                existingUser.Birthday = updatedUser.Birthday;
 
                 _context.Users.Update(existingUser);
                 await _context.SaveChangesAsync();
