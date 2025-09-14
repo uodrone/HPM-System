@@ -4,6 +4,7 @@ import { Modal } from './Modal.js';
 class UserProfile {
     constructor () {
         this.userApiAddress = 'http://localhost:55680';
+        this.validator = new UserValidator();
     }
 
     async GetUserById(userId) {
@@ -135,8 +136,6 @@ class UserProfile {
             disabledOrNot = '';
         }
 
-        
-
         const carTemplate = `
             <div class="car" data-car-id="${car.id}">
                 <div class="form-group">
@@ -152,7 +151,7 @@ class UserProfile {
                 <div class="form-group">
                     <input ${disabledOrNot} type="text" placeholder=" " name="color" id="color-${car.id}" value="${car.color}" />
                     <label for="color-${car.id}">Цвет</label>
-                    <div class="error invisible" data-error="firstName">Неверный цвет машины</div>
+                    <div class="error invisible" data-error="color">Неверный цвет машины</div>
                 </div>
                 <div class="form-group">
                     <input ${disabledOrNot} type="text" placeholder=" " name="number" id="number-${car.id}" value="${car.number}" />
@@ -199,6 +198,26 @@ class UserProfile {
         return userData;
     }
 
+    CollectCarsDataFromProfile() {
+        let carsData = [];
+
+        // собираем данные по машинам из профиля
+        const cars = document.querySelectorAll('.profile-group[data-group="cars"] .car');
+        cars.forEach(car => {
+            const carData = {
+                id: car.dataset.carId || '',
+                mark: car.querySelector('input[name="mark"]')?.value || '',
+                model: car.querySelector('input[name="model"]')?.value || '',
+                color: car.querySelector('input[name="color"]')?.value || '',
+                number: car.querySelector('input[name="number"]')?.value || '',
+                userId: window.authManager.userData.userId
+            };
+            carsData.push(carData);
+        });
+
+        return carsData;
+    }
+
     CollectCarsDataFromModal () {
         let carData = {};
 
@@ -219,8 +238,65 @@ class UserProfile {
         return carData;
     }
 
+    ShowValidationErrors(errors) {
+        // Очищаем все предыдущие ошибки
+        document.querySelectorAll('.error').forEach(error => {
+            error.classList.add('invisible');
+        });
+
+        // Показываем ошибки пользователя
+        if (errors.user) {
+            Object.keys(errors.user).forEach(field => {
+                const errorElement = document.querySelector(`[data-error="${field}"]`);
+                if (errorElement) {
+                    errorElement.textContent = errors.user[field];
+                    errorElement.classList.remove('invisible');
+                }
+            });
+        }
+
+        // Показываем ошибки автомобилей
+        if (errors.cars && errors.cars.length > 0) {
+            errors.cars.forEach((carErrors, index) => {
+                Object.keys(carErrors).forEach(field => {
+                    const errorElement = document.querySelector(`.profile-group[data-group="cars"] .car:nth-child(${index + 1}) [data-error="${field}"]`);
+                    if (errorElement) {
+                        errorElement.textContent = carErrors[field];
+                        errorElement.classList.remove('invisible');
+                    }
+                });
+            });
+        }
+    }
+
     async UpdateUserToDB (id, userData) {        
         try {
+            // Валидация данных пользователя
+            const validation = this.validator.validateUserData(userData);
+            
+            // Собираем данные автомобилей для валидации
+            const carsData = this.CollectCarsDataFromProfile();
+            
+            // Валидация автомобилей
+            const carsValidation = this.ValidateCarsData(carsData);
+            
+            // Объединяем ошибки
+            const allErrors = {
+                user: validation.errors.user,
+                cars: carsValidation.errors
+            };
+
+            if (!validation.isValid || !carsValidation.isValid) {
+                this.ShowValidationErrors(allErrors);
+                Modal.ShowNotification('Исправьте ошибки в форме', 'red');
+                return;
+            }
+
+            // Если валидация прошла успешно, очищаем ошибки
+            document.querySelectorAll('.error').forEach(error => {
+                error.classList.add('invisible');
+            });
+
             const response = await fetch(`${this.userApiAddress}/api/Users/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -231,15 +307,72 @@ class UserProfile {
             Modal.ShowNotification('Данные пользователя сохранены', 'green');
         } catch (error) {
             console.error(`Ошибка обновления пользователя ${id}:`, error);
+            Modal.ShowNotification('Ошибка сохранения данных', 'red');
         }
     }
 
+    ValidateCarsData(carsData) {
+        const errors = [];
+        let isValid = true;
+
+        carsData.forEach(car => {
+            const carValidation = this.validator.validateCar(car);
+            if (!carValidation.isValid) {
+                errors.push(carValidation.errors);
+                isValid = false;
+            } else {
+                errors.push({});
+            }
+        });
+
+        // Проверка уникальности номеров
+        const duplicateIndices = this.validator.validateUniqueCarNumbers(carsData);
+        if (duplicateIndices.length > 0) {
+            duplicateIndices.forEach(index => {
+                if (!errors[index]) errors[index] = {};
+                errors[index].number = 'Номер автомобиля уже существует';
+                isValid = false;
+            });
+        }
+
+        return { isValid, errors };
+    }
+
+    ValidateCarInModal() {
+        const carData = this.CollectCarsDataFromModal();
+        const validation = this.validator.validateCar(carData);
+        
+        // Очищаем ошибки в модальном окне
+        document.querySelectorAll('.car-modal .error').forEach(error => {
+            error.classList.add('invisible');
+        });
+
+        if (!validation.isValid) {
+            Object.keys(validation.errors).forEach(field => {
+                const errorElement = document.querySelector(`.car-modal [data-error="${field}"]`);
+                if (errorElement) {
+                    errorElement.textContent = validation.errors[field];
+                    errorElement.classList.remove('invisible');
+                }
+            });
+            return false;
+        }
+        
+        return true;
+    }
+
     async AddCarToUser (userId) {
+        // Валидация данных автомобиля
+        if (!this.ValidateCarInModal()) {
+            Modal.ShowNotification('Исправьте ошибки в форме автомобиля', 'red');
+            return;
+        }
+
         try {
             const response = await fetch(`${this.userApiAddress}/api/Cars`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.CollectCarsDataFromModal ())
+                body: JSON.stringify(this.CollectCarsDataFromModal())
             });
             if (!response.ok) throw new Error(await response.text());
             const data = await response.json();
@@ -257,6 +390,7 @@ class UserProfile {
             return data;
         } catch (error) {
             console.error('Ошибка создания автомобиля:', error);
+            Modal.ShowNotification('Ошибка добавления автомобиля', 'red');
         }
     }
 
@@ -274,6 +408,7 @@ class UserProfile {
             Modal.ShowNotification('Автомобиль успешно удалён', 'green');
         } catch (error) {
             console.error(`Ошибка удаления автомобиля ${carId}:`, error);
+            Modal.ShowNotification('Ошибка удаления автомобиля', 'red');
         }
     }
 }

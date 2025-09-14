@@ -589,6 +589,7 @@ var UserProfile = /*#__PURE__*/function () {
   function UserProfile() {
     _classCallCheck(this, UserProfile);
     this.userApiAddress = 'http://localhost:55680';
+    this.validator = new _UserValidator_js__WEBPACK_IMPORTED_MODULE_0__.UserValidator();
   }
   return _createClass(UserProfile, [{
     key: "GetUserById",
@@ -836,7 +837,7 @@ var UserProfile = /*#__PURE__*/function () {
         buttonDelCar = '';
         disabledOrNot = '';
       }
-      var carTemplate = "\n            <div class=\"car\" data-car-id=\"".concat(car.id, "\">\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"mark\" id=\"mark-").concat(car.id, "\" value=\"").concat(car.mark, "\" />\n                    <label for=\"mark-").concat(car.id, "\">\u041C\u0430\u0440\u043A\u0430</label>\n                    <div class=\"error invisible\" data-error=\"mark\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u0430\u0440\u043A\u0430 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"model\" id=\"model-").concat(car.id, "\" value=\"").concat(car.model, "\" />\n                    <label for=\"model-").concat(car.id, "\">\u041C\u043E\u0434\u0435\u043B\u044C</label>\n                    <div class=\"error invisible\" data-error=\"model\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"color\" id=\"color-").concat(car.id, "\" value=\"").concat(car.color, "\" />\n                    <label for=\"color-").concat(car.id, "\">\u0426\u0432\u0435\u0442</label>\n                    <div class=\"error invisible\" data-error=\"firstName\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0446\u0432\u0435\u0442 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(car.id, "\" value=\"").concat(car.number, "\" />\n                    <label for=\"number-").concat(car.id, "\">\u041D\u043E\u043C\u0435\u0440</label>\n                    <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                ").concat(buttonDelCar, "\n            </div>\n        ");
+      var carTemplate = "\n            <div class=\"car\" data-car-id=\"".concat(car.id, "\">\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"mark\" id=\"mark-").concat(car.id, "\" value=\"").concat(car.mark, "\" />\n                    <label for=\"mark-").concat(car.id, "\">\u041C\u0430\u0440\u043A\u0430</label>\n                    <div class=\"error invisible\" data-error=\"mark\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u0430\u0440\u043A\u0430 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"model\" id=\"model-").concat(car.id, "\" value=\"").concat(car.model, "\" />\n                    <label for=\"model-").concat(car.id, "\">\u041C\u043E\u0434\u0435\u043B\u044C</label>\n                    <div class=\"error invisible\" data-error=\"model\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"color\" id=\"color-").concat(car.id, "\" value=\"").concat(car.color, "\" />\n                    <label for=\"color-").concat(car.id, "\">\u0426\u0432\u0435\u0442</label>\n                    <div class=\"error invisible\" data-error=\"color\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0446\u0432\u0435\u0442 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                <div class=\"form-group\">\n                    <input ").concat(disabledOrNot, " type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(car.id, "\" value=\"").concat(car.number, "\" />\n                    <label for=\"number-").concat(car.id, "\">\u041D\u043E\u043C\u0435\u0440</label>\n                    <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043C\u0430\u0448\u0438\u043D\u044B</div>\n                </div>\n                ").concat(buttonDelCar, "\n            </div>\n        ");
       return carTemplate;
     }
   }, {
@@ -871,6 +872,27 @@ var UserProfile = /*#__PURE__*/function () {
       return userData;
     }
   }, {
+    key: "CollectCarsDataFromProfile",
+    value: function CollectCarsDataFromProfile() {
+      var carsData = [];
+
+      // собираем данные по машинам из профиля
+      var cars = document.querySelectorAll('.profile-group[data-group="cars"] .car');
+      cars.forEach(function (car) {
+        var _car$querySelector, _car$querySelector2, _car$querySelector3, _car$querySelector4;
+        var carData = {
+          id: car.dataset.carId || '',
+          mark: ((_car$querySelector = car.querySelector('input[name="mark"]')) === null || _car$querySelector === void 0 ? void 0 : _car$querySelector.value) || '',
+          model: ((_car$querySelector2 = car.querySelector('input[name="model"]')) === null || _car$querySelector2 === void 0 ? void 0 : _car$querySelector2.value) || '',
+          color: ((_car$querySelector3 = car.querySelector('input[name="color"]')) === null || _car$querySelector3 === void 0 ? void 0 : _car$querySelector3.value) || '',
+          number: ((_car$querySelector4 = car.querySelector('input[name="number"]')) === null || _car$querySelector4 === void 0 ? void 0 : _car$querySelector4.value) || '',
+          userId: window.authManager.userData.userId
+        };
+        carsData.push(carData);
+      });
+      return carsData;
+    }
+  }, {
     key: "CollectCarsDataFromModal",
     value: function CollectCarsDataFromModal() {
       var carData = {};
@@ -878,12 +900,12 @@ var UserProfile = /*#__PURE__*/function () {
       // собираем данные по машинам
       var cars = document.querySelectorAll('.car-modal .car');
       cars.forEach(function (car) {
-        var _car$querySelector, _car$querySelector2, _car$querySelector3, _car$querySelector4;
+        var _car$querySelector5, _car$querySelector6, _car$querySelector7, _car$querySelector8;
         carData = {
-          mark: ((_car$querySelector = car.querySelector('input[name="mark"]')) === null || _car$querySelector === void 0 ? void 0 : _car$querySelector.value) || '',
-          model: ((_car$querySelector2 = car.querySelector('input[name="model"]')) === null || _car$querySelector2 === void 0 ? void 0 : _car$querySelector2.value) || '',
-          color: ((_car$querySelector3 = car.querySelector('input[name="color"]')) === null || _car$querySelector3 === void 0 ? void 0 : _car$querySelector3.value) || '',
-          number: ((_car$querySelector4 = car.querySelector('input[name="number"]')) === null || _car$querySelector4 === void 0 ? void 0 : _car$querySelector4.value) || '',
+          mark: ((_car$querySelector5 = car.querySelector('input[name="mark"]')) === null || _car$querySelector5 === void 0 ? void 0 : _car$querySelector5.value) || '',
+          model: ((_car$querySelector6 = car.querySelector('input[name="model"]')) === null || _car$querySelector6 === void 0 ? void 0 : _car$querySelector6.value) || '',
+          color: ((_car$querySelector7 = car.querySelector('input[name="color"]')) === null || _car$querySelector7 === void 0 ? void 0 : _car$querySelector7.value) || '',
+          number: ((_car$querySelector8 = car.querySelector('input[name="number"]')) === null || _car$querySelector8 === void 0 ? void 0 : _car$querySelector8.value) || '',
           userId: window.authManager.userData.userId
         };
       });
@@ -892,15 +914,67 @@ var UserProfile = /*#__PURE__*/function () {
       return carData;
     }
   }, {
+    key: "ShowValidationErrors",
+    value: function ShowValidationErrors(errors) {
+      // Очищаем все предыдущие ошибки
+      document.querySelectorAll('.error').forEach(function (error) {
+        error.classList.add('invisible');
+      });
+
+      // Показываем ошибки пользователя
+      if (errors.user) {
+        Object.keys(errors.user).forEach(function (field) {
+          var errorElement = document.querySelector("[data-error=\"".concat(field, "\"]"));
+          if (errorElement) {
+            errorElement.textContent = errors.user[field];
+            errorElement.classList.remove('invisible');
+          }
+        });
+      }
+
+      // Показываем ошибки автомобилей
+      if (errors.cars && errors.cars.length > 0) {
+        errors.cars.forEach(function (carErrors, index) {
+          Object.keys(carErrors).forEach(function (field) {
+            var errorElement = document.querySelector(".profile-group[data-group=\"cars\"] .car:nth-child(".concat(index + 1, ") [data-error=\"").concat(field, "\"]"));
+            if (errorElement) {
+              errorElement.textContent = carErrors[field];
+              errorElement.classList.remove('invisible');
+            }
+          });
+        });
+      }
+    }
+  }, {
     key: "UpdateUserToDB",
     value: function () {
       var _UpdateUserToDB = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id, userData) {
-        var response, _t9, _t0, _t1;
+        var validation, carsData, carsValidation, allErrors, response, _t9, _t0, _t1;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
               _context6.p = 0;
-              _context6.n = 1;
+              // Валидация данных пользователя
+              validation = this.validator.validateUserData(userData); // Собираем данные автомобилей для валидации
+              carsData = this.CollectCarsDataFromProfile(); // Валидация автомобилей
+              carsValidation = this.ValidateCarsData(carsData); // Объединяем ошибки
+              allErrors = {
+                user: validation.errors.user,
+                cars: carsValidation.errors
+              };
+              if (!(!validation.isValid || !carsValidation.isValid)) {
+                _context6.n = 1;
+                break;
+              }
+              this.ShowValidationErrors(allErrors);
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Исправьте ошибки в форме', 'red');
+              return _context6.a(2);
+            case 1:
+              // Если валидация прошла успешно, очищаем ошибки
+              document.querySelectorAll('.error').forEach(function (error) {
+                error.classList.add('invisible');
+              });
+              _context6.n = 2;
               return fetch("".concat(this.userApiAddress, "/api/Users/").concat(id), {
                 method: 'PUT',
                 headers: {
@@ -910,37 +984,90 @@ var UserProfile = /*#__PURE__*/function () {
                   id: id
                 }))
               });
-            case 1:
+            case 2:
               response = _context6.v;
               if (response.ok) {
-                _context6.n = 3;
+                _context6.n = 4;
                 break;
               }
               _t9 = Error;
-              _context6.n = 2;
+              _context6.n = 3;
               return response.text();
-            case 2:
+            case 3:
               _t0 = _context6.v;
               throw new _t9(_t0);
-            case 3:
+            case 4:
               console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D"));
               _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Данные пользователя сохранены', 'green');
-              _context6.n = 5;
+              _context6.n = 6;
               break;
-            case 4:
-              _context6.p = 4;
+            case 5:
+              _context6.p = 5;
               _t1 = _context6.v;
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(id, ":"), _t1);
-            case 5:
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Ошибка сохранения данных', 'red');
+            case 6:
               return _context6.a(2);
           }
-        }, _callee6, this, [[0, 4]]);
+        }, _callee6, this, [[0, 5]]);
       }));
       function UpdateUserToDB(_x6, _x7) {
         return _UpdateUserToDB.apply(this, arguments);
       }
       return UpdateUserToDB;
     }()
+  }, {
+    key: "ValidateCarsData",
+    value: function ValidateCarsData(carsData) {
+      var _this2 = this;
+      var errors = [];
+      var isValid = true;
+      carsData.forEach(function (car) {
+        var carValidation = _this2.validator.validateCar(car);
+        if (!carValidation.isValid) {
+          errors.push(carValidation.errors);
+          isValid = false;
+        } else {
+          errors.push({});
+        }
+      });
+
+      // Проверка уникальности номеров
+      var duplicateIndices = this.validator.validateUniqueCarNumbers(carsData);
+      if (duplicateIndices.length > 0) {
+        duplicateIndices.forEach(function (index) {
+          if (!errors[index]) errors[index] = {};
+          errors[index].number = 'Номер автомобиля уже существует';
+          isValid = false;
+        });
+      }
+      return {
+        isValid: isValid,
+        errors: errors
+      };
+    }
+  }, {
+    key: "ValidateCarInModal",
+    value: function ValidateCarInModal() {
+      var carData = this.CollectCarsDataFromModal();
+      var validation = this.validator.validateCar(carData);
+
+      // Очищаем ошибки в модальном окне
+      document.querySelectorAll('.car-modal .error').forEach(function (error) {
+        error.classList.add('invisible');
+      });
+      if (!validation.isValid) {
+        Object.keys(validation.errors).forEach(function (field) {
+          var errorElement = document.querySelector(".car-modal [data-error=\"".concat(field, "\"]"));
+          if (errorElement) {
+            errorElement.textContent = validation.errors[field];
+            errorElement.classList.remove('invisible');
+          }
+        });
+        return false;
+      }
+      return true;
+    }
   }, {
     key: "AddCarToUser",
     value: function () {
@@ -949,8 +1076,15 @@ var UserProfile = /*#__PURE__*/function () {
         return _regenerator().w(function (_context7) {
           while (1) switch (_context7.p = _context7.n) {
             case 0:
-              _context7.p = 0;
-              _context7.n = 1;
+              if (this.ValidateCarInModal()) {
+                _context7.n = 1;
+                break;
+              }
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Исправьте ошибки в форме автомобиля', 'red');
+              return _context7.a(2);
+            case 1:
+              _context7.p = 1;
+              _context7.n = 2;
               return fetch("".concat(this.userApiAddress, "/api/Cars"), {
                 method: 'POST',
                 headers: {
@@ -958,29 +1092,29 @@ var UserProfile = /*#__PURE__*/function () {
                 },
                 body: JSON.stringify(this.CollectCarsDataFromModal())
               });
-            case 1:
+            case 2:
               response = _context7.v;
               if (response.ok) {
-                _context7.n = 3;
+                _context7.n = 4;
                 break;
               }
               _t10 = Error;
-              _context7.n = 2;
+              _context7.n = 3;
               return response.text();
-            case 2:
+            case 3:
               _t11 = _context7.v;
               throw new _t10(_t11);
-            case 3:
-              _context7.n = 4;
-              return response.json();
             case 4:
+              _context7.n = 5;
+              return response.json();
+            case 5:
               data = _context7.v;
               console.log('Автомобиль создан:', data);
 
               //инсертим автомобиль в список
-              _context7.n = 5;
+              _context7.n = 6;
               return this.InsertCarsToUserProfile(userId);
-            case 5:
+            case 6:
               //зачищаем модалку и закрываем её
               document.querySelectorAll('.car-modal input').forEach(function (input) {
                 input.value = '';
@@ -988,14 +1122,15 @@ var UserProfile = /*#__PURE__*/function () {
               document.querySelector('.car-modal').closest('.modal-overview').classList.remove('active');
               _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно добавлен', 'green');
               return _context7.a(2, data);
-            case 6:
-              _context7.p = 6;
+            case 7:
+              _context7.p = 7;
               _t12 = _context7.v;
               console.error('Ошибка создания автомобиля:', _t12);
-            case 7:
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Ошибка добавления автомобиля', 'red');
+            case 8:
               return _context7.a(2);
           }
-        }, _callee7, this, [[0, 6]]);
+        }, _callee7, this, [[1, 7]]);
       }));
       function AddCarToUser(_x8) {
         return _AddCarToUser.apply(this, arguments);
@@ -1041,6 +1176,7 @@ var UserProfile = /*#__PURE__*/function () {
               _context8.p = 4;
               _t15 = _context8.v;
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044F ".concat(carId, ":"), _t15);
+              _Modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Ошибка удаления автомобиля', 'red');
             case 5:
               return _context8.a(2);
           }
