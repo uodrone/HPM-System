@@ -19,7 +19,6 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Явно настраиваем Kestrel для работы по HTTP и HTTPS
             builder.WebHost.ConfigureKestrel(options =>
             {
