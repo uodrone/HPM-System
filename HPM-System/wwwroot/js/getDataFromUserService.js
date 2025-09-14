@@ -1,4 +1,5 @@
 import { UserValidator } from './UserValidator.js';
+import { Modal } from './modal.js';
 
 class UserProfile {
     constructor () {
@@ -117,7 +118,7 @@ class UserProfile {
 
     SetCarTemplate (car) {
         let buttonDelCar = `
-        <div class="remove-car" title="Удалить этот автомобиль">
+        <div class="remove-car" data-action="remove-car-from-user" data-car-id="${car.id}" title="Удалить этот автомобиль">
             &#10060;
         </div>`;
         let disabledOrNot = 'disabled';
@@ -227,6 +228,7 @@ class UserProfile {
             });
             if (!response.ok) throw new Error(await response.text());
             console.log(`Пользователь ${id} обновлён`);
+            Modal.ShowNotification('Данные пользователя сохранены', 'green');
         } catch (error) {
             console.error(`Ошибка обновления пользователя ${id}:`, error);
         }
@@ -242,6 +244,7 @@ class UserProfile {
             if (!response.ok) throw new Error(await response.text());
             const data = await response.json();
             console.log('Автомобиль создан:', data);
+
             //инсертим автомобиль в список
             await this.InsertCarsToUserProfile(userId);
             //зачищаем модалку и закрываем её
@@ -249,9 +252,28 @@ class UserProfile {
                 input.value = '';
             });
             document.querySelector('.car-modal').closest('.modal-overview').classList.remove('active');
+            Modal.ShowNotification('Автомобиль успешно добавлен', 'green');
+
             return data;
         } catch (error) {
             console.error('Ошибка создания автомобиля:', error);
+        }
+    }
+
+    async RemoveCarFromUser (carId) {
+        try {
+            const response = await fetch(`${this.userApiAddress}/api/Cars/${carId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) throw new Error(await response.text());
+            console.log(`Автомобиль ${carId} удалён`);
+            //удоляем строку с отображением авто из профиля
+            document.querySelector(`.profile-group .car[data-car-id="${carId}"]`).remove();
+            
+            Modal.ShowNotification('Автомобиль успешно удалён', 'green');
+        } catch (error) {
+            console.error(`Ошибка удаления автомобиля ${carId}:`, error);
         }
     }
 }
@@ -270,12 +292,19 @@ document.addEventListener('authStateChanged', () => {
         if (document.getElementById('user-profile')) {
             userProfile.InsertUserDataToProfile (userId);
 
-            document.querySelector(`.btn[data-action="save-user-data"]`).addEventListener('click', () => {
+            document.querySelector(`[data-action="save-user-data"]`).addEventListener('click', () => {
                 userProfile.UpdateUserToDB(window.authManager.userData.userId, userProfile.CollectUserDataFromProfile());
             });
 
-            document.querySelector(`.btn[data-action="add-car-to-user"]`).addEventListener('click', () => {
+            document.querySelector(`[data-action="add-car-to-user"]`).addEventListener('click', () => {
                 userProfile.AddCarToUser(window.authManager.userData.userId);
+            });
+
+            document.addEventListener('click', (e) => {            
+                if (e.target.dataset.action == 'remove-car-from-user') {
+                    const carId = e.target.dataset.carId;
+                    userProfile.RemoveCarFromUser(carId);
+                }
             });
         }
     }

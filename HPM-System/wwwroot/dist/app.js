@@ -66,6 +66,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/css/notification.css":
+/*!**************************************!*\
+  !*** ./wwwroot/css/notification.css ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./wwwroot/css/profile-group.css":
 /*!***************************************!*\
   !*** ./wwwroot/css/profile-group.css ***!
@@ -1033,6 +1046,7 @@ var UserValidator = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _UserValidator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserValidator.js */ "./wwwroot/js/UserValidator.js");
+/* harmony import */ var _modal_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modal.js */ "./wwwroot/js/modal.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -1046,6 +1060,7 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
 
 var UserProfile = /*#__PURE__*/function () {
   function UserProfile() {
@@ -1286,7 +1301,7 @@ var UserProfile = /*#__PURE__*/function () {
   }, {
     key: "SetCarTemplate",
     value: function SetCarTemplate(car) {
-      var buttonDelCar = "\n        <div class=\"remove-car\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u044D\u0442\u043E\u0442 \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C\">\n            &#10060;\n        </div>";
+      var buttonDelCar = "\n        <div class=\"remove-car\" data-action=\"remove-car-from-user\" data-car-id=\"".concat(car.id, "\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u044D\u0442\u043E\u0442 \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C\">\n            &#10060;\n        </div>");
       var disabledOrNot = 'disabled';
       if (!Object.keys(car).length) {
         car.id = '';
@@ -1386,6 +1401,7 @@ var UserProfile = /*#__PURE__*/function () {
               throw new _t9(_t0);
             case 3:
               console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D"));
+              _modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Данные пользователя сохранены', 'green');
               _context6.n = 5;
               break;
             case 4:
@@ -1437,6 +1453,7 @@ var UserProfile = /*#__PURE__*/function () {
             case 4:
               data = _context7.v;
               console.log('Автомобиль создан:', data);
+
               //инсертим автомобиль в список
               _context7.n = 5;
               return this.InsertCarsToUserProfile(userId);
@@ -1446,6 +1463,7 @@ var UserProfile = /*#__PURE__*/function () {
                 input.value = '';
               });
               document.querySelector('.car-modal').closest('.modal-overview').classList.remove('active');
+              _modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно добавлен', 'green');
               return _context7.a(2, data);
             case 6:
               _context7.p = 6;
@@ -1461,6 +1479,55 @@ var UserProfile = /*#__PURE__*/function () {
       }
       return AddCarToUser;
     }()
+  }, {
+    key: "RemoveCarFromUser",
+    value: function () {
+      var _RemoveCarFromUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(carId) {
+        var response, _t13, _t14, _t15;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
+            case 0:
+              _context8.p = 0;
+              _context8.n = 1;
+              return fetch("".concat(this.userApiAddress, "/api/Cars/").concat(carId), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context8.v;
+              if (response.ok) {
+                _context8.n = 3;
+                break;
+              }
+              _t13 = Error;
+              _context8.n = 2;
+              return response.text();
+            case 2:
+              _t14 = _context8.v;
+              throw new _t13(_t14);
+            case 3:
+              console.log("\u0410\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044C ".concat(carId, " \u0443\u0434\u0430\u043B\u0451\u043D"));
+              //удоляем строку с отображением авто из профиля
+              document.querySelector(".profile-group .car[data-car-id=\"".concat(carId, "\"]")).remove();
+              _modal_js__WEBPACK_IMPORTED_MODULE_1__.Modal.ShowNotification('Автомобиль успешно удалён', 'green');
+              _context8.n = 5;
+              break;
+            case 4:
+              _context8.p = 4;
+              _t15 = _context8.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\u043E\u0431\u0438\u043B\u044F ".concat(carId, ":"), _t15);
+            case 5:
+              return _context8.a(2);
+          }
+        }, _callee8, this, [[0, 4]]);
+      }));
+      function RemoveCarFromUser(_x9) {
+        return _RemoveCarFromUser.apply(this, arguments);
+      }
+      return RemoveCarFromUser;
+    }()
   }]);
 }();
 document.addEventListener('authStateChanged', function () {
@@ -1475,11 +1542,17 @@ document.addEventListener('authStateChanged', function () {
     }
     if (document.getElementById('user-profile')) {
       userProfile.InsertUserDataToProfile(userId);
-      document.querySelector(".btn[data-action=\"save-user-data\"]").addEventListener('click', function () {
+      document.querySelector("[data-action=\"save-user-data\"]").addEventListener('click', function () {
         userProfile.UpdateUserToDB(window.authManager.userData.userId, userProfile.CollectUserDataFromProfile());
       });
-      document.querySelector(".btn[data-action=\"add-car-to-user\"]").addEventListener('click', function () {
+      document.querySelector("[data-action=\"add-car-to-user\"]").addEventListener('click', function () {
         userProfile.AddCarToUser(window.authManager.userData.userId);
+      });
+      document.addEventListener('click', function (e) {
+        if (e.target.dataset.action == 'remove-car-from-user') {
+          var carId = e.target.dataset.carId;
+          userProfile.RemoveCarFromUser(carId);
+        }
       });
     }
   }
@@ -1491,8 +1564,13 @@ document.addEventListener('authStateChanged', function () {
 /*!*****************************!*\
   !*** ./wwwroot/js/modal.js ***!
   \*****************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Modal: () => (/* binding */ Modal)
+/* harmony export */ });
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
@@ -1504,6 +1582,7 @@ var Modal = /*#__PURE__*/function () {
     _classCallCheck(this, Modal);
     this.OpenModal();
     this.CloseModal();
+    this.CloseModalOnOutsideClick();
   }
   return _createClass(Modal, [{
     key: "OpenModal",
@@ -1523,6 +1602,34 @@ var Modal = /*#__PURE__*/function () {
           cross.closest('.modal-overview').classList.remove('active');
         });
       });
+    }
+  }, {
+    key: "CloseModalOnOutsideClick",
+    value: function CloseModalOnOutsideClick() {
+      var modalOverview = document.querySelector('.modal-overview');
+      modalOverview.addEventListener('click', function (event) {
+        if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {
+          modalOverview.classList.remove('active');
+        }
+      });
+    }
+  }], [{
+    key: "ShowNotification",
+    value: function ShowNotification(text, color) {
+      var notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = text;
+      notification.style.backgroundColor = color;
+
+      // Добавляем уведомление в документ
+      document.body.appendChild(notification);
+
+      // Через 2 секунды удаляем уведомление
+      setTimeout(function () {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 2000);
     }
   }]);
 }();
@@ -1598,6 +1705,7 @@ document.addEventListener('DOMContentLoaded', function () {
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
 /******/ 	__webpack_require__("./wwwroot/css/variables.css");
 /******/ 	__webpack_require__("./wwwroot/css/profile-group.css");
+/******/ 	__webpack_require__("./wwwroot/css/notification.css");
 /******/ 	__webpack_require__("./wwwroot/css/modal.css");
 /******/ 	__webpack_require__("./wwwroot/css/main.css");
 /******/ 	__webpack_require__("./wwwroot/css/grid.css");
