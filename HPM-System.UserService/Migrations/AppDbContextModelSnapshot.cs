@@ -49,6 +49,9 @@ namespace HPM_System.UserService.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
                     b.HasKey("Id");
 
                     b.HasIndex("Number")
@@ -66,8 +69,8 @@ namespace HPM_System.UserService.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()

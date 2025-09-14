@@ -74,7 +74,7 @@ namespace HPM_System.UserService.Controllers
 
         // GET: api/Cars/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCar(int id)
+        public async Task<IActionResult> GetCar(long id)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace HPM_System.UserService.Controllers
 
         // DELETE: api/Cars/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCar(int id)
+        public async Task<IActionResult> DeleteCar(long id)
         {
             try
             {

@@ -233,15 +233,4 @@ namespace HPM_System.IdentityServer.Controllers
             return false;
         }
     }
-
-    /// <summary>
-    /// Модель для временной передачи данных аутентификации
-    /// </summary>
-    public class AuthTransferData
-    {
-        public string Token { get; set; } = string.Empty;
-        public string UserId { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
-    }
 }

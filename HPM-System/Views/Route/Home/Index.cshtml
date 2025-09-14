@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+  
+
+    <!-- Основной контент -->
+<div class="main-content align-content-center">
+    <div class="container">
+        <!-- Приветствие для авторизованных пользователей -->
+        <section data-auth-required class="auth-required">
+            <div class="welcome-section">
+                <h2>Добро пожаловать в HPM System!</h2>
+                <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
+            </div>
+            <div class="my-5">
+                <div class="start-secreen-greed">
+                    <div class="profile-card" id="user-card">
+                        <h3 class="text-center">Профиль пользователя</h3>
+
+                        <div class="my-5 d-flex flex-column gap-2">
+                            <div data-user-fullname></div>
+                            <div data-user-phone></div>
+                            <div data-user-carslist></div>
+                        </div>
+
+                        <div class="text-center">
+                            <a class="user-link" data-user-id href="/user">Редактировать профиль</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Контент для неавторизованных пользователей -->
+        <section data-guest-only class="guest-only">
+            <div class="text-center">
+                <h1>Добро пожаловать в HPM System</h1>
+                <p>Современная система управления жилыми сообществами</p>
+                <div class="d-flex flex-wrap justify-content-center gap-4">
+                    <a href="https://localhost:55676/auth/login" class="btn btn_secondary" style="font-size: 1.1rem; padding: 12px 24px;">
+                        Войти в систему
+                    </a>
+                    <a href="https://localhost:55676/auth/register" class="btn btn_primary" style="font-size: 1.1rem; padding: 12px 24px;">
+                        Зарегистрироваться
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

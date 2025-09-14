@@ -3,7 +3,7 @@ using Duende.IdentityServer.Models;
 using HPM_System.IdentityServer.Services.AccountService;
 using HPM_System.IdentityServer.Data;
 using HPM_System.IdentityServer.Models;
-using HPM_System.IdentityServer.Services; // Åäèíîå ïðîñòðàíñòâî èìåí äëÿ âñåõ ñåðâèñîâ
+using HPM_System.IdentityServer.Services;
 using HPM_System.IdentityServer.Services.ErrorHandlingService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -19,23 +19,32 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            // Явно настраиваем Kestrel для работы по HTTP и HTTPS
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(8080); // HTTP для внутренних запросов между контейнерами
+                options.ListenAnyIP(8081, listenOptions =>
+                {
+                    listenOptions.UseHttps(); // HTTPS для внешних запросов
+                });
+            });
 
-            // Ðåãèñòðèðóåì áèçíåñ-ñåðâèñû
+            // Регистрируем бизнес-сервисы
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IErrorHandlingService, ErrorHandlingService>();
 
-            // Äîáàâëÿåì MVC ñ Views
+            // Добавляем MVC с Views
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.AddEndpointsApiExplorer();
 
-            // Ðåãèñòðèðóåì ëîããåð
+            // Регистрируем логгер
             builder.Services.AddLogging(configure => configure.AddConsole());
 
-            // Äîáàâëÿåì DbContext
+            // Добавляем DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Äîáàâëÿåì Identity
+            // Добавляем Identity
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
@@ -72,7 +81,7 @@ namespace HPM_System.IdentityServer
                 options.LogoutPath = "/Auth/Logout";
             });
 
-            // Äîáàâëÿåì IdentityServer
+            // Добавляем IdentityServer
             builder.Services.AddIdentityServer(options =>
             {
                 options.EmitStaticAudienceClaim = true;
@@ -89,7 +98,7 @@ namespace HPM_System.IdentityServer
                 .AddProfileService<CustomProfileService>()
                 .AddDeveloperSigningCredential();
 
-            // Íàñòðîéêà ïàðàìåòðîâ Identity
+            // Настройка параметров Identity
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -100,7 +109,7 @@ namespace HPM_System.IdentityServer
                 options.User.RequireUniqueEmail = true;
             });
 
-            // Ïîääåðæêà CORS
+            // Поддержка CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -114,13 +123,13 @@ namespace HPM_System.IdentityServer
             // OpenAPI/Swagger
             builder.Services.AddOpenApi();
 
-            // HTTP êëèåíò äëÿ âíåøíèõ âûçîâîâ (UserService)
+            // HTTP клиент для внешних вызовов (UserService)
             builder.Services.AddHttpClient();
             builder.Services.AddMemoryCache();
 
             var app = builder.Build();
 
-            // Ïðèìåíÿåì ìèãðàöèè ïðè ñòàðòå
+            // Применяем миграции при старте
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -132,9 +141,9 @@ namespace HPM_System.IdentityServer
                     var pendingMigrations = context.Database.GetPendingMigrations();
                     if (pendingMigrations.Any())
                     {
-                        logger.LogInformation($"Ïðèìåíåíèå {pendingMigrations.Count()} ìèãðàöèé...");
+                        logger.LogInformation($"Применение {pendingMigrations.Count()} миграций...");
                         context.Database.Migrate();
-                        logger.LogInformation("Identity ìèãðàöèè óñïåøíû");
+                        logger.LogInformation("Identity миграции успешны");
                     }
                     else
                     {
@@ -155,7 +164,12 @@ namespace HPM_System.IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // Возвращаем HTTPS редирект, но только для внешних запросов
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
             app.UseStaticFiles();
 
             app.UseCors("AllowAll");
@@ -164,13 +178,17 @@ namespace HPM_System.IdentityServer
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Ìàðøðóòû MVC
+            // Маршруты MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            // API ìàðøðóòû
+            // API маршруты
             app.MapControllers();
+
+            // Добавляем логирование информации о том, на каких URL слушаем
+            var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+            startupLogger.LogInformation("IdentityServer запущен и слушает на порту 8080");
 
             app.Run();
         }
