@@ -21,7 +21,7 @@
             '124', '125', '126', '134', '136', '138', '142', '150', '152',
             '154', '159', '161', '163', '164', '173', '174', '177', '178',
             '186', '190', '196', '197', '198', '199', '702', '716', '750',
-            '761', '763', '774', '777', '790', '799'
+            '761', '763', '774', '777', '790', '799', '999'
         ];
 
         // Запрещенные комбинации
@@ -34,9 +34,7 @@
         ];
     }
 
-    /**
-     * Валидация имени/фамилии/отчества
-     */
+    //Валидация имени/фамилии/отчества
     validateName(name, fieldName, required = true) {
         if (!name || name.trim() === '') {
             if (required) {
@@ -76,8 +74,7 @@
 
         const birthDate = new Date(birthday);
         const today = new Date();
-        const minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
-        const maxDate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate()); // Минимальный возраст 14 лет
+        const minDate = new Date(today.getFullYear() - 125, today.getMonth(), today.getDate());
 
         if (isNaN(birthDate.getTime())) {
             return { isValid: false, error: 'Неверный формат даты' };
@@ -88,11 +85,7 @@
         }
 
         if (birthDate < minDate) {
-            return { isValid: false, error: 'Дата рождения не может быть более 120 лет назад' };
-        }
-
-        if (birthDate > maxDate) {
-            return { isValid: false, error: 'Минимальный возраст должен быть 14 лет' };
+            return { isValid: false, error: 'Дата рождения не может быть более 125 лет назад' };
         }
 
         return { isValid: true };

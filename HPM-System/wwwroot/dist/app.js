@@ -105,6 +105,16 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/js/ApartmentProfile.js":
+/*!****************************************!*\
+  !*** ./wwwroot/js/ApartmentProfile.js ***!
+  \****************************************/
+/***/ (() => {
+
+
+
+/***/ }),
+
 /***/ "./wwwroot/js/AuthManager.js":
 /*!***********************************!*\
   !*** ./wwwroot/js/AuthManager.js ***!
@@ -1250,15 +1260,13 @@ var UserValidator = /*#__PURE__*/function () {
     // Основные регионы
     '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99',
     // Трёхзначные коды для крупных регионов
-    '102', '113', '116', '117', '118', '119', '121', '122', '123', '124', '125', '126', '134', '136', '138', '142', '150', '152', '154', '159', '161', '163', '164', '173', '174', '177', '178', '186', '190', '196', '197', '198', '199', '702', '716', '750', '761', '763', '774', '777', '790', '799'];
+    '102', '113', '116', '117', '118', '119', '121', '122', '123', '124', '125', '126', '134', '136', '138', '142', '150', '152', '154', '159', '161', '163', '164', '173', '174', '177', '178', '186', '190', '196', '197', '198', '199', '702', '716', '750', '761', '763', '774', '777', '790', '799', '999'];
 
     // Запрещенные комбинации
     this.forbiddenCombinations = [/.*ХУ[ЙИ].*/, /.*БЛ[ЯА].*/, /.*П[ИИ]З.*/, /.*МУД.*/, /.*ГОВ.*/];
   }
 
-  /**
-   * Валидация имени/фамилии/отчества
-   */
+  //Валидация имени/фамилии/отчества
   return _createClass(UserValidator, [{
     key: "validateName",
     value: function validateName(name, fieldName) {
@@ -1320,9 +1328,7 @@ var UserValidator = /*#__PURE__*/function () {
       }
       var birthDate = new Date(birthday);
       var today = new Date();
-      var minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
-      var maxDate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate()); // Минимальный возраст 14 лет
-
+      var minDate = new Date(today.getFullYear() - 125, today.getMonth(), today.getDate());
       if (isNaN(birthDate.getTime())) {
         return {
           isValid: false,
@@ -1338,13 +1344,7 @@ var UserValidator = /*#__PURE__*/function () {
       if (birthDate < minDate) {
         return {
           isValid: false,
-          error: 'Дата рождения не может быть более 120 лет назад'
-        };
-      }
-      if (birthDate > maxDate) {
-        return {
-          isValid: false,
-          error: 'Минимальный возраст должен быть 14 лет'
+          error: 'Дата рождения не может быть более 125 лет назад'
         };
       }
       return {
@@ -1819,6 +1819,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/js/UserProfile.js");
 /******/ 	__webpack_require__("./wwwroot/js/Modal.js");
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
+/******/ 	__webpack_require__("./wwwroot/js/ApartmentProfile.js");
 /******/ 	__webpack_require__("./wwwroot/css/variables.css");
 /******/ 	__webpack_require__("./wwwroot/css/profile-group.css");
 /******/ 	__webpack_require__("./wwwroot/css/notification.css");
