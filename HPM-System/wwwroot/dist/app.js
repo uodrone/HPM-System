@@ -707,10 +707,10 @@ var UserProfile = /*#__PURE__*/function () {
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
-              userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
+              userIdLinks = document.querySelectorAll('a[data-user-id]');
               userIdLinks.forEach(function (element) {
                 var link = element.href;
-                element.href = "/user/".concat(userId);
+                element.href += userId;
               });
               _context3.p = 1;
               _context3.n = 2;

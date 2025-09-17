@@ -41,6 +41,14 @@ namespace HPM_System.Controllers
 
         #region Apartment Routes
 
+        [HttpGet("apartment/by-user/{userId}")]
+        public IActionResult ApartmentsByUser(string userId)
+        {
+            _logger.LogInformation("Запрошены уведомления для пользователя с ID: {UserId}", userId);
+            ViewData["UserId"] = userId;
+            return View("Apartment/ApartmentsByUser");
+        }
+
         [HttpGet("apartment/{id}")]
         public IActionResult ApartmentDetails(string id)
         {

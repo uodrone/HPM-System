@@ -38,10 +38,10 @@ class UserProfile {
     }
 
     async InsertUserDataToCardOnMainPage (userId) {
-        const userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
+        const userIdLinks = document.querySelectorAll('a[data-user-id]');
         userIdLinks.forEach(element => {
             const link = element.href;
-            element.href = `/user/${userId}`;
+            element.href += userId;
         });
 
         try {
