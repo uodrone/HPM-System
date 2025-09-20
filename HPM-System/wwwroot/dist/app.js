@@ -136,6 +136,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "InsertApartmentDataToCardOnMainPage",
     value: function () {
       var _InsertApartmentDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
+        var _this = this;
         var _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
@@ -145,6 +146,12 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return this.GetApartmentsByUserId(userId).then(function (apartments) {
                 console.log("\u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");
                 console.log(apartments);
+                var apartmentsListContainer = document.querySelector('#apartments-card .apartments-list');
+                apartmentsListContainer.innerHTML = '';
+                apartments.forEach(function (apartment) {
+                  var apartmentTemplate = _this.SetApartmentTemplate(apartment);
+                  apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
+                });
               })["catch"](function (error) {
                 console.error('Ошибка получения данных квартиры:', error);
               });
@@ -164,7 +171,18 @@ var ApartmentProfile = /*#__PURE__*/function () {
         return _InsertApartmentDataToCardOnMainPage.apply(this, arguments);
       }
       return InsertApartmentDataToCardOnMainPage;
-    }() //получить квартиры пользователя по ид пользователя
+    }()
+  }, {
+    key: "SetApartmentTemplate",
+    value: function SetApartmentTemplate(apartment) {
+      var apartmentHTML;
+      if (apartment) {
+        apartmentHTML = "\n                <div class=\"apartment\" data-apartment-id=\"".concat(apartment.id, "\">\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(apartment.id, "\" value=\"").concat(apartment.number, "\">\n                        <label for=\"number-").concat(apartment.id, "\">\u041D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</label>\n                        <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"rooms\" id=\"rooms-").concat(apartment.id, "\" value=\"").concat(apartment.numbersOfRooms, "\">\n                        <label for=\"rooms-").concat(apartment.id, "\">\u0427\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</label>\n                        <div class=\"error invisible\" data-error=\"rooms\">\u041D\u0435\u0432\u0435\u0440\u043D\u043E\u0435 \u0447\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"totalArea\" id=\"totalArea-").concat(apartment.id, "\" value=\"").concat(apartment.totalArea, "\">\n                        <label for=\"totalArea-").concat(apartment.id, "\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</label>\n                        <div class=\"error invisible\" data-error=\"totalArea\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"residentialArea\" id=\"residentialArea-").concat(apartment.id, "\" value=\"").concat(apartment.residentialArea, "\">\n                        <label for=\"residentialArea-").concat(apartment.id, "\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</label>\n                        <div class=\"error invisible\" data-error=\"residentialArea\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u0436\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                    </div>\n                </div>\n            ");
+      }
+      return apartmentHTML;
+    }
+
+    //получить квартиры пользователя по ид пользователя
   }, {
     key: "GetApartmentsByUserId",
     value: function () {

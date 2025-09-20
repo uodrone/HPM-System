@@ -10,13 +10,54 @@ class ApartmentProfile {
         try {
             await this.GetApartmentsByUserId(userId).then(apartments => {
                 console.log(`квартиры пользователя:`);
-                console.log(apartments);                
+                console.log(apartments);
+                
+                const apartmentsListContainer = document.querySelector('#apartments-card .apartments-list');
+                apartmentsListContainer.innerHTML = '';
+                apartments.forEach(apartment => {
+                    let apartmentTemplate = this.SetApartmentTemplate(apartment);
+                    apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
+                });
+
             }).catch(error => {
                 console.error('Ошибка получения данных квартиры:', error);
             });
         } catch (e) {
             console.log(e);
         }
+    }
+
+    SetApartmentTemplate (apartment) {
+        let apartmentHTML;
+        if (apartment) {
+            apartmentHTML = `
+                <div class="apartment" data-apartment-id="${apartment.id}">
+                    <div class="form-group">
+                        <input disabled="" type="text" placeholder=" " name="number" id="number-${apartment.id}" value="${apartment.number}">
+                        <label for="number-${apartment.id}">Номер квартиры</label>
+                        <div class="error invisible" data-error="number">Неверный номер квартиры</div>
+                    </div>
+                    <div class="form-group">
+                        <input disabled="" type="text" placeholder=" " name="rooms" id="rooms-${apartment.id}" value="${apartment.numbersOfRooms}">
+                        <label for="rooms-${apartment.id}">Число комнат</label>
+                        <div class="error invisible" data-error="rooms">Неверное число комнат</div>
+                    </div>
+                    <div class="form-group">
+                        <input disabled="" type="text" placeholder=" " name="totalArea" id="totalArea-${apartment.id}" value="${apartment.totalArea}">
+                        <label for="totalArea-${apartment.id}">Общая площадь</label>
+                        <div class="error invisible" data-error="totalArea">Неверная общая площадь</div>
+                    </div>
+                    <div class="form-group">
+                        <input disabled="" type="text" placeholder=" " name="residentialArea" id="residentialArea-${apartment.id}" value="${apartment.residentialArea}">
+                        <label for="residentialArea-${apartment.id}">Жилая площадь</label>
+                        <div class="error invisible" data-error="residentialArea">Неверная жилая площадь</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+
+        return apartmentHTML;
     }
 
     //получить квартиры пользователя по ид пользователя

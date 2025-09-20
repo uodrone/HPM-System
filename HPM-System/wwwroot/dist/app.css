@@ -101,7 +101,7 @@
     }
 }
 
-.car {
+.car, .apartment {
     display: flex;
     gap: 16px;
     

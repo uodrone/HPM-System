@@ -75,7 +75,7 @@ class UserProfile {
     async InsertCarsToUserProfile (userId) {
         const cars = await this.GetCarsByUserId(userId);
         const carsContainer = document.querySelector('.profile-group[data-group="cars"] .cars-list');
-        carsContainer.innerHTML = '';     
+        carsContainer.innerHTML = '';
         cars.forEach(car => {
             this.SetUserCar(car, carsContainer);
         });
