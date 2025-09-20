@@ -14,8 +14,7 @@ export class Modal {
     }
 
     CloseModal () {
-      let crossModal = document.querySelectorAll('.modal-close');
-      crossModal.forEach(cross => {
+      document.querySelectorAll('.modal-close').forEach(cross => {
         cross.addEventListener('click', () => {
           cross.closest('.modal-overview').classList.remove('active');
         });
@@ -24,11 +23,13 @@ export class Modal {
 
     CloseModalOnOutsideClick () {
       const modalOverview = document.querySelector('.modal-overview');
-      modalOverview.addEventListener('click', (event) => {        
-        if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {          
-          modalOverview.classList.remove('active');
-        }
-      });
+      if (modalOverview) {
+        modalOverview.addEventListener('click', (event) => {        
+          if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {          
+            modalOverview.classList.remove('active');
+          }
+        });
+      }      
     }
 
     static ShowNotification(text, color) {

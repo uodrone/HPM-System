@@ -246,7 +246,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Обновить квартиру
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateApartment(int id, Apartment apartment)
+        public async Task<IActionResult> UpdateApartment(long id, Apartment apartment)
         {
             try
             {
@@ -307,7 +307,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Удалить квартиру
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteApartment(int id)
+        public async Task<IActionResult> DeleteApartment(long id)
         {
             try
             {
@@ -342,7 +342,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Добавить пользователя к квартире
         /// </summary>
         [HttpPost("{apartmentId}/users/{userId}")]
-        public async Task<IActionResult> AddUserToApartment(int apartmentId, Guid userId)
+        public async Task<IActionResult> AddUserToApartment(long apartmentId, Guid userId)
         {
             try
             {
@@ -410,7 +410,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Удалить пользователя из квартиры
         /// </summary>
         [HttpDelete("{apartmentId}/users/{userId}")]
-        public async Task<IActionResult> RemoveUserFromApartment(int apartmentId, Guid userId)
+        public async Task<IActionResult> RemoveUserFromApartment(long apartmentId, Guid userId)
         {
             try
             {
@@ -443,7 +443,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Установить или обновить долю владения пользователя (только для владельцев)
         /// </summary>
         [HttpPut("{apartmentId}/users/{userId}/share")]
-        public async Task<IActionResult> UpdateUserShare(int apartmentId, Guid userId, [FromBody] UpdateShareDto updateShareDto)
+        public async Task<IActionResult> UpdateUserShare(long apartmentId, Guid userId, [FromBody] UpdateShareDto updateShareDto)
         {
             try
             {
@@ -485,7 +485,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить информацию о долях владения для квартиры
         /// </summary>
         [HttpGet("{apartmentId}/shares")]
-        public async Task<ActionResult<IEnumerable<UserShareDto>>> GetApartmentShares(int apartmentId)
+        public async Task<ActionResult<IEnumerable<UserShareDto>>> GetApartmentShares(long apartmentId)
         {
             try
             {
@@ -522,7 +522,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить статистику по квартире
         /// </summary>
         [HttpGet("{apartmentId}/statistics")]
-        public async Task<ActionResult<ApartmentStatisticsDto>> GetApartmentStatistics(int apartmentId)
+        public async Task<ActionResult<ApartmentStatisticsDto>> GetApartmentStatistics(long apartmentId)
         {
             try
             {
@@ -561,7 +561,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// <summary>
         /// Проверить существование квартиры
         /// </summary>
-        private bool ApartmentExists(int id)
+        private bool ApartmentExists(long id)
         {
             return _context.Apartment.Any(e => e.Id == id);
         }

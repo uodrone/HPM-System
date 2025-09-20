@@ -2,7 +2,7 @@
 {
     public class ApartmentStatisticsDto
     {
-        public int ApartmentId { get; set; }
+        public long ApartmentId { get; set; }
         public int TotalUsers { get; set; }
         public int OwnersCount { get; set; }
         public int TenantsCount { get; set; }

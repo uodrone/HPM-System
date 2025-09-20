@@ -109,9 +109,1046 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************!*\
   !*** ./wwwroot/js/ApartmentProfile.js ***!
   \****************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ApartmentStatuses_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ApartmentStatuses.js */ "./wwwroot/js/ApartmentStatuses.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
+var ApartmentProfile = /*#__PURE__*/function () {
+  function ApartmentProfile() {
+    _classCallCheck(this, ApartmentProfile);
+    this.ApartmentAPIAddress = 'https://localhost:55683';
+  }
+
+  //Вставить данные о квартирах пользователя в карточку на главной странице
+  return _createClass(ApartmentProfile, [{
+    key: "InsertApartmentDataToCardOnMainPage",
+    value: function () {
+      var _InsertApartmentDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
+        var _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return this.GetApartmentsByUserId(userId).then(function (apartments) {
+                console.log("\u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");
+                console.log(apartments);
+              })["catch"](function (error) {
+                console.error('Ошибка получения данных квартиры:', error);
+              });
+            case 1:
+              _context.n = 3;
+              break;
+            case 2:
+              _context.p = 2;
+              _t = _context.v;
+              console.log(_t);
+            case 3:
+              return _context.a(2);
+          }
+        }, _callee, this, [[0, 2]]);
+      }));
+      function InsertApartmentDataToCardOnMainPage(_x) {
+        return _InsertApartmentDataToCardOnMainPage.apply(this, arguments);
+      }
+      return InsertApartmentDataToCardOnMainPage;
+    }() //получить квартиры пользователя по ид пользователя
+  }, {
+    key: "GetApartmentsByUserId",
+    value: function () {
+      var _GetApartmentsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(userId) {
+        var response, data, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              _context2.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/user/").concat(userId), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context2.v;
+              _context2.n = 2;
+              return response.json();
+            case 2:
+              data = _context2.v;
+              if (response.ok) {
+                _context2.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
+              return _context2.a(2, data);
+            case 4:
+              _context2.p = 4;
+              _t2 = _context2.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t2);
+            case 5:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[0, 4]]);
+      }));
+      function GetApartmentsByUserId(_x2) {
+        return _GetApartmentsByUserId.apply(this, arguments);
+      }
+      return GetApartmentsByUserId;
+    }() //получить квартиры пользователя по номеру телефона пользователя
+  }, {
+    key: "GetApartmentsByUserPhone",
+    value: function () {
+      var _GetApartmentsByUserPhone = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(phone) {
+        var response, data, _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              _context3.p = 0;
+              _context3.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/phone/").concat(phone), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context3.v;
+              _context3.n = 2;
+              return response.json();
+            case 2:
+              data = _context3.v;
+              if (response.ok) {
+                _context3.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F \u0441 \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u043E\u043C ".concat(phone, ":"), data);
+              return _context3.a(2, data);
+            case 4:
+              _context3.p = 4;
+              _t3 = _context3.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t3);
+            case 5:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[0, 4]]);
+      }));
+      function GetApartmentsByUserPhone(_x3) {
+        return _GetApartmentsByUserPhone.apply(this, arguments);
+      }
+      return GetApartmentsByUserPhone;
+    }() //получить квартиру по её id
+  }, {
+    key: "GetApartment",
+    value: function () {
+      var _GetApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
+        var response, data, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _context4.p = 0;
+              _context4.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context4.v;
+              _context4.n = 2;
+              return response.json();
+            case 2:
+              data = _context4.v;
+              if (response.ok) {
+                _context4.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, ":"), data);
+              return _context4.a(2, data);
+            case 4:
+              _context4.p = 4;
+              _t4 = _context4.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t4);
+            case 5:
+              return _context4.a(2);
+          }
+        }, _callee4, this, [[0, 4]]);
+      }));
+      function GetApartment(_x4) {
+        return _GetApartment.apply(this, arguments);
+      }
+      return GetApartment;
+    }() //создать квартиру
+  }, {
+    key: "CreateApartment",
+    value: function () {
+      var _CreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(apartmentData) {
+        var response, data, _t5;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment"), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(apartmentData)
+              });
+            case 1:
+              response = _context5.v;
+              _context5.n = 2;
+              return response.json();
+            case 2:
+              data = _context5.v;
+              if (response.ok) {
+                _context5.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log('Квартира создана:', data);
+              return _context5.a(2, data);
+            case 4:
+              _context5.p = 4;
+              _t5 = _context5.v;
+              console.error('Ошибка создания квартиры:', _t5);
+            case 5:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 4]]);
+      }));
+      function CreateApartment(_x5) {
+        return _CreateApartment.apply(this, arguments);
+      }
+      return CreateApartment;
+    }() //удалить квартиру
+  }, {
+    key: "DeleteApartment",
+    value: function () {
+      var _DeleteApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
+        var response, _t6, _t7, _t8;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 3;
+                break;
+              }
+              _t6 = Error;
+              _context6.n = 2;
+              return response.text();
+            case 2:
+              _t7 = _context6.v;
+              throw new _t6(_t7);
+            case 3:
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, " \u0443\u0434\u0430\u043B\u0435\u043D\u0430"));
+              _context6.n = 5;
+              break;
+            case 4:
+              _context6.p = 4;
+              _t8 = _context6.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t8);
+            case 5:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 4]]);
+      }));
+      function DeleteApartment(_x6) {
+        return _DeleteApartment.apply(this, arguments);
+      }
+      return DeleteApartment;
+    }() //добавить пользователя к квартире
+  }, {
+    key: "AddUserToApartment",
+    value: function () {
+      var _AddUserToApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(apartmentId, userId) {
+        var response, data, _t9;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify()
+              });
+            case 1:
+              response = _context7.v;
+              _context7.n = 2;
+              return response.text();
+            case 2:
+              data = _context7.v;
+              if (response.ok) {
+                _context7.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log(data);
+              _context7.n = 5;
+              break;
+            case 4:
+              _context7.p = 4;
+              _t9 = _context7.v;
+              console.error('Ошибка добавления пользователя к квартире:', _t9);
+            case 5:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 4]]);
+      }));
+      function AddUserToApartment(_x7, _x8) {
+        return _AddUserToApartment.apply(this, arguments);
+      }
+      return AddUserToApartment;
+    }() //удалить пользователя из квартиры
+  }, {
+    key: "RemoveUserFromApartment",
+    value: function () {
+      var _RemoveUserFromApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId, userId) {
+        var response, data, _t0;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
+            case 0:
+              _context8.p = 0;
+              _context8.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context8.v;
+              _context8.n = 2;
+              return response.text();
+            case 2:
+              data = _context8.v;
+              if (response.ok) {
+                _context8.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log(data);
+              _context8.n = 5;
+              break;
+            case 4:
+              _context8.p = 4;
+              _t0 = _context8.v;
+              console.error('Ошибка удаления пользователя из квартиры:', _t0);
+            case 5:
+              return _context8.a(2);
+          }
+        }, _callee8, this, [[0, 4]]);
+      }));
+      function RemoveUserFromApartment(_x9, _x0) {
+        return _RemoveUserFromApartment.apply(this, arguments);
+      }
+      return RemoveUserFromApartment;
+    }() //обновить долю владения пользователя
+  }, {
+    key: "UpdateUserShare",
+    value: function () {
+      var _UpdateUserShare = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(apartmentId, userId, share) {
+        var response, data, _t1;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
+            case 0:
+              _context9.p = 0;
+              _context9.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId, "/share"), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  share: share
+                })
+              });
+            case 1:
+              response = _context9.v;
+              _context9.n = 2;
+              return response.text();
+            case 2:
+              data = _context9.v;
+              if (response.ok) {
+                _context9.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log(data);
+              _context9.n = 5;
+              break;
+            case 4:
+              _context9.p = 4;
+              _t1 = _context9.v;
+              console.error('Ошибка обновления доли:', _t1);
+            case 5:
+              return _context9.a(2);
+          }
+        }, _callee9, this, [[0, 4]]);
+      }));
+      function UpdateUserShare(_x1, _x10, _x11) {
+        return _UpdateUserShare.apply(this, arguments);
+      }
+      return UpdateUserShare;
+    }() //получить доли владения для квартиры
+  }, {
+    key: "GetApartmentShares",
+    value: function () {
+      var _GetApartmentShares = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(apartmentId) {
+        var response, data, _t10;
+        return _regenerator().w(function (_context0) {
+          while (1) switch (_context0.p = _context0.n) {
+            case 0:
+              _context0.p = 0;
+              _context0.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/shares"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context0.v;
+              _context0.n = 2;
+              return response.json();
+            case 2:
+              data = _context0.v;
+              if (response.ok) {
+                _context0.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log("\u0414\u043E\u043B\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
+              return _context0.a(2, data);
+            case 4:
+              _context0.p = 4;
+              _t10 = _context0.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t10);
+            case 5:
+              return _context0.a(2);
+          }
+        }, _callee0, this, [[0, 4]]);
+      }));
+      function GetApartmentShares(_x12) {
+        return _GetApartmentShares.apply(this, arguments);
+      }
+      return GetApartmentShares;
+    }() //получить статистику по квартире
+  }, {
+    key: "GetApartmentStatistics",
+    value: function () {
+      var _GetApartmentStatistics = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(apartmentId) {
+        var response, data, _t11;
+        return _regenerator().w(function (_context1) {
+          while (1) switch (_context1.p = _context1.n) {
+            case 0:
+              _context1.p = 0;
+              _context1.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/statistics"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context1.v;
+              _context1.n = 2;
+              return response.json();
+            case 2:
+              data = _context1.v;
+              if (response.ok) {
+                _context1.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log("\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0430 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
+              return _context1.a(2, data);
+            case 4:
+              _context1.p = 4;
+              _t11 = _context1.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t11);
+            case 5:
+              return _context1.a(2);
+          }
+        }, _callee1, this, [[0, 4]]);
+      }));
+      function GetApartmentStatistics(_x13) {
+        return _GetApartmentStatistics.apply(this, arguments);
+      }
+      return GetApartmentStatistics;
+    }()
+  }]);
+}();
+document.addEventListener('authStateChanged', function () {
+  var _event$detail = event.detail,
+    isAuthenticated = _event$detail.isAuthenticated,
+    userData = _event$detail.userData;
+  if (isAuthenticated && userData) {
+    var apartmentProfile = new ApartmentProfile();
+    var userId = window.authManager.userData.userId;
+    if (window.location.pathname == '/') {
+      apartmentProfile.InsertApartmentDataToCardOnMainPage(userId);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./wwwroot/js/ApartmentStatuses.js":
+/*!*****************************************!*\
+  !*** ./wwwroot/js/ApartmentStatuses.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApartmentStatuses: () => (/* binding */ ApartmentStatuses)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var ApartmentStatuses = /*#__PURE__*/function () {
+  function ApartmentStatuses() {
+    _classCallCheck(this, ApartmentStatuses);
+    this.ApartmentAPIAddress = 'https://localhost:55683';
+  }
+
+  // 1. Получить все статусы
+  return _createClass(ApartmentStatuses, [{
+    key: "GetStatuses",
+    value: function () {
+      var _GetStatuses = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+        var response, errorText, data, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context.v;
+              if (response.ok) {
+                _context.n = 3;
+                break;
+              }
+              _context.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText));
+            case 3:
+              _context.n = 4;
+              return response.json();
+            case 4:
+              data = _context.v;
+              console.log('Статусы:', data);
+              return _context.a(2, data);
+            case 5:
+              _context.p = 5;
+              _t = _context.v;
+              console.error('Ошибка получения статусов:', _t.message || _t);
+            case 6:
+              return _context.a(2);
+          }
+        }, _callee, this, [[0, 5]]);
+      }));
+      function GetStatuses() {
+        return _GetStatuses.apply(this, arguments);
+      }
+      return GetStatuses;
+    }() // 2. Получить статус по ID
+  }, {
+    key: "GetStatus",
+    value: function () {
+      var _GetStatus = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
+        var response, errorText, data, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              _context2.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/").concat(id), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context2.v;
+              if (response.ok) {
+                _context2.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context2.n = 2;
+                break;
+              }
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441 \u0441 ID ".concat(id, " \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D."));
+              return _context2.a(2, null);
+            case 2:
+              _context2.n = 3;
+              return response.text();
+            case 3:
+              errorText = _context2.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText));
+            case 4:
+              _context2.n = 5;
+              return response.json();
+            case 5:
+              data = _context2.v;
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441 ".concat(id, ":"), data);
+              return _context2.a(2, data);
+            case 6:
+              _context2.p = 6;
+              _t2 = _context2.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u0430 ".concat(id, ":"), _t2.message || _t2);
+            case 7:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[0, 6]]);
+      }));
+      function GetStatus(_x) {
+        return _GetStatus.apply(this, arguments);
+      }
+      return GetStatus;
+    }() // 3. Создать новый статус
+  }, {
+    key: "CreateStatus",
+    value: function () {
+      var _CreateStatus = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(name) {
+        var response, errorMessage, contentType, errorData, errorText, data, _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              _context3.p = 0;
+              _context3.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status"), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  name: name
+                })
+              });
+            case 1:
+              response = _context3.v;
+              if (response.ok) {
+                _context3.n = 6;
+                break;
+              }
+              contentType = response.headers.get("content-type");
+              if (!(contentType && contentType.includes("application/json"))) {
+                _context3.n = 3;
+                break;
+              }
+              _context3.n = 2;
+              return response.json();
+            case 2:
+              errorData = _context3.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(JSON.stringify(errorData));
+              _context3.n = 5;
+              break;
+            case 3:
+              _context3.n = 4;
+              return response.text();
+            case 4:
+              errorText = _context3.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText);
+            case 5:
+              throw new Error(errorMessage);
+            case 6:
+              _context3.n = 7;
+              return response.json();
+            case 7:
+              data = _context3.v;
+              console.log('Статус создан:', data);
+              return _context3.a(2, data);
+            case 8:
+              _context3.p = 8;
+              _t3 = _context3.v;
+              console.error('Ошибка создания статуса:', _t3.message || _t3);
+            case 9:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[0, 8]]);
+      }));
+      function CreateStatus(_x2) {
+        return _CreateStatus.apply(this, arguments);
+      }
+      return CreateStatus;
+    }() // 4. Обновить статус
+  }, {
+    key: "UpdateStatus",
+    value: function () {
+      var _UpdateStatus = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id, newName) {
+        var response, errorMessage, contentType, errorData, errorText, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _context4.p = 0;
+              _context4.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/").concat(id), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  name: newName
+                }) // Предполагается, что DTO UpdateStatusDto имеет поле name
+              });
+            case 1:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 7;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context4.n = 2;
+                break;
+              }
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441 \u0441 ID ".concat(id, " \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D \u0434\u043B\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F."));
+              return _context4.a(2, false);
+            case 2:
+              contentType = response.headers.get("content-type");
+              if (!(contentType && contentType.includes("application/json"))) {
+                _context4.n = 4;
+                break;
+              }
+              _context4.n = 3;
+              return response.json();
+            case 3:
+              errorData = _context4.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(JSON.stringify(errorData));
+              _context4.n = 6;
+              break;
+            case 4:
+              _context4.n = 5;
+              return response.text();
+            case 5:
+              errorText = _context4.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText);
+            case 6:
+              throw new Error(errorMessage);
+            case 7:
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441 ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D."));
+              return _context4.a(2, true);
+            case 8:
+              _context4.p = 8;
+              _t4 = _context4.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u0430 ".concat(id, ":"), _t4.message || _t4);
+              return _context4.a(2, false);
+          }
+        }, _callee4, this, [[0, 8]]);
+      }));
+      function UpdateStatus(_x3, _x4) {
+        return _UpdateStatus.apply(this, arguments);
+      }
+      return UpdateStatus;
+    }() // 5. Удалить статус
+  }, {
+    key: "DeleteStatus",
+    value: function () {
+      var _DeleteStatus = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id) {
+        var response, _errorText, errorText, _t5;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/").concat(id), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context5.v;
+              if (response.ok) {
+                _context5.n = 6;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context5.n = 2;
+                break;
+              }
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441 \u0441 ID ".concat(id, " \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D \u0434\u043B\u044F \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F."));
+              return _context5.a(2, false);
+            case 2:
+              if (!(response.status === 409)) {
+                _context5.n = 4;
+                break;
+              }
+              _context5.n = 3;
+              return response.text();
+            case 3:
+              _errorText = _context5.v;
+              console.log("\u041A\u043E\u043D\u0444\u043B\u0438\u043A\u0442 \u043F\u0440\u0438 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u0438 \u0441\u0442\u0430\u0442\u0443\u0441\u0430 ".concat(id, ": ").concat(_errorText));
+              return _context5.a(2, false);
+            case 4:
+              _context5.n = 5;
+              return response.text();
+            case 5:
+              errorText = _context5.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText));
+            case 6:
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441 ".concat(id, " \u0443\u0434\u0430\u043B\u0451\u043D."));
+              return _context5.a(2, true);
+            case 7:
+              _context5.p = 7;
+              _t5 = _context5.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u0430 ".concat(id, ":"), _t5.message || _t5);
+              return _context5.a(2, false);
+          }
+        }, _callee5, this, [[0, 7]]);
+      }));
+      function DeleteStatus(_x5) {
+        return _DeleteStatus.apply(this, arguments);
+      }
+      return DeleteStatus;
+    }() // 6. Назначить статус пользователю для квартиры
+  }, {
+    key: "AssignStatusToUser",
+    value: function () {
+      var _AssignStatusToUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(apartmentId, userId, statusId) {
+        var response, errorMessage, contentType, errorData, errorText, successMessage, _t6;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/apartment/").concat(apartmentId, "/user/").concat(userId, "/status/").concat(statusId), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+                // Тело запроса не требуется для этого эндпоинта
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 6;
+                break;
+              }
+              contentType = response.headers.get("content-type");
+              if (!(contentType && contentType.includes("application/json"))) {
+                _context6.n = 3;
+                break;
+              }
+              _context6.n = 2;
+              return response.json();
+            case 2:
+              errorData = _context6.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(JSON.stringify(errorData));
+              _context6.n = 5;
+              break;
+            case 3:
+              _context6.n = 4;
+              return response.text();
+            case 4:
+              errorText = _context6.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText);
+            case 5:
+              throw new Error(errorMessage);
+            case 6:
+              _context6.n = 7;
+              return response.text();
+            case 7:
+              successMessage = _context6.v;
+              // Ожидаем текстовое сообщение
+              console.log(successMessage);
+              return _context6.a(2, true);
+            case 8:
+              _context6.p = 8;
+              _t6 = _context6.v;
+              console.error('Ошибка назначения статуса пользователю:', _t6.message || _t6);
+              return _context6.a(2, false);
+          }
+        }, _callee6, this, [[0, 8]]);
+      }));
+      function AssignStatusToUser(_x6, _x7, _x8) {
+        return _AssignStatusToUser.apply(this, arguments);
+      }
+      return AssignStatusToUser;
+    }() // 7. Отозвать статус у пользователя для квартиры
+  }, {
+    key: "RevokeStatusFromUser",
+    value: function () {
+      var _RevokeStatusFromUser = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(apartmentId, userId, statusId) {
+        var response, errorMessage, contentType, errorData, errorText, successMessage, _t7;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/apartment/").concat(apartmentId, "/user/").concat(userId, "/status/").concat(statusId), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+                // Тело запроса не требуется для этого эндпоинта
+              });
+            case 1:
+              response = _context7.v;
+              if (response.ok) {
+                _context7.n = 7;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context7.n = 2;
+                break;
+              }
+              console.log("\u0421\u0432\u044F\u0437\u044C \u0441\u0442\u0430\u0442\u0443\u0441\u0430 ".concat(statusId, " \u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u043C ").concat(userId, " \u0434\u043B\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ").concat(apartmentId, " \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430."));
+              return _context7.a(2, false);
+            case 2:
+              contentType = response.headers.get("content-type");
+              if (!(contentType && contentType.includes("application/json"))) {
+                _context7.n = 4;
+                break;
+              }
+              _context7.n = 3;
+              return response.json();
+            case 3:
+              errorData = _context7.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(JSON.stringify(errorData));
+              _context7.n = 6;
+              break;
+            case 4:
+              _context7.n = 5;
+              return response.text();
+            case 5:
+              errorText = _context7.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText);
+            case 6:
+              throw new Error(errorMessage);
+            case 7:
+              _context7.n = 8;
+              return response.text();
+            case 8:
+              successMessage = _context7.v;
+              // Ожидаем текстовое сообщение
+              console.log(successMessage);
+              return _context7.a(2, true);
+            case 9:
+              _context7.p = 9;
+              _t7 = _context7.v;
+              console.error('Ошибка отзыва статуса у пользователя:', _t7.message || _t7);
+              return _context7.a(2, false);
+          }
+        }, _callee7, this, [[0, 9]]);
+      }));
+      function RevokeStatusFromUser(_x9, _x0, _x1) {
+        return _RevokeStatusFromUser.apply(this, arguments);
+      }
+      return RevokeStatusFromUser;
+    }() // 8. Получить все статусы пользователя для квартиры
+  }, {
+    key: "GetUserStatusesForApartment",
+    value: function () {
+      var _GetUserStatusesForApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId, userId) {
+        var response, errorText, data, _t8;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
+            case 0:
+              _context8.p = 0;
+              _context8.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/apartment/").concat(apartmentId, "/user/").concat(userId), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context8.v;
+              if (response.ok) {
+                _context8.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context8.n = 2;
+                break;
+              }
+              console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(userId, " \u043D\u0435 \u0441\u0432\u044F\u0437\u0430\u043D \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u043E\u0439 ").concat(apartmentId, " \u0438\u043B\u0438 \u0441\u0432\u044F\u0437\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430."));
+              return _context8.a(2, []);
+            case 2:
+              _context8.n = 3;
+              return response.text();
+            case 3:
+              errorText = _context8.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText));
+            case 4:
+              _context8.n = 5;
+              return response.json();
+            case 5:
+              data = _context8.v;
+              console.log("\u0421\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, " \u0434\u043B\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ").concat(apartmentId, ":"), data);
+              return _context8.a(2, data);
+            case 6:
+              _context8.p = 6;
+              _t8 = _context8.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u0432 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, " \u0434\u043B\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ").concat(apartmentId, ":"), _t8.message || _t8);
+              return _context8.a(2, []);
+          }
+        }, _callee8, this, [[0, 6]]);
+      }));
+      function GetUserStatusesForApartment(_x10, _x11) {
+        return _GetUserStatusesForApartment.apply(this, arguments);
+      }
+      return GetUserStatusesForApartment;
+    }()
+  }]);
+}();
 
 /***/ }),
 
@@ -527,8 +1564,7 @@ var Modal = /*#__PURE__*/function () {
   }, {
     key: "CloseModal",
     value: function CloseModal() {
-      var crossModal = document.querySelectorAll('.modal-close');
-      crossModal.forEach(function (cross) {
+      document.querySelectorAll('.modal-close').forEach(function (cross) {
         cross.addEventListener('click', function () {
           cross.closest('.modal-overview').classList.remove('active');
         });
@@ -538,11 +1574,13 @@ var Modal = /*#__PURE__*/function () {
     key: "CloseModalOnOutsideClick",
     value: function CloseModalOnOutsideClick() {
       var modalOverview = document.querySelector('.modal-overview');
-      modalOverview.addEventListener('click', function (event) {
-        if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {
-          modalOverview.classList.remove('active');
-        }
-      });
+      if (modalOverview) {
+        modalOverview.addEventListener('click', function (event) {
+          if (!event.target.classList.contains('modal-content-wrapper') && event.target.closest('.modal-content-wrapper') == null) {
+            modalOverview.classList.remove('active');
+          }
+        });
+      }
     }
   }], [{
     key: "ShowNotification",
@@ -1819,6 +2857,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/js/UserProfile.js");
 /******/ 	__webpack_require__("./wwwroot/js/Modal.js");
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
+/******/ 	__webpack_require__("./wwwroot/js/ApartmentStatuses.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentProfile.js");
 /******/ 	__webpack_require__("./wwwroot/css/variables.css");
 /******/ 	__webpack_require__("./wwwroot/css/profile-group.css");

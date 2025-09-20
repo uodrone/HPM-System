@@ -14,7 +14,7 @@ namespace HPM_System.ApartmentService.Services
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userServiceBaseUrl = configuration["Services:UserService:BaseUrl"]?.TrimEnd('/') ?? "https://localhost:55680";
+            _userServiceBaseUrl = configuration["Services:UserService:BaseUrl"]?.TrimEnd('/') ?? "http://hpm-system.userservice:8080";
         }
 
         /// <inheritdoc />
