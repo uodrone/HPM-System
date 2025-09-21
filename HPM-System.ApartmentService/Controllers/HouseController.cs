@@ -66,6 +66,24 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
+        /// Получить все дома, в которых у пользователя есть квартиры
+        /// </summary>
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<HouseDto>>> GetHousesByUserId(Guid userId)
+        {
+            try
+            {
+                var houses = await _houseRepository.GetHousesByUserIdAsync(userId);
+                return Ok(houses.Select(MapToDto));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении домов для пользователя {UserId}", userId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
         /// Создать новый дом
         /// </summary>
         [HttpPost]

@@ -1,4 +1,5 @@
 ﻿import {ApartmentStatuses} from './ApartmentStatuses.js';
+import {ApartmentHouses} from './ApartmentHouses.js';
 
 class ApartmentProfile {
     constructor () {
