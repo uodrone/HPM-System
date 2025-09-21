@@ -1,8 +1,8 @@
 ﻿using HPM_System.ApartmentService.Data;
 using HPM_System.ApartmentService.Models;
-using HPM_System.ApartmentService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using DTOs.StatusDTOs;
 
 namespace HPM_System.ApartmentService.Controllers
 {

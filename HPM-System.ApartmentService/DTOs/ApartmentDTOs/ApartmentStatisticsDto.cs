@@ -1,4 +1,4 @@
-﻿namespace HPM_System.ApartmentService.DTOs
+﻿namespace DTOs.ApartmentDTOs
 {
     public class ApartmentStatisticsDto
     {

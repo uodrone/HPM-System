@@ -1,11 +1,13 @@
 ﻿using HPM_System.ApartmentService.Data;
 using HPM_System.ApartmentService.Models;
 using HPM_System.ApartmentService.Services;
-using HPM_System.ApartmentService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
-using HPM_System.ApartmentService.DTOs;
+using DTOs.ApartmentDTOs;
+using DTOs.UserDTOs;
+using DTOs.ShareDTOs;
+using DTOs.StatusDTOs;
 
 namespace HPM_System.ApartmentService.Controllers
 {

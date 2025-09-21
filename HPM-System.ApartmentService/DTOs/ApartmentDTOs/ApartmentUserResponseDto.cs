@@ -1,5 +1,8 @@
 ﻿// DTOs/ApartmentUserResponseDto.cs
-namespace HPM_System.ApartmentService.DTOs
+using DTOs.StatusDTOs;
+using DTOs.UserDTOs;
+
+namespace DTOs.ApartmentDTOs
 {
     public class ApartmentUserResponseDto
     {

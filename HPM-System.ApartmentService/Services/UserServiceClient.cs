@@ -1,6 +1,6 @@
-﻿using HPM_System.ApartmentService.DTOs;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Net;
+using DTOs.UserDTOs;
 
 namespace HPM_System.ApartmentService.Services
 {

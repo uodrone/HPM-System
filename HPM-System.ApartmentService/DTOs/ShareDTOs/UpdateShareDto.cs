@@ -1,4 +1,4 @@
-﻿namespace HPM_System.ApartmentService.DTOs
+﻿namespace DTOs.ShareDTOs
 {
     public class UpdateShareDto
     {
