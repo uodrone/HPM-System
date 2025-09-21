@@ -2,9 +2,9 @@
 {
     public class HouseHeadDto
     {
-        public Guid? Id { get; set; } // id пользователя
-        public string? Address { get; set; }
-        public long HouseNumber { get; set; }
-        public string? PhoneNumber { get; set; }
+        public Guid Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string? Patronymic { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
     }
 }

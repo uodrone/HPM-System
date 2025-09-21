@@ -1,6 +1,8 @@
 ﻿using HPM_System.ApartmentService.DTOs.HousesDTOs;
 using HPM_System.ApartmentService.Interfaces;
 using HPM_System.ApartmentService.Models;
+using HPM_System.ApartmentService.Services;
+using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HPM_System.ApartmentService.Controllers
@@ -12,15 +14,18 @@ namespace HPM_System.ApartmentService.Controllers
         private readonly IHouseRepository _houseRepository;
         private readonly IApartmentRepository _apartmentRepository;
         private readonly ILogger<HouseController> _logger;
+        private readonly IUserServiceClient _userServiceClient;
 
         public HouseController(
             IHouseRepository houseRepository,
             IApartmentRepository apartmentRepository,
-            ILogger<HouseController> logger)
+            ILogger<HouseController> logger,
+            IUserServiceClient userServiceClient)
         {
             _houseRepository = houseRepository;
             _apartmentRepository = apartmentRepository;
             _logger = logger;
+            _userServiceClient = userServiceClient;
         }
 
         /// <summary>
@@ -275,7 +280,7 @@ namespace HPM_System.ApartmentService.Controllers
         /// Получить информацию о старшем по дому (если назначен)
         /// </summary>
         [HttpGet("{houseId}/head")]
-        public async Task<ActionResult<Guid?>> GetHead(long houseId)
+        public async Task<ActionResult<HouseHeadDto>> GetHead(long houseId)
         {
             try
             {
@@ -285,7 +290,40 @@ namespace HPM_System.ApartmentService.Controllers
                     return NotFound($"Дом с ID {houseId} не найден");
                 }
 
-                return Ok(house.HeadId);
+                if (house.HeadId == null)
+                {
+                    return NotFound($"В доме {houseId} не назначен старший");
+                }
+
+                // Получаем данные пользователя из UserService
+                var headUser = await _userServiceClient.GetUserByIdAsync(house.HeadId.Value);
+                if (headUser == null)
+                {
+                    return NotFound($"Пользователь-старший с ID {house.HeadId.Value} не найден в системе пользователей");
+                }
+
+                // Маппинг UserDto -> HouseHeadDto
+                var headDto = new HouseHeadDto
+                {
+                    Id = headUser.Id,
+                    FirstName = headUser.FirstName,
+                    Patronymic = headUser.Patronymic,
+                    PhoneNumber = headUser.PhoneNumber
+                };
+
+                return Ok(headDto);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Ошибка связи с UserService при получении данных старшего по дому {HouseId}", houseId);
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    new { Message = "В данный момент невозможно получить данные старшего. Сервис пользователей недоступен.", Details = ex.Message });
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Таймаут при связи с UserService при получении данных старшего по дому {HouseId}", houseId);
+                return StatusCode(StatusCodes.Status504GatewayTimeout,
+                    new { Message = "Превышено время ожидания ответа от сервиса пользователей.", Details = ex.Message });
             }
             catch (Exception ex)
             {
