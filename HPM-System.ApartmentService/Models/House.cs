@@ -16,7 +16,9 @@
         public double? ApartmentsArea { get; set; }
         public double? TotalArea { get; set; }
         public double? LandArea { get; set; }
+        public bool IsApartmentBuilding { get; set; } = true;
         public ICollection<Apartment>? Apartments { get; set; }
+        public ICollection<District>? Districts { get; set; }
 
     }
 }
