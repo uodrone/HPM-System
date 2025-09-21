@@ -64,6 +64,13 @@ namespace HPM_System.Controllers
             return View("Apartment/CreateApartment");
         }
 
+        [HttpGet("apartment/edit/{id}")]
+        public IActionResult EditApartment()
+        {
+            _logger.LogInformation("Запрошена страница создания квартиры");
+            return View("Apartment/EditApartment");
+        }
+
         #endregion
 
         #region House Routes
