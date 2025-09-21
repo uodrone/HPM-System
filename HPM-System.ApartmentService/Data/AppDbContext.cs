@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// HPM_System.ApartmentService/Data/AppDbContext.cs
+
+using Microsoft.EntityFrameworkCore;
 using HPM_System.ApartmentService.Models;
 
 namespace HPM_System.ApartmentService.Data
@@ -15,10 +17,41 @@ namespace HPM_System.ApartmentService.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<ApartmentUserStatus> ApartmentUserStatuses { get; set; }
+        public DbSet<House> House { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Настройка сущности House
+            modelBuilder.Entity<House>(entity =>
+            {
+                entity.HasKey(h => h.Id);
+                entity.Property(h => h.Id)
+                    .ValueGeneratedOnAdd()
+                    .UseIdentityByDefaultColumn();
+
+                entity.Property(h => h.City).IsRequired().HasMaxLength(200);
+                entity.Property(h => h.Street).IsRequired().HasMaxLength(200);
+                entity.Property(h => h.Number).IsRequired().HasMaxLength(50);
+                entity.Property(h => h.Entrances).IsRequired();
+                entity.Property(h => h.Floors).IsRequired();
+                entity.Property(h => h.HasGas).IsRequired();
+                entity.Property(h => h.HasElectricity).IsRequired();
+                entity.Property(h => h.HasElevator).IsRequired();
+                entity.Property(h => h.HeadId).IsRequired(false); // GUID может быть null
+                entity.Property(h => h.PostIndex).HasMaxLength(20);
+                entity.Property(h => h.ApartmentsArea).IsRequired(false);
+                entity.Property(h => h.TotalArea).IsRequired(false);
+                entity.Property(h => h.LandArea).IsRequired(false);
+                entity.Property(h => h.IsApartmentBuilding).IsRequired();
+
+                // Индекс по адресу для быстрого поиска
+                entity.HasIndex(h => new { h.City, h.Street, h.Number }).IsUnique();
+
+                // Опционально: индекс по HeadId для быстрого поиска домов по старшему
+                entity.HasIndex(h => h.HeadId);
+            });
 
             // Настройка сущности Apartment
             modelBuilder.Entity<Apartment>(entity =>
@@ -34,6 +67,14 @@ namespace HPM_System.ApartmentService.Data
                 entity.Property(a => a.TotalArea).IsRequired();
                 entity.Property(a => a.Floor).IsRequired(false);
                 entity.Property(a => a.HouseId).IsRequired();
+
+                entity.HasIndex(a => a.HouseId);
+
+                // настраиваем связь без навигационного свойства в Apartment
+                entity.HasOne<House>()
+                    .WithMany(h => h.Apartments) // навигационное свойство в House
+                    .HasForeignKey(a => a.HouseId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Настройка сущности User
@@ -105,6 +146,23 @@ namespace HPM_System.ApartmentService.Data
                 new Status { Id = 3, Name = "Прописан" },
                 new Status { Id = 4, Name = "Временно проживающий" }
             );
+
+            // Опционально: seed для тестового дома
+            // modelBuilder.Entity<House>().HasData(
+            //     new House
+            //     {
+            //         Id = 1,
+            //         City = "Ижевск",
+            //         Street = "Ленина",
+            //         Number = "10",
+            //         Entrances = 4,
+            //         Floors = 9,
+            //         HasGas = true,
+            //         HasElectricity = true,
+            //         HasElevator = true,
+            //         IsApartmentBuilding = true
+            //     }
+            // );
         }
     }
 }

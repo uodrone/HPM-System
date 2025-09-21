@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Net;
 using DTOs.UserDTOs;
+using Interfaces;
 
 namespace HPM_System.ApartmentService.Services
 {

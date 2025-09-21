@@ -1,13 +1,16 @@
-﻿using HPM_System.ApartmentService.Data;
+﻿using DTOs.ApartmentDTOs;
+using DTOs.ShareDTOs;
+using DTOs.StatusDTOs;
+using DTOs.UserDTOs;
+using HPM_System.ApartmentService.Interfaces;
 using HPM_System.ApartmentService.Models;
+using HPM_System.ApartmentService.Repositories;
 using HPM_System.ApartmentService.Services;
+using Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
-using DTOs.ApartmentDTOs;
-using DTOs.UserDTOs;
-using DTOs.ShareDTOs;
-using DTOs.StatusDTOs;
 
 namespace HPM_System.ApartmentService.Controllers
 {
@@ -15,13 +18,16 @@ namespace HPM_System.ApartmentService.Controllers
     [Route("api/[controller]")]
     public class ApartmentController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IApartmentRepository _apartmentRepository;
         private readonly ILogger<ApartmentController> _logger;
         private readonly IUserServiceClient _userServiceClient;
 
-        public ApartmentController(AppDbContext context, ILogger<ApartmentController> logger, IUserServiceClient userServiceClient)
+        public ApartmentController(
+            IApartmentRepository apartmentRepository,
+            ILogger<ApartmentController> logger,
+            IUserServiceClient userServiceClient)
         {
-            _context = context;
+            _apartmentRepository = apartmentRepository;
             _logger = logger;
             _userServiceClient = userServiceClient;
         }
@@ -34,25 +40,22 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartments = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .Select(a => new ApartmentListResponseDto
-                    {
-                        Id = a.Id,
-                        Number = a.Number,
-                        NumbersOfRooms = a.NumbersOfRooms,
-                        ResidentialArea = a.ResidentialArea,
-                        TotalArea = a.TotalArea,
-                        Floor = a.Floor,
-                        HouseId = a.HouseId,
-                        UsersCount = a.Users.Count,
-                        OwnersCount = a.Users.Count(au => au.Statuses.Any(s => s.Status.Name == "Владелец"))
-                    })
-                    .ToListAsync();
+                var apartments = await _apartmentRepository.GetAllApartmentsAsync();
 
-                return Ok(apartments);
+                var result = apartments.Select(a => new ApartmentListResponseDto
+                {
+                    Id = a.Id,
+                    Number = a.Number,
+                    NumbersOfRooms = a.NumbersOfRooms,
+                    ResidentialArea = a.ResidentialArea,
+                    TotalArea = a.TotalArea,
+                    Floor = a.Floor,
+                    HouseId = a.HouseId,
+                    UsersCount = a.Users.Count,
+                    OwnersCount = a.Users.Count(au => au.Statuses.Any(s => s.Status.Name == "Владелец"))
+                }).ToList();
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -69,11 +72,7 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .FirstOrDefaultAsync(a => a.Id == id);
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(id);
 
                 if (apartment == null)
                 {
@@ -98,19 +97,13 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                // Проверяем существование пользователя в UserService
                 var userExists = await _userServiceClient.UserExistsAsync(userId);
                 if (!userExists)
                 {
                     return NotFound($"Пользователь с ID {userId} не найден");
                 }
 
-                var apartments = await _context.Apartment
-                    .Where(a => a.Users.Any(u => u.UserId == userId))
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .ToListAsync();
+                var apartments = await _apartmentRepository.GetApartmentsByUserIdAsync(userId);
 
                 var result = new List<ApartmentResponseDto>();
                 foreach (var apartment in apartments)
@@ -154,12 +147,7 @@ namespace HPM_System.ApartmentService.Controllers
                     return NotFound($"Пользователь с телефоном {phone} не найден");
                 }
 
-                var apartments = await _context.Apartment
-                    .Where(a => a.Users.Any(u => u.UserId == user.Id))
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .ToListAsync();
+                var apartments = await _apartmentRepository.GetApartmentsByUserIdAsync(user.Id);
 
                 var result = new List<ApartmentResponseDto>();
                 foreach (var apartment in apartments)
@@ -217,17 +205,12 @@ namespace HPM_System.ApartmentService.Controllers
                     apartment.Users = new List<ApartmentUser>();
                 }
 
-                _context.Apartment.Add(apartment);
-                await _context.SaveChangesAsync();
+                var createdApartment = await _apartmentRepository.CreateApartmentAsync(apartment);
 
-                // Загружаем созданную квартиру с включенными связями
-                var createdApartment = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .FirstOrDefaultAsync(a => a.Id == apartment.Id);
+                // Перезагружаем с включенными связями (если нужно — можно вынести в репозиторий метод ReloadWithIncludes)
+                var apartmentWithUsers = await _apartmentRepository.GetApartmentByIdAsync(createdApartment.Id);
 
-                var result = await MapToApartmentResponseDto(createdApartment!);
+                var result = await MapToApartmentResponseDto(apartmentWithUsers!);
                 return CreatedAtAction(nameof(GetApartment), new { id = apartment.Id }, result);
             }
             catch (Exception ex)
@@ -283,20 +266,13 @@ namespace HPM_System.ApartmentService.Controllers
                     return BadRequest("ID дома должен быть положительным числом");
                 }
 
-                _context.Entry(apartment).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ApartmentExists(id))
+                var success = await _apartmentRepository.UpdateApartmentAsync(apartment);
+                if (!success)
                 {
                     return NotFound($"Квартира с ID {id} не найдена");
                 }
-                else
-                {
-                    throw;
-                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -313,23 +289,11 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                    .FirstOrDefaultAsync(a => a.Id == id);
-
-                if (apartment == null)
+                var success = await _apartmentRepository.DeleteApartmentAsync(id);
+                if (!success)
                 {
                     return NotFound($"Квартира с ID {id} не найдена");
                 }
-
-                // Удаляем все связанные статусы пользователей
-                var allStatuses = apartment.Users.SelectMany(au => au.Statuses).ToList();
-                _context.ApartmentUserStatuses.RemoveRange(allStatuses);
-
-                // Удаляем квартиру (связи с пользователями удалятся каскадно)
-                _context.Apartment.Remove(apartment);
-                await _context.SaveChangesAsync();
 
                 return NoContent();
             }
@@ -348,44 +312,25 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment
-                    .Include(a => a.Users)
-                    .FirstOrDefaultAsync(a => a.Id == apartmentId);
-
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
                 if (apartment == null)
                 {
                     return NotFound($"Квартира с ID {apartmentId} не найдена");
                 }
 
-                // Проверяем существование пользователя в UserService
                 var userExists = await _userServiceClient.UserExistsAsync(userId);
                 if (!userExists)
                 {
                     return NotFound($"Пользователь с ID {userId} не найден");
                 }
 
-                // Проверяем, не привязан ли уже пользователь к квартире
                 if (apartment.Users.Any(u => u.UserId == userId))
                 {
                     return Conflict("Пользователь уже привязан к этой квартире");
                 }
 
-                // Создаем или находим пользователя в локальной БД
-                var user = await _context.Users.FindAsync(userId);
-                if (user == null)
-                {
-                    user = new User { Id = userId };
-                    _context.Users.Add(user);
-                }
-
-                var apartmentUser = new ApartmentUser
-                {
-                    ApartmentId = apartmentId,
-                    UserId = userId
-                };
-
-                apartment.Users.Add(apartmentUser);
-                await _context.SaveChangesAsync();
+                await _apartmentRepository.AddUserToApartmentAsync(apartmentId, userId);
+                await _apartmentRepository.SaveChangesAsync();
 
                 return Ok("Пользователь успешно добавлен к квартире");
             }
@@ -395,7 +340,7 @@ namespace HPM_System.ApartmentService.Controllers
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
                     new { Message = "В данный момент невозможно проверить пользователя. Сервис пользователей недоступен.", Details = ex.Message });
             }
-            catch (TaskCanceledException ex) // Таймаут
+            catch (TaskCanceledException ex)
             {
                 _logger.LogError(ex, "Таймаут при связи с UserService при добавлении пользователя {UserId} к квартире {ApartmentId}", userId, apartmentId);
                 return StatusCode(StatusCodes.Status504GatewayTimeout,
@@ -416,21 +361,11 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartmentUser = await _context.ApartmentUsers
-                    .Include(au => au.Statuses)
-                    .FirstOrDefaultAsync(au => au.ApartmentId == apartmentId && au.UserId == userId);
-
-                if (apartmentUser == null)
+                var success = await _apartmentRepository.RemoveUserFromApartmentAsync(apartmentId, userId);
+                if (!success)
                 {
                     return NotFound("Пользователь не связан с указанной квартирой");
                 }
-
-                // Удаляем все статусы пользователя для этой квартиры
-                _context.ApartmentUserStatuses.RemoveRange(apartmentUser.Statuses);
-
-                // Удаляем связь пользователя с квартирой
-                _context.ApartmentUsers.Remove(apartmentUser);
-                await _context.SaveChangesAsync();
 
                 return Ok("Пользователь успешно удален из квартиры");
             }
@@ -454,17 +389,12 @@ namespace HPM_System.ApartmentService.Controllers
                     return BadRequest("Доля владения должна быть от 0 до 1");
                 }
 
-                var apartmentUser = await _context.ApartmentUsers
-                    .Include(au => au.Statuses)
-                        .ThenInclude(aus => aus.Status)
-                    .FirstOrDefaultAsync(au => au.ApartmentId == apartmentId && au.UserId == userId);
-
+                var apartmentUser = await _apartmentRepository.GetUserApartmentLinkAsync(apartmentId, userId);
                 if (apartmentUser == null)
                 {
                     return NotFound("Пользователь не связан с указанной квартирой");
                 }
 
-                // Проверяем, является ли пользователь владельцем
                 var isOwner = apartmentUser.Statuses.Any(aus => aus.Status.Name == "Владелец");
                 if (!isOwner)
                 {
@@ -472,7 +402,7 @@ namespace HPM_System.ApartmentService.Controllers
                 }
 
                 apartmentUser.Share = updateShareDto.Share;
-                await _context.SaveChangesAsync();
+                await _apartmentRepository.SaveChangesAsync();
 
                 return Ok($"Доля владения пользователя обновлена до {updateShareDto.Share:P}");
             }
@@ -491,12 +421,7 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .FirstOrDefaultAsync(a => a.Id == apartmentId);
-
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
                 if (apartment == null)
                 {
                     return NotFound($"Квартира с ID {apartmentId} не найдена");
@@ -528,12 +453,7 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartment = await _context.Apartment
-                    .Include(a => a.Users)
-                        .ThenInclude(au => au.Statuses)
-                            .ThenInclude(aus => aus.Status)
-                    .FirstOrDefaultAsync(a => a.Id == apartmentId);
-
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
                 if (apartment == null)
                 {
                     return NotFound($"Квартира с ID {apartmentId} не найдена");
@@ -558,14 +478,6 @@ namespace HPM_System.ApartmentService.Controllers
                 _logger.LogError(ex, "Ошибка при получении статистики для квартиры {ApartmentId}", apartmentId);
                 return StatusCode(500, "Внутренняя ошибка сервера");
             }
-        }
-
-        /// <summary>
-        /// Проверить существование квартиры
-        /// </summary>
-        private bool ApartmentExists(long id)
-        {
-            return _context.Apartment.Any(e => e.Id == id);
         }
 
         // Вспомогательный метод для маппинга в DTO

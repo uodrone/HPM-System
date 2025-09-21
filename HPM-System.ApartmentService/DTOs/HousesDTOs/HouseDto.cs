@@ -1,11 +1,11 @@
-﻿namespace HPM_System.ApartmentService.Models
+﻿namespace HPM_System.ApartmentService.DTOs.HousesDTOs
 {
-    public class House
+    public class HouseDto
     {
         public long Id { get; set; }
-        public string City { get; set; }
-        public string Street { get; set; }
-        public string Number { get; set; }
+        public string City { get; set; } = string.Empty;
+        public string Street { get; set; } = string.Empty;
+        public string Number { get; set; } = string.Empty;
         public int Entrances { get; set; }
         public int Floors { get; set; }
         public bool HasGas { get; set; }
@@ -16,9 +16,6 @@
         public double? ApartmentsArea { get; set; }
         public double? TotalArea { get; set; }
         public double? LandArea { get; set; }
-        public bool IsApartmentBuilding { get; set; } = true;
-        public ICollection<Apartment>? Apartments { get; set; }
-        public ICollection<District>? Districts { get; set; }
-
+        public bool IsApartmentBuilding { get; set; }
     }
 }

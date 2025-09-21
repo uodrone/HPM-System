@@ -1,4 +1,5 @@
 ﻿using HPM_System.ApartmentService.Services;
+using Interfaces;
 
 namespace HPM_System.ApartmentService.Extensions
 {

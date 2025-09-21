@@ -1,7 +1,7 @@
 ﻿// Services/IUserServiceClient.cs
 using DTOs.UserDTOs;
 
-namespace HPM_System.ApartmentService.Services
+namespace Interfaces
 {
     public interface IUserServiceClient
     {
