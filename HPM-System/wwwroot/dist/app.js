@@ -151,7 +151,7 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 housesListContainer.innerHTML = '';
                 houses.forEach(/*#__PURE__*/function () {
                   var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
-                    var headOfHOuse, houseTemplate;
+                    var headOfHOuse, headTemplate, houseTemplate;
                     return _regenerator().w(function (_context) {
                       while (1) switch (_context.n) {
                         case 0:
@@ -159,9 +159,13 @@ var ApartmentHouses = /*#__PURE__*/function () {
                           return _this.GetHead(house.id);
                         case 1:
                           headOfHOuse = _context.v;
-                          houseTemplate = template(house, headOfHOuse);
-                          housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
+                          _context.n = 2;
+                          return _this.headTemplate(headOfHOuse);
                         case 2:
+                          headTemplate = _context.v;
+                          houseTemplate = template(house, headTemplate);
+                          housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
+                        case 3:
                           return _context.a(2);
                       }
                     }, _callee);
@@ -191,20 +195,31 @@ var ApartmentHouses = /*#__PURE__*/function () {
       return InsertHouseData;
     }()
   }, {
+    key: "headTemplate",
+    value: function headTemplate(head) {
+      var headHTML;
+      if (head && _typeof(head) == 'object') {
+        headHTML = "\n                <div class=\"form-group\">\n                    <input disabled=\"\" type=\"text\" placeholder=\"\" name=\"headOfHouse\" id=\"headOfHouse-".concat(head.id, "\" value=\"").concat(head.firstName, " ").concat(head.patronymic, ", ").concat(head.phoneNumber, "\">\n                    <label for=\"headOfHouse-").concat(head.id, "\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</label>\n                    <div class=\"error invisible\" data-error=\"headOfHouse\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</div>\n                </div>\n            ");
+        return headHTML;
+      } else {
+        return '<div>Здесь нет старшего по дому</div>';
+      }
+    }
+  }, {
     key: "MainPageHouseTemplate",
-    value: function MainPageHouseTemplate(house, head) {
+    value: function MainPageHouseTemplate(house, headTemplate) {
       var houseHTML;
       if (house) {
-        houseHTML = "\n                <div class=\"house\" data-house-id=\"".concat(house.id, "\">\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\"\" name=\"address\" id=\"address-").concat(house.id, "\" value=\"").concat(house.city, ", ").concat(house.street, ", ").concat(house.number, "\">\n                        <label for=\"address-").concat(house.id, "\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u0430</label>\n                        <div class=\"error invisible\" data-error=\"address\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0430\u0434\u0440\u0435\u0441</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\"\" name=\"headOfHouse\" id=\"headOfHouse-").concat(house.id, "\" value=\"").concat(head.firstName, " ").concat(head.patronymic, ", ").concat(head.phoneNumber, "\">\n                        <label for=\"headOfHouse-").concat(house.id, "\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</label>\n                        <div class=\"error invisible\" data-error=\"headOfHouse\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</div>\n                    </div>\n                </div>\n            ");
+        houseHTML = "\n                <div class=\"house\" data-house-id=\"".concat(house.id, "\">\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\"\" name=\"address\" id=\"address-").concat(house.id, "\" value=\"").concat(house.city, ", ").concat(house.street, ", ").concat(house.number, "\">\n                        <label for=\"address-").concat(house.id, "\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u0430</label>\n                        <div class=\"error invisible\" data-error=\"address\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0430\u0434\u0440\u0435\u0441</div>\n                    </div>\n                    ").concat(headTemplate, "\n                </div>\n            ");
       }
       return houseHTML;
     }
   }, {
     key: "HousesListHouseTemplate",
-    value: function HousesListHouseTemplate(house, head) {
+    value: function HousesListHouseTemplate(house, headTemplate) {
       var houseHTML;
       if (house) {
-        houseHTML = "\n                <div class=\"profile-card profile-card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"text-center\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n                    <div class=\"d-flex flex-wrap gap-3 py-3 justify-content-between\">\n                        <table>                            \n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430:</td>\n                                <td class=\"p-2\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u042D\u0442\u0430\u0436\u0435\u0439:</td>\n                                <td class=\"p-2\">").concat(house.floors, "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432:</td>\n                                <td class=\"p-2\">").concat(house.entrances, "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0413\u0430\u0437:</td>\n                                <td class=\"p-2\">").concat(house.hasGas ? "есть" : "нет", "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E:</td>\n                                <td class=\"p-2\">").concat(house.hasElectricity ? "есть" : "нет", "</td>\n                            </tr>\n                        </table>\n                        <table>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438:</td>\n                                <td class=\"p-2\">").concat(house.builtYear, "</td>\n                            </tr> \n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C:</td>\n                                <td class=\"p-2\">").concat(house.totalArea, " \u043C<sup>2</sup></td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C:</td>\n                                <td class=\"p-2\">").concat(house.apartmentsArea, " \u043C<sup>2</sup></td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438:</td>\n                                <td class=\"p-2\">").concat(house.landArea, " \u043C<sup>2</sup></td>\n                            </tr>                                                      \n                        </table>\n                    </div>\n\n                    <div class=\"py-3\">\n                        <h5 class=\"text-center\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h5>\n                        <div>").concat(head.firstName, " ").concat(head.patronymic, ", <a href=\"tel:").concat(head.phoneNumber, "\">").concat(head.phoneNumber, "</a></div>\n                    </div>\n\n                    <div class=\"py-3\">\n                        <h5 class=\"text-center\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h5>\n                         <div class=\"d-flex flex-wrap gap-3 justify-content-between\">\n                            <div>                            \n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435</div>\n                                    <div></div>\n                                </div>                               \n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0431\u043E\u0442\u044B</div>\n                                    <div></div>\n                                </div>\n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u043E\u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F</div>\n                                    <div></div>\n                                </div>                                \n                            </div>\n                            <div>                                \n                               <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0410\u0432\u0430\u0440\u0438\u0439\u043D\u043E-\u0434\u0438\u0441\u043F\u0435\u0442\u0447\u0435\u0440\u0441\u043A\u0430\u044F \u0441\u043B\u0443\u0436\u0431\u0430</div>\n                                    <div></div>\n                                </div>\n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u041F\u0440\u0438\u0451\u043C\u043D\u0430\u044F</div>\n                                    <div></div>\n                                </div>                          \n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0421\u0430\u0439\u0442 \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u0438</div>\n                                    <div></div>\n                                </div>                                                      \n                            </div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        houseHTML = "\n                <div class=\"profile-card profile-card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"text-center\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n                    <div class=\"d-flex flex-wrap gap-3 py-3 justify-content-between\">\n                        <table>                            \n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430:</td>\n                                <td class=\"p-2\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u042D\u0442\u0430\u0436\u0435\u0439:</td>\n                                <td class=\"p-2\">").concat(house.floors, "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432:</td>\n                                <td class=\"p-2\">").concat(house.entrances, "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0413\u0430\u0437:</td>\n                                <td class=\"p-2\">").concat(house.hasGas ? "есть" : "нет", "</td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E:</td>\n                                <td class=\"p-2\">").concat(house.hasElectricity ? "есть" : "нет", "</td>\n                            </tr>\n                        </table>\n                        <table>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438:</td>\n                                <td class=\"p-2\">").concat(house.builtYear, "</td>\n                            </tr> \n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C:</td>\n                                <td class=\"p-2\">").concat(house.totalArea, " \u043C<sup>2</sup></td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C:</td>\n                                <td class=\"p-2\">").concat(house.apartmentsArea, " \u043C<sup>2</sup></td>\n                            </tr>\n                            <tr>\n                                <td class=\"p-2 fw-bold\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438:</td>\n                                <td class=\"p-2\">").concat(house.landArea, " \u043C<sup>2</sup></td>\n                            </tr>                                                      \n                        </table>\n                    </div>\n\n                    <h6>\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                    ").concat(headTemplate, "\n\n                    <div class=\"py-3\">\n                        <h5 class=\"text-center\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h5>\n                         <div class=\"d-flex flex-wrap gap-3 justify-content-between\">\n                            <div>                            \n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435</div>\n                                    <div></div>\n                                </div>                               \n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0431\u043E\u0442\u044B</div>\n                                    <div></div>\n                                </div>\n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u043E\u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F</div>\n                                    <div></div>\n                                </div>                                \n                            </div>\n                            <div>                                \n                               <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0410\u0432\u0430\u0440\u0438\u0439\u043D\u043E-\u0434\u0438\u0441\u043F\u0435\u0442\u0447\u0435\u0440\u0441\u043A\u0430\u044F \u0441\u043B\u0443\u0436\u0431\u0430</div>\n                                    <div></div>\n                                </div>\n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u041F\u0440\u0438\u0451\u043C\u043D\u0430\u044F</div>\n                                    <div></div>\n                                </div>                          \n                                <div class=\"py-3\">\n                                    <div class=\"fw-bold\">\u0421\u0430\u0439\u0442 \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u0438</div>\n                                    <div></div>\n                                </div>                                                      \n                            </div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return houseHTML;
     }
@@ -529,7 +544,7 @@ var ApartmentHouses = /*#__PURE__*/function () {
     key: "GetHead",
     value: function () {
       var _GetHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(houseId) {
-        var response, data, _t1;
+        var response, text, data, isJson, errorMessage, _t1;
         return _regenerator().w(function (_context0) {
           while (1) switch (_context0.p = _context0.n) {
             case 0:
@@ -544,25 +559,43 @@ var ApartmentHouses = /*#__PURE__*/function () {
             case 1:
               response = _context0.v;
               _context0.n = 2;
-              return response.json();
+              return response.text();
             case 2:
-              data = _context0.v;
-              if (response.ok) {
-                _context0.n = 3;
-                break;
+              text = _context0.v;
+              isJson = false; // Пытаемся распарсить как JSON
+              try {
+                data = JSON.parse(text);
+                isJson = true;
+              } catch (e) {
+                // Это не JSON — значит, это просто строка (например, из return NotFound("сообщение"))
+                data = {
+                  message: text
+                };
               }
-              throw new Error(data);
-            case 3:
+              if (!response.ok) {
+                errorMessage = data.message || data.Message || (isJson ? JSON.stringify(data) : text);
+                console.error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ":"), errorMessage);
+                if (response.status === 404) {
+                  console.log(errorMessage);
+                  data = errorMessage;
+                }
+              }
+
+              // На случай, если успешный ответ тоже пришёл как plain text (маловероятно)
+              if (!isJson) {
+                console.log("\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 \u043E\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442: ".concat(data));
+              }
               console.log("\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), data);
               return _context0.a(2, data);
-            case 4:
-              _context0.p = 4;
+            case 3:
+              _context0.p = 3;
               _t1 = _context0.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t1);
-            case 5:
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t1.message);
+              throw _t1;
+            case 4:
               return _context0.a(2);
           }
-        }, _callee0, this, [[0, 4]]);
+        }, _callee0, this, [[0, 3]]);
       }));
       function GetHead(_x11) {
         return _GetHead.apply(this, arguments);

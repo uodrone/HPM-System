@@ -14,7 +14,8 @@ export class ApartmentHouses {
                 housesListContainer.innerHTML = '';
                 houses.forEach(async (house) => {
                     let headOfHOuse = await this.GetHead(house.id);
-                    let houseTemplate = template(house, headOfHOuse);
+                    let headTemplate = await this.headTemplate(headOfHOuse);
+                    let houseTemplate = template(house, headTemplate);
                     housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
                 });
 
@@ -26,7 +27,24 @@ export class ApartmentHouses {
         }
     }
 
-    MainPageHouseTemplate (house, head) {
+    headTemplate (head) {
+        let headHTML;
+        if (head && typeof(head) == 'object') {
+            headHTML = `
+                <div class="form-group">
+                    <input disabled="" type="text" placeholder="" name="headOfHouse" id="headOfHouse-${head.id}" value="${head.firstName} ${head.patronymic}, ${head.phoneNumber}">
+                    <label for="headOfHouse-${head.id}">Старший по дому</label>
+                    <div class="error invisible" data-error="headOfHouse">Старший по дому</div>
+                </div>
+            `;
+            return headHTML;
+        }
+        else {
+            return '<div>Здесь нет старшего по дому</div>'
+        }
+    }
+
+    MainPageHouseTemplate (house, headTemplate) {
         let houseHTML;
         if (house) {
             houseHTML = `
@@ -36,22 +54,18 @@ export class ApartmentHouses {
                         <label for="address-${house.id}">Адрес дома</label>
                         <div class="error invisible" data-error="address">Неверный адрес</div>
                     </div>
-                    <div class="form-group">
-                        <input disabled="" type="text" placeholder="" name="headOfHouse" id="headOfHouse-${house.id}" value="${head.firstName} ${head.patronymic}, ${head.phoneNumber}">
-                        <label for="headOfHouse-${house.id}">Старший по дому</label>
-                        <div class="error invisible" data-error="headOfHouse">Старший по дому</div>
-                    </div>
+                    ${headTemplate}
                 </div>
-            `;
-        }        
+            `;            
+        }
 
         return houseHTML
     }
 
-    HousesListHouseTemplate (house, head) {
+    HousesListHouseTemplate (house, headTemplate) {
         let houseHTML;
         if (house) {
-            houseHTML = `
+             houseHTML = `
                 <div class="profile-card profile-card_house" data-house-id="${house.id}">
                     <h3 class="text-center">${house.city}, улица ${house.street}, дом ${house.number}</h3>
                     <div class="d-flex flex-wrap gap-3 py-3 justify-content-between">
@@ -97,10 +111,8 @@ export class ApartmentHouses {
                         </table>
                     </div>
 
-                    <div class="py-3">
-                        <h5 class="text-center">Старший по дому</h5>
-                        <div>${head.firstName} ${head.patronymic}, <a href="tel:${head.phoneNumber}">${head.phoneNumber}</a></div>
-                    </div>
+                    <h6>Старший по дому</h6>
+                    ${headTemplate}
 
                     <div class="py-3">
                         <h5 class="text-center">Управляющая компания</h5>
@@ -256,16 +268,46 @@ export class ApartmentHouses {
     // 8. Получить информацию о старшем по дому
     async GetHead(houseId) {
         try {
-                const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/head`, {
+            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/head`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data);
+
+            // Читаем тело ОДИН раз как текст
+            const text = await response.text();
+
+            let data;
+            let isJson = false;
+
+            // Пытаемся распарсить как JSON
+            try {
+                data = JSON.parse(text);
+                isJson = true;
+            } catch (e) {
+                // Это не JSON — значит, это просто строка (например, из return NotFound("сообщение"))
+                data = { message: text };
+            }
+
+            if (!response.ok) {
+                const errorMessage = data.message || data.Message || (isJson ? JSON.stringify(data) : text);
+                console.error(`Ошибка ${response.status}:`, errorMessage);
+
+                if (response.status === 404) {
+                    console.log(errorMessage);
+                    data = errorMessage;
+                }
+            }
+
+            // На случай, если успешный ответ тоже пришёл как plain text (маловероятно)
+            if (!isJson) {                
+                console.log(`Старший по дому отсутствует: ${data}`);
+            }
+
             console.log(`Старший по дому ${houseId}:`, data);
             return data;
         } catch (error) {
-            console.error(`Ошибка получения старшего по дому ${houseId}:`, error);
+            console.error(`Ошибка получения старшего по дому ${houseId}:`, error.message);
+            throw error;
         }
     }
 
