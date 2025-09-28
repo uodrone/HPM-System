@@ -53,6 +53,10 @@
     &.card-header_event {
         background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);        
     }
+
+    &.card-header_notification {
+        background: linear-gradient(135deg, #22e042 0%, #078b00 100%);
+    }
 }
 
 .areas-section {
