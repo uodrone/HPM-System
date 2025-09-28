@@ -31,16 +31,19 @@ export class ApartmentHouses {
         let headHTML;
         if (head && typeof(head) == 'object') {
             headHTML = `
-                <div class="form-group">
-                    <input disabled="" type="text" placeholder="" name="headOfHouse" id="headOfHouse-${head.id}" value="${head.firstName} ${head.patronymic}, ${head.phoneNumber}">
-                    <label for="headOfHouse-${head.id}">Старший по дому</label>
-                    <div class="error invisible" data-error="headOfHouse">Старший по дому</div>
+                <div class="senior-info">
+                    <div class="senior-name">${head.firstName} ${head.patronymic}</div>
+                    <div class="senior-phone"><a href="tel:${head.phoneNumber}">${head.phoneNumber}</a></div>
                 </div>
             `;
             return headHTML;
         }
         else {
-            return '<div>Здесь нет старшего по дому</div>'
+            return `
+                <div class="senior-info">
+                    <div class="no-senior">Здесь нет старшего по дому</div>
+                </div>
+            `;
         }
     }
 
@@ -54,6 +57,8 @@ export class ApartmentHouses {
                         <label for="address-${house.id}">Адрес дома</label>
                         <div class="error invisible" data-error="address">Неверный адрес</div>
                     </div>
+
+                    <h6>Старший по дому</h6>
                     ${headTemplate}
                 </div>
             `;            
@@ -66,84 +71,87 @@ export class ApartmentHouses {
         let houseHTML;
         if (house) {
              houseHTML = `
-                <div class="profile-card profile-card_house" data-house-id="${house.id}">
-                    <h3 class="text-center">${house.city}, улица ${house.street}, дом ${house.number}</h3>
-                    <div class="d-flex flex-wrap gap-3 py-3 justify-content-between">
-                        <table>                            
-                            <tr>
-                                <td class="p-2 fw-bold">Тип дома:</td>
-                                <td class="p-2">${house.isApartmentBuilding ? "многоквартирный" : "индивидуальный"}</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 fw-bold">Этажей:</td>
-                                <td class="p-2">${house.floors}</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 fw-bold">Подъездов:</td>
-                                <td class="p-2">${house.entrances}</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 fw-bold">Газ:</td>
-                                <td class="p-2">${house.hasGas ? "есть" : "нет"}</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 fw-bold">Электричество:</td>
-                                <td class="p-2">${house.hasElectricity ? "есть" : "нет"}</td>
-                            </tr>
-                        </table>
-                        <table>
-                            <tr>
-                                <td class="p-2 fw-bold">Год постройки:</td>
-                                <td class="p-2">${house.builtYear}</td>
-                            </tr> 
-                            <tr>
-                                <td class="p-2 fw-bold">Общая площадь:</td>
-                                <td class="p-2">${house.totalArea} м<sup>2</sup></td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 fw-bold">Жилая площадь:</td>
-                                <td class="p-2">${house.apartmentsArea} м<sup>2</sup></td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 fw-bold">Площадь территории:</td>
-                                <td class="p-2">${house.landArea} м<sup>2</sup></td>
-                            </tr>                                                      
-                        </table>
+                <div class="card card_house" data-house-id="${house.id}">
+                    <h3 class="house-address mb-4">${house.city}, улица ${house.street}, дом ${house.number}</h3>
+
+                    <!-- Основные характеристики -->
+                    <div class="basic-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Тип дома</span>
+                            <span class="detail-value">${house.isApartmentBuilding ? "многоквартирный" : "индивидуальный"}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Этажей</span>
+                            <span class="detail-value">${house.floors}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Подъездов</span>
+                            <span class="detail-value">${house.entrances}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Газ</span>
+                            <span class="detail-value utility-yes">${house.hasGas ? "Есть" : "Нет"}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Электричество</span>
+                            <span class="detail-value utility-yes">${house.hasElectricity ? "есть" : "нет"}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Год постройки</span>
+                            <span class="detail-value">${house.builtYear}</span>
+                        </div>
                     </div>
 
-                    <h6>Старший по дому</h6>
-                    ${headTemplate}
+                    <!-- Площади -->
+                    <div class="areas-section">
+                        <div class="card card_area">
+                            <div class="area-value">${house.totalArea} м²</div>
+                            <div class="area-label">Общая площадь</div>
+                        </div>
+                        <div class="card card_area">
+                            <div class="area-value">${house.apartmentsArea} м²</div>
+                            <div class="area-label">Жилая площадь</div>
+                        </div>
+                        <div class="card card_area">
+                            <div class="area-value">${house.landArea} м²</div>
+                            <div class="area-label">Площадь территории</div>
+                        </div>
+                    </div>
 
-                    <div class="py-3">
-                        <h5 class="text-center">Управляющая компания</h5>
-                         <div class="d-flex flex-wrap gap-3 justify-content-between">
-                            <div>                            
-                                <div class="py-3">
-                                    <div class="fw-bold">Название</div>
-                                    <div></div>
-                                </div>                               
-                                <div class="py-3">
-                                    <div class="fw-bold">Режим работы</div>
-                                    <div></div>
-                                </div>
-                                <div class="py-3">
-                                    <div class="fw-bold">Адрес домоуправления</div>
-                                    <div></div>
-                                </div>                                
+                    <!-- Старший по дому -->
+                    <div class="senior-section">
+                        <h6 class="section-title">Старший по дому</h6>
+                        ${headTemplate}                        
+                    </div>
+                    
+
+                    <!-- Управляющая компания -->
+                    <div class="card card_management">
+                        <h6 class="section-title">Управляющая компания</h6>
+                        <div class="company-grid">
+                            <div class="company-item">
+                                <div class="company-label">Название</div>
+                                <div class="company-value empty">Не указано</div>
                             </div>
-                            <div>                                
-                               <div class="py-3">
-                                    <div class="fw-bold">Аварийно-диспетчерская служба</div>
-                                    <div></div>
-                                </div>
-                                <div class="py-3">
-                                    <div class="fw-bold">Приёмная</div>
-                                    <div></div>
-                                </div>                          
-                                <div class="py-3">
-                                    <div class="fw-bold">Сайт организации</div>
-                                    <div></div>
-                                </div>                                                      
+                            <div class="company-item">
+                                <div class="company-label">Аварийно-диспетчерская служба</div>
+                                <div class="company-value empty">Не указано</div>
+                            </div>
+                            <div class="company-item">
+                                <div class="company-label">Режим работы</div>
+                                <div class="company-value empty">Не указано</div>
+                            </div>
+                            <div class="company-item">
+                                <div class="company-label">Приёмная</div>
+                                <div class="company-value empty">Не указано</div>
+                            </div>
+                            <div class="company-item">
+                                <div class="company-label">Адрес домоуправления</div>
+                                <div class="company-value empty">Не указано</div>
+                            </div>
+                            <div class="company-item">
+                                <div class="company-label">Сайт организации</div>
+                                <div class="company-value empty">Не указано</div>
                             </div>
                         </div>
                     </div>

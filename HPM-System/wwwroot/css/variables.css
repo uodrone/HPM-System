@@ -1,4 +1,6 @@
 ﻿:root {
+    --titleColor: #2c3e50;
+    --orangeBorder: #f39c12;
     --gray: #606060;
     --grayworm: #8B9EB7;
     --graywormhover: #5E789B;
@@ -7,6 +9,7 @@
     --medium-gray: #EBEBEB;
     --light-orange: #F79D65;
     --orange: #FE8B55;
+    --semiOrange: #e67e22;
     --orange-hover: #F86A3C;
     --biege-orange: #FFF9F5;
     --burgundy: #A4305A;

@@ -1,3 +1,57 @@
+@import url(variables.css);
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+
+    &.card_house {   
+        border-top: 4px solid #3498db;
+    }
+
+    &.card_area {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid var(--orangeBorder);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        border-left: 4px solid var(--orangeBorder);
+    }
+
+    &.card_management {
+        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        border: 1px solid var(--burgundy);
+        padding: 1rem;
+        border-left: 4px solid var(--burgundy);
+    }
+}
+
+.areas-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.area-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--semiOrange);
+    margin-bottom: 0.25rem;
+}
+
+.area-label {
+    font-size: 0.85rem;
+    color: #8b6914;
+    font-weight: 500;
+}
+
+
+
+
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -14,10 +68,10 @@
     color: white;
     transition: transform 0.3s;
     cursor: pointer;
-}
 
-.feature-card:hover {
-    transform: translateY(-5px);
+    &:hover {
+        transform: translateY(-5px);
+    }
 }
 
 .feature-icon {
