@@ -4,54 +4,59 @@ import {ApartmentHouses} from './ApartmentHouses.js';
 class ApartmentProfile {
     constructor () {
         this.ApartmentAPIAddress = 'https://localhost:55683';
+        this.House = new ApartmentHouses();
     }
 
     //Вставить данные о квартирах пользователя в карточку на главной странице
-    async InsertApartmentDataToCardOnMainPage (userId) {        
-        try {
-            await this.GetApartmentsByUserId(userId).then(apartments => {
-                console.log(`квартиры пользователя:`);
-                console.log(apartments);
-                
-                const apartmentsListContainer = document.querySelector('#apartments-card .apartments-list');
-                apartmentsListContainer.innerHTML = '';
-                apartments.forEach(apartment => {
-                    let apartmentTemplate = this.SetApartmentTemplate(apartment);
-                    apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
-                });
+    async InsertApartmentDataToCardOnMainPage(userId) {
+    try {
+        // Получаем квартиры пользователя
+        const apartments = await this.GetApartmentsByUserId(userId);
+        console.log('Квартиры пользователя:', apartments);
 
-            }).catch(error => {
-                console.error('Ошибка получения данных квартиры:', error);
-            });
-        } catch (e) {
-            console.log(e);
+        const apartmentsListContainer = document.querySelector('.apartments-card .apartments-list');
+        apartmentsListContainer.innerHTML = '';
+
+        // Обрабатываем каждую квартиру
+        for (const apartment of apartments) {
+            // Получаем дом для текущей квартиры
+            const house = await this.House.GetHouse(apartment.houseId);
+            // Можно передать house в шаблон, если нужно
+            let apartmentTemplate = this.SetApartmentTemplate(apartment, house);
+            apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
         }
+    } catch (error) {
+        console.error('Ошибка при загрузке данных квартиры на главную страницу:', error);
     }
+}
 
-    SetApartmentTemplate (apartment) {
-        let apartmentHTML;
+    SetApartmentTemplate (apartment, house) {
+        let apartmentHTML;        
+        let apartmentNumber;
         if (apartment) {
             apartmentHTML = `
-                <div class="apartment" data-apartment-id="${apartment.id}">
-                    <div class="form-group">
-                        <input disabled="" type="text" placeholder=" " name="number" id="number-${apartment.id}" value="${apartment.number}">
-                        <label for="number-${apartment.id}">Номер квартиры</label>
-                        <div class="error invisible" data-error="number">Неверный номер квартиры</div>
-                    </div>
-                    <div class="form-group">
-                        <input disabled="" type="text" placeholder=" " name="rooms" id="rooms-${apartment.id}" value="${apartment.numbersOfRooms}">
-                        <label for="rooms-${apartment.id}">Число комнат</label>
-                        <div class="error invisible" data-error="rooms">Неверное число комнат</div>
-                    </div>
-                    <div class="form-group">
-                        <input disabled="" type="text" placeholder=" " name="totalArea" id="totalArea-${apartment.id}" value="${apartment.totalArea}">
-                        <label for="totalArea-${apartment.id}">Общая площадь</label>
-                        <div class="error invisible" data-error="totalArea">Неверная общая площадь</div>
-                    </div>
-                    <div class="form-group">
-                        <input disabled="" type="text" placeholder=" " name="residentialArea" id="residentialArea-${apartment.id}" value="${apartment.residentialArea}">
-                        <label for="residentialArea-${apartment.id}">Жилая площадь</label>
-                        <div class="error invisible" data-error="residentialArea">Неверная жилая площадь</div>
+                <div class="apartment-item" data-apartment-id="${apartment.id}">
+                    <div class="apartment-address">${house.city}, улица ${house.street}, дом ${house.number}</div>
+                    <div class="apartment-details">
+                        ${house.isApartmentBuilding ? `<div class="apartment-detail">
+                            <div class="detail-label">Номер квартиры</div>
+                            <div class="detail-value">${apartment.number}</div>
+                        </div>` : ''}
+                        
+                        <div class="apartment-detail">
+                            <div class="detail-label">Число комнат</div>
+                            <div class="detail-value">${apartment.numbersOfRooms}</div>
+                        </div>
+
+                        <div class="apartment-detail">
+                            <div class="detail-label">Общая площадь</div>
+                            <div class="detail-value">${apartment.totalArea}</div>
+                        </div>
+
+                        <div class="apartment-detail">
+                            <div class="detail-label">Жилая площадь</div>
+                            <div class="detail-value">${apartment.residentialArea}</div>
+                        </div>
                     </div>
                 </div>
             `;

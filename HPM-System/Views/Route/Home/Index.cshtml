@@ -8,73 +8,89 @@
     <div class="container">
         <!-- Приветствие для авторизованных пользователей -->
         <section data-auth-required class="auth-required">
-            <div class="welcome-section">
-                <h2>Добро пожаловать в HPM System!</h2>
-                <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
-            </div>
-            <div class="my-5">
-                <div class="start-secreen-greed">
-                    <div class="profile-card" id="user-card">
-                        <h3 class="text-center">Профиль пользователя</h3>
 
-                        <div class="my-5 d-flex flex-column gap-2">
-                            <div data-user-fullname></div>
-                            <div data-user-phone></div>
-                            <div data-user-carslist></div>
-                        </div>
+            <h1 class="page-title text-center">Личный кабинет</h1>
 
-                        <div class="text-center">
-                            <a class="user-link" data-user-id href="/user/">Редактировать профиль</a>
-                        </div>
-                    </div>
-                    <div>
+            <div class="dashboard-grid">
+                <!-- Профиль пользователя -->
+                <div class="dashboard-card user-card">
+                    <h3 class="card-header card-header_user">
+                        Профиль пользователя
+                    </h3>
 
-                    </div>
-                    <div class="profile-card" id="notifications-card">
-                        <h3 class="text-center">Уведомления</h3>
-
-                        <div class="my-5 d-flex flex-column gap-2 notification-list">
-                            
-                        </div>
-
-                        <div class="text-center">
-                            <a data-notification="to-list" data-user-id href="/notification/by-user/">Все уведомления</a>
-                        </div>
+                    <div class="user-info">
+                        <div class="user-name" data-user-fullname></div>
+                        <div class="user-phone" data-user-phone></div>
                     </div>
 
-                    <div class="profile-card" id="apartments-card">
-                        <h3 class="text-center">Квартиры пользователя</h3>
-
-                        <div class="my-5 d-flex flex-column gap-2 apartments-list">
-                            
-                        </div>
-
-                        <div class="text-center">
-                            <a class="apartment-link" data-user-id href="/apartment/by-user/">Все квартиры пользователя</a>
-                        </div>
+                    <div class="text-center">
+                        <a class="user-link card-link" data-user-id href="/user/">
+                            Редактировать профиль
+                        </a>
                     </div>
-                    <div>
-                    </div>
-                    <div class="profile-card" id="eventss-card">
-                        <h3 class="text-center">События</h3>
+                </div>
 
-                        <div class="my-5 d-flex flex-column gap-2 events-list">
-                        </div>
-
-                        <div class="text-center">
-                            <a data-notification="to-list" data-user-id href="/events/by-user/">Все события</a>
-                        </div>
+                <!-- Уведомления -->
+                <div class="dashboard-card notifications-card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Уведомления</h3>
                     </div>
 
-                    <div class="profile-card" id="houses-card">
-                        <h3 class="text-center">Дома пользователя</h3>
+                    <div class="empty-state">
+                        Нет новых уведомлений
+                    </div>
 
-                        <div class="my-5 d-flex flex-column gap-5 houses-list">
-                        </div>
+                    <div class="text-center">
+                        <a data-user-id href="/notification/by-user/" class="card-link">
+                            Все уведомления
+                        </a>
+                    </div>
+                </div>
 
-                        <div class="text-center">
-                            <a class="house-link" data-user-id href="/house/by-user/">Все дома пользователя</a>
-                        </div>
+                <!-- Квартиры пользователя -->
+                <div class="dashboard-card apartments-card">
+                    <h3 class="card-header">Квартиры пользователя</h3>
+
+                    <div class="apartments-list">
+                       
+                    </div>
+
+                    <div class="text-center">
+                        <a data-user-id href="/apartment/by-user/" class="card-link apartment-link">
+                            Все квартиры пользователя
+                        </a>
+                    </div>
+                </div>
+
+                <!-- События -->
+                <div class="dashboard-card events-card">
+                    <div class="card-header">
+                        <h3 class="mb-0">События</h3>
+                    </div>
+
+                    <div class="empty-state">
+                        Нет новых событий
+                    </div>
+
+                    <div class="text-center">
+                        <a href="https://localhost:55671/events/by-user/29c8608d-8490-454c-8af0-79b025fd9347" class="card-link">
+                            Все события
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Дома пользователя -->
+                <div class="dashboard-card houses-card">
+                    <h3 class="card-header card-header_house">Дома пользователя</h3>
+
+                    <div class="houses-list">
+                        
+                    </div>
+
+                    <div class="text-center">
+                        <a class="card-link house-link" data-user-id href="/house/by-user/">
+                            Все дома пользователя
+                        </a>
                     </div>
                 </div>
             </div>

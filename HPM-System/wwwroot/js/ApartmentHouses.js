@@ -14,8 +14,9 @@ export class ApartmentHouses {
                 housesListContainer.innerHTML = '';
                 houses.forEach(async (house) => {
                     let headOfHOuse = await this.GetHead(house.id);
-                    let headTemplate = await this.headTemplate(headOfHOuse);
-                    let houseTemplate = template(house, headTemplate);
+                    let headTemplate = this.headTemplate(headOfHOuse);
+                    let managementCompanyTemplate = this.managementCompanyTemplate();
+                    let houseTemplate = template(house, headTemplate, managementCompanyTemplate);
                     housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
                 });
 
@@ -25,6 +26,39 @@ export class ApartmentHouses {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    managementCompanyTemplate (company) {
+        let companyHTML;
+        companyHTML = `
+            <div class="company-grid">
+                <div class="company-item">
+                    <div class="company-label">Название</div>
+                    <div class="company-value empty">Не указано</div>
+                </div>
+                <div class="company-item">
+                    <div class="company-label">Аварийно-диспетчерская служба</div>
+                    <div class="company-value empty">Не указано</div>
+                </div>
+                <div class="company-item">
+                    <div class="company-label">Режим работы</div>
+                    <div class="company-value empty">Не указано</div>
+                </div>
+                <div class="company-item">
+                    <div class="company-label">Приёмная</div>
+                    <div class="company-value empty">Не указано</div>
+                </div>
+                <div class="company-item">
+                    <div class="company-label">Адрес домоуправления</div>
+                    <div class="company-value empty">Не указано</div>
+                </div>
+                <div class="company-item">
+                    <div class="company-label">Сайт организации</div>
+                    <div class="company-value empty">Не указано</div>
+                </div>
+            </div>
+        `;
+        return companyHTML;
     }
 
     headTemplate (head) {
@@ -51,15 +85,12 @@ export class ApartmentHouses {
         let houseHTML;
         if (house) {
             houseHTML = `
-                <div class="house" data-house-id="${house.id}">
-                    <div class="form-group">
-                        <input disabled="" type="text" placeholder="" name="address" id="address-${house.id}" value="${house.city}, ${house.street}, ${house.number}">
-                        <label for="address-${house.id}">Адрес дома</label>
-                        <div class="error invisible" data-error="address">Неверный адрес</div>
+                <div class="house-item">
+                    <div class="house-address" data-house-id="${house.id}">${house.city}, ${house.street}, ${house.number}</div>
+                    <div class="senior-section">
+                        <div class="senior-title">Старший по дому</div>
+                        ${headTemplate}                        
                     </div>
-
-                    <h6>Старший по дому</h6>
-                    ${headTemplate}
                 </div>
             `;            
         }
@@ -67,12 +98,12 @@ export class ApartmentHouses {
         return houseHTML
     }
 
-    HousesListHouseTemplate (house, headTemplate) {
+    HousesListHouseTemplate (house, headTemplate, managementCompanyTemplate) {
         let houseHTML;
         if (house) {
              houseHTML = `
                 <div class="card card_house" data-house-id="${house.id}">
-                    <h3 class="house-address mb-4">${house.city}, улица ${house.street}, дом ${house.number}</h3>
+                    <h3 class="card-header card-header_house">${house.city}, улица ${house.street}, дом ${house.number}</h3>
 
                     <!-- Основные характеристики -->
                     <div class="basic-details">
@@ -90,11 +121,11 @@ export class ApartmentHouses {
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Газ</span>
-                            <span class="detail-value utility-yes">${house.hasGas ? "Есть" : "Нет"}</span>
+                            <span class="detail-value ${house.hasGas ? 'utility-yes' : 'utility-no'}">${house.hasGas ? 'Есть' : 'Нет'}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Электричество</span>
-                            <span class="detail-value utility-yes">${house.hasElectricity ? "есть" : "нет"}</span>
+                            <span class="detail-value ${house.hasElectricity ? 'utility-yes' : 'utility-no'}">${house.hasElectricity ? 'Есть' : 'Нет'}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Год постройки</span>
@@ -128,32 +159,7 @@ export class ApartmentHouses {
                     <!-- Управляющая компания -->
                     <div class="card card_management">
                         <h6 class="section-title">Управляющая компания</h6>
-                        <div class="company-grid">
-                            <div class="company-item">
-                                <div class="company-label">Название</div>
-                                <div class="company-value empty">Не указано</div>
-                            </div>
-                            <div class="company-item">
-                                <div class="company-label">Аварийно-диспетчерская служба</div>
-                                <div class="company-value empty">Не указано</div>
-                            </div>
-                            <div class="company-item">
-                                <div class="company-label">Режим работы</div>
-                                <div class="company-value empty">Не указано</div>
-                            </div>
-                            <div class="company-item">
-                                <div class="company-label">Приёмная</div>
-                                <div class="company-value empty">Не указано</div>
-                            </div>
-                            <div class="company-item">
-                                <div class="company-label">Адрес домоуправления</div>
-                                <div class="company-value empty">Не указано</div>
-                            </div>
-                            <div class="company-item">
-                                <div class="company-label">Сайт организации</div>
-                                <div class="company-value empty">Не указано</div>
-                            </div>
-                        </div>
+                        ${managementCompanyTemplate}
                     </div>
                 </div>
             `;

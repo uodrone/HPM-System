@@ -1,16 +1,5 @@
 @import url(variables.css);
 
-.house-address {
-    font-weight: 600;
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 8px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
 
 .basic-details {
     display: grid;
@@ -49,11 +38,10 @@
 
 .senior-section {
     background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%);
-    border: 1px solid #3498db;
+    border: 1px solid var(--blue);
     border-radius: 8px;
     padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid #2980b9;
+    border-left: 4px solid var(--blue);
 }
 
 .senior-info {
@@ -70,7 +58,7 @@
 }
 
 .senior-phone {
-    color: #34495e;
+    color: var(--titleColor);
     font-family: monospace;
     font-weight: 500;
 }
@@ -91,7 +79,7 @@
     padding: 0.75rem;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 6px;
-    border: 1px solid rgba(236, 72, 153, 0.2);
+    border: 1px solid var(--burgundy);
 }
 
 .company-label {
@@ -120,4 +108,86 @@
     .houses-grid {
         grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
     }
+}
+
+/* Квартиры */
+.apartments-card {
+    border-top: 4px solid #fdcb6e;
+}
+
+.apartments-card .card-header {
+    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: -0.5rem -0.5rem 1.5rem -0.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.apartment-item {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #e17055;
+}
+
+.apartment-item:last-child {
+    margin-bottom: 1.5rem;
+}
+
+.apartment-address {
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+}
+
+.apartment-details {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+.apartment-detail {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.detail-label {
+    color: #636e72;
+    font-size: 0.8rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.house-item {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #0984e3;
+
+    &:last-child {
+        margin-bottom: 1.5rem;
+    }
+
+    .senior-section {
+        border: none;
+    }
+}
+
+.house-address {
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 0.75rem;
 }

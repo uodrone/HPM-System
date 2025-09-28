@@ -40,10 +40,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./wwwroot/css/house.css":
-/*!*******************************!*\
-  !*** ./wwwroot/css/house.css ***!
-  \*******************************/
+/***/ "./wwwroot/css/house-and-apartments.css":
+/*!**********************************************!*\
+  !*** ./wwwroot/css/house-and-apartments.css ***!
+  \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -164,7 +164,7 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 housesListContainer.innerHTML = '';
                 houses.forEach(/*#__PURE__*/function () {
                   var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
-                    var headOfHOuse, headTemplate, houseTemplate;
+                    var headOfHOuse, headTemplate, managementCompanyTemplate, houseTemplate;
                     return _regenerator().w(function (_context) {
                       while (1) switch (_context.n) {
                         case 0:
@@ -172,13 +172,11 @@ var ApartmentHouses = /*#__PURE__*/function () {
                           return _this.GetHead(house.id);
                         case 1:
                           headOfHOuse = _context.v;
-                          _context.n = 2;
-                          return _this.headTemplate(headOfHOuse);
-                        case 2:
-                          headTemplate = _context.v;
-                          houseTemplate = template(house, headTemplate);
+                          headTemplate = _this.headTemplate(headOfHOuse);
+                          managementCompanyTemplate = _this.managementCompanyTemplate();
+                          houseTemplate = template(house, headTemplate, managementCompanyTemplate);
                           housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
-                        case 3:
+                        case 2:
                           return _context.a(2);
                       }
                     }, _callee);
@@ -208,6 +206,13 @@ var ApartmentHouses = /*#__PURE__*/function () {
       return InsertHouseData;
     }()
   }, {
+    key: "managementCompanyTemplate",
+    value: function managementCompanyTemplate(company) {
+      var companyHTML;
+      companyHTML = "\n            <div class=\"company-grid\">\n                <div class=\"company-item\">\n                    <div class=\"company-label\">\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435</div>\n                    <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                </div>\n                <div class=\"company-item\">\n                    <div class=\"company-label\">\u0410\u0432\u0430\u0440\u0438\u0439\u043D\u043E-\u0434\u0438\u0441\u043F\u0435\u0442\u0447\u0435\u0440\u0441\u043A\u0430\u044F \u0441\u043B\u0443\u0436\u0431\u0430</div>\n                    <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                </div>\n                <div class=\"company-item\">\n                    <div class=\"company-label\">\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0431\u043E\u0442\u044B</div>\n                    <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                </div>\n                <div class=\"company-item\">\n                    <div class=\"company-label\">\u041F\u0440\u0438\u0451\u043C\u043D\u0430\u044F</div>\n                    <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                </div>\n                <div class=\"company-item\">\n                    <div class=\"company-label\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u043E\u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F</div>\n                    <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                </div>\n                <div class=\"company-item\">\n                    <div class=\"company-label\">\u0421\u0430\u0439\u0442 \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u0438</div>\n                    <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                </div>\n            </div>\n        ";
+      return companyHTML;
+    }
+  }, {
     key: "headTemplate",
     value: function headTemplate(head) {
       var headHTML;
@@ -223,16 +228,16 @@ var ApartmentHouses = /*#__PURE__*/function () {
     value: function MainPageHouseTemplate(house, headTemplate) {
       var houseHTML;
       if (house) {
-        houseHTML = "\n                <div class=\"house\" data-house-id=\"".concat(house.id, "\">\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\"\" name=\"address\" id=\"address-").concat(house.id, "\" value=\"").concat(house.city, ", ").concat(house.street, ", ").concat(house.number, "\">\n                        <label for=\"address-").concat(house.id, "\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u0430</label>\n                        <div class=\"error invisible\" data-error=\"address\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0430\u0434\u0440\u0435\u0441</div>\n                    </div>\n\n                    <h6>\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                    ").concat(headTemplate, "\n                </div>\n            ");
+        houseHTML = "\n                <div class=\"house-item\">\n                    <div class=\"house-address\" data-house-id=\"".concat(house.id, "\">").concat(house.city, ", ").concat(house.street, ", ").concat(house.number, "</div>\n                    <div class=\"senior-section\">\n                        <div class=\"senior-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</div>\n                        ").concat(headTemplate, "                        \n                    </div>\n                </div>\n            ");
       }
       return houseHTML;
     }
   }, {
     key: "HousesListHouseTemplate",
-    value: function HousesListHouseTemplate(house, headTemplate) {
+    value: function HousesListHouseTemplate(house, headTemplate, managementCompanyTemplate) {
       var houseHTML;
       if (house) {
-        houseHTML = "\n                <div class=\"card card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"house-address mb-4\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n\n                    <!-- \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 -->\n                    <div class=\"basic-details\">\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430</span>\n                            <span class=\"detail-value\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u0442\u0430\u0436\u0435\u0439</span>\n                            <span class=\"detail-value\">").concat(house.floors, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432</span>\n                            <span class=\"detail-value\">").concat(house.entrances, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u0430\u0437</span>\n                            <span class=\"detail-value utility-yes\">").concat(house.hasGas ? "Есть" : "Нет", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E</span>\n                            <span class=\"detail-value utility-yes\">").concat(house.hasElectricity ? "есть" : "нет", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438</span>\n                            <span class=\"detail-value\">").concat(house.builtYear, "</span>\n                        </div>\n                    </div>\n\n                    <!-- \u041F\u043B\u043E\u0449\u0430\u0434\u0438 -->\n                    <div class=\"areas-section\">\n                        <div class=\"card card_area\">\n                            <div class=\"area-value\">").concat(house.totalArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area\">\n                            <div class=\"area-value\">").concat(house.apartmentsArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area\">\n                            <div class=\"area-value\">").concat(house.landArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438</div>\n                        </div>\n                    </div>\n\n                    <!-- \u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 -->\n                    <div class=\"senior-section\">\n                        <h6 class=\"section-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                        ").concat(headTemplate, "                        \n                    </div>\n                    \n\n                    <!-- \u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F -->\n                    <div class=\"card card_management\">\n                        <h6 class=\"section-title\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h6>\n                        <div class=\"company-grid\">\n                            <div class=\"company-item\">\n                                <div class=\"company-label\">\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435</div>\n                                <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                            </div>\n                            <div class=\"company-item\">\n                                <div class=\"company-label\">\u0410\u0432\u0430\u0440\u0438\u0439\u043D\u043E-\u0434\u0438\u0441\u043F\u0435\u0442\u0447\u0435\u0440\u0441\u043A\u0430\u044F \u0441\u043B\u0443\u0436\u0431\u0430</div>\n                                <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                            </div>\n                            <div class=\"company-item\">\n                                <div class=\"company-label\">\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0431\u043E\u0442\u044B</div>\n                                <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                            </div>\n                            <div class=\"company-item\">\n                                <div class=\"company-label\">\u041F\u0440\u0438\u0451\u043C\u043D\u0430\u044F</div>\n                                <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                            </div>\n                            <div class=\"company-item\">\n                                <div class=\"company-label\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u043E\u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F</div>\n                                <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                            </div>\n                            <div class=\"company-item\">\n                                <div class=\"company-label\">\u0421\u0430\u0439\u0442 \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u0438</div>\n                                <div class=\"company-value empty\">\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u043E</div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        houseHTML = "\n                <div class=\"card card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"card-header card-header_house\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n\n                    <!-- \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 -->\n                    <div class=\"basic-details\">\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430</span>\n                            <span class=\"detail-value\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u0442\u0430\u0436\u0435\u0439</span>\n                            <span class=\"detail-value\">").concat(house.floors, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432</span>\n                            <span class=\"detail-value\">").concat(house.entrances, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u0430\u0437</span>\n                            <span class=\"detail-value ").concat(house.hasGas ? 'utility-yes' : 'utility-no', "\">").concat(house.hasGas ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E</span>\n                            <span class=\"detail-value ").concat(house.hasElectricity ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElectricity ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438</span>\n                            <span class=\"detail-value\">").concat(house.builtYear, "</span>\n                        </div>\n                    </div>\n\n                    <!-- \u041F\u043B\u043E\u0449\u0430\u0434\u0438 -->\n                    <div class=\"areas-section\">\n                        <div class=\"card card_area\">\n                            <div class=\"area-value\">").concat(house.totalArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area\">\n                            <div class=\"area-value\">").concat(house.apartmentsArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area\">\n                            <div class=\"area-value\">").concat(house.landArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438</div>\n                        </div>\n                    </div>\n\n                    <!-- \u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 -->\n                    <div class=\"senior-section\">\n                        <h6 class=\"section-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                        ").concat(headTemplate, "                        \n                    </div>\n                    \n\n                    <!-- \u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F -->\n                    <div class=\"card card_management\">\n                        <h6 class=\"section-title\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h6>\n                        ").concat(managementCompanyTemplate, "\n                    </div>\n                </div>\n            ");
       }
       return houseHTML;
     }
@@ -692,6 +697,9 @@ __webpack_require__.r(__webpack_exports__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
@@ -705,6 +713,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
   function ApartmentProfile() {
     _classCallCheck(this, ApartmentProfile);
     this.ApartmentAPIAddress = 'https://localhost:55683';
+    this.House = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
   }
 
   //Вставить данные о квартирах пользователя в карточку на главной странице
@@ -712,36 +721,61 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "InsertApartmentDataToCardOnMainPage",
     value: function () {
       var _InsertApartmentDataToCardOnMainPage = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(userId) {
-        var _this = this;
-        var _t;
+        var apartments, apartmentsListContainer, _iterator, _step, apartment, house, apartmentTemplate, _t, _t2;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
               _context.p = 0;
               _context.n = 1;
-              return this.GetApartmentsByUserId(userId).then(function (apartments) {
-                console.log("\u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");
-                console.log(apartments);
-                var apartmentsListContainer = document.querySelector('#apartments-card .apartments-list');
-                apartmentsListContainer.innerHTML = '';
-                apartments.forEach(function (apartment) {
-                  var apartmentTemplate = _this.SetApartmentTemplate(apartment);
-                  apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
-                });
-              })["catch"](function (error) {
-                console.error('Ошибка получения данных квартиры:', error);
-              });
+              return this.GetApartmentsByUserId(userId);
             case 1:
+              apartments = _context.v;
+              console.log('Квартиры пользователя:', apartments);
+              apartmentsListContainer = document.querySelector('.apartments-card .apartments-list');
+              apartmentsListContainer.innerHTML = '';
+
+              // Обрабатываем каждую квартиру
+              _iterator = _createForOfIteratorHelper(apartments);
+              _context.p = 2;
+              _iterator.s();
+            case 3:
+              if ((_step = _iterator.n()).done) {
+                _context.n = 6;
+                break;
+              }
+              apartment = _step.value;
+              _context.n = 4;
+              return this.House.GetHouse(apartment.houseId);
+            case 4:
+              house = _context.v;
+              // Можно передать house в шаблон, если нужно
+              apartmentTemplate = this.SetApartmentTemplate(apartment, house);
+              apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
+            case 5:
               _context.n = 3;
               break;
-            case 2:
-              _context.p = 2;
+            case 6:
+              _context.n = 8;
+              break;
+            case 7:
+              _context.p = 7;
               _t = _context.v;
-              console.log(_t);
-            case 3:
+              _iterator.e(_t);
+            case 8:
+              _context.p = 8;
+              _iterator.f();
+              return _context.f(8);
+            case 9:
+              _context.n = 11;
+              break;
+            case 10:
+              _context.p = 10;
+              _t2 = _context.v;
+              console.error('Ошибка при загрузке данных квартиры на главную страницу:', _t2);
+            case 11:
               return _context.a(2);
           }
-        }, _callee, this, [[0, 2]]);
+        }, _callee, this, [[2, 7, 8, 9], [0, 10]]);
       }));
       function InsertApartmentDataToCardOnMainPage(_x) {
         return _InsertApartmentDataToCardOnMainPage.apply(this, arguments);
@@ -750,10 +784,11 @@ var ApartmentProfile = /*#__PURE__*/function () {
     }()
   }, {
     key: "SetApartmentTemplate",
-    value: function SetApartmentTemplate(apartment) {
+    value: function SetApartmentTemplate(apartment, house) {
       var apartmentHTML;
+      var apartmentNumber;
       if (apartment) {
-        apartmentHTML = "\n                <div class=\"apartment\" data-apartment-id=\"".concat(apartment.id, "\">\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"number\" id=\"number-").concat(apartment.id, "\" value=\"").concat(apartment.number, "\">\n                        <label for=\"number-").concat(apartment.id, "\">\u041D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</label>\n                        <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"rooms\" id=\"rooms-").concat(apartment.id, "\" value=\"").concat(apartment.numbersOfRooms, "\">\n                        <label for=\"rooms-").concat(apartment.id, "\">\u0427\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</label>\n                        <div class=\"error invisible\" data-error=\"rooms\">\u041D\u0435\u0432\u0435\u0440\u043D\u043E\u0435 \u0447\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"totalArea\" id=\"totalArea-").concat(apartment.id, "\" value=\"").concat(apartment.totalArea, "\">\n                        <label for=\"totalArea-").concat(apartment.id, "\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</label>\n                        <div class=\"error invisible\" data-error=\"totalArea\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                    </div>\n                    <div class=\"form-group\">\n                        <input disabled=\"\" type=\"text\" placeholder=\" \" name=\"residentialArea\" id=\"residentialArea-").concat(apartment.id, "\" value=\"").concat(apartment.residentialArea, "\">\n                        <label for=\"residentialArea-").concat(apartment.id, "\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</label>\n                        <div class=\"error invisible\" data-error=\"residentialArea\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u0436\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                    </div>\n                </div>\n            ");
+        apartmentHTML = "\n                <div class=\"apartment-item\" data-apartment-id=\"".concat(apartment.id, "\">\n                    <div class=\"apartment-address\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</div>\n                    <div class=\"apartment-details\">\n                        ").concat(house.isApartmentBuilding ? "<div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u041D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</div>\n                            <div class=\"detail-value\">".concat(apartment.number, "</div>\n                        </div>") : '', "\n                        \n                        <div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u0427\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</div>\n                            <div class=\"detail-value\">").concat(apartment.numbersOfRooms, "</div>\n                        </div>\n\n                        <div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                            <div class=\"detail-value\">").concat(apartment.totalArea, "</div>\n                        </div>\n\n                        <div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                            <div class=\"detail-value\">").concat(apartment.residentialArea, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return apartmentHTML;
     }
@@ -763,7 +798,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "GetApartmentsByUserId",
     value: function () {
       var _GetApartmentsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(userId) {
-        var response, data, _t2;
+        var response, data, _t3;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
@@ -791,8 +826,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return _context2.a(2, data);
             case 4:
               _context2.p = 4;
-              _t2 = _context2.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t2);
+              _t3 = _context2.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
             case 5:
               return _context2.a(2);
           }
@@ -807,7 +842,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "GetApartmentsByUserPhone",
     value: function () {
       var _GetApartmentsByUserPhone = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(phone) {
-        var response, data, _t3;
+        var response, data, _t4;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
@@ -835,8 +870,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return _context3.a(2, data);
             case 4:
               _context3.p = 4;
-              _t3 = _context3.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t3);
+              _t4 = _context3.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t4);
             case 5:
               return _context3.a(2);
           }
@@ -851,7 +886,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "GetApartment",
     value: function () {
       var _GetApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
-        var response, data, _t4;
+        var response, data, _t5;
         return _regenerator().w(function (_context4) {
           while (1) switch (_context4.p = _context4.n) {
             case 0:
@@ -879,8 +914,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return _context4.a(2, data);
             case 4:
               _context4.p = 4;
-              _t4 = _context4.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t4);
+              _t5 = _context4.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t5);
             case 5:
               return _context4.a(2);
           }
@@ -895,7 +930,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "CreateApartment",
     value: function () {
       var _CreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(apartmentData) {
-        var response, data, _t5;
+        var response, data, _t6;
         return _regenerator().w(function (_context5) {
           while (1) switch (_context5.p = _context5.n) {
             case 0:
@@ -924,8 +959,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return _context5.a(2, data);
             case 4:
               _context5.p = 4;
-              _t5 = _context5.v;
-              console.error('Ошибка создания квартиры:', _t5);
+              _t6 = _context5.v;
+              console.error('Ошибка создания квартиры:', _t6);
             case 5:
               return _context5.a(2);
           }
@@ -940,7 +975,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "DeleteApartment",
     value: function () {
       var _DeleteApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
-        var response, _t6, _t7, _t8;
+        var response, _t7, _t8, _t9;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
@@ -958,20 +993,20 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 _context6.n = 3;
                 break;
               }
-              _t6 = Error;
+              _t7 = Error;
               _context6.n = 2;
               return response.text();
             case 2:
-              _t7 = _context6.v;
-              throw new _t6(_t7);
+              _t8 = _context6.v;
+              throw new _t7(_t8);
             case 3:
               console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, " \u0443\u0434\u0430\u043B\u0435\u043D\u0430"));
               _context6.n = 5;
               break;
             case 4:
               _context6.p = 4;
-              _t8 = _context6.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t8);
+              _t9 = _context6.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t9);
             case 5:
               return _context6.a(2);
           }
@@ -986,7 +1021,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "AddUserToApartment",
     value: function () {
       var _AddUserToApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(apartmentId, userId) {
-        var response, data, _t9;
+        var response, data, _t0;
         return _regenerator().w(function (_context7) {
           while (1) switch (_context7.p = _context7.n) {
             case 0:
@@ -1016,8 +1051,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               break;
             case 4:
               _context7.p = 4;
-              _t9 = _context7.v;
-              console.error('Ошибка добавления пользователя к квартире:', _t9);
+              _t0 = _context7.v;
+              console.error('Ошибка добавления пользователя к квартире:', _t0);
             case 5:
               return _context7.a(2);
           }
@@ -1032,7 +1067,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "RemoveUserFromApartment",
     value: function () {
       var _RemoveUserFromApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId, userId) {
-        var response, data, _t0;
+        var response, data, _t1;
         return _regenerator().w(function (_context8) {
           while (1) switch (_context8.p = _context8.n) {
             case 0:
@@ -1061,8 +1096,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               break;
             case 4:
               _context8.p = 4;
-              _t0 = _context8.v;
-              console.error('Ошибка удаления пользователя из квартиры:', _t0);
+              _t1 = _context8.v;
+              console.error('Ошибка удаления пользователя из квартиры:', _t1);
             case 5:
               return _context8.a(2);
           }
@@ -1077,7 +1112,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "UpdateUserShare",
     value: function () {
       var _UpdateUserShare = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(apartmentId, userId, share) {
-        var response, data, _t1;
+        var response, data, _t10;
         return _regenerator().w(function (_context9) {
           while (1) switch (_context9.p = _context9.n) {
             case 0:
@@ -1109,8 +1144,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               break;
             case 4:
               _context9.p = 4;
-              _t1 = _context9.v;
-              console.error('Ошибка обновления доли:', _t1);
+              _t10 = _context9.v;
+              console.error('Ошибка обновления доли:', _t10);
             case 5:
               return _context9.a(2);
           }
@@ -1125,7 +1160,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "GetApartmentShares",
     value: function () {
       var _GetApartmentShares = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(apartmentId) {
-        var response, data, _t10;
+        var response, data, _t11;
         return _regenerator().w(function (_context0) {
           while (1) switch (_context0.p = _context0.n) {
             case 0:
@@ -1153,8 +1188,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return _context0.a(2, data);
             case 4:
               _context0.p = 4;
-              _t10 = _context0.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t10);
+              _t11 = _context0.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t11);
             case 5:
               return _context0.a(2);
           }
@@ -1169,7 +1204,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     key: "GetApartmentStatistics",
     value: function () {
       var _GetApartmentStatistics = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(apartmentId) {
-        var response, data, _t11;
+        var response, data, _t12;
         return _regenerator().w(function (_context1) {
           while (1) switch (_context1.p = _context1.n) {
             case 0:
@@ -1197,8 +1232,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
               return _context1.a(2, data);
             case 4:
               _context1.p = 4;
-              _t11 = _context1.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t11);
+              _t12 = _context1.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t12);
             case 5:
               return _context1.a(2);
           }
@@ -3459,7 +3494,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/css/notification.css");
 /******/ 	__webpack_require__("./wwwroot/css/modal.css");
 /******/ 	__webpack_require__("./wwwroot/css/main.css");
-/******/ 	__webpack_require__("./wwwroot/css/house.css");
+/******/ 	__webpack_require__("./wwwroot/css/house-and-apartments.css");
 /******/ 	__webpack_require__("./wwwroot/css/grid.css");
 /******/ 	__webpack_require__("./wwwroot/css/card.css");
 /******/ 	var __webpack_exports__ = __webpack_require__("./wwwroot/css/btn.css");
