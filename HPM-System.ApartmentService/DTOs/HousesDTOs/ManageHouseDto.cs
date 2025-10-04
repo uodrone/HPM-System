@@ -32,5 +32,6 @@ namespace HPM_System.ApartmentService.DTOs.HousesDTOs
         public double? LandArea { get; set; }
 
         public bool IsApartmentBuilding { get; set; } = true;
+        public int builtYear { get; set; }
     }
 }

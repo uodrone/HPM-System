@@ -135,15 +135,15 @@ export class ApartmentHouses {
 
                     <!-- Площади -->
                     <div class="areas-section">
-                        <div class="card card_area">
+                        <div class="card card_area mb-0">
                             <div class="area-value">${house.totalArea} м²</div>
                             <div class="area-label">Общая площадь</div>
                         </div>
-                        <div class="card card_area">
+                        <div class="card card_area mb-0">
                             <div class="area-value">${house.apartmentsArea} м²</div>
                             <div class="area-label">Жилая площадь</div>
                         </div>
-                        <div class="card card_area">
+                        <div class="card card_area mb-0">
                             <div class="area-value">${house.landArea} м²</div>
                             <div class="area-label">Площадь территории</div>
                         </div>
@@ -157,7 +157,7 @@ export class ApartmentHouses {
                     
 
                     <!-- Управляющая компания -->
-                    <div class="card card_management">
+                    <div class="card card_management mb-0">
                         <h6 class="section-title">Управляющая компания</h6>
                         ${managementCompanyTemplate}
                     </div>

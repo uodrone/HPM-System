@@ -45,6 +45,7 @@ namespace HPM_System.ApartmentService.Data
                 entity.Property(h => h.TotalArea).IsRequired(false);
                 entity.Property(h => h.LandArea).IsRequired(false);
                 entity.Property(h => h.IsApartmentBuilding).IsRequired();
+                entity.Property(h => h.builtYear).IsRequired();
 
                 // Индекс по адресу для быстрого поиска
                 entity.HasIndex(h => new { h.City, h.Street, h.Number }).IsUnique();

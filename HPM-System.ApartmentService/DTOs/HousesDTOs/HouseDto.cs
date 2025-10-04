@@ -17,5 +17,6 @@
         public double? TotalArea { get; set; }
         public double? LandArea { get; set; }
         public bool IsApartmentBuilding { get; set; }
+        public int builtYear { get; set; }
     }
 }

@@ -116,7 +116,8 @@ namespace HPM_System.ApartmentService.Controllers
                     TotalArea = manageHouseDto.TotalArea,
                     LandArea = manageHouseDto.LandArea,
                     IsApartmentBuilding = manageHouseDto.IsApartmentBuilding,
-                    HeadId = null // по умолчанию никто не назначен
+                    HeadId = null, // по умолчанию никто не назначен
+                    builtYear = manageHouseDto.builtYear
                 };
 
                 var createdHouse = await _houseRepository.CreateHouseAsync(house);
@@ -163,6 +164,7 @@ namespace HPM_System.ApartmentService.Controllers
                 house.TotalArea = manageHouseDto.TotalArea;
                 house.LandArea = manageHouseDto.LandArea;
                 house.IsApartmentBuilding = manageHouseDto.IsApartmentBuilding;
+                house.builtYear = manageHouseDto.builtYear;
 
                 var success = await _houseRepository.UpdateHouseAsync(house);
                 if (!success)
@@ -351,7 +353,8 @@ namespace HPM_System.ApartmentService.Controllers
                 ApartmentsArea = house.ApartmentsArea,
                 TotalArea = house.TotalArea,
                 LandArea = house.LandArea,
-                IsApartmentBuilding = house.IsApartmentBuilding
+                IsApartmentBuilding = house.IsApartmentBuilding,
+                builtYear = house.builtYear
             };
         }
     }
