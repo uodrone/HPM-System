@@ -1,10 +1,28 @@
+import {RegularExtension} from './Regex.js';
+
 export class ApartmentHouses {
     constructor () {
         this.ApartmentAPIAddress = 'https://localhost:55683';
     }
 
-    //Вставить данные о домах пользователя в карточку на главной странице
-    async InsertHouseData (userId, housesListClass, template) {        
+    async InsertHouseDataById (id) {
+        try {
+            await this.GetHouse(id).then(house => {
+                console.log(`дом пользователя`);
+                console.log(house);
+
+                const houseDatailsTemplate = this.HouseDetailsTemplate(house);
+                const houseDetailsContainer = document.querySelector('[data-house-profile]');
+                houseDetailsContainer.insertAdjacentHTML('beforeend', houseDatailsTemplate);
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    //Вставить данные о домах пользователя в карточку
+    async InsertHouseDataByUserId (userId, housesListClass, template) {   
         try {
             await this.GetHousesByUserId(userId).then(houses => {
                 console.log(`дома пользователя:`);
@@ -14,8 +32,8 @@ export class ApartmentHouses {
                 housesListContainer.innerHTML = '';
                 houses.forEach(async (house) => {
                     let headOfHOuse = await this.GetHead(house.id);
-                    let headTemplate = this.headTemplate(headOfHOuse);
-                    let managementCompanyTemplate = this.managementCompanyTemplate();
+                    let headTemplate = this.HeadTemplate(headOfHOuse);
+                    let managementCompanyTemplate = this.ManagementCompanyTemplate();
                     let houseTemplate = template(house, headTemplate, managementCompanyTemplate, headOfHOuse);
                     housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
                 });
@@ -28,7 +46,11 @@ export class ApartmentHouses {
         }
     }
 
-    managementCompanyTemplate (company) {
+    HouseDetailsTemplate (house) {
+
+    }
+
+    ManagementCompanyTemplate (company) {
         let companyHTML;
         companyHTML = `
             <div class="company-grid">
@@ -61,7 +83,7 @@ export class ApartmentHouses {
         return companyHTML;
     }
 
-    headTemplate (head) {
+    HeadTemplate (head) {
         let headHTML;
         if (head && typeof(head) == 'object') {
             headHTML = `
@@ -197,8 +219,7 @@ export class ApartmentHouses {
                 headers: { 'Content-Type': 'application/json' }
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data);
-            console.log(`Дом ${id}:`, data);
+            if (!response.ok) throw new Error(data);            
             return data;
         } catch (error) {
             console.error(`Ошибка получения дома ${id}:`, error);
@@ -347,7 +368,8 @@ export class ApartmentHouses {
     }
 }
 
-document.addEventListener('authStateChanged', () => {
+document.addEventListener('authStateChanged', () => {    
+    const Regex = new RegularExtension();
     const { isAuthenticated, userData } = event.detail;
 
     if (isAuthenticated && userData) {
@@ -355,11 +377,16 @@ document.addEventListener('authStateChanged', () => {
         const userId = window.authManager.userData.userId;
 
         if (window.location.pathname == '/') {
-            houseProfile.InsertHouseData(userId, '.houses-list', houseProfile.MainPageHouseTemplate);
+            houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.MainPageHouseTemplate);
         }
 
         if (window.location.pathname.includes(`/house/by-user/${userId}`)) {
-            houseProfile.InsertHouseData(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
+            houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
+        }
+
+        if (Regex.isValidHouseUrl(window.location.href).valid) {
+            const houseId = Regex.isValidHouseUrl(window.location.href).id;            
+            houseProfile.InsertHouseDataById(houseId);
         }
     }
 });

@@ -12,7 +12,6 @@ class ApartmentProfile {
     try {
         // Получаем квартиры пользователя
         const apartments = await this.GetApartmentsByUserId(userId);
-        console.log('Квартиры пользователя:', apartments);
 
         const apartmentsListContainer = document.querySelector('.apartments-card .apartments-list');
         apartmentsListContainer.innerHTML = '';
