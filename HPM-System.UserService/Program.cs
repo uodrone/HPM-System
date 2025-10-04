@@ -38,6 +38,17 @@ namespace HPM_System.UserService
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 var context = services.GetRequiredService<AppDbContext>();
+                // Получаем список неприменённых миграций
+                var pendingMigrations = context.Database.GetPendingMigrations().ToList();
+                if (pendingMigrations.Any())
+                {
+                    logger.LogWarning("Неприменённые миграции: {Migrations}", string.Join(", ", pendingMigrations));
+                }
+                else
+                {
+                    logger.LogInformation("Все миграции уже применены.");
+                }
+
                 try
                 {
                     logger.LogInformation($"Применение миграций...");
