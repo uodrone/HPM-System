@@ -37,13 +37,15 @@ class UserProfile {
         }
     }
 
-    async InsertUserDataToCardOnMainPage (userId) {
+    InsertUserIdToLinks (userId) {
         const userIdLinks = document.querySelectorAll('a[data-user-id]');
         userIdLinks.forEach(element => {
             const link = element.href;
             element.href += userId;
         });
+    }
 
+    async InsertUserDataToCardOnMainPage (userId) {
         try {
             await this.GetUserById(userId).then(user => {
                 
@@ -442,5 +444,7 @@ document.addEventListener('authStateChanged', () => {
                 }
             });
         }
+
+        userProfile.InsertUserIdToLinks(userId);
     }
 });

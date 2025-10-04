@@ -16,7 +16,7 @@ export class ApartmentHouses {
                     let headOfHOuse = await this.GetHead(house.id);
                     let headTemplate = this.headTemplate(headOfHOuse);
                     let managementCompanyTemplate = this.managementCompanyTemplate();
-                    let houseTemplate = template(house, headTemplate, managementCompanyTemplate);
+                    let houseTemplate = template(house, headTemplate, managementCompanyTemplate, headOfHOuse);
                     housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
                 });
 
@@ -98,7 +98,7 @@ export class ApartmentHouses {
         return houseHTML
     }
 
-    HousesListHouseTemplate (house, headTemplate, managementCompanyTemplate) {
+    HousesListHouseTemplate (house, headTemplate, managementCompanyTemplate, headOfHouse) {
         let houseHTML;
         if (house) {
              houseHTML = `
@@ -148,6 +148,11 @@ export class ApartmentHouses {
                             <div class="area-label">Площадь территории</div>
                         </div>
                     </div>
+
+                    ${headOfHouse.id == window.authManager.userData.userId ? 
+                        `<div class="text-center">
+                            <a href="/house/${house.id}">Редактировать дом</a>
+                        </div>` : ``}
 
                     <!-- Старший по дому -->
                     <div class="senior-section">
