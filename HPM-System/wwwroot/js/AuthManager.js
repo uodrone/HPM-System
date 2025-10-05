@@ -261,7 +261,7 @@
 // Глобальный экземпляр менеджера аутентификации
 window.authManager = new AuthManager();
 
-// Полезные глобальные функции
+// Глобальные функции
 window.isAuthenticated = () => window.authManager.isAuthenticated;
 window.getCurrentUser = () => window.authManager.userData;
 window.logout = () => window.authManager.logout();

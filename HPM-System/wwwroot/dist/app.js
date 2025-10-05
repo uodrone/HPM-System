@@ -150,31 +150,31 @@ var ApartmentHouses = /*#__PURE__*/function () {
     key: "InsertHouseDataById",
     value: function () {
       var _InsertHouseDataById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(id) {
-        var _this = this;
-        var _t;
+        var house, headOfHouse, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
               _context.p = 0;
               _context.n = 1;
-              return this.GetHouse(id).then(function (house) {
-                console.log("\u0434\u043E\u043C \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
-                console.log(house);
-                var houseDatailsTemplate = _this.HouseDetailsTemplate(house);
-                var houseDetailsContainer = document.querySelector('[data-house-profile]');
-                houseDetailsContainer.insertAdjacentHTML('beforeend', houseDatailsTemplate);
-              });
+              return this.GetHouse(id);
             case 1:
-              _context.n = 3;
-              break;
+              house = _context.v;
+              console.log("\u0434\u043E\u043C \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
+              console.log(house);
+              _context.n = 2;
+              return this.GetHead(house.id);
             case 2:
-              _context.p = 2;
-              _t = _context.v;
-              console.log(_t);
+              headOfHouse = _context.v;
+              _context.n = 4;
+              break;
             case 3:
+              _context.p = 3;
+              _t = _context.v;
+              console.error('Ошибка при загрузке данных дома:', _t);
+            case 4:
               return _context.a(2);
           }
-        }, _callee, this, [[0, 2]]);
+        }, _callee, this, [[0, 3]]);
       }));
       function InsertHouseDataById(_x) {
         return _InsertHouseDataById.apply(this, arguments);
@@ -185,7 +185,7 @@ var ApartmentHouses = /*#__PURE__*/function () {
     key: "InsertHouseDataByUserId",
     value: function () {
       var _InsertHouseDataByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId, housesListClass, template) {
-        var _this2 = this;
+        var _this = this;
         var _t2;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
@@ -204,11 +204,11 @@ var ApartmentHouses = /*#__PURE__*/function () {
                       while (1) switch (_context2.n) {
                         case 0:
                           _context2.n = 1;
-                          return _this2.GetHead(house.id);
+                          return _this.GetHead(house.id);
                         case 1:
                           headOfHOuse = _context2.v;
-                          headTemplate = _this2.HeadTemplate(headOfHOuse);
-                          managementCompanyTemplate = _this2.ManagementCompanyTemplate();
+                          headTemplate = _this.HeadTemplate(headOfHOuse);
+                          managementCompanyTemplate = _this.ManagementCompanyTemplate();
                           houseTemplate = template(house, headTemplate, managementCompanyTemplate, headOfHOuse);
                           housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
                         case 2:
@@ -241,9 +241,6 @@ var ApartmentHouses = /*#__PURE__*/function () {
       return InsertHouseDataByUserId;
     }()
   }, {
-    key: "HouseDetailsTemplate",
-    value: function HouseDetailsTemplate(house) {}
-  }, {
     key: "ManagementCompanyTemplate",
     value: function ManagementCompanyTemplate(company) {
       var companyHTML;
@@ -275,7 +272,7 @@ var ApartmentHouses = /*#__PURE__*/function () {
     value: function HousesListHouseTemplate(house, headTemplate, managementCompanyTemplate, headOfHouse) {
       var houseHTML;
       if (house) {
-        houseHTML = "\n                <div class=\"card card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"card-header card-header_house\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n\n                    <!-- \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 -->\n                    <div class=\"basic-details\">\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430</span>\n                            <span class=\"detail-value\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u0442\u0430\u0436\u0435\u0439</span>\n                            <span class=\"detail-value\">").concat(house.floors, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432</span>\n                            <span class=\"detail-value\">").concat(house.entrances, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u0430\u0437</span>\n                            <span class=\"detail-value ").concat(house.hasGas ? 'utility-yes' : 'utility-no', "\">").concat(house.hasGas ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E</span>\n                            <span class=\"detail-value ").concat(house.hasElectricity ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElectricity ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438</span>\n                            <span class=\"detail-value\">").concat(house.builtYear, "</span>\n                        </div>\n                    </div>\n\n                    <!-- \u041F\u043B\u043E\u0449\u0430\u0434\u0438 -->\n                    <div class=\"areas-section\">\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.totalArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.apartmentsArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.landArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438</div>\n                        </div>\n                    </div>\n\n                    ").concat(headOfHouse.id == window.authManager.userData.userId ? "<div class=\"text-center\">\n                            <a href=\"/house/".concat(house.id, "\">\u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0434\u043E\u043C</a>\n                        </div>") : "", "\n\n                    <!-- \u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 -->\n                    <div class=\"senior-section\">\n                        <h6 class=\"section-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                        ").concat(headTemplate, "                        \n                    </div>\n                    \n\n                    <!-- \u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F -->\n                    <div class=\"card card_management mb-0\">\n                        <h6 class=\"section-title\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h6>\n                        ").concat(managementCompanyTemplate, "\n                    </div>\n                </div>\n            ");
+        houseHTML = "\n                <div class=\"card card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"card-header card-header_house\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n\n                    <!-- \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 -->\n                    <div class=\"basic-details\">\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430</span>\n                            <span class=\"detail-value\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u0442\u0430\u0436\u0435\u0439</span>\n                            <span class=\"detail-value\">").concat(house.floors, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432</span>\n                            <span class=\"detail-value\">").concat(house.entrances, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u0430\u0437</span>\n                            <span class=\"detail-value ").concat(house.hasGas ? 'utility-yes' : 'utility-no', "\">").concat(house.hasGas ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E</span>\n                            <span class=\"detail-value ").concat(house.hasElectricity ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElectricity ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041B\u0438\u0444\u0442\u044B</span>\n                            <span class=\"detail-value ").concat(house.hasElevator ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElevator ? 'Есть' : 'Нет', "</span>\n                        </div>                        \n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438</span>\n                            <span class=\"detail-value\">").concat(house.builtYear, "</span>\n                        </div>\n                    </div>\n\n                    <!-- \u041F\u043B\u043E\u0449\u0430\u0434\u0438 -->\n                    <div class=\"areas-section\">\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.totalArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.apartmentsArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.landArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438</div>\n                        </div>\n                    </div>\n\n                    ").concat(headOfHouse.id == window.authManager.userData.userId ? "<div class=\"text-center\">\n                            <a href=\"/house/".concat(house.id, "\">\u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0434\u043E\u043C</a>\n                        </div>") : "", "\n\n                    <!-- \u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 -->\n                    <div class=\"senior-section\">\n                        <h6 class=\"section-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                        ").concat(headTemplate, "                        \n                    </div>\n                    \n\n                    <!-- \u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F -->\n                    <div class=\"card card_management mb-0\">\n                        <h6 class=\"section-title\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h6>\n                        ").concat(managementCompanyTemplate, "\n                    </div>\n                </div>\n            ");
       }
       return houseHTML;
     }
@@ -2185,7 +2182,7 @@ var AuthManager = /*#__PURE__*/function () {
 }(); // Глобальный экземпляр менеджера аутентификации
 window.authManager = new AuthManager();
 
-// Полезные глобальные функции
+// Глобальные функции
 window.isAuthenticated = function () {
   return window.authManager.isAuthenticated;
 };

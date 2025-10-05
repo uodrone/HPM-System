@@ -1,7 +1,60 @@
 ﻿<div class="container py-5">
 	<h1 class="text-center">Профиль дома</h1>
 
-	<div class="house-profile my-5" data-house-profile>
-
+	<div class="profile-group" data-group="house">
+		<div class="form-group">
+			<input type="text" placeholder=" " name="number" id="number" value="" />
+			<label for="number">Номер дома</label>
+			<div class="error invisible" data-error="number">Неверный номер дома</div>
+		</div>
+		<div class="form-group">
+			<input type="number" placeholder=" " name="floors" id="floors" value="" />
+			<label for="floors">Количество этажей</label>
+			<div class="error invisible" data-error="floors">Неверное количество этажей</div>
+		</div>
+		<div class="d-flex flex-wrap gap-4">
+			<div class="form-group">
+				<input type="checkbox" name="apartmentBuilding" id="apartmentBuilding" value="" />
+				<label for="apartmentBuilding">Дом многоквартирный?</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" name="gas" id="gas" value="" />
+				<label for="gas">Есть газ?</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" checked name="electricity" id="electricity" value="" />
+				<label for="electricity">Есть электричество?</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" checked name="elevators" id="elevators" value="" />
+				<label for="elevators">Есть лифты?</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="text" placeholder=" " name="entrances" id="entrances" value="" />
+			<label for="entrances">Количество подъездов</label>
+			<div class="error invisible" data-error="entrances">Неверное количество этажей</div>
+		</div>		
+		<div class="form-group">
+			<input type="number" step="0.1" placeholder=" " name="totalArea" id="totalArea" value="" />
+			<label for="totalArea">Общая площадь</label>
+			<div class="error invisible" data-error="totalArea">Неверная общая площадь</div>
+		</div>
+		<div class="form-group">
+			<input type="number" step="0.1" placeholder=" " name="apartmentsArea" id="apartmentsArea" value="" />
+			<label for="apartmentsArea">Жилая площадь</label>
+			<div class="error invisible" data-error="apartmentsArea">Неверная жилая площадь</div>
+		</div>
+		<div class="form-group">
+			<input type="number" step="0.1" placeholder=" " name="landArea" id="landArea" value="" />
+			<label for="landArea">Площадь территории</label>
+			<div class="error invisible" data-error="landArea">Неверная площадь территории</div>
+		</div>
+		<div class="form-group">
+			<select id="houseHead">
+				<option disabled selected>Выберите старшего по дому</option>
+			</select>
+			<label for="houseHead">Старший по дому</label>
+		</div>
 	</div>
 </div>

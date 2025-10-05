@@ -5,24 +5,22 @@ export class ApartmentHouses {
         this.ApartmentAPIAddress = 'https://localhost:55683';
     }
 
-    async InsertHouseDataById (id) {
+    async InsertHouseDataById(id) {
         try {
-            await this.GetHouse(id).then(house => {
-                console.log(`дом пользователя`);
-                console.log(house);
+            const house = await this.GetHouse(id);
+            console.log(`дом пользователя`);
+            console.log(house);
 
-                const houseDatailsTemplate = this.HouseDetailsTemplate(house);
-                const houseDetailsContainer = document.querySelector('[data-house-profile]');
-                houseDetailsContainer.insertAdjacentHTML('beforeend', houseDatailsTemplate);
-            });
-        }
-        catch (e) {
-            console.log(e);
+            const headOfHouse = await this.GetHead(house.id);
+
+
+        } catch (e) {
+            console.error('Ошибка при загрузке данных дома:', e);
         }
     }
 
     //Вставить данные о домах пользователя в карточку
-    async InsertHouseDataByUserId (userId, housesListClass, template) {   
+    async InsertHouseDataByUserId (userId, housesListClass, template) {
         try {
             await this.GetHousesByUserId(userId).then(houses => {
                 console.log(`дома пользователя:`);
@@ -44,10 +42,6 @@ export class ApartmentHouses {
         } catch (e) {
             console.log(e);
         }
-    }
-
-    HouseDetailsTemplate (house) {
-
     }
 
     ManagementCompanyTemplate (company) {
@@ -149,6 +143,10 @@ export class ApartmentHouses {
                             <span class="detail-label">Электричество</span>
                             <span class="detail-value ${house.hasElectricity ? 'utility-yes' : 'utility-no'}">${house.hasElectricity ? 'Есть' : 'Нет'}</span>
                         </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Лифты</span>
+                            <span class="detail-value ${house.hasElevator ? 'utility-yes' : 'utility-no'}">${house.hasElevator ? 'Есть' : 'Нет'}</span>
+                        </div>                        
                         <div class="detail-item">
                             <span class="detail-label">Год постройки</span>
                             <span class="detail-value">${house.builtYear}</span>
@@ -385,7 +383,7 @@ document.addEventListener('authStateChanged', () => {
         }
 
         if (Regex.isValidHouseUrl(window.location.href).valid) {
-            const houseId = Regex.isValidHouseUrl(window.location.href).id;            
+            const houseId = Regex.isValidHouseUrl(window.location.href).id;
             houseProfile.InsertHouseDataById(houseId);
         }
     }
