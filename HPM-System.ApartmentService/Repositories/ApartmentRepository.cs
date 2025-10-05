@@ -44,7 +44,10 @@ namespace HPM_System.ApartmentService.Repositories
         public async Task<IEnumerable<Apartment>> GetApartmentsByHouseIdAsync(long houseId)
         {
             return await _context.Apartment
-                .Where(a => a.HouseId == houseId)                
+                .Where(a => a.HouseId == houseId)
+                .Include(a => a.Users)
+                    .ThenInclude(au => au.Statuses)
+                        .ThenInclude(aus => aus.Status)
                 .ToListAsync();
         }
 
