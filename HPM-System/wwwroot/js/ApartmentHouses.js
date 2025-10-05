@@ -12,6 +12,8 @@ export class ApartmentHouses {
             console.log(house);
 
             const headOfHouse = await this.GetHead(house.id);
+            this.GetApartmentsByHouseId(id);
+            this.GetHouseOwnersWithApartments(id);
 
 
         } catch (e) {
@@ -362,6 +364,42 @@ export class ApartmentHouses {
             return data;
         } catch (error) {
             console.error(`Ошибка получения домов для пользователя ${userId}:`, error);
+        }
+    }
+
+    // 10. Получить все квартиры по ID дома
+    async GetApartmentsByHouseId(houseId) {
+        try {
+            const response = await fetch(`${this.ApartmentAPIAddress}/api/Apartment/house/${houseId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data?.message || 'Ошибка при загрузке квартир');
+            console.log(`Квартиры в доме ${houseId}:`, data);
+            return data;
+        } catch (error) {
+            console.error(`Ошибка получения квартир для дома ${houseId}:`, error);
+            throw error;
+        }
+    }
+
+    // 11. Получить владельцев квартир в доме с их номерами (массивами)
+    async GetHouseOwnersWithApartments(houseId) {
+        try {
+            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/owners`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data?.message || `Ошибка при загрузке владельцев дома ${houseId}`);
+            }
+            console.log(`Владельцы с квартирами в доме ${houseId}:`, data);
+            return data; // [{ userId, fullName, phoneNumber, apartmentNumbers: [12, 15] }, ...]
+        } catch (error) {
+            console.error(`Ошибка получения владельцев с квартирами для дома ${houseId}:`, error);
+            throw error;
         }
     }
 }

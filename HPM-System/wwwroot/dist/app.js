@@ -165,6 +165,8 @@ var ApartmentHouses = /*#__PURE__*/function () {
               return this.GetHead(house.id);
             case 2:
               headOfHouse = _context.v;
+              this.GetApartmentsByHouseId(id);
+              this.GetHouseOwnersWithApartments(id);
               _context.n = 4;
               break;
             case 3:
@@ -697,6 +699,96 @@ var ApartmentHouses = /*#__PURE__*/function () {
         return _GetHousesByUserId.apply(this, arguments);
       }
       return GetHousesByUserId;
+    }() // 10. Получить все квартиры по ID дома
+  }, {
+    key: "GetApartmentsByHouseId",
+    value: function () {
+      var _GetApartmentsByHouseId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(houseId) {
+        var response, data, _t12;
+        return _regenerator().w(function (_context11) {
+          while (1) switch (_context11.p = _context11.n) {
+            case 0:
+              _context11.p = 0;
+              _context11.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/house/").concat(houseId), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context11.v;
+              _context11.n = 2;
+              return response.json();
+            case 2:
+              data = _context11.v;
+              if (response.ok) {
+                _context11.n = 3;
+                break;
+              }
+              throw new Error((data === null || data === void 0 ? void 0 : data.message) || 'Ошибка при загрузке квартир');
+            case 3:
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              return _context11.a(2, data);
+            case 4:
+              _context11.p = 4;
+              _t12 = _context11.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t12);
+              throw _t12;
+            case 5:
+              return _context11.a(2);
+          }
+        }, _callee11, this, [[0, 4]]);
+      }));
+      function GetApartmentsByHouseId(_x14) {
+        return _GetApartmentsByHouseId.apply(this, arguments);
+      }
+      return GetApartmentsByHouseId;
+    }() // 11. Получить владельцев квартир в доме с их номерами (массивами)
+  }, {
+    key: "GetHouseOwnersWithApartments",
+    value: function () {
+      var _GetHouseOwnersWithApartments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(houseId) {
+        var response, data, _t13;
+        return _regenerator().w(function (_context12) {
+          while (1) switch (_context12.p = _context12.n) {
+            case 0:
+              _context12.p = 0;
+              _context12.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/owners"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context12.v;
+              _context12.n = 2;
+              return response.json();
+            case 2:
+              data = _context12.v;
+              if (response.ok) {
+                _context12.n = 3;
+                break;
+              }
+              throw new Error((data === null || data === void 0 ? void 0 : data.message) || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0435 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0434\u043E\u043C\u0430 ".concat(houseId));
+            case 3:
+              console.log("\u0412\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u044B \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              return _context12.a(2, data);
+            case 4:
+              _context12.p = 4;
+              _t13 = _context12.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t13);
+              throw _t13;
+            case 5:
+              return _context12.a(2);
+          }
+        }, _callee12, this, [[0, 4]]);
+      }));
+      function GetHouseOwnersWithApartments(_x15) {
+        return _GetHouseOwnersWithApartments.apply(this, arguments);
+      }
+      return GetHouseOwnersWithApartments;
     }()
   }]);
 }();

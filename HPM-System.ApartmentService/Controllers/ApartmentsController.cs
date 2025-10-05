@@ -166,6 +166,44 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
+        /// Получить квартиры по ID дома
+        /// </summary>
+        [HttpGet("house/{houseid}")]
+        public async Task<ActionResult<IEnumerable<ApartmentResponseDto>>> GetApartmentsByHouseId(long houseId)
+        {
+            try
+            {
+                var apartments = await _apartmentRepository.GetApartmentsByHouseIdAsync(houseId);
+
+                var result = new List<ApartmentResponseDto>();
+                foreach (var apartment in apartments)
+                {
+                    var dto = await MapToApartmentResponseDto(apartment);
+                    result.Add(dto);
+                }
+
+                return Ok(result);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Ошибка связи с сервисом пользователей");
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    new { Message = "В данный момент невозможно проверить пользователя. Сервис пользователей недоступен.", Details = ex.Message });
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Таймаут при связи с UserService");
+                return StatusCode(StatusCodes.Status504GatewayTimeout,
+                    new { Message = "Превышено время ожидания ответа от сервиса пользователей.", Details = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка");
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
         /// Создать новую квартиру
         /// </summary>
         [HttpPost]

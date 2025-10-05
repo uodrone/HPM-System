@@ -41,6 +41,13 @@ namespace HPM_System.ApartmentService.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Apartment>> GetApartmentsByHouseIdAsync(long houseId)
+        {
+            return await _context.Apartment
+                .Where(a => a.HouseId == houseId)                
+                .ToListAsync();
+        }
+
         public async Task<Apartment> CreateApartmentAsync(Apartment apartment)
         {
             _context.Apartment.Add(apartment);
@@ -63,6 +70,16 @@ namespace HPM_System.ApartmentService.Repositories
                 else
                     throw;
             }
+        }
+
+        public async Task<IEnumerable<Apartment>> GetApartmentsByHouseIdWithUsersAndStatusesAsync(long houseId)
+        {
+            return await _context.Apartment
+                .Where(a => a.HouseId == houseId)
+                .Include(a => a.Users)
+                    .ThenInclude(au => au.Statuses)
+                        .ThenInclude(aus => aus.Status)
+                .ToListAsync();
         }
 
         public async Task<bool> DeleteApartmentAsync(long id)

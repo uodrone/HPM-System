@@ -68,24 +68,29 @@
         }
     }
 
+    input[type="checkbox"] {
+        width: auto;
+        border: none;
+    }
+
     label {
         transition: var(--standard-transition);
     }
 
-    input[type="text"] + label {
+    input[type="text"] + label,  input[type="number"] + label {
         position: absolute;
         top: 0;
         left: 5px;
         color: rgba(0,0,0,.5);
     }
 
-    input[type="text"]:focus + label {
+    input[type="text"]:focus + label, input[type="number"]:focus + label {
         top: var(--label-focus-top);
         opacity: .7;
         font-size: var(--label-focus-size);
     }
 
-    input[type="text"]:not(:placeholder-shown) + label {
+    input[type="text"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label {
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }
@@ -98,11 +103,39 @@
         font-size: var(--label-focus-size);
     }
 
+    select + label {
+        position: absolute;
+        top: 0;
+        left: 5px;
+        color: rgba(0,0,0,.5);
+    }
+
+    select:not(:placeholder-shown) + label {
+        top: var(--label-focus-top);
+        font-size: var(--label-focus-size);
+    }
+
     .error {
         color: red;
         font-size: 10px;
         padding-left: 5px;
         line-height: 120%;
+    }
+}
+
+.checkbox-group-flex {
+    display: flex;
+    gap: var(--card-gap);
+    width: 100%;
+    
+    @media (max-width: 767px) {
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        width: auto;
+        display: flex;
+        gap: .5rem;
     }
 }
 

@@ -334,6 +334,86 @@ namespace HPM_System.ApartmentService.Controllers
             }
         }
 
+        /// <summary>
+        /// Получить всех владельцев квартир в доме с номерами их квартир
+        /// </summary>
+        [HttpGet("{houseId}/owners")]
+        public async Task<ActionResult<IEnumerable<HouseOwnerDto>>> GetHouseOwners(long houseId)
+        {
+            try
+            {
+                var house = await _houseRepository.GetHouseByIdAsync(houseId);
+                if (house == null)
+                {
+                    return NotFound($"Дом с ID {houseId} не найден");
+                }
+
+                var apartments = await _apartmentRepository.GetApartmentsByHouseIdWithUsersAndStatusesAsync(houseId);
+
+                // Группируем по UserId → список номеров квартир
+                var ownerApartmentMap = new Dictionary<Guid, List<int>>();
+
+                foreach (var apartment in apartments)
+                {
+                    foreach (var apartmentUser in apartment.Users)
+                    {
+                        if (apartmentUser.Statuses.Any(s => s.Status.Name == "Владелец"))
+                        {
+                            if (!ownerApartmentMap.ContainsKey(apartmentUser.UserId))
+                            {
+                                ownerApartmentMap[apartmentUser.UserId] = new List<int>();
+                            }
+                            ownerApartmentMap[apartmentUser.UserId].Add(apartment.Number);
+                        }
+                    }
+                }
+
+                var result = new List<HouseOwnerDto>();
+
+                foreach (var (userId, apartmentNumbers) in ownerApartmentMap)
+                {
+                    try
+                    {
+                        var userDto = await _userServiceClient.GetUserByIdAsync(userId);
+                        if (userDto != null)
+                        {
+                            result.Add(new HouseOwnerDto
+                            {
+                                UserId = userId,
+                                FullName = $"{userDto.LastName} {userDto.FirstName} {userDto.Patronymic}".Trim(),
+                                PhoneNumber = userDto.PhoneNumber,
+                                ApartmentNumbers = apartmentNumbers.OrderBy(n => n).ToList() // сортируем для порядка
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Не удалось загрузить данные владельца с ID {UserId}", userId);
+                        // Пропускаем проблемного пользователя, но не падаем
+                    }
+                }
+
+                return Ok(result);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Ошибка связи с UserService при получении владельцев дома {HouseId}", houseId);
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    new { Message = "Сервис пользователей недоступен." });
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Таймаут при получении владельцев дома {HouseId}", houseId);
+                return StatusCode(StatusCodes.Status504GatewayTimeout,
+                    new { Message = "Превышено время ожидания ответа от сервиса пользователей." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении владельцев дома {HouseId}", houseId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
         // Вспомогательный метод маппинга
         private HouseDto MapToDto(House house)
         {
