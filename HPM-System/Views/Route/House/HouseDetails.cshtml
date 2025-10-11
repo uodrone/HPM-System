@@ -1,8 +1,9 @@
 ﻿<div class="container py-5">
-	<h1 class="text-center">Профиль дома</h1>
+	<div class="profile-group dashboard-card my-4" data-group="house">
 
-	<div class="profile-group my-4" data-group="house">
-		<div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
+		<h3 class="card-header card-header_house w-100">Профиль дома</h3>
+
+		<div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100">
 			<div class="form-group">
 				<input type="text" placeholder=" " name="city" id="city" value="" />
 				<label for="city">Город</label>
@@ -83,14 +84,20 @@
 		</div>
 
 		<div class="text-center">
-			<div class="btn btn_primary" data-action="save-house-data">Сохранить</div>
+			<div class="btn btn_blue" data-action="save-house-data">Сохранить</div>
 		</div>
 	</div>
 
-	<h2 class="text-center mt-5">Все квартиры дома</h2>
-	<div class="profile-group my-4" data-group="AllApartmentsInHouse">
-		<div class="apartments-list">
+	<div class="profile-group dashboard-card my-4" data-group="AllApartmentsInHouse">
+
+		<h3 class="card-header card-header_apartment w-100">Все квартиры дома</h3>
+
+		<div class="apartments-list areas-section w-100">
 
 		</div>
+	</div>
+
+	<div class="mt-4 text-center">
+		<a href="/apartment/create">Добавить квартиру</a>
 	</div>
 </div>

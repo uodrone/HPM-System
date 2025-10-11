@@ -89,12 +89,12 @@ export class ApartmentHouses {
                                         ).length;
 
             apartmentHTML = `
-            <div class="apartment-card-into-house">
-                <div>Квартира ${apartment.number}</div>
+            <div class="card card_apartment">
+                <div><b>Квартира ${apartment.number}</b></div>
                 <div>Количество комнат ${apartment.numbersOfRooms}</div>
                 <div>Общая площадь: ${apartment.totalArea}</div>
                 <div>Количество владельцев: ${apartmentsOwnersCount}</div>
-                <div>
+                <div class="text-center">
                     <a href="/apartment/${apartment.id}">К профилю квартиры</a>
                 </div>
             </div>

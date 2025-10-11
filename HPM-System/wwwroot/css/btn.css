@@ -1,4 +1,6 @@
-﻿.btn {
+﻿@import url(variables.css);
+
+.btn {
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
@@ -30,6 +32,16 @@
     &:hover {
         background-color: var(--green);
         border: 1px solid rgba(255, 255, 255, 1);
+        color: white;
+    }
+}
+
+.btn_blue {
+    background-color: var(--blue);
+    color: white;
+
+    &:hover {
+        background-color: var(--blue-hover);
         color: white;
     }
 }
