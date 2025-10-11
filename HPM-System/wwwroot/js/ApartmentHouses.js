@@ -11,8 +11,7 @@ export class ApartmentHouses {
             console.log(`дом пользователя`);
             console.log(house);
 
-            const headOfHouse = await this.GetHead(house.id);
-            const apartments = await this.GetApartmentsByHouseId(id);
+            const headOfHouse = await this.GetHead(house.id);            
             const houseUsers = await this.GetHouseOwnersWithApartments(id);
 
             document.getElementById('city').value = house.city;
@@ -47,6 +46,16 @@ export class ApartmentHouses {
         }
     }
 
+    async InsertApartmentsInHouseDetails(houseId) {
+        const apartments = await this.GetApartmentsByHouseId(houseId);
+        const apartmentsContainerList = document.querySelector('[data-group="AllApartmentsInHouse"] .apartments-list');
+
+        apartments.forEach(apartment => {
+            let apartmentTemplate = this.ApartmentToHouseTemplate(apartment);
+            apartmentsContainerList.insertAdjacentHTML('beforeend', apartmentTemplate);
+        });
+    }
+
     //Вставить данные о домах пользователя в карточку
     async InsertHouseDataByUserId (userId, housesListClass, template) {
         try {
@@ -71,9 +80,38 @@ export class ApartmentHouses {
         }
     }
 
+    ApartmentToHouseTemplate (apartment) {
+        let apartmentHTML;
+
+        if (apartment && typeof(apartment) == 'object') {
+            let apartmentsOwnersCount = apartment.users.filter(user =>
+                                            user.statuses.some(status => status.name === 'Владелец')
+                                        ).length;
+
+            apartmentHTML = `
+            <div class="apartment-card-into-house">
+                <div>Квартира ${apartment.number}</div>
+                <div>Количество комнат ${apartment.numbersOfRooms}</div>
+                <div>Общая площадь: ${apartment.totalArea}</div>
+                <div>Количество владельцев: ${apartmentsOwnersCount}</div>
+                <div>
+                    <a href="/apartment/${apartment.id}">К профилю квартиры</a>
+                </div>
+            </div>
+            `;
+        } else {
+            apartmentHTML = `
+            <div class="apartment-card-into-house">
+                <div>В доме нет квартир</div>
+            </div>
+            `;
+        }
+
+        return apartmentHTML;
+    }
+
     ManagementCompanyTemplate (company) {
-        let companyHTML;
-        companyHTML = `
+        let companyHTML = `
             <div class="company-grid">
                 <div class="company-item">
                     <div class="company-label">Название</div>
@@ -242,11 +280,14 @@ export class ApartmentHouses {
 
             house[key] = value;
         });
-        //house.headId = document.getElementById('houseHead').value;
+        let headId = document.getElementById('houseHead').value;
+        //Переназначаем старшего по дому
+        this.AssignHead(houseId, headId);
+        //Обновляем данные о доме
+        this.UpdateHouse(houseId, house);
+
         console.log(`собранные данные о доме`);
         console.log(house);
-
-        this.UpdateHouse(houseId, house);
     }
 
     // 1. Получить все дома
@@ -338,6 +379,7 @@ export class ApartmentHouses {
             });
             const data = await response.text();
             if (!response.ok) throw new Error(data);
+            console.log(`старший по дому назначен:`);
             console.log(data);
         } catch (error) {
             console.error(`Ошибка назначения старшего по дому ${houseId}:`, error);
@@ -458,7 +500,7 @@ export class ApartmentHouses {
     }
 }
 
-document.addEventListener('authStateChanged', () => {    
+document.addEventListener('authStateChanged', async () => {    
     const Regex = new RegularExtension();
     const { isAuthenticated, userData } = event.detail;
 
@@ -467,16 +509,17 @@ document.addEventListener('authStateChanged', () => {
         const userId = window.authManager.userData.userId;
 
         if (window.location.pathname == '/') {
-            houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.MainPageHouseTemplate);
+            await houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.MainPageHouseTemplate);
         }
 
         if (window.location.pathname.includes(`/house/by-user/${userId}`)) {
-            houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
+            await houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
         }
 
         if (Regex.isValidHouseUrl(window.location.href).valid) {
             const houseId = Regex.isValidHouseUrl(window.location.href).id;
-            houseProfile.InsertHouseDataById(houseId);
+            await houseProfile.InsertHouseDataById(houseId);
+            await houseProfile.InsertApartmentsInHouseDetails(houseId);
         }
     }
 });
