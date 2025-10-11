@@ -12,9 +12,35 @@ export class ApartmentHouses {
             console.log(house);
 
             const headOfHouse = await this.GetHead(house.id);
-            this.GetApartmentsByHouseId(id);
-            this.GetHouseOwnersWithApartments(id);
+            const apartments = await this.GetApartmentsByHouseId(id);
+            const houseUsers = await this.GetHouseOwnersWithApartments(id);
 
+            document.getElementById('city').value = house.city;
+            document.getElementById('street').value = house.street;
+            document.getElementById('number').value = house.number;            
+            document.getElementById('postIndex').value = house.postIndex;
+            document.getElementById('floors').value = house.floors;
+            document.getElementById('entrances').value = house.entrances;
+            document.getElementById('totalArea').value = house.totalArea;
+            document.getElementById('apartmentsArea').value = house.apartmentsArea;
+            document.getElementById('landArea').value = house.landArea;
+            document.getElementById('isApartmentBuilding').checked = house.isApartmentBuilding;
+            document.getElementById('hasGas').checked = house.hasGas;
+            document.getElementById('hasElectricity').checked = house.hasElectricity;
+            document.getElementById('hasElevator').checked = house.hasElevator;
+
+            houseUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.userId;
+                option.textContent = `${user.fullName}, кв. ${user.apartmentNumbers[0]} `;
+                document.getElementById('houseHead').appendChild(option);
+            });
+            
+            //сохранение данных профиля дома
+            document.querySelector('[data-action="save-house-data"]').addEventListener('click', () => {
+                console.log(`клик по кнопке сохранения дома`);
+                this.CollectHouseDataAndUpdateProfile ();
+            });            
 
         } catch (e) {
             console.error('Ошибка при загрузке данных дома:', e);
@@ -37,7 +63,6 @@ export class ApartmentHouses {
                     let houseTemplate = template(house, headTemplate, managementCompanyTemplate, headOfHOuse);
                     housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
                 });
-
             }).catch(error => {
                 console.error('Ошибка получения данных квартиры:', error);
             });
@@ -195,6 +220,35 @@ export class ApartmentHouses {
         return houseHTML
     }
 
+    CollectHouseDataAndUpdateProfile () {
+        let house = {};
+        const Regex = new RegularExtension();
+        const houseId = Regex.isValidHouseUrl(window.location.href).id;
+
+        document.querySelectorAll('[data-group="house"] input').forEach(input => {
+            const key = input.id;
+
+            let value;
+            if (input.type === 'checkbox') {
+                value = input.checked;
+            } else if (input.type === 'number') {
+                // Пустое поле → 0
+                value = input.value === '' ? 0 : Number(input.value);                
+            } else if (input.tagName === 'SELECT') {
+                value = input.value === '' ? null : el.value;
+            } else {               
+                value = input.value || null;
+            }
+
+            house[key] = value;
+        });
+        //house.headId = document.getElementById('houseHead').value;
+        console.log(`собранные данные о доме`);
+        console.log(house);
+
+        this.UpdateHouse(houseId, house);
+    }
+
     // 1. Получить все дома
     async GetHouses() {
         try {
@@ -245,20 +299,20 @@ export class ApartmentHouses {
 
     // 4. Обновить дом
     async UpdateHouse(id, houseData) {
-    try {
-        const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(houseData)
-        });
-        if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
+        try {
+            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(houseData)
+            });
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(error);
+            }
+            console.log(`Дом ${id} обновлен`);
+        } catch (error) {
+            console.error(`Ошибка обновления дома ${id}:`, error);
         }
-        console.log(`Дом ${id} обновлен`);
-    } catch (error) {
-        console.error(`Ошибка обновления дома ${id}:`, error);
-    }
     }
 
     // 5. Удалить дом
