@@ -90,8 +90,8 @@ export class ApartmentHouses {
 
             apartmentHTML = `
             <div class="card card_apartment">
-                <div><b>Квартира ${apartment.number}</b></div>
-                <div>Количество комнат ${apartment.numbersOfRooms}</div>
+                <div class="area-value text-center">Квартира ${apartment.number}</div>
+                <div>Количество комнат: ${apartment.numbersOfRooms}</div>
                 <div>Общая площадь: ${apartment.totalArea}</div>
                 <div>Количество владельцев: ${apartmentsOwnersCount}</div>
                 <div class="text-center">

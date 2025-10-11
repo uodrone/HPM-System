@@ -16,7 +16,7 @@
 
     input {
         border-radius: 5px;
-        border: 1px solid #c5c5c5;
+        border: 1px solid var(--medium-gray);
         padding-left: 5px;
         width: 100%;
 
@@ -58,6 +58,12 @@
         left: 5px;
         color: rgba(0,0,0,.5);
         font-size: var(--label-focus-size);
+    }
+
+    select {
+        border-radius: 6px;
+        padding: 4px 8px;
+        border: 1px solid var(--medium-gray);
     }
 
     select + label {
