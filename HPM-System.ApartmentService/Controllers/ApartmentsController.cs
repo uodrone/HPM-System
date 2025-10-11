@@ -52,6 +52,7 @@ namespace HPM_System.ApartmentService.Controllers
                     Floor = a.Floor,
                     HouseId = a.HouseId,
                     UsersCount = a.Users.Count,
+                    EntranceNumber = a.EntranceNumber,
                     OwnersCount = a.Users.Count(au => au.Statuses.Any(s => s.Status.Name == "Владелец"))
                 }).ToList();
 
@@ -529,6 +530,7 @@ namespace HPM_System.ApartmentService.Controllers
                 ResidentialArea = apartment.ResidentialArea,
                 TotalArea = apartment.TotalArea,
                 Floor = apartment.Floor,
+                EntranceNumber = apartment.EntranceNumber,
                 HouseId = apartment.HouseId
             };
 

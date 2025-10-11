@@ -925,6 +925,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           break;
         }
         houseId = Regex.isValidHouseUrl(window.location.href).id;
+        localStorage.setItem('house', houseId);
         _context14.n = 3;
         return houseProfile.InsertHouseDataById(houseId);
       case 3:

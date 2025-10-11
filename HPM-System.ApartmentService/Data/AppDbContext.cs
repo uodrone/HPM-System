@@ -67,6 +67,7 @@ namespace HPM_System.ApartmentService.Data
                 entity.Property(a => a.ResidentialArea).IsRequired();
                 entity.Property(a => a.TotalArea).IsRequired();
                 entity.Property(a => a.Floor).IsRequired(false);
+                entity.Property(a => a.EntranceNumber).IsRequired(false);
                 entity.Property(a => a.HouseId).IsRequired();
 
                 entity.HasIndex(a => a.HouseId);

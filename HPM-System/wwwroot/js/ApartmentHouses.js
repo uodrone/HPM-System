@@ -518,6 +518,7 @@ document.addEventListener('authStateChanged', async () => {
 
         if (Regex.isValidHouseUrl(window.location.href).valid) {
             const houseId = Regex.isValidHouseUrl(window.location.href).id;
+            localStorage.setItem('house', houseId);
             await houseProfile.InsertHouseDataById(houseId);
             await houseProfile.InsertApartmentsInHouseDetails(houseId);
         }

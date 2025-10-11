@@ -7,6 +7,7 @@
         public int NumbersOfRooms { get; set; }
         public decimal ResidentialArea { get; set; }
         public decimal TotalArea { get; set; }
+        public int? EntranceNumber { get; set; }
         public int? Floor { get; set; }
         public long HouseId { get; set; }
         public int UsersCount { get; set; }
