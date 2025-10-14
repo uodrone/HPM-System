@@ -1046,156 +1046,217 @@ var ApartmentProfile = /*#__PURE__*/function () {
       }
       return apartmentHTML;
     }
+  }, {
+    key: "SetHouseIdToCreateApartment",
+    value: function () {
+      var _SetHouseIdToCreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var _this = this;
+        var houseId, houseProfile, option, userId, houseSelector, house, houses;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.n) {
+            case 0:
+              houseId = parseInt(localStorage.getItem('house'));
+              houseProfile = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
+              option = document.createElement('option');
+              userId = window.authManager.userData.userId;
+              houseSelector = document.getElementById('houseId');
+              if (isNaN(houseId)) {
+                _context3.n = 2;
+                break;
+              }
+              _context3.n = 1;
+              return houseProfile.GetHouse(houseId);
+            case 1:
+              house = _context3.v;
+              option.value = house.id;
+              option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, ", ").concat(house.number);
+              houseSelector.appendChild(option);
+              _context3.n = 4;
+              break;
+            case 2:
+              _context3.n = 3;
+              return houseProfile.GetHousesByUserId(userId);
+            case 3:
+              houses = _context3.v;
+              houses.forEach(/*#__PURE__*/function () {
+                var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(house) {
+                  var houseHead;
+                  return _regenerator().w(function (_context2) {
+                    while (1) switch (_context2.n) {
+                      case 0:
+                        _context2.n = 1;
+                        return _this.GetHead(house.id);
+                      case 1:
+                        houseHead = _context2.v;
+                        if (houseHead.id == userId) {
+                          option.value = house.id;
+                          option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, ", ").concat(house.number);
+                          houseSelector.appendChild(option);
+                        } else {
+                          document.querySelector('.profile-group[data-group="apartment"]').innerHTML = "\u0421\u043E\u0437\u0434\u0430\u043D\u0438\u0435 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E";
+                        }
+                      case 2:
+                        return _context2.a(2);
+                    }
+                  }, _callee2);
+                }));
+                return function (_x2) {
+                  return _ref.apply(this, arguments);
+                };
+              }());
+            case 4:
+              return _context3.a(2);
+          }
+        }, _callee3);
+      }));
+      function SetHouseIdToCreateApartment() {
+        return _SetHouseIdToCreateApartment.apply(this, arguments);
+      }
+      return SetHouseIdToCreateApartment;
+    }()
+  }, {
+    key: "CollectApartmentDataAndSave",
+    value: function () {
+      var _CollectApartmentDataAndSave = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+        var _document$getElementB, _document$getElementB2, _document$getElementB3, _document$getElementB4, _document$getElementB5, _document$getElementB6, _document$getElementB7;
+        var apartment, number, numbersOfRooms, entranceNumber, floor, totalArea, residentialArea, houseId, showError, validateApartmentForm, result;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              validateApartmentForm = function _validateApartmentFor() {
+                var isValid = true;
 
-    //получить квартиры пользователя по ид пользователя
+                // Валидация номера квартиры
+                if (!Number.isInteger(number) || number < 1 || number > 10000) {
+                  showError('number', 'Номер квартиры должен быть от 1 до 10000');
+                  isValid = false;
+                } else {
+                  showError('number', null, false);
+                }
+
+                // Валидация числа комнат
+                if (!Number.isInteger(numbersOfRooms) || numbersOfRooms < 1 || numbersOfRooms > 100) {
+                  showError('numbersOfRooms', 'Число комнат должно быть от 1 до 100');
+                  isValid = false;
+                } else {
+                  showError('numbersOfRooms', null, false);
+                }
+
+                // Валидация номера подъезда
+                if (!Number.isInteger(entranceNumber) || entranceNumber < 1 || entranceNumber > 100) {
+                  showError('entranceNumber', 'Номер подъезда должен быть от 1 до 100');
+                  isValid = false;
+                } else {
+                  showError('entranceNumber', null, false);
+                }
+
+                // Валидация этажа
+                if (!Number.isInteger(floor) || floor < 1 || floor > 200) {
+                  showError('floor', 'Этаж должен быть от 1 до 200');
+                  isValid = false;
+                } else {
+                  showError('floor', null, false);
+                }
+
+                // Валидация общей площади
+                if (isNaN(totalArea) || totalArea < 1 || totalArea > 10000) {
+                  showError('totalArea', 'Общая площадь должна быть от 1 до 10000');
+                  isValid = false;
+                } else {
+                  showError('totalArea', null, false);
+                }
+
+                // Валидация жилой площади
+                if (isNaN(residentialArea) || residentialArea < 1 || residentialArea > 10000) {
+                  showError('residentialArea', 'Жилая площадь должна быть от 1 до 10000');
+                  isValid = false;
+                } else if (residentialArea > totalArea) {
+                  showError('residentialArea', 'Жилая площадь не может превышать общую');
+                  isValid = false;
+                } else {
+                  showError('residentialArea', null, false);
+                }
+
+                // Валидация id дом
+                if (!houseId) {
+                  var houseError = document.querySelector('[data-error="houseId"]');
+                  if (houseError) {
+                    houseError.classList.remove('invisible');
+                  }
+                  isValid = false;
+                } else {
+                  var _houseError = document.querySelector('[data-error="houseId"]');
+                  if (_houseError) _houseError.classList.add('invisible');
+                }
+                return isValid;
+              };
+              showError = function _showError(field) {
+                var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+                var show = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+                var errorEl = document.querySelector("[data-error=\"".concat(field, "\"]"));
+                if (errorEl) {
+                  if (show) {
+                    console.log("\u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0430\u044E \u043E\u0448\u0438\u0431\u043A\u0443 \u0434\u043B\u044F \u043F\u043E\u043B\u044F: ".concat(field));
+                  }
+                  errorEl.textContent = message || errorEl.textContent;
+                  errorEl.classList.toggle('invisible', !show);
+                }
+              };
+              apartment = {};
+              number = parseInt((_document$getElementB = document.getElementById('number')) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.value);
+              numbersOfRooms = parseInt((_document$getElementB2 = document.getElementById('numbersOfRooms')) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.value);
+              entranceNumber = parseInt((_document$getElementB3 = document.getElementById('entranceNumber')) === null || _document$getElementB3 === void 0 ? void 0 : _document$getElementB3.value);
+              floor = parseInt((_document$getElementB4 = document.getElementById('floor')) === null || _document$getElementB4 === void 0 ? void 0 : _document$getElementB4.value);
+              totalArea = parseFloat((_document$getElementB5 = document.getElementById('totalArea')) === null || _document$getElementB5 === void 0 ? void 0 : _document$getElementB5.value);
+              residentialArea = parseFloat((_document$getElementB6 = document.getElementById('residentialArea')) === null || _document$getElementB6 === void 0 ? void 0 : _document$getElementB6.value);
+              houseId = parseInt((_document$getElementB7 = document.getElementById('houseId')) === null || _document$getElementB7 === void 0 ? void 0 : _document$getElementB7.value);
+              apartment.number = number;
+              apartment.numbersOfRooms = numbersOfRooms;
+              apartment.entranceNumber = entranceNumber;
+              apartment.floor = floor;
+              apartment.totalArea = totalArea;
+              apartment.residentialArea = residentialArea;
+              apartment.houseId = houseId;
+              console.log("\u0441\u043E\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043A\u0432\u0430\u0440\u0442\u0438\u0440:");
+              console.log(apartment);
+
+              // Вспомогательная функция: показать/скрыть ошибку
+
+              // Основная функция валидации
+              if (!validateApartmentForm()) {
+                _context4.n = 2;
+                break;
+              }
+              _context4.n = 1;
+              return this.CreateApartment(apartment);
+            case 1:
+              result = _context4.v;
+              console.log(result);
+            case 2:
+              return _context4.a(2);
+          }
+        }, _callee4, this);
+      }));
+      function CollectApartmentDataAndSave() {
+        return _CollectApartmentDataAndSave.apply(this, arguments);
+      }
+      return CollectApartmentDataAndSave;
+    }() //получить квартиры пользователя по ид пользователя
   }, {
     key: "GetApartmentsByUserId",
     value: function () {
-      var _GetApartmentsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(userId) {
+      var _GetApartmentsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
         var response, data, _t3;
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.p = _context2.n) {
-            case 0:
-              _context2.p = 0;
-              _context2.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/user/").concat(userId), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context2.v;
-              _context2.n = 2;
-              return response.json();
-            case 2:
-              data = _context2.v;
-              if (response.ok) {
-                _context2.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
-              return _context2.a(2, data);
-            case 4:
-              _context2.p = 4;
-              _t3 = _context2.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
-            case 5:
-              return _context2.a(2);
-          }
-        }, _callee2, this, [[0, 4]]);
-      }));
-      function GetApartmentsByUserId(_x2) {
-        return _GetApartmentsByUserId.apply(this, arguments);
-      }
-      return GetApartmentsByUserId;
-    }() //получить квартиры пользователя по номеру телефона пользователя
-  }, {
-    key: "GetApartmentsByUserPhone",
-    value: function () {
-      var _GetApartmentsByUserPhone = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(phone) {
-        var response, data, _t4;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.p = _context3.n) {
-            case 0:
-              _context3.p = 0;
-              _context3.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/phone/").concat(phone), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context3.v;
-              _context3.n = 2;
-              return response.json();
-            case 2:
-              data = _context3.v;
-              if (response.ok) {
-                _context3.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F \u0441 \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u043E\u043C ".concat(phone, ":"), data);
-              return _context3.a(2, data);
-            case 4:
-              _context3.p = 4;
-              _t4 = _context3.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t4);
-            case 5:
-              return _context3.a(2);
-          }
-        }, _callee3, this, [[0, 4]]);
-      }));
-      function GetApartmentsByUserPhone(_x3) {
-        return _GetApartmentsByUserPhone.apply(this, arguments);
-      }
-      return GetApartmentsByUserPhone;
-    }() //получить квартиру по её id
-  }, {
-    key: "GetApartment",
-    value: function () {
-      var _GetApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
-        var response, data, _t5;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.p = _context4.n) {
-            case 0:
-              _context4.p = 0;
-              _context4.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context4.v;
-              _context4.n = 2;
-              return response.json();
-            case 2:
-              data = _context4.v;
-              if (response.ok) {
-                _context4.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, ":"), data);
-              return _context4.a(2, data);
-            case 4:
-              _context4.p = 4;
-              _t5 = _context4.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t5);
-            case 5:
-              return _context4.a(2);
-          }
-        }, _callee4, this, [[0, 4]]);
-      }));
-      function GetApartment(_x4) {
-        return _GetApartment.apply(this, arguments);
-      }
-      return GetApartment;
-    }() //создать квартиру
-  }, {
-    key: "CreateApartment",
-    value: function () {
-      var _CreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(apartmentData) {
-        var response, data, _t6;
         return _regenerator().w(function (_context5) {
           while (1) switch (_context5.p = _context5.n) {
             case 0:
               _context5.p = 0;
               _context5.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment"), {
-                method: 'POST',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/user/").concat(userId), {
+                method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(apartmentData)
+                }
               });
             case 1:
               response = _context5.v;
@@ -1209,89 +1270,86 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log('Квартира создана:', data);
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
               return _context5.a(2, data);
             case 4:
               _context5.p = 4;
-              _t6 = _context5.v;
-              console.error('Ошибка создания квартиры:', _t6);
+              _t3 = _context5.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
             case 5:
               return _context5.a(2);
           }
         }, _callee5, this, [[0, 4]]);
       }));
-      function CreateApartment(_x5) {
-        return _CreateApartment.apply(this, arguments);
+      function GetApartmentsByUserId(_x3) {
+        return _GetApartmentsByUserId.apply(this, arguments);
       }
-      return CreateApartment;
-    }() //удалить квартиру
+      return GetApartmentsByUserId;
+    }() //получить квартиры пользователя по номеру телефона пользователя
   }, {
-    key: "DeleteApartment",
+    key: "GetApartmentsByUserPhone",
     value: function () {
-      var _DeleteApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
-        var response, _t7, _t8, _t9;
+      var _GetApartmentsByUserPhone = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(phone) {
+        var response, data, _t4;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
               _context6.p = 0;
               _context6.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
-                method: 'DELETE',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/phone/").concat(phone), {
+                method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
                 }
               });
             case 1:
               response = _context6.v;
+              _context6.n = 2;
+              return response.json();
+            case 2:
+              data = _context6.v;
               if (response.ok) {
                 _context6.n = 3;
                 break;
               }
-              _t7 = Error;
-              _context6.n = 2;
-              return response.text();
-            case 2:
-              _t8 = _context6.v;
-              throw new _t7(_t8);
+              throw new Error(data);
             case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, " \u0443\u0434\u0430\u043B\u0435\u043D\u0430"));
-              _context6.n = 5;
-              break;
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F \u0441 \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u043E\u043C ".concat(phone, ":"), data);
+              return _context6.a(2, data);
             case 4:
               _context6.p = 4;
-              _t9 = _context6.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t9);
+              _t4 = _context6.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t4);
             case 5:
               return _context6.a(2);
           }
         }, _callee6, this, [[0, 4]]);
       }));
-      function DeleteApartment(_x6) {
-        return _DeleteApartment.apply(this, arguments);
+      function GetApartmentsByUserPhone(_x4) {
+        return _GetApartmentsByUserPhone.apply(this, arguments);
       }
-      return DeleteApartment;
-    }() //добавить пользователя к квартире
+      return GetApartmentsByUserPhone;
+    }() //получить квартиру по её id
   }, {
-    key: "AddUserToApartment",
+    key: "GetApartment",
     value: function () {
-      var _AddUserToApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(apartmentId, userId) {
-        var response, data, _t0;
+      var _GetApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(id) {
+        var response, data, _t5;
         return _regenerator().w(function (_context7) {
           while (1) switch (_context7.p = _context7.n) {
             case 0:
               _context7.p = 0;
               _context7.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
-                method: 'POST',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
+                method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
-                },
-                body: JSON.stringify()
+                }
               });
             case 1:
               response = _context7.v;
               _context7.n = 2;
-              return response.text();
+              return response.json();
             case 2:
               data = _context7.v;
               if (response.ok) {
@@ -1300,43 +1358,43 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log(data);
-              _context7.n = 5;
-              break;
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, ":"), data);
+              return _context7.a(2, data);
             case 4:
               _context7.p = 4;
-              _t0 = _context7.v;
-              console.error('Ошибка добавления пользователя к квартире:', _t0);
+              _t5 = _context7.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t5);
             case 5:
               return _context7.a(2);
           }
         }, _callee7, this, [[0, 4]]);
       }));
-      function AddUserToApartment(_x7, _x8) {
-        return _AddUserToApartment.apply(this, arguments);
+      function GetApartment(_x5) {
+        return _GetApartment.apply(this, arguments);
       }
-      return AddUserToApartment;
-    }() //удалить пользователя из квартиры
+      return GetApartment;
+    }() //создать квартиру
   }, {
-    key: "RemoveUserFromApartment",
+    key: "CreateApartment",
     value: function () {
-      var _RemoveUserFromApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId, userId) {
-        var response, data, _t1;
+      var _CreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentData) {
+        var response, data, _t6;
         return _regenerator().w(function (_context8) {
           while (1) switch (_context8.p = _context8.n) {
             case 0:
               _context8.p = 0;
               _context8.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
-                method: 'DELETE',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment"), {
+                method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify(apartmentData)
               });
             case 1:
               response = _context8.v;
               _context8.n = 2;
-              return response.text();
+              return response.json();
             case 2:
               data = _context8.v;
               if (response.ok) {
@@ -1345,19 +1403,155 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log(data);
-              _context8.n = 5;
-              break;
+              console.log('Квартира создана:', data);
+              return _context8.a(2, data);
             case 4:
               _context8.p = 4;
-              _t1 = _context8.v;
-              console.error('Ошибка удаления пользователя из квартиры:', _t1);
+              _t6 = _context8.v;
+              console.error('Ошибка создания квартиры:', _t6);
             case 5:
               return _context8.a(2);
           }
         }, _callee8, this, [[0, 4]]);
       }));
-      function RemoveUserFromApartment(_x9, _x0) {
+      function CreateApartment(_x6) {
+        return _CreateApartment.apply(this, arguments);
+      }
+      return CreateApartment;
+    }() //удалить квартиру
+  }, {
+    key: "DeleteApartment",
+    value: function () {
+      var _DeleteApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(id) {
+        var response, _t7, _t8, _t9;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
+            case 0:
+              _context9.p = 0;
+              _context9.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context9.v;
+              if (response.ok) {
+                _context9.n = 3;
+                break;
+              }
+              _t7 = Error;
+              _context9.n = 2;
+              return response.text();
+            case 2:
+              _t8 = _context9.v;
+              throw new _t7(_t8);
+            case 3:
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, " \u0443\u0434\u0430\u043B\u0435\u043D\u0430"));
+              _context9.n = 5;
+              break;
+            case 4:
+              _context9.p = 4;
+              _t9 = _context9.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t9);
+            case 5:
+              return _context9.a(2);
+          }
+        }, _callee9, this, [[0, 4]]);
+      }));
+      function DeleteApartment(_x7) {
+        return _DeleteApartment.apply(this, arguments);
+      }
+      return DeleteApartment;
+    }() //добавить пользователя к квартире
+  }, {
+    key: "AddUserToApartment",
+    value: function () {
+      var _AddUserToApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(apartmentId, userId) {
+        var response, data, _t0;
+        return _regenerator().w(function (_context0) {
+          while (1) switch (_context0.p = _context0.n) {
+            case 0:
+              _context0.p = 0;
+              _context0.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify()
+              });
+            case 1:
+              response = _context0.v;
+              _context0.n = 2;
+              return response.text();
+            case 2:
+              data = _context0.v;
+              if (response.ok) {
+                _context0.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log(data);
+              _context0.n = 5;
+              break;
+            case 4:
+              _context0.p = 4;
+              _t0 = _context0.v;
+              console.error('Ошибка добавления пользователя к квартире:', _t0);
+            case 5:
+              return _context0.a(2);
+          }
+        }, _callee0, this, [[0, 4]]);
+      }));
+      function AddUserToApartment(_x8, _x9) {
+        return _AddUserToApartment.apply(this, arguments);
+      }
+      return AddUserToApartment;
+    }() //удалить пользователя из квартиры
+  }, {
+    key: "RemoveUserFromApartment",
+    value: function () {
+      var _RemoveUserFromApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(apartmentId, userId) {
+        var response, data, _t1;
+        return _regenerator().w(function (_context1) {
+          while (1) switch (_context1.p = _context1.n) {
+            case 0:
+              _context1.p = 0;
+              _context1.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context1.v;
+              _context1.n = 2;
+              return response.text();
+            case 2:
+              data = _context1.v;
+              if (response.ok) {
+                _context1.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log(data);
+              _context1.n = 5;
+              break;
+            case 4:
+              _context1.p = 4;
+              _t1 = _context1.v;
+              console.error('Ошибка удаления пользователя из квартиры:', _t1);
+            case 5:
+              return _context1.a(2);
+          }
+        }, _callee1, this, [[0, 4]]);
+      }));
+      function RemoveUserFromApartment(_x0, _x1) {
         return _RemoveUserFromApartment.apply(this, arguments);
       }
       return RemoveUserFromApartment;
@@ -1365,13 +1559,13 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "UpdateUserShare",
     value: function () {
-      var _UpdateUserShare = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(apartmentId, userId, share) {
+      var _UpdateUserShare = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10(apartmentId, userId, share) {
         var response, data, _t10;
-        return _regenerator().w(function (_context9) {
-          while (1) switch (_context9.p = _context9.n) {
+        return _regenerator().w(function (_context10) {
+          while (1) switch (_context10.p = _context10.n) {
             case 0:
-              _context9.p = 0;
-              _context9.n = 1;
+              _context10.p = 0;
+              _context10.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId, "/share"), {
                 method: 'PUT',
                 headers: {
@@ -1382,30 +1576,30 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 })
               });
             case 1:
-              response = _context9.v;
-              _context9.n = 2;
+              response = _context10.v;
+              _context10.n = 2;
               return response.text();
             case 2:
-              data = _context9.v;
+              data = _context10.v;
               if (response.ok) {
-                _context9.n = 3;
+                _context10.n = 3;
                 break;
               }
               throw new Error(data);
             case 3:
               console.log(data);
-              _context9.n = 5;
+              _context10.n = 5;
               break;
             case 4:
-              _context9.p = 4;
-              _t10 = _context9.v;
+              _context10.p = 4;
+              _t10 = _context10.v;
               console.error('Ошибка обновления доли:', _t10);
             case 5:
-              return _context9.a(2);
+              return _context10.a(2);
           }
-        }, _callee9, this, [[0, 4]]);
+        }, _callee10, this, [[0, 4]]);
       }));
-      function UpdateUserShare(_x1, _x10, _x11) {
+      function UpdateUserShare(_x10, _x11, _x12) {
         return _UpdateUserShare.apply(this, arguments);
       }
       return UpdateUserShare;
@@ -1413,13 +1607,13 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "GetApartmentShares",
     value: function () {
-      var _GetApartmentShares = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(apartmentId) {
+      var _GetApartmentShares = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(apartmentId) {
         var response, data, _t11;
-        return _regenerator().w(function (_context0) {
-          while (1) switch (_context0.p = _context0.n) {
+        return _regenerator().w(function (_context11) {
+          while (1) switch (_context11.p = _context11.n) {
             case 0:
-              _context0.p = 0;
-              _context0.n = 1;
+              _context11.p = 0;
+              _context11.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/shares"), {
                 method: 'GET',
                 headers: {
@@ -1427,29 +1621,29 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context0.v;
-              _context0.n = 2;
+              response = _context11.v;
+              _context11.n = 2;
               return response.json();
             case 2:
-              data = _context0.v;
+              data = _context11.v;
               if (response.ok) {
-                _context0.n = 3;
+                _context11.n = 3;
                 break;
               }
               throw new Error(data);
             case 3:
               console.log("\u0414\u043E\u043B\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
-              return _context0.a(2, data);
+              return _context11.a(2, data);
             case 4:
-              _context0.p = 4;
-              _t11 = _context0.v;
+              _context11.p = 4;
+              _t11 = _context11.v;
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t11);
             case 5:
-              return _context0.a(2);
+              return _context11.a(2);
           }
-        }, _callee0, this, [[0, 4]]);
+        }, _callee11, this, [[0, 4]]);
       }));
-      function GetApartmentShares(_x12) {
+      function GetApartmentShares(_x13) {
         return _GetApartmentShares.apply(this, arguments);
       }
       return GetApartmentShares;
@@ -1457,13 +1651,13 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "GetApartmentStatistics",
     value: function () {
-      var _GetApartmentStatistics = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(apartmentId) {
+      var _GetApartmentStatistics = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(apartmentId) {
         var response, data, _t12;
-        return _regenerator().w(function (_context1) {
-          while (1) switch (_context1.p = _context1.n) {
+        return _regenerator().w(function (_context12) {
+          while (1) switch (_context12.p = _context12.n) {
             case 0:
-              _context1.p = 0;
-              _context1.n = 1;
+              _context12.p = 0;
+              _context12.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/statistics"), {
                 method: 'GET',
                 headers: {
@@ -1471,29 +1665,29 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context1.v;
-              _context1.n = 2;
+              response = _context12.v;
+              _context12.n = 2;
               return response.json();
             case 2:
-              data = _context1.v;
+              data = _context12.v;
               if (response.ok) {
-                _context1.n = 3;
+                _context12.n = 3;
                 break;
               }
               throw new Error(data);
             case 3:
               console.log("\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0430 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
-              return _context1.a(2, data);
+              return _context12.a(2, data);
             case 4:
-              _context1.p = 4;
-              _t12 = _context1.v;
+              _context12.p = 4;
+              _t12 = _context12.v;
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t12);
             case 5:
-              return _context1.a(2);
+              return _context12.a(2);
           }
-        }, _callee1, this, [[0, 4]]);
+        }, _callee12, this, [[0, 4]]);
       }));
-      function GetApartmentStatistics(_x13) {
+      function GetApartmentStatistics(_x14) {
         return _GetApartmentStatistics.apply(this, arguments);
       }
       return GetApartmentStatistics;
@@ -1509,6 +1703,12 @@ document.addEventListener('authStateChanged', function () {
     var userId = window.authManager.userData.userId;
     if (window.location.pathname == '/') {
       apartmentProfile.InsertApartmentDataToCardOnMainPage(userId);
+    }
+    if (window.location.pathname == '/apartment/create') {
+      apartmentProfile.SetHouseIdToCreateApartment();
+      document.querySelector('[data-action="save-apartment-data"]').addEventListener('click', function () {
+        apartmentProfile.CollectApartmentDataAndSave();
+      });
     }
   }
 });
