@@ -105,9 +105,10 @@ namespace HPM_System.ApartmentService.Controllers
                 }
 
                 var apartments = await _apartmentRepository.GetApartmentsByUserIdAsync(userId);
+                var sortedApartments = apartments.OrderBy(a => a.Number);
 
                 var result = new List<ApartmentResponseDto>();
-                foreach (var apartment in apartments)
+                foreach (var apartment in sortedApartments)
                 {
                     var dto = await MapToApartmentResponseDto(apartment);
                     result.Add(dto);
@@ -176,8 +177,11 @@ namespace HPM_System.ApartmentService.Controllers
             {
                 var apartments = await _apartmentRepository.GetApartmentsByHouseIdAsync(houseId);
 
+                // Сортируем квартиры по номеру
+                var sortedApartments = apartments.OrderBy(a => a.Number);
+
                 var result = new List<ApartmentResponseDto>();
-                foreach (var apartment in apartments)
+                foreach (var apartment in sortedApartments)
                 {
                     var dto = await MapToApartmentResponseDto(apartment);
                     result.Add(dto);

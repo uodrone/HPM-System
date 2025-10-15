@@ -16,7 +16,7 @@ namespace HPM_System.ApartmentService.Repositories
 
         public async Task<IEnumerable<House>> GetAllHousesAsync()
         {
-            return await _context.House.ToListAsync();
+            return await _context.House.OrderBy(a => a.Number).ToListAsync();
         }
 
         public async Task<House> GetHouseByIdAsync(long id)
@@ -80,6 +80,7 @@ namespace HPM_System.ApartmentService.Repositories
                     (a, h) => h                   // выбираем House
                 )
                 .Distinct()                       // убираем дубли
+                .OrderBy(a => a.Number)
                 .ToListAsync();
         }
 

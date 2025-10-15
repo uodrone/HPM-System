@@ -57,26 +57,23 @@ export class ApartmentHouses {
     }
 
     //Вставить данные о домах пользователя в карточку
-    async InsertHouseDataByUserId (userId, housesListClass, template) {
+    async InsertHouseDataByUserId(userId, housesListClass, template) {
         try {
-            await this.GetHousesByUserId(userId).then(houses => {
-                console.log(`дома пользователя:`);
-                console.log(houses);
-                
-                const housesListContainer = document.querySelector(housesListClass);
-                housesListContainer.innerHTML = '';
-                houses.forEach(async (house) => {
-                    let headOfHOuse = await this.GetHead(house.id);
-                    let headTemplate = this.HeadTemplate(headOfHOuse);
-                    let managementCompanyTemplate = this.ManagementCompanyTemplate();
-                    let houseTemplate = template(house, headTemplate, managementCompanyTemplate, headOfHOuse);
-                    housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
-                });
-            }).catch(error => {
-                console.error('Ошибка получения данных квартиры:', error);
-            });
-        } catch (e) {
-            console.log(e);
+            const houses = await this.GetHousesByUserId(userId);
+            console.log(`дома пользователя:`, houses);
+
+            const housesListContainer = document.querySelector(housesListClass);
+            housesListContainer.innerHTML = '';
+
+            for (const house of houses) {
+                const headOfHouse = await this.GetHead(house.id);
+                const headTemplate = this.HeadTemplate(headOfHouse);
+                const managementCompanyTemplate = this.ManagementCompanyTemplate();
+                const houseTemplate = template(house, headTemplate, managementCompanyTemplate, headOfHouse);
+                housesListContainer.insertAdjacentHTML('beforeend', houseTemplate);
+            }
+        } catch (error) {
+            console.error('Ошибка получения данных домов:', error);
         }
     }
 

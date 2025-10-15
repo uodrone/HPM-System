@@ -10,22 +10,56 @@ class ApartmentProfile {
     //Вставить данные о квартирах пользователя в карточку на главной странице
     async InsertApartmentDataToCardOnMainPage(userId) {
         try {
-            // Получаем квартиры пользователя
+            // 1. Получаем квартиры пользователя
             const apartments = await this.GetApartmentsByUserId(userId);
+            if (!apartments || apartments.length === 0) {
+                document.querySelector('.apartments-card .apartments-list').innerHTML = '<p>Нет привязанных квартир</p>';
+                return;
+            }
 
+            // 2. Собираем уникальные houseId
+            const houseIds = [...new Set(apartments.map(a => a.houseId))];
+
+            // 3. Параллельно загружаем все дома
+            const housePromises = houseIds.map(id => this.House.GetHouse(id));
+            const houses = await Promise.all(housePromises);
+
+            // 4. Создаём мапу houseId → house для быстрого доступа
+            const houseMap = new Map();
+            houses.forEach(house => {
+                houseMap.set(house.id, house);
+            });
+
+            // 5. Сопоставляем квартиры с домами и сортируем по номеру дома
+            const apartmentWithHouse = apartments
+                .map(apartment => ({
+                    apartment,
+                    house: houseMap.get(apartment.houseId)
+                }))
+                .filter(item => item.house) // на случай, если дом не найден
+                .sort((a, b) => {
+                    // Сравниваем по номеру дома
+                    const numA = typeof a.house.number === 'string' 
+                        ? parseInt(a.house.number, 10) || 0 
+                        : a.house.number;
+                    const numB = typeof b.house.number === 'string' 
+                        ? parseInt(b.house.number, 10) || 0 
+                        : b.house.number;
+                    return numA - numB;
+                });
+
+            // 6. Генерируем HTML
             const apartmentsListContainer = document.querySelector('.apartments-card .apartments-list');
             apartmentsListContainer.innerHTML = '';
 
-            // Обрабатываем каждую квартиру
-            for (const apartment of apartments) {
-                // Получаем дом для текущей квартиры
-                const house = await this.House.GetHouse(apartment.houseId);
-                // Можно передать house в шаблон, если нужно
-                let apartmentTemplate = this.SetApartmentTemplate(apartment, house);
+            for (const { apartment, house } of apartmentWithHouse) {
+                const apartmentTemplate = this.SetApartmentTemplate(apartment, house);
                 apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
             }
         } catch (error) {
             console.error('Ошибка при загрузке данных квартиры на главную страницу:', error);
+            // Опционально: показать сообщение пользователю
+            document.querySelector('.apartments-card .apartments-list').innerHTML = '<p>Ошибка загрузки данных</p>';
         }
     }
 
