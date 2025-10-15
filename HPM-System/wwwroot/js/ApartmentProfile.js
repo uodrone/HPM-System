@@ -99,6 +99,52 @@ class ApartmentProfile {
         return apartmentHTML;
     }
 
+    SetApartmentUserTemplate(apartmentUser) {
+        if (!apartmentUser) return '';
+
+        const allStatuses = [
+            { id: 1, name: "Владелец" },
+            { id: 2, name: "Жилец" },
+            { id: 3, name: "Прописан" },
+            { id: 4, name: "Временно проживающий" }
+        ];
+
+        // Получаем множество ID выбранных статусов для быстрой проверки
+        const selectedStatusIds = new Set(
+            (apartmentUser.statuses || []).map(s => s.id)
+        );
+
+        // Генерируем опции: все статусы, но отмечаем выбранные
+        const statusOptions = allStatuses
+        .map(status => {
+            const isSelected = selectedStatusIds.has(status.id) ? ' selected' : '';
+            return `<option value="${status.id}"${isSelected}>${status.name}</option>`;
+        })
+        .join('');
+
+        const apartmentUserHTML = `
+            <div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100" data-user-id="${apartmentUser.userId}">
+                <div class="form-group">
+                    <input type="text" disabled placeholder="" name="fullName" id="fullName" value="${apartmentUser.userDetails.firstName} ${apartmentUser.userDetails.lastName} ${apartmentUser.userDetails.patronymic}">
+                    <label for="fullName">ФИО пользователя</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" disabled placeholder="" name="phoneNumber" id="phoneNumber" value="${apartmentUser.userDetails.phoneNumber}">
+                    <label for="phoneNumber">Телефон пользователя</label>
+                </div>
+                <div class="form-group">
+                    <select id="statuses" multiple>
+                        ${statusOptions}
+                    </select>                        
+                    <label for="statuses">Статус пользователя</label>
+                </div>
+                <div class="save-icon" data-status="save"></div>
+            </div>
+        `;
+
+        return apartmentUserHTML;
+    }
+
     async SetHouseIdToCreateApartment () {
         let houseId = parseInt(localStorage.getItem('house'));
         const houseProfile = new ApartmentHouses();

@@ -1080,6 +1080,37 @@ var ApartmentProfile = /*#__PURE__*/function () {
       return apartmentHTML;
     }
   }, {
+    key: "SetApartmentUserTemplate",
+    value: function SetApartmentUserTemplate(apartmentUser) {
+      if (!apartmentUser) return '';
+      var allStatuses = [{
+        id: 1,
+        name: "Владелец"
+      }, {
+        id: 2,
+        name: "Жилец"
+      }, {
+        id: 3,
+        name: "Прописан"
+      }, {
+        id: 4,
+        name: "Временно проживающий"
+      }];
+
+      // Получаем множество ID выбранных статусов для быстрой проверки
+      var selectedStatusIds = new Set((apartmentUser.statuses || []).map(function (s) {
+        return s.id;
+      }));
+
+      // Генерируем опции: все статусы, но отмечаем выбранные
+      var statusOptions = allStatuses.map(function (status) {
+        var isSelected = selectedStatusIds.has(status.id) ? ' selected' : '';
+        return "<option value=\"".concat(status.id, "\"").concat(isSelected, ">").concat(status.name, "</option>");
+      }).join('');
+      var apartmentUserHTML = "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <select id=\"statuses\" multiple>\n                        ").concat(statusOptions, "\n                    </select>                        \n                    <label for=\"statuses\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"save-icon\" data-status=\"save\"></div>\n            </div>\n        ");
+      return apartmentUserHTML;
+    }
+  }, {
     key: "SetHouseIdToCreateApartment",
     value: function () {
       var _SetHouseIdToCreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
