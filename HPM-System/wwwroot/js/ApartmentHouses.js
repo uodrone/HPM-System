@@ -1,5 +1,3 @@
-import {RegularExtension} from './Regex.js';
-
 export class ApartmentHouses {
     constructor () {
         this.ApartmentAPIAddress = 'https://localhost:55683';
@@ -498,7 +496,7 @@ export class ApartmentHouses {
 }
 
 document.addEventListener('authStateChanged', async () => {    
-    const Regex = new RegularExtension();
+    const Regex = new window.RegularExtension();
     const { isAuthenticated, userData } = event.detail;
 
     if (isAuthenticated && userData) {
@@ -513,8 +511,8 @@ document.addEventListener('authStateChanged', async () => {
             await houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
         }
 
-        if (Regex.isValidHouseUrl(window.location.href).valid) {
-            const houseId = Regex.isValidHouseUrl(window.location.href).id;
+        if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('house')) {
+            const houseId = Regex.isValidEntityUrl(window.location.href).id;
             localStorage.setItem('house', houseId);
             await houseProfile.InsertHouseDataById(houseId);
             await houseProfile.InsertApartmentsInHouseDetails(houseId);

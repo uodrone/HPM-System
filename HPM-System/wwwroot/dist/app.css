@@ -110,6 +110,15 @@
         padding: 4px 8px;
         border: 1px solid var(--medium-gray);
         width: 100%;
+
+        &.no-border {
+            padding-left: 0;
+            border: none;
+        }
+
+        &:disabled {
+            appearance: none;
+        }
     }
 
     select + label {
@@ -120,6 +129,13 @@
     }
 
     select:not(:placeholder-shown) + label {
+        top: var(--label-focus-top);
+        font-size: var(--label-focus-size);
+    }
+
+    .ts-wrapper + label {
+        position: absolute;
+        color: rgba(0, 0, 0, .5);
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }
@@ -198,6 +214,38 @@
     100% {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
+    }
+}
+/*!*******************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/multiselect.css ***!
+  \*******************************************************************************/
+.multiselect {
+    .ts-wrapper {
+        min-height: unset;
+
+        .ts-control {
+            display: flex;
+            gap: .25rem;
+            align-items: center;
+
+            &>input[type="select-multiple"] {
+                max-width: 100px !important;
+            }
+        }
+
+        &.multi {
+            .ts-control {
+                &>div {
+                    margin: 0;
+                }
+            }
+
+            &.has-items {
+                .ts-control {
+                    padding: 0;
+                }
+            }
+        }
     }
 }
 /*!*************************************************************************!*\
@@ -373,6 +421,12 @@ h3 {
 footer {
   padding: 30px 0;
   background-color: #fff;
+}
+/*!*************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/icons.css ***!
+  \*************************************************************************/
+.icon-action {
+    cursor: pointer;
 }
 /*!****************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/house-and-apartments.css ***!

@@ -1,5 +1,6 @@
 ﻿import {ApartmentStatuses} from './ApartmentStatuses.js';
 import {ApartmentHouses} from './ApartmentHouses.js';
+import {RegularExtension} from './Regex.js';
 
 class ApartmentProfile {
     constructor () {
@@ -64,8 +65,7 @@ class ApartmentProfile {
     }
 
     SetApartmentTemplate (apartment, house) {
-        let apartmentHTML;        
-        let apartmentNumber;
+        let apartmentHTML;
         if (apartment) {
             apartmentHTML = `
                 <div class="apartment-item" data-apartment-id="${apartment.id}">
@@ -97,6 +97,33 @@ class ApartmentProfile {
         
 
         return apartmentHTML;
+    }
+
+    async EditApartmentProfile (apartmentId) {
+        const apartment = await this.GetApartment(apartmentId);
+        const users = apartment.users;
+        const house = await this.House.GetHouse(apartment.houseId);
+        let apartmentList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
+
+        document.getElementById('number').value = apartment.number;
+        document.getElementById('numbersOfRooms').value = apartment.numbersOfRooms;
+        document.getElementById('entranceNumber').value = apartment.entranceNumber;
+        document.getElementById('floor').value = apartment.floor;
+        document.getElementById('totalArea').value = apartment.totalArea;
+        document.getElementById('residentialArea').value = apartment.residentialArea;
+
+        const option = document.createElement('option');
+        option.value = apartment.houseId;
+        option.textContent = `${house.city}, ул. ${house.street} ${house.number} `;
+        document.getElementById('houseId').appendChild(option);
+
+        for (const user of users) {
+            const usersTemplate = this.SetApartmentUserTemplate(user);
+            apartmentList.insertAdjacentHTML('beforeend', usersTemplate);
+        }
+        
+        const multiselect = new window.Multiselect();
+        multiselect.init('statuses');
     }
 
     SetApartmentUserTemplate(apartmentUser) {
@@ -132,13 +159,13 @@ class ApartmentProfile {
                     <input type="text" disabled placeholder="" name="phoneNumber" id="phoneNumber" value="${apartmentUser.userDetails.phoneNumber}">
                     <label for="phoneNumber">Телефон пользователя</label>
                 </div>
-                <div class="form-group">
+                <div class="form-group multiselect">
                     <select id="statuses" multiple>
                         ${statusOptions}
                     </select>                        
                     <label for="statuses">Статус пользователя</label>
                 </div>
-                <div class="save-icon" data-status="save"></div>
+                <div class="save-icon icon-action" data-status="save">&#128190;</div>
             </div>
         `;
 
@@ -444,8 +471,9 @@ class ApartmentProfile {
     }
 }
 
-document.addEventListener('authStateChanged', () => {
+document.addEventListener('authStateChanged', async () => {
     const { isAuthenticated, userData } = event.detail;
+    const Regex = new window.RegularExtension();
 
     if (isAuthenticated && userData) {
         const apartmentProfile = new ApartmentProfile();
@@ -461,6 +489,11 @@ document.addEventListener('authStateChanged', () => {
             document.querySelector('[data-action="save-apartment-data"]').addEventListener('click', () => {
                 apartmentProfile.CollectApartmentDataAndSave ();
             });            
+        }
+
+        if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
+            const apartmentId = Regex.isValidEntityUrl(window.location.href).id;
+            apartmentProfile.EditApartmentProfile(apartmentId);
         }
     }
 });

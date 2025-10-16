@@ -65,6 +65,15 @@
         padding: 4px 8px;
         border: 1px solid var(--medium-gray);
         width: 100%;
+
+        &.no-border {
+            padding-left: 0;
+            border: none;
+        }
+
+        &:disabled {
+            appearance: none;
+        }
     }
 
     select + label {
@@ -75,6 +84,13 @@
     }
 
     select:not(:placeholder-shown) + label {
+        top: var(--label-focus-top);
+        font-size: var(--label-focus-size);
+    }
+
+    .ts-wrapper + label {
+        position: absolute;
+        color: rgba(0, 0, 0, .5);
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }
