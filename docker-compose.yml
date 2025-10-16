@@ -152,6 +152,22 @@ services:
     build:
       context: .
       dockerfile: ../HPM-System.EventService/Dockerfile
+    depends_on:
+        rabbitmq:
+            condition: service_healthy
+        postgres-notification:
+            condition: service_started
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Host=postgres-events;Port=5432;Database=EventService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - RabbitMQ__HostName=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
+    ports:
+      - "${NOTIFICATIONSERVICE_HTTP}:8080"
+      - "${NOTIFICATIONSERVICE_HTTPS}:8081"
+    networks: [hpm-network]
 
 volumes:
   postgres_data:
