@@ -13,6 +13,6 @@ namespace HPM_System.UserService.Models
         public DateTime? Birthday { get; set; }
         // Список автомобилей
         public ICollection<Car> Cars { get; set; } = new List<Car>();
-        
+        public IEnumerable<long> SubscribeEventIds { get; set; } = new List<long>();
     }
 }

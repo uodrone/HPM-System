@@ -165,8 +165,8 @@ services:
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
     ports:
-      - "${NOTIFICATIONSERVICE_HTTP}:8080"
-      - "${NOTIFICATIONSERVICE_HTTPS}:8081"
+      - "${EVENTSERVICE_HTTP}:8080"
+      - "${EVENTSERVICE_HTTPS}:8081"
     networks: [hpm-network]
 
 volumes:
