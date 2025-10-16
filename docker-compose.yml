@@ -147,6 +147,12 @@ services:
       - "${NOTIFICATIONSERVICE_HTTPS}:8081"
     networks: [hpm-network]
 
+  hpm-system.eventservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemeventservice
+    build:
+      context: .
+      dockerfile: ../HPM-System.EventService/Dockerfile
+
 volumes:
   postgres_data:
   rabbitmq_data:
@@ -154,3 +160,4 @@ volumes:
 
 networks:
   hpm-network:
+
