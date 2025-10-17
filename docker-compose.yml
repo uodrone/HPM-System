@@ -152,14 +152,10 @@ services:
     build:
       context: .
       dockerfile: ../HPM-System.EventService/Dockerfile
-    depends_on:
-        rabbitmq:
-            condition: service_healthy
-        postgres-notification:
-            condition: service_started
+    depends_on: [postgres, rabbitmq]
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ConnectionStrings__DefaultConnection=Host=postgres-events;Port=5432;Database=EventService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=EventService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - RabbitMQ__HostName=${RABBITMQ_HOSTNAME}
       - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
