@@ -1,0 +1,6 @@
+@HPM_System.EventService_HostAddress = http://localhost:5166
+
+GET {{HPM_System.EventService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
