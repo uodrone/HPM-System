@@ -5,6 +5,7 @@
     --titleColor: #2c3e50;
     --orangeBorder: #f39c12;
     --gray: #606060;
+    --gray-any: #d7d7d7;
     --grayworm: #8B9EB7;
     --graywormhover: #5E789B;
     --blue: #0984e3;
@@ -61,9 +62,12 @@
 
     input {
         border-radius: 5px;
-        border: 1px solid var(--medium-gray);
+        border: 1px solid var(--gray-any);
         padding-left: 5px;
         width: 100%;
+        position: relative;
+        z-index: 1;
+        background-color: transparent;
 
         &:disabled {
             border-color: transparent;

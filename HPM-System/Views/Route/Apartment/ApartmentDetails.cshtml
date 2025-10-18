@@ -53,7 +53,24 @@
 		</div>
 
 		<div class="mt-4 text-center">
-			<a href="">Добавить нового пользователя в квартиру</a>
+			<a href="#" onclick="return false;" data-modal="open">Добавить нового пользователя в квартиру</a>
+		</div>
+	</div>
+</div>
+
+<div class="modal-overview">
+	<div class="modal-inner">
+		<div class="modal-content-wrapper car-modal">
+			<div class="modal-close" title="Закрыть"></div>
+			<h4 class="text-center my-4">Введите телефон пользователя</h4>
+			<div class="form-group">
+				<input type="text" placeholder=" " name="newPhoneNumber" id="newPhoneNumber" value="">
+				<label for="newPhoneNumber">Телефон пользователя</label>
+				<div class="error invisible" data-error="newPhoneNumber">Неверный телефон</div>
+			</div>
+			<div class="mt-4 text-center">
+				<div class="btn btn_secondary" data-action="add-user-to-apartment">Добавить</div>
+			</div>
 		</div>
 	</div>
 </div>

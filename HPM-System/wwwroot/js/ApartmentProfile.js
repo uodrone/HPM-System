@@ -1,11 +1,14 @@
 ﻿import {ApartmentStatuses} from './ApartmentStatuses.js';
 import {ApartmentHouses} from './ApartmentHouses.js';
-import {RegularExtension} from './Regex.js';
+import {UserProfile} from './UserProfile.js';
+import {UserValidator} from './UserValidator.js';
 
 class ApartmentProfile {
     constructor () {
         this.ApartmentAPIAddress = 'https://localhost:55683';
         this.House = new ApartmentHouses();
+        this.userValidator = new UserValidator();
+        this.userProfile = new UserProfile();
     }
 
     //Вставить данные о квартирах пользователя в карточку на главной странице
@@ -103,7 +106,8 @@ class ApartmentProfile {
         const apartment = await this.GetApartment(apartmentId);
         const users = apartment.users;
         const house = await this.House.GetHouse(apartment.houseId);
-        let apartmentList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
+        let apartmenUsertList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
+        
 
         document.getElementById('number').value = apartment.number;
         document.getElementById('numbersOfRooms').value = apartment.numbersOfRooms;
@@ -119,7 +123,7 @@ class ApartmentProfile {
 
         for (const user of users) {
             const usersTemplate = this.SetApartmentUserTemplate(user);
-            apartmentList.insertAdjacentHTML('beforeend', usersTemplate);
+            apartmenUsertList.insertAdjacentHTML('beforeend', usersTemplate);
         }
         
         const multiselect = new window.Multiselect();
@@ -312,6 +316,23 @@ class ApartmentProfile {
         }        
     }
 
+    AddNewUserToApartment (apartmentId) {
+        let modalPhoneError = document.querySelector('[data-error="newPhoneNumber"]');
+
+        document.querySelector('[data-action="add-user-to-apartment"]').addEventListener('click', async () => {
+            const phoneNumber = document.getElementById('newPhoneNumber').value;
+            if (this.userValidator.validatePhoneNumber(phoneNumber).isValid) {
+                modalPhoneError.classList.add('invisible');
+                console.log(`телефон валидный`);
+                
+                const user = await this.userProfile.getUserByPhone(phoneNumber);
+                await this.AddUserToApartment(apartmentId, user.id);                
+            } else {
+                modalPhoneError.classList.remove('invisible');
+            }
+        })
+    }
+
     //получить квартиры пользователя по ид пользователя
     async GetApartmentsByUserId(userId) {
         try {
@@ -402,6 +423,7 @@ class ApartmentProfile {
             const data = await response.text();
             if (!response.ok) throw new Error(data);
             console.log(data);
+            console.log(`пользователь ${user.id} добавлен к квартире с id ${apartmentId}`);
         } catch (error) {
             console.error('Ошибка добавления пользователя к квартире:', error);
         }
@@ -494,6 +516,7 @@ document.addEventListener('authStateChanged', async () => {
         if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
             const apartmentId = Regex.isValidEntityUrl(window.location.href).id;
             apartmentProfile.EditApartmentProfile(apartmentId);
+            apartmentProfile.AddNewUserToApartment(apartmentId);
         }
     }
 });
