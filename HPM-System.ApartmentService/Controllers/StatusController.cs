@@ -1,4 +1,5 @@
 ﻿using DTOs.StatusDTOs;
+using HPM_System.ApartmentService.DTOs.StatusDTOs;
 using HPM_System.ApartmentService.Interfaces;
 using HPM_System.ApartmentService.Models;
 using HPM_System.ApartmentService.Repositories;
@@ -250,6 +251,55 @@ namespace HPM_System.ApartmentService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отзыве статуса у пользователя");
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
+        /// Установить полный набор статусов пользователя для квартиры (заменяет все текущие)
+        /// </summary>
+        [HttpPut("apartment/{apartmentId}/user/{userId}/statuses")]
+        public async Task<IActionResult> SetUserStatusesForApartment(
+            int apartmentId,
+            Guid userId,
+            [FromBody] BatchAssignStatusesDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Тело запроса не может быть пустым");
+            }
+
+            // Даже если список пуст — это валидно (удалить все статусы)
+            var statusIds = dto.StatusIds ?? new List<int>();
+
+            try
+            {
+                var apartmentUser = await _statusRepository.GetApartmentUserAsync(apartmentId, userId);
+                if (apartmentUser == null)
+                {
+                    return NotFound("Пользователь не связан с указанной квартирой");
+                }
+
+                // Если переданы ID — проверяем их существование
+                if (statusIds.Any())
+                {
+                    var existingStatuses = await _statusRepository.GetStatusesByIdsAsync(statusIds);
+                    if (existingStatuses.Count() != statusIds.Count)
+                    {
+                        var missingIds = statusIds.Except(existingStatuses.Select(s => s.Id)).ToList();
+                        return BadRequest($"Статусы с ID {string.Join(", ", missingIds)} не найдены");
+                    }
+                }
+
+                // Полная замена статусов
+                await _statusRepository.SetUserStatusesForApartmentAsync(apartmentId, userId, statusIds);
+                await _statusRepository.SaveChangesAsync();
+
+                return Ok("Статусы пользователя успешно обновлены");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при установке полного набора статусов для пользователя");
                 return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }

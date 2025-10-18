@@ -146,33 +146,33 @@ export class ApartmentStatuses {
 
     // 6. Назначить статус пользователю для квартиры
     async AssignStatusToUser(apartmentId, userId, statusId) {
-    try {
-        const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/status/${statusId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-        // Тело запроса не требуется для этого эндпоинта
-        });
+        try {
+            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/status/${statusId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+            // Тело запроса не требуется для этого эндпоинта
+            });
 
-        if (!response.ok) {
-        let errorMessage;
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            const errorData = await response.json();
-            errorMessage = `Ошибка ${response.status}: ${JSON.stringify(errorData)}`;
-        } else {
-            const errorText = await response.text();
-            errorMessage = `Ошибка ${response.status}: ${errorText}`;
-        }
-        throw new Error(errorMessage);
-        }
+            if (!response.ok) {
+            let errorMessage;
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await response.json();
+                errorMessage = `Ошибка ${response.status}: ${JSON.stringify(errorData)}`;
+            } else {
+                const errorText = await response.text();
+                errorMessage = `Ошибка ${response.status}: ${errorText}`;
+            }
+            throw new Error(errorMessage);
+            }
 
-        const successMessage = await response.text(); // Ожидаем текстовое сообщение
-        console.log(successMessage);
-        return true;
-    } catch (error) {
-        console.error('Ошибка назначения статуса пользователю:', error.message || error);
-        return false; // Возвращаем false в случае ошибки
-    }
+            const successMessage = await response.text(); // Ожидаем текстовое сообщение
+            console.log(successMessage);
+            return true;
+        } catch (error) {
+            console.error('Ошибка назначения статуса пользователю:', error.message || error);
+            return false; // Возвращаем false в случае ошибки
+        }
     }
 
     // 7. Отозвать статус у пользователя для квартиры
@@ -210,7 +210,43 @@ export class ApartmentStatuses {
         }
     }
 
-    // 8. Получить все статусы пользователя для квартиры
+    // 8. Установить полный набор статусов пользователя для квартиры (заменяет все текущие)
+    async SetUserStatusesForApartment(apartmentId, userId, statusIds) {        
+        if (!Array.isArray(statusIds)) {
+            console.error("statusIds должен быть массивом (может быть пустым)");
+            return false;
+        }
+
+        try {
+            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/statuses`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ statusIds })
+            });
+
+            if (!response.ok) {
+                let errorMessage;
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    errorMessage = `Ошибка ${response.status}: ${JSON.stringify(errorData)}`;
+                } else {
+                    const errorText = await response.text();
+                    errorMessage = `Ошибка ${response.status}: ${errorText}`;
+                }
+                throw new Error(errorMessage);
+            }
+
+            const successMessage = await response.text();
+            console.log(successMessage);
+            return true;
+        } catch (error) {
+            console.error('Ошибка установки полного набора статусов:', error.message || error);
+            return false;
+        }
+    }
+
+    // 9. Получить все статусы пользователя для квартиры
     async GetUserStatusesForApartment(apartmentId, userId) {
         try {
             const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}`, {
@@ -235,4 +271,36 @@ export class ApartmentStatuses {
             return []; // Возвращаем пустой массив в случае ошибки
         }
     }
+
+    CollectUserStatusesAndSave (apartmentId) {
+        document.addEventListener('click', async (e) => {
+            // Проверяем, был ли клик по элементу с нужным data-атрибутом
+            if (e.target.closest('[data-status="save"]')) {
+                const user = e.target.closest('[data-apartment-user-id]');
+                const userId = user.dataset.apartmentUserId;
+                let statuses = [];
+                user.querySelectorAll('[data-ts-item]').forEach(status => {
+                    statuses.push(status.dataset.value);
+                })
+                
+                await this.SetUserStatusesForApartment(apartmentId, userId, statuses);
+                console.log(`Статусы пользователя обновлен`);
+            }
+        });
+    }
 }
+
+document.addEventListener('authStateChanged', async () => {
+    const { isAuthenticated, userData } = event.detail;
+    const Regex = new window.RegularExtension();
+    const ApartmentUserStatuses = new ApartmentStatuses();
+
+    if (isAuthenticated && userData) {
+        const userId = window.authManager.userData.userId;
+
+        if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
+            const apartmentId = Regex.isValidEntityUrl(window.location.href).id;
+            ApartmentUserStatuses.CollectUserStatusesAndSave(apartmentId);
+        }
+    }
+});

@@ -98,7 +98,54 @@ public class StatusRepository : IStatusRepository
         return true;
     }
 
-    public async Task<IEnumerable<Status>> GetUserStatusesForApartmentAsync(long apartmentId, Guid userId)
+    public async Task<IEnumerable<Status>> GetStatusesByIdsAsync(IEnumerable<int> ids)
+    {
+        if (ids == null || !ids.Any())
+            return Enumerable.Empty<Status>();
+
+        return await _context.Statuses
+            .Where(s => ids.Contains(s.Id))
+            .ToListAsync();
+    }
+
+        public async Task SetUserStatusesForApartmentAsync(int apartmentId, Guid userId, IEnumerable<int> statusIds)
+    {
+        var currentStatusAssignments = await _context.ApartmentUserStatuses
+            .Where(aus => aus.ApartmentId == apartmentId && aus.UserId == userId)
+            .ToListAsync();
+
+        var currentStatusIds = currentStatusAssignments.Select(aus => aus.StatusId).ToHashSet();
+        var newStatusIds = new HashSet<int>(statusIds);
+
+        // Удаляем лишние
+        var toRemove = currentStatusAssignments
+            .Where(aus => !newStatusIds.Contains(aus.StatusId))
+            .ToList();
+
+        // Добавляем недостающие
+        var toAdd = newStatusIds
+            .Except(currentStatusIds)
+            .Select(id => new ApartmentUserStatus
+            {
+                ApartmentId = apartmentId,
+                UserId = userId,
+                StatusId = id
+            })
+            .ToList();
+
+        // Выполняем изменения
+        if (toRemove.Any())
+        {
+            _context.ApartmentUserStatuses.RemoveRange(toRemove);
+        }
+
+        if (toAdd.Any())
+        {
+            await _context.ApartmentUserStatuses.AddRangeAsync(toAdd);
+        }
+    }
+
+        public async Task<IEnumerable<Status>> GetUserStatusesForApartmentAsync(long apartmentId, Guid userId)
     {
         return await _context.ApartmentUserStatuses
             .Where(aus => aus.ApartmentId == apartmentId && aus.UserId == userId)

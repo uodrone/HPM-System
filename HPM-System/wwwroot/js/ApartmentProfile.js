@@ -150,7 +150,7 @@ class ApartmentProfile {
         .join('');
 
         const apartmentUserHTML = `
-            <div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100" data-user-id="${apartmentUser.userId}">
+            <div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100" data-apartment-user-id="${apartmentUser.userId}">
                 <div class="form-group">
                     <input type="text" disabled placeholder="" name="fullName" id="fullName" value="${apartmentUser.userDetails.firstName} ${apartmentUser.userDetails.lastName} ${apartmentUser.userDetails.patronymic}">
                     <label for="fullName">ФИО пользователя</label>
@@ -165,7 +165,7 @@ class ApartmentProfile {
                     </select>                        
                     <label for="statuses">Статус пользователя</label>
                 </div>
-                <div class="save-icon icon-action" data-status="save">&#128190;</div>
+                <div class="save-icon icon-action" data-status="save" title="Сохранить статусы пользователя">&#128190;</div>
             </div>
         `;
 

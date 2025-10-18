@@ -1184,7 +1184,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
         var isSelected = selectedStatusIds.has(status.id) ? ' selected' : '';
         return "<option value=\"".concat(status.id, "\"").concat(isSelected, ">").concat(status.name, "</option>");
       }).join('');
-      var apartmentUserHTML = "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group multiselect\">\n                    <select id=\"statuses\" multiple>\n                        ").concat(statusOptions, "\n                    </select>                        \n                    <label for=\"statuses\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"save-icon icon-action\" data-status=\"save\">&#128190;</div>\n            </div>\n        ");
+      var apartmentUserHTML = "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-apartment-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group multiselect\">\n                    <select id=\"statuses\" multiple>\n                        ").concat(statusOptions, "\n                    </select>                        \n                    <label for=\"statuses\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"save-icon icon-action\" data-status=\"save\" title=\"\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#128190;</div>\n            </div>\n        ");
       return apartmentUserHTML;
     }
   }, {
@@ -2327,17 +2327,89 @@ var ApartmentStatuses = /*#__PURE__*/function () {
         return _RevokeStatusFromUser.apply(this, arguments);
       }
       return RevokeStatusFromUser;
-    }() // 8. Получить все статусы пользователя для квартиры
+    }() // 8. Установить полный набор статусов пользователя для квартиры (заменяет все текущие)
   }, {
-    key: "GetUserStatusesForApartment",
+    key: "SetUserStatusesForApartment",
     value: function () {
-      var _GetUserStatusesForApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId, userId) {
-        var response, errorText, data, _t8;
+      var _SetUserStatusesForApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId, userId, statusIds) {
+        var response, errorMessage, contentType, errorData, errorText, successMessage, _t8;
         return _regenerator().w(function (_context8) {
           while (1) switch (_context8.p = _context8.n) {
             case 0:
-              _context8.p = 0;
-              _context8.n = 1;
+              if (Array.isArray(statusIds)) {
+                _context8.n = 1;
+                break;
+              }
+              console.error("statusIds должен быть массивом (может быть пустым)");
+              return _context8.a(2, false);
+            case 1:
+              _context8.p = 1;
+              _context8.n = 2;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/apartment/").concat(apartmentId, "/user/").concat(userId, "/statuses"), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  statusIds: statusIds
+                })
+              });
+            case 2:
+              response = _context8.v;
+              if (response.ok) {
+                _context8.n = 7;
+                break;
+              }
+              contentType = response.headers.get("content-type");
+              if (!(contentType && contentType.includes("application/json"))) {
+                _context8.n = 4;
+                break;
+              }
+              _context8.n = 3;
+              return response.json();
+            case 3:
+              errorData = _context8.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(JSON.stringify(errorData));
+              _context8.n = 6;
+              break;
+            case 4:
+              _context8.n = 5;
+              return response.text();
+            case 5:
+              errorText = _context8.v;
+              errorMessage = "\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText);
+            case 6:
+              throw new Error(errorMessage);
+            case 7:
+              _context8.n = 8;
+              return response.text();
+            case 8:
+              successMessage = _context8.v;
+              console.log(successMessage);
+              return _context8.a(2, true);
+            case 9:
+              _context8.p = 9;
+              _t8 = _context8.v;
+              console.error('Ошибка установки полного набора статусов:', _t8.message || _t8);
+              return _context8.a(2, false);
+          }
+        }, _callee8, this, [[1, 9]]);
+      }));
+      function SetUserStatusesForApartment(_x10, _x11, _x12) {
+        return _SetUserStatusesForApartment.apply(this, arguments);
+      }
+      return SetUserStatusesForApartment;
+    }() // 9. Получить все статусы пользователя для квартиры
+  }, {
+    key: "GetUserStatusesForApartment",
+    value: function () {
+      var _GetUserStatusesForApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(apartmentId, userId) {
+        var response, errorText, data, _t9;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
+            case 0:
+              _context9.p = 0;
+              _context9.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/Status/apartment/").concat(apartmentId, "/user/").concat(userId), {
                 method: 'GET',
                 headers: {
@@ -2345,45 +2417,99 @@ var ApartmentStatuses = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context8.v;
+              response = _context9.v;
               if (response.ok) {
-                _context8.n = 4;
+                _context9.n = 4;
                 break;
               }
               if (!(response.status === 404)) {
-                _context8.n = 2;
+                _context9.n = 2;
                 break;
               }
               console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(userId, " \u043D\u0435 \u0441\u0432\u044F\u0437\u0430\u043D \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u043E\u0439 ").concat(apartmentId, " \u0438\u043B\u0438 \u0441\u0432\u044F\u0437\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430."));
-              return _context8.a(2, []);
+              return _context9.a(2, []);
             case 2:
-              _context8.n = 3;
+              _context9.n = 3;
               return response.text();
             case 3:
-              errorText = _context8.v;
+              errorText = _context9.v;
               throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ": ").concat(errorText));
             case 4:
-              _context8.n = 5;
+              _context9.n = 5;
               return response.json();
             case 5:
-              data = _context8.v;
+              data = _context9.v;
               console.log("\u0421\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, " \u0434\u043B\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ").concat(apartmentId, ":"), data);
-              return _context8.a(2, data);
+              return _context9.a(2, data);
             case 6:
-              _context8.p = 6;
-              _t8 = _context8.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u0432 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, " \u0434\u043B\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ").concat(apartmentId, ":"), _t8.message || _t8);
-              return _context8.a(2, []);
+              _context9.p = 6;
+              _t9 = _context9.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u0432 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, " \u0434\u043B\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ").concat(apartmentId, ":"), _t9.message || _t9);
+              return _context9.a(2, []);
           }
-        }, _callee8, this, [[0, 6]]);
+        }, _callee9, this, [[0, 6]]);
       }));
-      function GetUserStatusesForApartment(_x10, _x11) {
+      function GetUserStatusesForApartment(_x13, _x14) {
         return _GetUserStatusesForApartment.apply(this, arguments);
       }
       return GetUserStatusesForApartment;
     }()
+  }, {
+    key: "CollectUserStatusesAndSave",
+    value: function CollectUserStatusesAndSave(apartmentId) {
+      var _this = this;
+      document.addEventListener('click', /*#__PURE__*/function () {
+        var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(e) {
+          var user, userId, statuses;
+          return _regenerator().w(function (_context0) {
+            while (1) switch (_context0.n) {
+              case 0:
+                if (!e.target.closest('[data-status="save"]')) {
+                  _context0.n = 2;
+                  break;
+                }
+                user = e.target.closest('[data-apartment-user-id]');
+                userId = user.dataset.apartmentUserId;
+                statuses = [];
+                user.querySelectorAll('[data-ts-item]').forEach(function (status) {
+                  statuses.push(status.dataset.value);
+                });
+                _context0.n = 1;
+                return _this.SetUserStatusesForApartment(apartmentId, userId, statuses);
+              case 1:
+                console.log("\u0421\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D");
+              case 2:
+                return _context0.a(2);
+            }
+          }, _callee0);
+        }));
+        return function (_x15) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+    }
   }]);
 }();
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1() {
+  var _event$detail, isAuthenticated, userData, Regex, ApartmentUserStatuses, userId, apartmentId;
+  return _regenerator().w(function (_context1) {
+    while (1) switch (_context1.n) {
+      case 0:
+        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        Regex = new window.RegularExtension();
+        ApartmentUserStatuses = new ApartmentStatuses();
+        if (isAuthenticated && userData) {
+          userId = window.authManager.userData.userId;
+          if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
+            apartmentId = Regex.isValidEntityUrl(window.location.href).id;
+            ApartmentUserStatuses.CollectUserStatusesAndSave(apartmentId);
+          }
+        }
+      case 1:
+        return _context1.a(2);
+    }
+  }, _callee1);
+})));
 
 /***/ }),
 

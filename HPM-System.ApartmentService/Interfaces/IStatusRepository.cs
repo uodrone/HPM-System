@@ -11,6 +11,8 @@ namespace HPM_System.ApartmentService.Interfaces
         Task<bool> DeleteStatusAsync(int id);
         Task<bool> IsStatusUsedAsync(int statusId);
         Task<ApartmentUser> GetApartmentUserAsync(long apartmentId, Guid userId);
+        Task SetUserStatusesForApartmentAsync(int apartmentId, Guid userId, IEnumerable<int> statusIds);
+        Task<IEnumerable<Status>> GetStatusesByIdsAsync(IEnumerable<int> ids);
         Task<ApartmentUserStatus> GetApartmentUserStatusAsync(long apartmentId, Guid userId, int statusId);
         Task<ApartmentUserStatus> AssignStatusToUserAsync(ApartmentUserStatus apartmentUserStatus);
         Task<bool> RevokeStatusFromUserAsync(long apartmentId, Guid userId, int statusId);
