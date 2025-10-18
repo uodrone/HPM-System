@@ -151,7 +151,7 @@ services:
     image: ${DOCKER_REGISTRY-}hpmsystemeventservice
     build:
       context: .
-      dockerfile: ../HPM-System.EventService/Dockerfile
+      dockerfile: HPM-System.EventService/Dockerfile
     depends_on: [postgres, rabbitmq]
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
