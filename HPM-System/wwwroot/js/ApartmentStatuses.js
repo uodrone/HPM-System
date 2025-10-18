@@ -1,12 +1,15 @@
+import {ApartmentProfile} from './ApartmentProfile.js';
+
 export class ApartmentStatuses {
     constructor () {
-        this.ApartmentAPIAddress = 'https://localhost:55683';
+        this.apartmentAPIAddress = 'https://localhost:55683';
+        this.apartmentProfile = new ApartmentProfile();
     }
 
     // 1. Получить все статусы
     async GetStatuses() {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -27,7 +30,7 @@ export class ApartmentStatuses {
     // 2. Получить статус по ID
     async GetStatus(id) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/${id}`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status/${id}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -52,7 +55,7 @@ export class ApartmentStatuses {
     // 3. Создать новый статус
     async CreateStatus(name) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name })
@@ -82,7 +85,7 @@ export class ApartmentStatuses {
     // 4. Обновить статус
     async UpdateStatus(id, newName) {
     try {
-        const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/${id}`, {
+        const response = await fetch(`${this.apartmentAPIAddress}/api/Status/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newName }) // Предполагается, что DTO UpdateStatusDto имеет поле name
@@ -116,7 +119,7 @@ export class ApartmentStatuses {
     // 5. Удалить статус
     async DeleteStatus(id) {
     try {
-        const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/${id}`, {
+        const response = await fetch(`${this.apartmentAPIAddress}/api/Status/${id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -147,7 +150,7 @@ export class ApartmentStatuses {
     // 6. Назначить статус пользователю для квартиры
     async AssignStatusToUser(apartmentId, userId, statusId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/status/${statusId}`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/status/${statusId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
             // Тело запроса не требуется для этого эндпоинта
@@ -178,7 +181,7 @@ export class ApartmentStatuses {
     // 7. Отозвать статус у пользователя для квартиры
     async RevokeStatusFromUser(apartmentId, userId, statusId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/status/${statusId}`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/status/${statusId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
                 // Тело запроса не требуется для этого эндпоинта
@@ -218,7 +221,7 @@ export class ApartmentStatuses {
         }
 
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/statuses`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}/statuses`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ statusIds })
@@ -249,7 +252,7 @@ export class ApartmentStatuses {
     // 9. Получить все статусы пользователя для квартиры
     async GetUserStatusesForApartment(apartmentId, userId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}`, {
+            const response = await fetch(`${this.apartmentAPIAddress}/api/Status/apartment/${apartmentId}/user/${userId}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -281,9 +284,12 @@ export class ApartmentStatuses {
                 let statuses = [];
                 user.querySelectorAll('[data-ts-item]').forEach(status => {
                     statuses.push(status.dataset.value);
-                })
+                });
+
+                const share = user.querySelector('[name="share"]').value;                
                 
                 await this.SetUserStatusesForApartment(apartmentId, userId, statuses);
+                await this.apartmentProfile.UpdateUserShare(apartmentId, userId, share);
                 console.log(`Статусы пользователя обновлен`);
             }
         });

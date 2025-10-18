@@ -3,7 +3,7 @@ import {ApartmentHouses} from './ApartmentHouses.js';
 import {UserProfile} from './UserProfile.js';
 import {UserValidator} from './UserValidator.js';
 
-class ApartmentProfile {
+export class ApartmentProfile {
     constructor () {
         this.ApartmentAPIAddress = 'https://localhost:55683';
         this.House = new ApartmentHouses();
@@ -104,8 +104,9 @@ class ApartmentProfile {
 
     async EditApartmentProfile (apartmentId) {
         const apartment = await this.GetApartment(apartmentId);
+        const apartmentsShare = await this.GetApartmentShares(apartmentId);     
         const users = apartment.users;
-        const house = await this.House.GetHouse(apartment.houseId);
+        const house = await this.House.GetHouse(apartment.houseId);        
         let apartmenUsertList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
         
 
@@ -122,15 +123,17 @@ class ApartmentProfile {
         document.getElementById('houseId').appendChild(option);
 
         for (const user of users) {
-            const usersTemplate = this.SetApartmentUserTemplate(user);
+            const shareEntry = apartmentsShare.find(s => s.userId === user.userId);
+            const share = shareEntry ? shareEntry.share : '';
+            const usersTemplate = this.SetApartmentUserTemplate(user, share);
             apartmenUsertList.insertAdjacentHTML('beforeend', usersTemplate);
+
+            const multiselect = new window.Multiselect();
+            multiselect.init(`statuses-${user.userId}`);
         }
-        
-        const multiselect = new window.Multiselect();
-        multiselect.init('statuses');
     }
 
-    SetApartmentUserTemplate(apartmentUser) {
+    SetApartmentUserTemplate(apartmentUser, share) {
         if (!apartmentUser) return '';
 
         const allStatuses = [
@@ -156,18 +159,22 @@ class ApartmentProfile {
         const apartmentUserHTML = `
             <div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100" data-apartment-user-id="${apartmentUser.userId}">
                 <div class="form-group">
-                    <input type="text" disabled placeholder="" name="fullName" id="fullName" value="${apartmentUser.userDetails.firstName} ${apartmentUser.userDetails.lastName} ${apartmentUser.userDetails.patronymic}">
-                    <label for="fullName">ФИО пользователя</label>
+                    <input type="text" disabled placeholder="" name="fullName" id="fullName-${apartmentUser.userId}" value="${apartmentUser.userDetails.firstName} ${apartmentUser.userDetails.lastName} ${apartmentUser.userDetails.patronymic}">
+                    <label for="fullName-${apartmentUser.userId}">ФИО пользователя</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" disabled placeholder="" name="phoneNumber" id="phoneNumber" value="${apartmentUser.userDetails.phoneNumber}">
-                    <label for="phoneNumber">Телефон пользователя</label>
+                    <input type="text" disabled placeholder="" name="phoneNumber" id="phoneNumber-${apartmentUser.userId}" value="${apartmentUser.userDetails.phoneNumber}">
+                    <label for="phoneNumber-${apartmentUser.userId}">Телефон пользователя</label>
                 </div>
                 <div class="form-group multiselect">
-                    <select id="statuses" multiple>
+                    <select id="statuses-${apartmentUser.userId}" multiple>
                         ${statusOptions}
                     </select>                        
-                    <label for="statuses">Статус пользователя</label>
+                    <label for="statuses-${apartmentUser.userId}">Статус пользователя</label>
+                </div>
+                <div class="form-group">
+                    <input type="number" placeholder="" name="share" id="share-${apartmentUser.userId}" value="${share}">                      
+                    <label for="share-${apartmentUser.userId}">Доля владения</label>
                 </div>
                 <div class="save-icon icon-action" data-status="save" title="Сохранить статусы пользователя">&#128190;</div>
             </div>
@@ -206,7 +213,7 @@ class ApartmentProfile {
         }
     }
 
-    async CollectApartmentDataAndSave () {
+    async CollectApartmentDataAndSaveToCreate () {
         let apartment = {};       
         
         let number = parseInt(document.getElementById('number')?.value);
@@ -509,7 +516,7 @@ document.addEventListener('authStateChanged', async () => {
             apartmentProfile.SetHouseIdToCreateApartment ();
 
             document.querySelector('[data-action="save-apartment-data"]').addEventListener('click', () => {
-                apartmentProfile.CollectApartmentDataAndSave ();
+                apartmentProfile.CollectApartmentDataAndSaveToCreate ();
             });            
         }
 
