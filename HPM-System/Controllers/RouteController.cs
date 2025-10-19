@@ -41,6 +41,14 @@ namespace HPM_System.Controllers
 
         #region Apartment Routes
 
+        [HttpGet("apartment/by-user/{userId}")]
+        public IActionResult ApartmentsByUser(string userId)
+        {
+            _logger.LogInformation("Запрошены квартиры для пользователя с ID: {UserId}", userId);
+            ViewData["UserId"] = userId;
+            return View("Apartment/ApartmentsByUser");
+        }
+
         [HttpGet("apartment/{id}")]
         public IActionResult ApartmentDetails(string id)
         {
@@ -54,6 +62,13 @@ namespace HPM_System.Controllers
         {
             _logger.LogInformation("Запрошена страница создания квартиры");
             return View("Apartment/CreateApartment");
+        }
+
+        [HttpGet("apartment/edit/{id}")]
+        public IActionResult EditApartment()
+        {
+            _logger.LogInformation("Запрошена страница создания квартиры");
+            return View("Apartment/EditApartment");
         }
 
         #endregion
@@ -73,6 +88,14 @@ namespace HPM_System.Controllers
         {
             _logger.LogInformation("Запрошена страница создания дома");
             return View("House/CreateHouse");
+        }
+
+        [HttpGet("house/by-user/{userId}")]
+        public IActionResult HousesByUser(string userId)
+        {
+            _logger.LogInformation("Запрошены дома для пользователя с ID: {UserId}", userId);
+            ViewData["UserId"] = userId;
+            return View("House/HouseByUser");
         }
 
         #endregion

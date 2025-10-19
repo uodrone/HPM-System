@@ -1,5 +1,103 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div class="container py-5">
+	<div class="profile-group dashboard-card my-4" data-group="house">
+
+		<h3 class="card-header card-header_house w-100">Профиль дома</h3>
+
+		<div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100">
+			<div class="form-group">
+				<input type="text" placeholder=" " name="city" id="city" value="" />
+				<label for="city">Город</label>
+				<div class="error invisible" data-error="city">Неверный город</div>
+			</div>
+			<div class="form-group">
+				<input type="text" placeholder=" " name="street" id="street" value="" />
+				<label for="street">Улица</label>
+				<div class="error invisible" data-error="street">Неверная улица</div>
+			</div>
+			<div class="form-group">
+				<input type="text" placeholder=" " name="number" id="number" value="" />
+				<label for="number">Номер дома</label>
+				<div class="error invisible" data-error="number">Неверный номер дома</div>
+			</div>
+		</div>
+
+		<div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
+			<div class="form-group">
+				<input type="text" placeholder=" " name="postIndex" id="postIndex" value="" />
+				<label for="postIndex">Почтовый индекс</label>
+				<div class="error invisible" data-error="postIndex">Неверный почтовый индекс</div>
+			</div>
+			<div class="form-group">
+				<input type="number" placeholder=" " name="floors" id="floors" value="" />
+				<label for="floors">Количество этажей</label>
+				<div class="error invisible" data-error="floors">Неверное количество этажей</div>
+			</div>
+			<div class="form-group">
+				<input type="number" placeholder=" " name="entrances" id="entrances" value="" />
+				<label for="entrances">Количество подъездов</label>
+				<div class="error invisible" data-error="entrances">Неверное количество этажей</div>
+			</div>
+		</div>
+
+		<div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
+			<div class="form-group">
+				<input type="number" step="0.1" placeholder=" " name="totalArea" id="totalArea" value="" />
+				<label for="totalArea">Общая площадь</label>
+				<div class="error invisible" data-error="totalArea">Неверная общая площадь</div>
+			</div>
+			<div class="form-group">
+				<input type="number" step="0.1" placeholder=" " name="apartmentsArea" id="apartmentsArea" value="" />
+				<label for="apartmentsArea">Жилая площадь</label>
+				<div class="error invisible" data-error="apartmentsArea">Неверная жилая площадь</div>
+			</div>
+			<div class="form-group">
+				<input type="number" step="0.1" placeholder=" " name="landArea" id="landArea" value="" />
+				<label for="landArea">Площадь территории</label>
+				<div class="error invisible" data-error="landArea">Неверная площадь территории</div>
+			</div>
+		</div>
+
+		<div class="checkbox-group-flex mb-4">
+			<div class="form-group">
+				<input type="checkbox" name="isApartmentBuilding" id="isApartmentBuilding" value="" />
+				<label for="isApartmentBuilding">Дом многоквартирный?</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" name="hasGas" id="hasGas" value="" />
+				<label for="hasGas">Есть газ?</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" checked name="hasElectricity" id="hasElectricity" value="" />
+				<label for="hasElectricity">Есть электричество?</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" checked name="hasElevator" id="hasElevator" value="" />
+				<label for="hasElevator">Есть лифты?</label>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<select id="houseHead">
+				
+			</select>
+			<label for="houseHead">Старший по дому</label>
+		</div>
+
+		<div class="text-center">
+			<div class="btn btn_blue" data-action="save-house-data">Сохранить</div>
+		</div>
+	</div>
+
+	<div class="profile-group dashboard-card my-4" data-group="AllApartmentsInHouse">
+
+		<h3 class="card-header card-header_apartment w-100">Все квартиры дома</h3>
+
+		<div class="apartments-list areas-section w-100">
+
+		</div>
+	</div>
+
+	<div class="mt-4 text-center">
+		<a href="/apartment/create">Добавить квартиру</a>
+	</div>
+</div>

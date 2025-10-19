@@ -1,5 +1,8 @@
 using HPM_System.ApartmentService.Data;
+using HPM_System.ApartmentService.Interfaces;
+using HPM_System.ApartmentService.Repositories;
 using HPM_System.ApartmentService.Services;
+using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -13,7 +16,8 @@ namespace ApartmentService
 
             // Настройка EF Core (если нужен доступ к БД в основном приложении)
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+                .LogTo(Console.WriteLine, LogLevel.Information));
 
             // Настройка JSON для минимальных API
             builder.Services.ConfigureHttpJsonOptions(options =>
@@ -33,6 +37,11 @@ namespace ApartmentService
             // Регистрация HttpClient для взаимодействия с UserService
             builder.Services.AddHttpClient<IUserServiceClient, UserServiceClient>();
             builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
+
+            //Регистрация репозиториев
+            builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+            builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 
             // Поддержка CORS
             builder.Services.AddCors(options =>

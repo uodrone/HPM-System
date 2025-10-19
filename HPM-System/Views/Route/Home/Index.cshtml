@@ -8,24 +8,84 @@
     <div class="container">
         <!-- Приветствие для авторизованных пользователей -->
         <section data-auth-required class="auth-required">
-            <div class="welcome-section">
-                <h2>Добро пожаловать в HPM System!</h2>
-                <p>Рады видеть вас снова, <strong data-user-email>пользователь</strong></p>
-            </div>
-            <div class="my-5">
-                <div class="start-secreen-greed">
-                    <div class="profile-card" id="user-card">
-                        <h3 class="text-center">Профиль пользователя</h3>
 
-                        <div class="my-5 d-flex flex-column gap-2">
-                            <div data-user-fullname></div>
-                            <div data-user-phone></div>
-                            <div data-user-carslist></div>
-                        </div>
+            <h1 class="page-title text-center">Личный кабинет</h1>
 
-                        <div class="text-center">
-                            <a class="user-link" data-user-id href="/user">Редактировать профиль</a>
-                        </div>
+            <div class="dashboard-grid">
+                <!-- Профиль пользователя -->
+                <div class="dashboard-card user-card">
+                    <h3 class="card-header card-header_user">
+                        Профиль пользователя
+                    </h3>
+
+                    <div class="user-info">
+                        <div class="user-name" data-user-fullname></div>
+                        <div class="user-phone" data-user-phone></div>
+                    </div>
+
+                    <div class="text-center">
+                        <a class="user-link card-link" data-user-id href="/user/">
+                            Редактировать профиль
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Уведомления -->
+                <div class="dashboard-card notifications-card">
+                    <h3 class="card-header card-header_notification">Уведомления</h3>
+
+                    <div class="empty-state">
+                        Нет новых уведомлений
+                    </div>
+
+                    <div class="text-center">
+                        <a data-user-id href="/notification/by-user/" class="card-link notification-link">
+                            Все уведомления
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Квартиры пользователя -->
+                <div class="dashboard-card apartments-card">
+                    <h3 class="card-header card-header_apartment">Квартиры пользователя</h3>
+
+                    <div class="card-items-list apartments-list">
+                       
+                    </div>
+
+                    <div class="text-center">
+                        <a data-user-id href="/apartment/by-user/" class="card-link apartment-link">
+                            Все квартиры пользователя
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Дома пользователя -->
+                <div class="dashboard-card houses-card">
+                    <h3 class="card-header card-header_house">Дома пользователя</h3>
+
+                    <div class="card-items-list houses-list">
+                    </div>
+
+                    <div class="text-center">
+                        <a class="card-link house-link" data-user-id href="/house/by-user/">
+                            Все дома пользователя
+                        </a>
+                    </div>
+                </div>
+
+                <!-- События -->
+                <div class="dashboard-card events-card">
+                    <h3 class="card-header card-header_event">События</h3>
+
+                    <div class="empty-state">
+                        Нет новых событий
+                    </div>
+
+                    <div class="text-center">
+                        <a data-user-id href="/events/by-user/" class="card-link event-link">
+                            Все события
+                        </a>
                     </div>
                 </div>
             </div>

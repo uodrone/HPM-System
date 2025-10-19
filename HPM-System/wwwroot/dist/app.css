@@ -2,14 +2,20 @@
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/variables.css ***!
   \*****************************************************************************/
 :root {
+    --titleColor: #2c3e50;
+    --orangeBorder: #f39c12;
     --gray: #606060;
+    --gray-any: #d7d7d7;
     --grayworm: #8B9EB7;
     --graywormhover: #5E789B;
+    --blue: #0984e3;
+    --blue-hover: #0070c7;
     --anothergray: #F6F6F6;
     --light-gray: #F8F8F8;
     --medium-gray: #EBEBEB;
     --light-orange: #F79D65;
     --orange: #FE8B55;
+    --semiOrange: #e67e22;
     --orange-hover: #F86A3C;
     --biege-orange: #FFF9F5;
     --burgundy: #A4305A;
@@ -22,6 +28,7 @@
     --syntetic-green: #44DD97;
     --syntetic-light-green: #F4FFF7;
     --magenta: #BB59B2;
+    --blue: #3498db;
     --light-blue: #67AAF9;
     --tag-blue: #E8F2FF;
     --white-blue: #F6FAFF;
@@ -31,6 +38,7 @@
     --radius-16: 16px;
     --label-focus-size: 10px;
     --label-focus-top: -15px;
+    --card-gap: clamp(1rem, 0.375rem + 2vw, 1.5rem);
 }
 
 /*!*********************************************************************************!*\
@@ -40,7 +48,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: clamp(1rem, 0.375rem + 2vw, 1.5rem);
+    padding: var(--card-gap);
     border-radius: 24px;
     border: 1px solid #bfbfbf;
     width: 100%;
@@ -54,33 +62,41 @@
 
     input {
         border-radius: 5px;
-        border: 1px solid #c5c5c5;
+        border: 1px solid var(--gray-any);
         padding-left: 5px;
         width: 100%;
+        position: relative;
+        z-index: 1;
+        background-color: transparent;
 
         &:disabled {
             border-color: transparent;
         }
     }
 
+    input[type="checkbox"] {
+        width: auto;
+        border: none;
+    }
+
     label {
         transition: var(--standard-transition);
     }
 
-    input[type="text"] + label {
+    input[type="text"] + label,  input[type="number"] + label {
         position: absolute;
         top: 0;
         left: 5px;
         color: rgba(0,0,0,.5);
     }
 
-    input[type="text"]:focus + label {
+    input[type="text"]:focus + label, input[type="number"]:focus + label {
         top: var(--label-focus-top);
         opacity: .7;
         font-size: var(--label-focus-size);
     }
 
-    input[type="text"]:not(:placeholder-shown) + label {
+    input[type="text"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label {
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }
@@ -93,6 +109,41 @@
         font-size: var(--label-focus-size);
     }
 
+    select {
+        border-radius: 6px;
+        padding: 4px 8px;
+        border: 1px solid var(--medium-gray);
+        width: 100%;
+
+        &.no-border {
+            padding-left: 0;
+            border: none;
+        }
+
+        &:disabled {
+            appearance: none;
+        }
+    }
+
+    select + label {
+        position: absolute;
+        top: 0;
+        left: 5px;
+        color: rgba(0,0,0,.5);
+    }
+
+    select:not(:placeholder-shown) + label {
+        top: var(--label-focus-top);
+        font-size: var(--label-focus-size);
+    }
+
+    .ts-wrapper + label {
+        position: absolute;
+        color: rgba(0, 0, 0, .5);
+        top: var(--label-focus-top);
+        font-size: var(--label-focus-size);
+    }
+
     .error {
         color: red;
         font-size: 10px;
@@ -101,7 +152,23 @@
     }
 }
 
-.car {
+.checkbox-group-flex {
+    display: flex;
+    gap: var(--card-gap);
+    width: 100%;
+    
+    @media (max-width: 767px) {
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        width: auto;
+        display: flex;
+        gap: .5rem;
+    }
+}
+
+.car, .apartment {
     display: flex;
     gap: 16px;
     
@@ -151,6 +218,38 @@
     100% {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
+    }
+}
+/*!*******************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/multiselect.css ***!
+  \*******************************************************************************/
+.multiselect {
+    .ts-wrapper {
+        min-height: unset;
+
+        .ts-control {
+            display: flex;
+            gap: .25rem;
+            align-items: center;
+
+            &>input[type="select-multiple"] {
+                max-width: 100px !important;
+            }
+        }
+
+        &.multi {
+            .ts-control {
+                &>div {
+                    margin: 0;
+                }
+            }
+
+            &.has-items {
+                .ts-control {
+                    padding: 0;
+                }
+            }
+        }
     }
 }
 /*!*************************************************************************!*\
@@ -245,24 +344,21 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  
-}
-
 body {
-  margin-bottom: 60px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: #333;           
   min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;  
+  color: var(--titleColor);
+  font-weight: 600;  
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-h3 {
-  text-transform: uppercase;
+h3 {  
   font-size: clamp(1rem, 0.6563rem + 1vw, 1.25rem);
 }
 
@@ -303,6 +399,212 @@ h3 {
     color: white;
     margin-top: 2rem;
 }
+
+.container {
+  width: 100%;
+  padding: 0 10px;
+
+  @media (min-width: 1420px) {
+    width: 1400px;
+    padding: 0;
+  }
+
+  &.container_1200 {
+    @media (min-width: 1220px) {
+      width: 1200px;
+    }
+  }
+
+  &.container_900 {
+    @media (min-width: 920px) {
+      width: 900px;
+    }
+  }
+}
+
+footer {
+  padding: 30px 0;
+  background-color: #fff;
+}
+/*!*************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/icons.css ***!
+  \*************************************************************************/
+.icon-action {
+    cursor: pointer;
+}
+/*!****************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/house-and-apartments.css ***!
+  \****************************************************************************************/
+.basic-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.utility-yes {
+    color: var(--green);
+}
+
+.utility-no {
+    color: var(--burgundy);
+}
+
+.senior-section {
+    background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%);
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid var(--blue);
+}
+
+.senior-info {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+}
+
+.senior-name {
+    font-weight: 600;
+    color: var(--titleColor);
+    margin-bottom: 0.25rem;
+}
+
+.senior-phone {
+    color: var(--titleColor);
+    font-family: monospace;
+    font-weight: 500;
+}
+
+.no-senior {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.company-item {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    border: 1px solid var(--burgundy);
+}
+
+.company-label {
+    font-size: 0.85rem;
+    color: var(--burgundy);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.company-value {
+    font-weight: 500;
+    color: var(--titleColor);
+}
+
+.company-value.empty {
+    color: var(--burgundy);
+    font-style: italic;
+}
+
+.houses-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1200px) {
+    .houses-grid {
+        grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    }
+}
+
+/* Квартиры */
+.apartments-card {
+    border-top: 4px solid #fdcb6e;
+}
+
+.apartment-item {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #e17055;
+}
+
+.apartment-address {
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+}
+
+.apartment-details {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+.apartment-detail {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.detail-label {
+    color: #636e72;
+    font-size: 0.8rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.house-item {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #0984e3;
+
+    .senior-section {
+        border: none;
+    }
+}
+
+.house-address {
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 0.75rem;
+}
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/grid.css ***!
   \************************************************************************/
@@ -314,6 +616,143 @@ h3 {
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/card.css ***!
   \************************************************************************/
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: var(--card-gap);
+    margin-bottom: var(--card-gap);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+
+    &.card_house {   
+        border-top: 4px solid #3498db;
+        display: flex;;
+        flex-direction: column;
+        gap: var(--card-gap);
+    }
+
+    &.card_apartment {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid var(--semiOrange);
+        border-radius: 8px;
+        padding: 1rem;
+        border-left: 4px solid var(--semiOrange);
+    }
+
+    &.card_area {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid var(--orangeBorder);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        border-left: 4px solid var(--orangeBorder);
+    }
+
+    &.card_management {
+        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        border: 1px solid var(--burgundy);
+        padding: 1rem;
+        border-left: 4px solid var(--burgundy);
+    }
+}
+
+.card-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap)
+}
+
+.card-header {
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 1rem;    
+    color: white;
+    border-radius: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    &:first-child {
+        border-radius: 8px;
+    }
+    
+    &.card-header_house {
+         background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);     
+    }
+
+    &.card-header_user {
+        background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); 
+    }
+
+    &.card-header_event {
+        background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);        
+    }
+
+    &.card-header_notification {
+        background: linear-gradient(135deg, #22e042 0%, #078b00 100%);
+    }
+
+    &.card-header_apartment {
+        background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+        color: white;
+        border-radius: 8px;
+        padding: 1rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.areas-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.area-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--semiOrange);
+    margin-bottom: 0.25rem;
+}
+
+.area-label {
+    font-size: 0.85rem;
+    color: #8b6914;
+    font-weight: 500;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--card-gap);
+
+    @media (max-width: 991px) {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    @media (max-width: 767px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    padding: var(--card-gap);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    transition: var(--standard-transition);
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+
+/*Старые стили*/
+
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -330,10 +769,10 @@ h3 {
     color: white;
     transition: transform 0.3s;
     cursor: pointer;
-}
 
-.feature-card:hover {
-    transform: translateY(-5px);
+    &:hover {
+        transform: translateY(-5px);
+    }
 }
 
 .feature-icon {
@@ -350,7 +789,7 @@ h3 {
 
 .stat-card {
     background: rgba(255, 255, 255, 0.1);
-    padding: 1.5rem;
+    padding: var(--card-gap);
     border-radius: 8px;
     text-align: center;
 }
@@ -410,6 +849,16 @@ h3 {
     &:hover {
         background-color: var(--green);
         border: 1px solid rgba(255, 255, 255, 1);
+        color: white;
+    }
+}
+
+.btn_blue {
+    background-color: var(--blue);
+    color: white;
+
+    &:hover {
+        background-color: var(--blue-hover);
         color: white;
     }
 }

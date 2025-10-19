@@ -120,6 +120,7 @@ services:
       - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
+      - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
     ports:
       - "${APARTMENTSERVICE_HTTP}:8080"
       - "${APARTMENTSERVICE_HTTPS}:8081"

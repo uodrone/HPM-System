@@ -1,6 +1,7 @@
-﻿using HPM_System.ApartmentService.DTOs;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Net;
+using DTOs.UserDTOs;
+using Interfaces;
 
 namespace HPM_System.ApartmentService.Services
 {
@@ -14,7 +15,7 @@ namespace HPM_System.ApartmentService.Services
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userServiceBaseUrl = configuration["Services:UserService:BaseUrl"]?.TrimEnd('/') ?? "https://localhost:55680";
+            _userServiceBaseUrl = configuration["Services:UserService:BaseUrl"]?.TrimEnd('/') ?? "http://hpm-system.userservice:8080";
         }
 
         /// <inheritdoc />

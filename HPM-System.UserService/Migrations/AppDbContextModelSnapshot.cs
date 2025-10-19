@@ -50,8 +50,6 @@ namespace HPM_System.UserService.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
                     b.HasKey("Id");
 
                     b.HasIndex("Number")
@@ -78,6 +76,9 @@ namespace HPM_System.UserService.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsSystemAdmin")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
