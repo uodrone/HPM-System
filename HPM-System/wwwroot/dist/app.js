@@ -3186,7 +3186,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 var Multiselect = /*#__PURE__*/function () {
   function Multiselect() {
     _classCallCheck(this, Multiselect);
-    this.instances = new Map(); // храним активные инстансы по ID
+    this.instances = new Map();
   }
 
   /**
