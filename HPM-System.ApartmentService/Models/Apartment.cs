@@ -10,7 +10,8 @@ namespace HPM_System.ApartmentService.Models
         public decimal ResidentialArea { get; set; }
         public decimal TotalArea { get; set; }
         public int? Floor {  get; set; }
-        public int HouseId { get; set; }
+        public int? EntranceNumber { get; set; } = 0;
+        public long HouseId { get; set; }
         [JsonIgnore]
         public ICollection<ApartmentUser> Users { get; set; } = new List<ApartmentUser>();
     }

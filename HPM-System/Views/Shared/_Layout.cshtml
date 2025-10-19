@@ -22,9 +22,9 @@
                     </button>
                     <!-- Элементы для авторизованных пользователей -->
                     <div data-auth-required class="auth-required d-flex justify-content-center gap-3">
-                        <a href="/dashboard" class="nav-link">Панель управления</a>
-                        <a href="/apartments" class="nav-link">Квартиры</a>
-                        <a href="/notifications" class="nav-link">Уведомления</a>
+                        <a data-user-id href="/user/" class="nav-link">Профиль</a>
+                        <a data-user-id href="/apartment/by-user/" class="nav-link">Квартиры</a>
+                        <a data-user-id href="/house/by-user/" class="nav-link">Дома</a>
                     </div>
 
                     <!-- Информация о пользователе и кнопки управления -->
@@ -61,4 +61,9 @@
     <script src="~/dist/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+<!--Подключение библиотечек-->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.default.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<!--Конец подключения библиотечек-->
 </html>

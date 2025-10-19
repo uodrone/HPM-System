@@ -1,0 +1,173 @@
+@import url(variables.css);
+
+
+.basic-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.utility-yes {
+    color: var(--green);
+}
+
+.utility-no {
+    color: var(--burgundy);
+}
+
+.senior-section {
+    background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%);
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid var(--blue);
+}
+
+.senior-info {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+}
+
+.senior-name {
+    font-weight: 600;
+    color: var(--titleColor);
+    margin-bottom: 0.25rem;
+}
+
+.senior-phone {
+    color: var(--titleColor);
+    font-family: monospace;
+    font-weight: 500;
+}
+
+.no-senior {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.company-item {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    border: 1px solid var(--burgundy);
+}
+
+.company-label {
+    font-size: 0.85rem;
+    color: var(--burgundy);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.company-value {
+    font-weight: 500;
+    color: var(--titleColor);
+}
+
+.company-value.empty {
+    color: var(--burgundy);
+    font-style: italic;
+}
+
+.houses-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1200px) {
+    .houses-grid {
+        grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    }
+}
+
+/* Квартиры */
+.apartments-card {
+    border-top: 4px solid #fdcb6e;
+}
+
+.apartment-item {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #e17055;
+}
+
+.apartment-address {
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+}
+
+.apartment-details {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+.apartment-detail {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.detail-label {
+    color: #636e72;
+    font-size: 0.8rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.house-item {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #0984e3;
+
+    .senior-section {
+        border: none;
+    }
+}
+
+.house-address {
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 0.75rem;
+}

@@ -220,6 +220,7 @@ namespace HPM_System.UserService.Controllers
                 existingUser.Email = updatedUser.Email;
                 existingUser.PhoneNumber = updatedUser.PhoneNumber;
                 existingUser.Birthday = updatedUser.Birthday;
+                existingUser.IsSystemAdmin = updatedUser.IsSystemAdmin;
 
                 _context.Users.Update(existingUser);
                 await _context.SaveChangesAsync();
@@ -254,6 +255,34 @@ namespace HPM_System.UserService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при удалении пользователя с ID {id}", id);
+                return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
+            }
+        }
+
+        // GET: api/Users/is-user-system-admin/{id}
+        [HttpGet("/is-user-system-admin/{id}")]
+        public async Task<IActionResult> IsUserSystemAdmin(string id)
+        {
+            try
+            {
+                Guid userId = Guid.Parse(id);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null) return NotFound();
+
+                if (user.IsSystemAdmin)
+                    return Ok($"Пользователь с id {id} является администратором");
+                else
+                    return Accepted($"Пользователь с id {id} НЕ является администратором");
+            }
+            catch (FormatException fm)
+            {
+                _logger.LogError(fm, "Неверный формат ID пользователя {Id}", id);
+                return StatusCode(500, new { Message = "Неверный формат ID пользователя" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении пользователя с ID {Id}", id);
                 return StatusCode(500, new { Message = "Внутренняя ошибка сервера" });
             }
         }

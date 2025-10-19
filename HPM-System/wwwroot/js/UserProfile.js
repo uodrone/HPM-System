@@ -1,7 +1,7 @@
 import { UserValidator } from './UserValidator.js';
 import { Modal } from './Modal.js';
 
-class UserProfile {
+export class UserProfile {
     constructor () {
         this.userApiAddress = 'http://localhost:55680';
         this.validator = new UserValidator();
@@ -22,6 +22,64 @@ class UserProfile {
         }
     }
 
+    async getUserByPhone(phone) {
+        const phoneValidation = this.validator?.validatePhoneNumber(phone);
+        if (!phoneValidation?.isValid) {
+            return {
+                success: false,
+                error: phoneValidation.error || 'Неверный формат номера телефона'
+            };
+        }
+
+        // 2. Нормализуем номер для отправки (убираем всё кроме + и цифр)
+        // Это важно, потому что сервер может не распознать "красивый" формат
+        const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+
+        // 3. URL-кодируем номер (особенно важно для символа '+')
+        const encodedPhone = encodeURIComponent(cleanPhone);
+        const url = `${this.userApiAddress}/api/Users/by-phone/${encodedPhone}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+                return user;
+            }
+
+            if (response.status === 404) {
+                return { success: false, error: 'Пользователь с таким номером не найден' };
+            }
+
+            if (response.status === 400) {
+                const errorData = await response.json().catch(() => null);
+                return {
+                    success: false,
+                    error: errorData?.Message || 'Некорректный номер телефона'
+                };
+            }
+
+            // Любая серверная ошибка
+            const errorData = await response.json().catch(() => null);
+            return {
+                success: false,
+                error: errorData?.Message || `Ошибка сервера (${response.status})`
+            };
+
+        } catch (networkError) {
+            console.error('Сетевая ошибка при запросе пользователя по телефону:', networkError);
+            return {
+                success: false,
+                error: 'Нет соединения с сервером'
+            };
+        }
+    }
+
     async GetCarsByUserId(userId) {
         try {
             const response = await fetch(`${this.userApiAddress}/api/Cars/by-user/${userId}`, {
@@ -37,13 +95,15 @@ class UserProfile {
         }
     }
 
-    async InsertUserDataToCardOnMainPage (userId) {
-        const userIdLinks = document.querySelectorAll('a.user-link[data-user-id]');
+    InsertUserIdToLinks (userId) {
+        const userIdLinks = document.querySelectorAll('a[data-user-id]');
         userIdLinks.forEach(element => {
             const link = element.href;
-            element.href = `/user/${userId}`;
+            element.href += userId;
         });
+    }
 
+    async InsertUserDataToCardOnMainPage (userId) {
         try {
             await this.GetUserById(userId).then(user => {
                 
@@ -75,7 +135,7 @@ class UserProfile {
     async InsertCarsToUserProfile (userId) {
         const cars = await this.GetCarsByUserId(userId);
         const carsContainer = document.querySelector('.profile-group[data-group="cars"] .cars-list');
-        carsContainer.innerHTML = '';     
+        carsContainer.innerHTML = '';
         cars.forEach(car => {
             this.SetUserCar(car, carsContainer);
         });
@@ -442,5 +502,7 @@ document.addEventListener('authStateChanged', () => {
                 }
             });
         }
+
+        userProfile.InsertUserIdToLinks(userId);
     }
 });

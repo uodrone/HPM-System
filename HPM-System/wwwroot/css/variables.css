@@ -1,12 +1,18 @@
-﻿:root {
+:root {
+    --titleColor: #2c3e50;
+    --orangeBorder: #f39c12;
     --gray: #606060;
+    --gray-any: #d7d7d7;
     --grayworm: #8B9EB7;
     --graywormhover: #5E789B;
+    --blue: #0984e3;
+    --blue-hover: #0070c7;
     --anothergray: #F6F6F6;
     --light-gray: #F8F8F8;
     --medium-gray: #EBEBEB;
     --light-orange: #F79D65;
     --orange: #FE8B55;
+    --semiOrange: #e67e22;
     --orange-hover: #F86A3C;
     --biege-orange: #FFF9F5;
     --burgundy: #A4305A;
@@ -19,6 +25,7 @@
     --syntetic-green: #44DD97;
     --syntetic-light-green: #F4FFF7;
     --magenta: #BB59B2;
+    --blue: #3498db;
     --light-blue: #67AAF9;
     --tag-blue: #E8F2FF;
     --white-blue: #F6FAFF;
@@ -28,4 +35,5 @@
     --radius-16: 16px;
     --label-focus-size: 10px;
     --label-focus-top: -15px;
+    --card-gap: clamp(1rem, 0.375rem + 2vw, 1.5rem);
 }

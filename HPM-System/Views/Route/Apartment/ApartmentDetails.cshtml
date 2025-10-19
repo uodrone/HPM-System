@@ -1,5 +1,76 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+<div id="apartment-profile">
+	<div class="container py-5">
+		<div class="profile-group dashboard-card my-4" data-group="apartment">
+			<h3 class="card-header card-header_apartment w-100">Профиль квартиры</h3>
+
+			<div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100">
+				<div class="form-group">
+					<input type="number" disabled placeholder="" min="1" max="10000" name="number" id="number" value="">
+					<label for="number">Номер квартиры</label>
+					<div class="error invisible" data-error="number">Неверный номер</div>
+				</div>
+				<div class="form-group">
+					<input type="number" disabled placeholder="" min="1" max="100" name="numbersOfRooms" id="numbersOfRooms" value="">
+					<label for="numbersOfRooms">Число комнат</label>
+					<div class="error invisible" data-error="numbersOfRooms">Неверное число комнат</div>
+				</div>
+				<div class="form-group">
+					<input type="number" disabled placeholder="" min="1" max="100" name="entranceNumber" id="entranceNumber" value="">
+					<label for="entranceNumber">Номер подъезда</label>
+					<div class="error invisible" data-error="entranceNumber">Неверный номер подъезда</div>
+				</div>
+			</div>
+			<div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
+				<div class="form-group">
+					<input type="number" disabled placeholder="" min="1" max="200" name="floor" id="floor" value="">
+					<label for="floor">Этаж</label>
+					<div class="error invisible" data-error="floor">Неверный этаж</div>
+				</div>
+				<div class="form-group">
+					<input type="number" disabled step="0.1" min="1" max="10000" placeholder="" name="totalArea" id="totalArea" value="">
+					<label for="totalArea">Общая площадь</label>
+					<div class="error invisible" data-error="totalArea">Неверная общая площадь</div>
+				</div>
+				<div class="form-group">
+					<input type="number" disabled step="0.1" min="1" max="10000" placeholder="" name="residentialArea" id="residentialArea" value="">
+					<label for="residentialArea">Жилая площадь</label>
+					<div class="error invisible" data-error="residentialArea">Неверная жилая площадь</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<select id="houseId" disabled class="no-border"></select>
+				<label for="houseId">Дом</label>
+			</div>
+		</div>
+
+		<div class="profile-group dashboard-card my-4" data-group="apartment-users">
+			<h3 class="card-header card-header_apartment w-100">Все пользователи квартиры</h3>
+
+			<div class="apartment-user-list w-100">
+
+			</div>
+		</div>
+
+		<div class="mt-4 text-center">
+			<a href="#" onclick="return false;" data-modal="open">Добавить нового пользователя в квартиру</a>
+		</div>
+	</div>
+</div>
+
+<div class="modal-overview">
+	<div class="modal-inner">
+		<div class="modal-content-wrapper car-modal">
+			<div class="modal-close" title="Закрыть"></div>
+			<h4 class="text-center my-4">Введите телефон пользователя</h4>
+			<div class="form-group">
+				<input type="text" placeholder=" " name="newPhoneNumber" id="newPhoneNumber" value="">
+				<label for="newPhoneNumber">Телефон пользователя</label>
+				<div class="error invisible" data-error="newPhoneNumber">Неверный телефон</div>
+			</div>
+			<div class="mt-4 text-center">
+				<div class="btn btn_secondary" data-action="add-user-to-apartment">Добавить</div>
+			</div>
+		</div>
+	</div>
+</div>

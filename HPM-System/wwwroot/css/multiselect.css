@@ -1,0 +1,29 @@
+.multiselect {
+    .ts-wrapper {
+        min-height: unset;
+
+        .ts-control {
+            display: flex;
+            gap: .25rem;
+            align-items: center;
+
+            &>input[type="select-multiple"] {
+                max-width: 100px !important;
+            }
+        }
+
+        &.multi {
+            .ts-control {
+                &>div {
+                    margin: 0;
+                }
+            }
+
+            &.has-items {
+                .ts-control {
+                    padding: 0;
+                }
+            }
+        }
+    }
+}

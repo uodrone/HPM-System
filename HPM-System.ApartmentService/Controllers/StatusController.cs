@@ -1,8 +1,9 @@
-﻿using HPM_System.ApartmentService.Data;
+﻿using DTOs.StatusDTOs;
+using HPM_System.ApartmentService.DTOs.StatusDTOs;
+using HPM_System.ApartmentService.Interfaces;
 using HPM_System.ApartmentService.Models;
-using HPM_System.ApartmentService.DTOs;
+using HPM_System.ApartmentService.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HPM_System.ApartmentService.Controllers
 {
@@ -10,12 +11,12 @@ namespace HPM_System.ApartmentService.Controllers
     [Route("api/[controller]")]
     public class StatusController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IStatusRepository _statusRepository;
         private readonly ILogger<StatusController> _logger;
 
-        public StatusController(AppDbContext context, ILogger<StatusController> logger)
+        public StatusController(IStatusRepository statusRepository, ILogger<StatusController> logger)
         {
-            _context = context;
+            _statusRepository = statusRepository;
             _logger = logger;
         }
 
@@ -27,7 +28,7 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var statuses = await _context.Statuses.ToListAsync();
+                var statuses = await _statusRepository.GetAllStatusesAsync();
                 return Ok(statuses);
             }
             catch (Exception ex)
@@ -45,7 +46,7 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var status = await _context.Statuses.FindAsync(id);
+                var status = await _statusRepository.GetStatusByIdAsync(id);
 
                 if (status == null)
                 {
@@ -74,9 +75,7 @@ namespace HPM_System.ApartmentService.Controllers
                     return BadRequest("Название статуса не может быть пустым");
                 }
 
-                // Проверяем уникальность названия
-                var existingStatus = await _context.Statuses
-                    .FirstOrDefaultAsync(s => s.Name.ToLower() == createStatusDto.Name.ToLower());
+                var existingStatus = await _statusRepository.FindStatusByNameAsync(createStatusDto.Name);
 
                 if (existingStatus != null)
                 {
@@ -88,10 +87,10 @@ namespace HPM_System.ApartmentService.Controllers
                     Name = createStatusDto.Name.Trim()
                 };
 
-                _context.Statuses.Add(status);
-                await _context.SaveChangesAsync();
+                var createdStatus = await _statusRepository.CreateStatusAsync(status);
+                await _statusRepository.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetStatus), new { id = status.Id }, status);
+                return CreatedAtAction(nameof(GetStatus), new { id = createdStatus.Id }, createdStatus);
             }
             catch (Exception ex)
             {
@@ -108,7 +107,7 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var status = await _context.Statuses.FindAsync(id);
+                var status = await _statusRepository.GetStatusByIdAsync(id);
 
                 if (status == null)
                 {
@@ -120,9 +119,7 @@ namespace HPM_System.ApartmentService.Controllers
                     return BadRequest("Название статуса не может быть пустым");
                 }
 
-                // Проверяем уникальность названия (исключая текущий статус)
-                var existingStatus = await _context.Statuses
-                    .FirstOrDefaultAsync(s => s.Name.ToLower() == updateStatusDto.Name.ToLower() && s.Id != id);
+                var existingStatus = await _statusRepository.FindStatusByNameAsync(updateStatusDto.Name, id);
 
                 if (existingStatus != null)
                 {
@@ -130,8 +127,13 @@ namespace HPM_System.ApartmentService.Controllers
                 }
 
                 status.Name = updateStatusDto.Name.Trim();
-                await _context.SaveChangesAsync();
+                var success = await _statusRepository.UpdateStatusAsync(status);
+                if (!success)
+                {
+                    return NotFound($"Статус с ID {id} не найден");
+                }
 
+                await _statusRepository.SaveChangesAsync();
                 return NoContent();
             }
             catch (Exception ex)
@@ -149,25 +151,26 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var status = await _context.Statuses.FindAsync(id);
+                var status = await _statusRepository.GetStatusByIdAsync(id);
 
                 if (status == null)
                 {
                     return NotFound($"Статус с ID {id} не найден");
                 }
 
-                // Проверяем, используется ли статус
-                var isUsed = await _context.ApartmentUserStatuses
-                    .AnyAsync(aus => aus.StatusId == id);
-
+                var isUsed = await _statusRepository.IsStatusUsedAsync(id);
                 if (isUsed)
                 {
                     return BadRequest("Невозможно удалить статус, так как он используется пользователями");
                 }
 
-                _context.Statuses.Remove(status);
-                await _context.SaveChangesAsync();
+                var success = await _statusRepository.DeleteStatusAsync(id);
+                if (!success)
+                {
+                    return NotFound($"Статус с ID {id} не найден");
+                }
 
+                await _statusRepository.SaveChangesAsync();
                 return NoContent();
             }
             catch (Exception ex)
@@ -185,27 +188,19 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                // Проверяем существование квартиры, пользователя и статуса
-                var apartmentUser = await _context.ApartmentUsers
-                    .FirstOrDefaultAsync(au => au.ApartmentId == apartmentId && au.UserId == userId);
-
+                var apartmentUser = await _statusRepository.GetApartmentUserAsync(apartmentId, userId);
                 if (apartmentUser == null)
                 {
                     return NotFound("Пользователь не связан с указанной квартирой");
                 }
 
-                var status = await _context.Statuses.FindAsync(statusId);
+                var status = await _statusRepository.GetStatusByIdAsync(statusId);
                 if (status == null)
                 {
                     return NotFound($"Статус с ID {statusId} не найден");
                 }
 
-                // Проверяем, не назначен ли уже такой статус
-                var existingStatus = await _context.ApartmentUserStatuses
-                    .FirstOrDefaultAsync(aus => aus.ApartmentId == apartmentId &&
-                                              aus.UserId == userId &&
-                                              aus.StatusId == statusId);
-
+                var existingStatus = await _statusRepository.GetApartmentUserStatusAsync(apartmentId, userId, statusId);
                 if (existingStatus != null)
                 {
                     return Conflict("Данный статус уже назначен пользователю для этой квартиры");
@@ -218,8 +213,8 @@ namespace HPM_System.ApartmentService.Controllers
                     StatusId = statusId
                 };
 
-                _context.ApartmentUserStatuses.Add(apartmentUserStatus);
-                await _context.SaveChangesAsync();
+                await _statusRepository.AssignStatusToUserAsync(apartmentUserStatus);
+                await _statusRepository.SaveChangesAsync();
 
                 return Ok("Статус успешно назначен пользователю");
             }
@@ -238,32 +233,73 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartmentUser = await _context.ApartmentUsers
-                    .FirstOrDefaultAsync(au => au.ApartmentId == apartmentId && au.UserId == userId);
-
+                var apartmentUser = await _statusRepository.GetApartmentUserAsync(apartmentId, userId);
                 if (apartmentUser == null)
                 {
                     return NotFound("Пользователь не связан с указанной квартирой");
                 }
 
-                var apartmentUserStatus = await _context.ApartmentUserStatuses
-                    .FirstOrDefaultAsync(aus => aus.ApartmentId == apartmentId &&
-                                              aus.UserId == userId &&
-                                              aus.StatusId == statusId);
-
-                if (apartmentUserStatus == null)
+                var success = await _statusRepository.RevokeStatusFromUserAsync(apartmentId, userId, statusId);
+                if (!success)
                 {
                     return NotFound("Указанный статус не назначен пользователю для данной квартиры");
                 }
 
-                _context.ApartmentUserStatuses.Remove(apartmentUserStatus);
-                await _context.SaveChangesAsync();
-
+                await _statusRepository.SaveChangesAsync();
                 return Ok("Статус успешно отозван у пользователя");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отзыве статуса у пользователя");
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
+        /// Установить полный набор статусов пользователя для квартиры (заменяет все текущие)
+        /// </summary>
+        [HttpPut("apartment/{apartmentId}/user/{userId}/statuses")]
+        public async Task<IActionResult> SetUserStatusesForApartment(
+            int apartmentId,
+            Guid userId,
+            [FromBody] BatchAssignStatusesDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Тело запроса не может быть пустым");
+            }
+
+            // Даже если список пуст — это валидно (удалить все статусы)
+            var statusIds = dto.StatusIds ?? new List<int>();
+
+            try
+            {
+                var apartmentUser = await _statusRepository.GetApartmentUserAsync(apartmentId, userId);
+                if (apartmentUser == null)
+                {
+                    return NotFound("Пользователь не связан с указанной квартирой");
+                }
+
+                // Если переданы ID — проверяем их существование
+                if (statusIds.Any())
+                {
+                    var existingStatuses = await _statusRepository.GetStatusesByIdsAsync(statusIds);
+                    if (existingStatuses.Count() != statusIds.Count)
+                    {
+                        var missingIds = statusIds.Except(existingStatuses.Select(s => s.Id)).ToList();
+                        return BadRequest($"Статусы с ID {string.Join(", ", missingIds)} не найдены");
+                    }
+                }
+
+                // Полная замена статусов
+                await _statusRepository.SetUserStatusesForApartmentAsync(apartmentId, userId, statusIds);
+                await _statusRepository.SaveChangesAsync();
+
+                return Ok("Статусы пользователя успешно обновлены");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при установке полного набора статусов для пользователя");
                 return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
@@ -276,20 +312,13 @@ namespace HPM_System.ApartmentService.Controllers
         {
             try
             {
-                var apartmentUser = await _context.ApartmentUsers
-                    .FirstOrDefaultAsync(au => au.ApartmentId == apartmentId && au.UserId == userId);
-
+                var apartmentUser = await _statusRepository.GetApartmentUserAsync(apartmentId, userId);
                 if (apartmentUser == null)
                 {
                     return NotFound("Пользователь не связан с указанной квартирой");
                 }
 
-                var statuses = await _context.ApartmentUserStatuses
-                    .Where(aus => aus.ApartmentId == apartmentId && aus.UserId == userId)
-                    .Include(aus => aus.Status)
-                    .Select(aus => aus.Status)
-                    .ToListAsync();
-
+                var statuses = await _statusRepository.GetUserStatusesForApartmentAsync(apartmentId, userId);
                 return Ok(statuses);
             }
             catch (Exception ex)

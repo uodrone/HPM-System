@@ -30,11 +30,14 @@ namespace HPMSystem.ApartmentService.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<int?>("EntranceNumber")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("Floor")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HouseId")
-                        .HasColumnType("integer");
+                    b.Property<long>("HouseId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Number")
                         .HasColumnType("integer");
@@ -49,6 +52,8 @@ namespace HPMSystem.ApartmentService.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HouseId");
 
                     b.ToTable("Apartment");
                 });
@@ -99,6 +104,102 @@ namespace HPMSystem.ApartmentService.Migrations
                         .IsUnique();
 
                     b.ToTable("ApartmentUserStatuses");
+                });
+
+            modelBuilder.Entity("HPM_System.ApartmentService.Models.District", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("HouseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HouseId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("District");
+                });
+
+            modelBuilder.Entity("HPM_System.ApartmentService.Models.House", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<double?>("ApartmentsArea")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Entrances")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Floors")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("HasElectricity")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasElevator")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasGas")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("HeadId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsApartmentBuilding")
+                        .HasColumnType("boolean");
+
+                    b.Property<double?>("LandArea")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PostIndex")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<double?>("TotalArea")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("builtYear")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HeadId");
+
+                    b.HasIndex("City", "Street", "Number")
+                        .IsUnique();
+
+                    b.ToTable("House");
                 });
 
             modelBuilder.Entity("HPM_System.ApartmentService.Models.Status", b =>
@@ -155,6 +256,15 @@ namespace HPMSystem.ApartmentService.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("HPM_System.ApartmentService.Models.Apartment", b =>
+                {
+                    b.HasOne("HPM_System.ApartmentService.Models.House", null)
+                        .WithMany("Apartments")
+                        .HasForeignKey("HouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HPM_System.ApartmentService.Models.ApartmentUser", b =>
                 {
                     b.HasOne("HPM_System.ApartmentService.Models.Apartment", "Apartment")
@@ -193,6 +303,19 @@ namespace HPMSystem.ApartmentService.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("HPM_System.ApartmentService.Models.District", b =>
+                {
+                    b.HasOne("HPM_System.ApartmentService.Models.House", null)
+                        .WithMany("Districts")
+                        .HasForeignKey("HouseId");
+
+                    b.HasOne("HPM_System.ApartmentService.Models.District", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("HPM_System.ApartmentService.Models.Apartment", b =>
                 {
                     b.Navigation("Users");
@@ -201,6 +324,13 @@ namespace HPMSystem.ApartmentService.Migrations
             modelBuilder.Entity("HPM_System.ApartmentService.Models.ApartmentUser", b =>
                 {
                     b.Navigation("Statuses");
+                });
+
+            modelBuilder.Entity("HPM_System.ApartmentService.Models.House", b =>
+                {
+                    b.Navigation("Apartments");
+
+                    b.Navigation("Districts");
                 });
 
             modelBuilder.Entity("HPM_System.ApartmentService.Models.User", b =>
