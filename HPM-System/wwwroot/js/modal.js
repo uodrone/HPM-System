@@ -32,6 +32,10 @@ export class Modal {
       }      
     }
 
+    static CloseModalImmediately () {
+      document.querySelector('.modal-overview').classList.remove('active');
+    }
+
     static ShowNotification(text, color) {
         const notification = document.createElement('div');
         notification.className = 'notification';
@@ -41,12 +45,12 @@ export class Modal {
         // Добавляем уведомление в документ
         document.body.appendChild(notification);
         
-        // Через 2 секунды удаляем уведомление
+        // Через 3 секунды удаляем уведомление
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
-        }, 2000);
+        }, 3000);
     }
 }
 

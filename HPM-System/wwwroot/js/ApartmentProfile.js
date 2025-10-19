@@ -109,6 +109,10 @@ export class ApartmentProfile {
         const users = apartment.users;
         const house = await this.House.GetHouse(apartment.houseId);        
         let apartmenUsertList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
+        let houseContainer = document.getElementById('houseId');
+
+        apartmenUsertList.innerHTML = '';
+        houseContainer.innerHTML = '';
         
 
         document.getElementById('number').value = apartment.number;
@@ -121,7 +125,7 @@ export class ApartmentProfile {
         const option = document.createElement('option');
         option.value = apartment.houseId;
         option.textContent = `${house.city}, ул. ${house.street} ${house.number} `;
-        document.getElementById('houseId').appendChild(option);
+        houseContainer.appendChild(option);
 
         for (const user of users) {
             const shareEntry = apartmentsShare.find(s => s.userId === user.userId);
@@ -179,6 +183,7 @@ export class ApartmentProfile {
                     <div class="error invisible" data-error="share">Доля владения только для владельцев</div>
                 </div>
                 <div class="save-icon icon-action" data-status="save" title="Сохранить статусы пользователя">&#128190;</div>
+                <div class="remove-icon icon-action" data-status="remove" title="Удалить пользователя">&#10060;</div>                
             </div>
         `;
 
@@ -325,6 +330,29 @@ export class ApartmentProfile {
         }        
     }
 
+    RemoveUserFromApartmentAndSave (apartmentId) {
+        document.addEventListener('click', async (e) => {
+            // Проверяем, был ли клик по элементу с нужным data-атрибутом
+            if (e.target.closest('[data-status="remove"]')) {
+                const user = e.target.closest('[data-apartment-user-id]');
+                const userId = user.dataset.apartmentUserId;
+                
+                try {
+                    let isUserRemovedFromApartmentSuccessfull = await this.RemoveUserFromApartment(apartmentId, userId);
+                    if (isUserRemovedFromApartmentSuccessfull) {                        
+                        this.EditApartmentProfile(apartmentId);
+                        Modal.ShowNotification('Пользователь удален успешно', 'green');                        
+                    }
+                        
+                }
+                catch (e) {
+                    console.log(e);
+                    Modal.ShowNotification('Ошибка удаления пользователя', 'red');
+                }                
+            }
+        });
+    }
+
     AddNewUserToApartment (apartmentId) {
         let modalPhoneError = document.querySelector('[data-error="newPhoneNumber"]');
 
@@ -335,7 +363,12 @@ export class ApartmentProfile {
                 console.log(`телефон валидный`);
                 
                 const user = await this.userProfile.getUserByPhone(phoneNumber);
-                await this.AddUserToApartment(apartmentId, user.id);                
+                let isAddUserToApartmentSuccessfull = await this.AddUserToApartment(apartmentId, user.id);
+                if (isAddUserToApartmentSuccessfull) {
+                    Modal.CloseModalImmediately();
+                    Modal.ShowNotification('Пользователь успешно добавлен', 'green');
+                    this.EditApartmentProfile(apartmentId);
+                }
             } else {
                 modalPhoneError.classList.remove('invisible');
             }
@@ -430,9 +463,15 @@ export class ApartmentProfile {
             body: JSON.stringify()
             });
             const data = await response.text();
-            if (!response.ok) throw new Error(data);
-            console.log(data);
-            console.log(`пользователь ${user.id} добавлен к квартире с id ${apartmentId}`);
+            if (!response.ok) {
+                console.log(data);
+                console.log(`пользователь ${user.id} добавлен к квартире с id ${apartmentId}`);                
+                return false;
+                //throw new Error(data)
+            } else {
+                return true;
+            }
+            
         } catch (error) {
             console.error('Ошибка добавления пользователя к квартире:', error);
         }
@@ -446,8 +485,13 @@ export class ApartmentProfile {
                 headers: { 'Content-Type': 'application/json' }
             });
             const data = await response.text();
-            if (!response.ok) throw new Error(data);
-            console.log(data);
+            if (!response.ok) {                
+                console.log(data);
+                return false;
+                //throw new Error(data);
+            } else {
+                return true;
+            }
         } catch (error) {
             console.error('Ошибка удаления пользователя из квартиры:', error);
         }
@@ -530,6 +574,7 @@ document.addEventListener('authStateChanged', async () => {
             const apartmentId = Regex.isValidEntityUrl(window.location.href).id;
             apartmentProfile.EditApartmentProfile(apartmentId);
             apartmentProfile.AddNewUserToApartment(apartmentId);
+            apartmentProfile.RemoveUserFromApartmentAndSave(apartmentId);
         }
     }
 });

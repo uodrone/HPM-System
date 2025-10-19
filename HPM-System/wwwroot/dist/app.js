@@ -155,6 +155,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ApartmentHouses: () => (/* binding */ ApartmentHouses)
 /* harmony export */ });
+/* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -168,6 +169,7 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
 var ApartmentHouses = /*#__PURE__*/function () {
   function ApartmentHouses() {
     _classCallCheck(this, ApartmentHouses);
@@ -383,90 +385,67 @@ var ApartmentHouses = /*#__PURE__*/function () {
     }
   }, {
     key: "CollectHouseDataAndUpdateProfile",
-    value: function CollectHouseDataAndUpdateProfile() {
-      var house = {};
-      var Regex = new RegularExtension();
-      var houseId = Regex.isValidHouseUrl(window.location.href).id;
-      document.querySelectorAll('[data-group="house"] input').forEach(function (input) {
-        var key = input.id;
-        var value;
-        if (input.type === 'checkbox') {
-          value = input.checked;
-        } else if (input.type === 'number') {
-          // Пустое поле → 0
-          value = input.value === '' ? 0 : Number(input.value);
-        } else if (input.tagName === 'SELECT') {
-          value = input.value === '' ? null : el.value;
-        } else {
-          value = input.value || null;
-        }
-        house[key] = value;
-      });
-      var headId = document.getElementById('houseHead').value;
-      //Переназначаем старшего по дому
-      this.AssignHead(houseId, headId);
-      //Обновляем данные о доме
-      this.UpdateHouse(houseId, house);
-      console.log("\u0441\u043E\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u043E \u0434\u043E\u043C\u0435");
-      console.log(house);
-    }
-
-    // 1. Получить все дома
+    value: function () {
+      var _CollectHouseDataAndUpdateProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+        var house, Regex, houseId, headId, isAssignHeadSuccessfull, isUpdateHouseSuccessfull;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              house = {};
+              Regex = new RegularExtension();
+              houseId = Regex.isValidEntityUrl(window.location.href).id;
+              document.querySelectorAll('[data-group="house"] input').forEach(function (input) {
+                var key = input.id;
+                var value;
+                if (input.type === 'checkbox') {
+                  value = input.checked;
+                } else if (input.type === 'number') {
+                  // Пустое поле → 0
+                  value = input.value === '' ? 0 : Number(input.value);
+                } else if (input.tagName === 'SELECT') {
+                  value = input.value === '' ? null : el.value;
+                } else {
+                  value = input.value || null;
+                }
+                house[key] = value;
+              });
+              headId = document.getElementById('houseHead').value; //Переназначаем старшего по дому
+              _context4.n = 1;
+              return this.AssignHead(houseId, headId);
+            case 1:
+              isAssignHeadSuccessfull = _context4.v;
+              _context4.n = 2;
+              return this.UpdateHouse(houseId, house);
+            case 2:
+              isUpdateHouseSuccessfull = _context4.v;
+              if (isAssignHeadSuccessfull && isUpdateHouseSuccessfull) {
+                _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Данные о доме успешно сохранены', 'green');
+                console.log("\u0441\u043E\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u043E \u0434\u043E\u043C\u0435");
+                console.log(house);
+              } else {
+                _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Ошибка сохранения данных', 'red');
+              }
+            case 3:
+              return _context4.a(2);
+          }
+        }, _callee4, this);
+      }));
+      function CollectHouseDataAndUpdateProfile() {
+        return _CollectHouseDataAndUpdateProfile.apply(this, arguments);
+      }
+      return CollectHouseDataAndUpdateProfile;
+    }() // 1. Получить все дома
   }, {
     key: "GetHouses",
     value: function () {
-      var _GetHouses = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+      var _GetHouses = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
         var response, data, _t4;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.p = _context4.n) {
-            case 0:
-              _context4.p = 0;
-              _context4.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House"), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context4.v;
-              _context4.n = 2;
-              return response.json();
-            case 2:
-              data = _context4.v;
-              if (response.ok) {
-                _context4.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log('Дома:', data);
-              return _context4.a(2, data);
-            case 4:
-              _context4.p = 4;
-              _t4 = _context4.v;
-              console.error('Ошибка получения списка домов:', _t4);
-            case 5:
-              return _context4.a(2);
-          }
-        }, _callee4, this, [[0, 4]]);
-      }));
-      function GetHouses() {
-        return _GetHouses.apply(this, arguments);
-      }
-      return GetHouses;
-    }() // 2. Получить дом по ID
-  }, {
-    key: "GetHouse",
-    value: function () {
-      var _GetHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id) {
-        var response, data, _t5;
         return _regenerator().w(function (_context5) {
           while (1) switch (_context5.p = _context5.n) {
             case 0:
               _context5.p = 0;
               _context5.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(id), {
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House"), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -484,37 +463,37 @@ var ApartmentHouses = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
+              console.log('Дома:', data);
               return _context5.a(2, data);
             case 4:
               _context5.p = 4;
-              _t5 = _context5.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u0430 ".concat(id, ":"), _t5);
+              _t4 = _context5.v;
+              console.error('Ошибка получения списка домов:', _t4);
             case 5:
               return _context5.a(2);
           }
         }, _callee5, this, [[0, 4]]);
       }));
-      function GetHouse(_x6) {
-        return _GetHouse.apply(this, arguments);
+      function GetHouses() {
+        return _GetHouses.apply(this, arguments);
       }
-      return GetHouse;
-    }() // 3. Создать новый дом
+      return GetHouses;
+    }() // 2. Получить дом по ID
   }, {
-    key: "CreateHouse",
+    key: "GetHouse",
     value: function () {
-      var _CreateHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(houseData) {
-        var response, data, _t6;
+      var _GetHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
+        var response, data, _t5;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
               _context6.p = 0;
               _context6.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House"), {
-                method: 'POST',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(id), {
+                method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(houseData)
+                }
               });
             case 1:
               response = _context6.v;
@@ -528,16 +507,60 @@ var ApartmentHouses = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log('Дом создан:', data);
               return _context6.a(2, data);
             case 4:
               _context6.p = 4;
-              _t6 = _context6.v;
-              console.error('Ошибка создания дома:', _t6);
+              _t5 = _context6.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u0430 ".concat(id, ":"), _t5);
             case 5:
               return _context6.a(2);
           }
         }, _callee6, this, [[0, 4]]);
+      }));
+      function GetHouse(_x6) {
+        return _GetHouse.apply(this, arguments);
+      }
+      return GetHouse;
+    }() // 3. Создать новый дом
+  }, {
+    key: "CreateHouse",
+    value: function () {
+      var _CreateHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(houseData) {
+        var response, data, _t6;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House"), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(houseData)
+              });
+            case 1:
+              response = _context7.v;
+              _context7.n = 2;
+              return response.json();
+            case 2:
+              data = _context7.v;
+              if (response.ok) {
+                _context7.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log('Дом создан:', data);
+              return _context7.a(2, data);
+            case 4:
+              _context7.p = 4;
+              _t6 = _context7.v;
+              console.error('Ошибка создания дома:', _t6);
+            case 5:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 4]]);
       }));
       function CreateHouse(_x7) {
         return _CreateHouse.apply(this, arguments);
@@ -547,13 +570,13 @@ var ApartmentHouses = /*#__PURE__*/function () {
   }, {
     key: "UpdateHouse",
     value: function () {
-      var _UpdateHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(id, houseData) {
+      var _UpdateHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(id, houseData) {
         var response, error, _t7;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.p = _context7.n) {
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
             case 0:
-              _context7.p = 0;
-              _context7.n = 1;
+              _context8.p = 0;
+              _context8.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(id), {
                 method: 'PUT',
                 headers: {
@@ -562,28 +585,32 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 body: JSON.stringify(houseData)
               });
             case 1:
-              response = _context7.v;
+              response = _context8.v;
               if (response.ok) {
-                _context7.n = 3;
+                _context8.n = 3;
                 break;
               }
-              _context7.n = 2;
+              _context8.n = 2;
               return response.text();
             case 2:
-              error = _context7.v;
-              throw new Error(error);
+              error = _context8.v;
+              console.log(error);
+              //throw new Error(error);
+              return _context8.a(2, false);
             case 3:
-              console.log("\u0414\u043E\u043C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D"));
-              _context7.n = 5;
-              break;
+              return _context8.a(2, true);
             case 4:
-              _context7.p = 4;
-              _t7 = _context7.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u0430 ".concat(id, ":"), _t7);
+              console.log("\u0414\u043E\u043C ".concat(id, " \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D"));
+              _context8.n = 6;
+              break;
             case 5:
-              return _context7.a(2);
+              _context8.p = 5;
+              _t7 = _context8.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u0430 ".concat(id, ":"), _t7);
+            case 6:
+              return _context8.a(2);
           }
-        }, _callee7, this, [[0, 4]]);
+        }, _callee8, this, [[0, 5]]);
       }));
       function UpdateHouse(_x8, _x9) {
         return _UpdateHouse.apply(this, arguments);
@@ -593,13 +620,13 @@ var ApartmentHouses = /*#__PURE__*/function () {
   }, {
     key: "DeleteHouse",
     value: function () {
-      var _DeleteHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(id) {
+      var _DeleteHouse = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(id) {
         var response, _t8, _t9, _t0;
-        return _regenerator().w(function (_context8) {
-          while (1) switch (_context8.p = _context8.n) {
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
             case 0:
-              _context8.p = 0;
-              _context8.n = 1;
+              _context9.p = 0;
+              _context9.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(id), {
                 method: 'DELETE',
                 headers: {
@@ -607,29 +634,29 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context8.v;
+              response = _context9.v;
               if (response.ok) {
-                _context8.n = 3;
+                _context9.n = 3;
                 break;
               }
               _t8 = Error;
-              _context8.n = 2;
+              _context9.n = 2;
               return response.text();
             case 2:
-              _t9 = _context8.v;
+              _t9 = _context9.v;
               throw new _t8(_t9);
             case 3:
               console.log("\u0414\u043E\u043C ".concat(id, " \u0443\u0434\u0430\u043B\u0435\u043D"));
-              _context8.n = 5;
+              _context9.n = 5;
               break;
             case 4:
-              _context8.p = 4;
-              _t0 = _context8.v;
+              _context9.p = 4;
+              _t0 = _context9.v;
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u0430 ".concat(id, ":"), _t0);
             case 5:
-              return _context8.a(2);
+              return _context9.a(2);
           }
-        }, _callee8, this, [[0, 4]]);
+        }, _callee9, this, [[0, 4]]);
       }));
       function DeleteHouse(_x0) {
         return _DeleteHouse.apply(this, arguments);
@@ -639,61 +666,15 @@ var ApartmentHouses = /*#__PURE__*/function () {
   }, {
     key: "AssignHead",
     value: function () {
-      var _AssignHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(houseId, userId) {
+      var _AssignHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(houseId, userId) {
         var response, data, _t1;
-        return _regenerator().w(function (_context9) {
-          while (1) switch (_context9.p = _context9.n) {
-            case 0:
-              _context9.p = 0;
-              _context9.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/head/").concat(userId), {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context9.v;
-              _context9.n = 2;
-              return response.text();
-            case 2:
-              data = _context9.v;
-              if (response.ok) {
-                _context9.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u0441\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 \u043D\u0430\u0437\u043D\u0430\u0447\u0435\u043D:");
-              console.log(data);
-              _context9.n = 5;
-              break;
-            case 4:
-              _context9.p = 4;
-              _t1 = _context9.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043D\u0430\u0437\u043D\u0430\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t1);
-            case 5:
-              return _context9.a(2);
-          }
-        }, _callee9, this, [[0, 4]]);
-      }));
-      function AssignHead(_x1, _x10) {
-        return _AssignHead.apply(this, arguments);
-      }
-      return AssignHead;
-    }() // 7. Отозвать старшего по дому
-  }, {
-    key: "RevokeHead",
-    value: function () {
-      var _RevokeHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(houseId) {
-        var response, data, _t10;
         return _regenerator().w(function (_context0) {
           while (1) switch (_context0.p = _context0.n) {
             case 0:
               _context0.p = 0;
               _context0.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/head"), {
-                method: 'DELETE',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/head/").concat(userId), {
+                method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json'
                 }
@@ -708,37 +689,41 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 _context0.n = 3;
                 break;
               }
-              throw new Error(data);
-            case 3:
               console.log(data);
-              _context0.n = 5;
-              break;
+              return _context0.a(2, false);
+            case 3:
+              console.log("\u0441\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 \u043D\u0430\u0437\u043D\u0430\u0447\u0435\u043D:");
+              console.log(data);
+              return _context0.a(2, true);
             case 4:
-              _context0.p = 4;
-              _t10 = _context0.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u0437\u044B\u0432\u0430 \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t10);
+              _context0.n = 6;
+              break;
             case 5:
+              _context0.p = 5;
+              _t1 = _context0.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043D\u0430\u0437\u043D\u0430\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t1);
+            case 6:
               return _context0.a(2);
           }
-        }, _callee0, this, [[0, 4]]);
+        }, _callee0, this, [[0, 5]]);
       }));
-      function RevokeHead(_x11) {
-        return _RevokeHead.apply(this, arguments);
+      function AssignHead(_x1, _x10) {
+        return _AssignHead.apply(this, arguments);
       }
-      return RevokeHead;
-    }() // 8. Получить информацию о старшем по дому
+      return AssignHead;
+    }() // 7. Отозвать старшего по дому
   }, {
-    key: "GetHead",
+    key: "RevokeHead",
     value: function () {
-      var _GetHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(houseId) {
-        var response, text, data, isJson, errorMessage, _t11;
+      var _RevokeHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(houseId) {
+        var response, data, _t10;
         return _regenerator().w(function (_context1) {
           while (1) switch (_context1.p = _context1.n) {
             case 0:
               _context1.p = 0;
               _context1.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/head"), {
-                method: 'GET',
+                method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json'
                 }
@@ -748,7 +733,52 @@ var ApartmentHouses = /*#__PURE__*/function () {
               _context1.n = 2;
               return response.text();
             case 2:
-              text = _context1.v;
+              data = _context1.v;
+              if (response.ok) {
+                _context1.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log(data);
+              _context1.n = 5;
+              break;
+            case 4:
+              _context1.p = 4;
+              _t10 = _context1.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u0437\u044B\u0432\u0430 \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t10);
+            case 5:
+              return _context1.a(2);
+          }
+        }, _callee1, this, [[0, 4]]);
+      }));
+      function RevokeHead(_x11) {
+        return _RevokeHead.apply(this, arguments);
+      }
+      return RevokeHead;
+    }() // 8. Получить информацию о старшем по дому
+  }, {
+    key: "GetHead",
+    value: function () {
+      var _GetHead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10(houseId) {
+        var response, text, data, isJson, errorMessage, _t11;
+        return _regenerator().w(function (_context10) {
+          while (1) switch (_context10.p = _context10.n) {
+            case 0:
+              _context10.p = 0;
+              _context10.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/head"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context10.v;
+              _context10.n = 2;
+              return response.text();
+            case 2:
+              text = _context10.v;
               isJson = false; // Пытаемся распарсить как JSON
               try {
                 data = JSON.parse(text);
@@ -773,16 +803,16 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 console.log("\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 \u043E\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442: ".concat(data));
               }
               console.log("\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), data);
-              return _context1.a(2, data);
+              return _context10.a(2, data);
             case 3:
-              _context1.p = 3;
-              _t11 = _context1.v;
+              _context10.p = 3;
+              _t11 = _context10.v;
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443 ".concat(houseId, ":"), _t11.message);
               throw _t11;
             case 4:
-              return _context1.a(2);
+              return _context10.a(2);
           }
-        }, _callee1, this, [[0, 3]]);
+        }, _callee10, this, [[0, 3]]);
       }));
       function GetHead(_x12) {
         return _GetHead.apply(this, arguments);
@@ -792,58 +822,14 @@ var ApartmentHouses = /*#__PURE__*/function () {
   }, {
     key: "GetHousesByUserId",
     value: function () {
-      var _GetHousesByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10(userId) {
+      var _GetHousesByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(userId) {
         var response, data, _t12;
-        return _regenerator().w(function (_context10) {
-          while (1) switch (_context10.p = _context10.n) {
-            case 0:
-              _context10.p = 0;
-              _context10.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/user/").concat(userId), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context10.v;
-              _context10.n = 2;
-              return response.json();
-            case 2:
-              data = _context10.v;
-              if (response.ok) {
-                _context10.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u0414\u043E\u043C\u0430 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
-              return _context10.a(2, data);
-            case 4:
-              _context10.p = 4;
-              _t12 = _context10.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u043E\u0432 \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t12);
-            case 5:
-              return _context10.a(2);
-          }
-        }, _callee10, this, [[0, 4]]);
-      }));
-      function GetHousesByUserId(_x13) {
-        return _GetHousesByUserId.apply(this, arguments);
-      }
-      return GetHousesByUserId;
-    }() // 10. Получить все квартиры по ID дома
-  }, {
-    key: "GetApartmentsByHouseId",
-    value: function () {
-      var _GetApartmentsByHouseId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(houseId) {
-        var response, data, _t13;
         return _regenerator().w(function (_context11) {
           while (1) switch (_context11.p = _context11.n) {
             case 0:
               _context11.p = 0;
               _context11.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/house/").concat(houseId), {
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/user/").concat(userId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -859,36 +845,35 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 _context11.n = 3;
                 break;
               }
-              throw new Error((data === null || data === void 0 ? void 0 : data.message) || 'Ошибка при загрузке квартир');
+              throw new Error(data);
             case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              console.log("\u0414\u043E\u043C\u0430 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
               return _context11.a(2, data);
             case 4:
               _context11.p = 4;
-              _t13 = _context11.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t13);
-              throw _t13;
+              _t12 = _context11.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u043E\u0432 \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t12);
             case 5:
               return _context11.a(2);
           }
         }, _callee11, this, [[0, 4]]);
       }));
-      function GetApartmentsByHouseId(_x14) {
-        return _GetApartmentsByHouseId.apply(this, arguments);
+      function GetHousesByUserId(_x13) {
+        return _GetHousesByUserId.apply(this, arguments);
       }
-      return GetApartmentsByHouseId;
-    }() // 11. Получить владельцев квартир в доме с их номерами (массивами)
+      return GetHousesByUserId;
+    }() // 10. Получить все квартиры по ID дома
   }, {
-    key: "GetHouseOwnersWithApartments",
+    key: "GetApartmentsByHouseId",
     value: function () {
-      var _GetHouseOwnersWithApartments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(houseId) {
-        var response, data, _t14;
+      var _GetApartmentsByHouseId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(houseId) {
+        var response, data, _t13;
         return _regenerator().w(function (_context12) {
           while (1) switch (_context12.p = _context12.n) {
             case 0:
               _context12.p = 0;
               _context12.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/owners"), {
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/house/").concat(houseId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -904,19 +889,64 @@ var ApartmentHouses = /*#__PURE__*/function () {
                 _context12.n = 3;
                 break;
               }
-              throw new Error((data === null || data === void 0 ? void 0 : data.message) || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0435 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0434\u043E\u043C\u0430 ".concat(houseId));
+              throw new Error((data === null || data === void 0 ? void 0 : data.message) || 'Ошибка при загрузке квартир');
             case 3:
-              console.log("\u0412\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u044B \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
               return _context12.a(2, data);
             case 4:
               _context12.p = 4;
-              _t14 = _context12.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t14);
-              throw _t14;
+              _t13 = _context12.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t13);
+              throw _t13;
             case 5:
               return _context12.a(2);
           }
         }, _callee12, this, [[0, 4]]);
+      }));
+      function GetApartmentsByHouseId(_x14) {
+        return _GetApartmentsByHouseId.apply(this, arguments);
+      }
+      return GetApartmentsByHouseId;
+    }() // 11. Получить владельцев квартир в доме с их номерами (массивами)
+  }, {
+    key: "GetHouseOwnersWithApartments",
+    value: function () {
+      var _GetHouseOwnersWithApartments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(houseId) {
+        var response, data, _t14;
+        return _regenerator().w(function (_context13) {
+          while (1) switch (_context13.p = _context13.n) {
+            case 0:
+              _context13.p = 0;
+              _context13.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/House/").concat(houseId, "/owners"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context13.v;
+              _context13.n = 2;
+              return response.json();
+            case 2:
+              data = _context13.v;
+              if (response.ok) {
+                _context13.n = 3;
+                break;
+              }
+              throw new Error((data === null || data === void 0 ? void 0 : data.message) || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0435 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0434\u043E\u043C\u0430 ".concat(houseId));
+            case 3:
+              console.log("\u0412\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u044B \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              return _context13.a(2, data);
+            case 4:
+              _context13.p = 4;
+              _t14 = _context13.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t14);
+              throw _t14;
+            case 5:
+              return _context13.a(2);
+          }
+        }, _callee13, this, [[0, 4]]);
       }));
       function GetHouseOwnersWithApartments(_x15) {
         return _GetHouseOwnersWithApartments.apply(this, arguments);
@@ -925,48 +955,48 @@ var ApartmentHouses = /*#__PURE__*/function () {
     }()
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee14() {
   var Regex, _event$detail, isAuthenticated, userData, houseProfile, userId, houseId;
-  return _regenerator().w(function (_context13) {
-    while (1) switch (_context13.n) {
+  return _regenerator().w(function (_context14) {
+    while (1) switch (_context14.n) {
       case 0:
         Regex = new window.RegularExtension();
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         if (!(isAuthenticated && userData)) {
-          _context13.n = 4;
+          _context14.n = 4;
           break;
         }
         houseProfile = new ApartmentHouses();
         userId = window.authManager.userData.userId;
         if (!(window.location.pathname == '/')) {
-          _context13.n = 1;
+          _context14.n = 1;
           break;
         }
-        _context13.n = 1;
+        _context14.n = 1;
         return houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.MainPageHouseTemplate);
       case 1:
         if (!window.location.pathname.includes("/house/by-user/".concat(userId))) {
-          _context13.n = 2;
+          _context14.n = 2;
           break;
         }
-        _context13.n = 2;
+        _context14.n = 2;
         return houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
       case 2:
         if (!(Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('house'))) {
-          _context13.n = 4;
+          _context14.n = 4;
           break;
         }
         houseId = Regex.isValidEntityUrl(window.location.href).id;
         localStorage.setItem('house', houseId);
-        _context13.n = 3;
+        _context14.n = 3;
         return houseProfile.InsertHouseDataById(houseId);
       case 3:
-        _context13.n = 4;
+        _context14.n = 4;
         return houseProfile.InsertApartmentsInHouseDetails(houseId);
       case 4:
-        return _context13.a(2);
+        return _context14.a(2);
     }
-  }, _callee13);
+  }, _callee14);
 })));
 
 /***/ }),
@@ -1119,7 +1149,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
     value: function () {
       var _EditApartmentProfile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(apartmentId) {
         var _this2 = this;
-        var apartment, apartmentsShare, users, house, apartmenUsertList, option, _iterator2, _step2, _loop, _t2;
+        var apartment, apartmentsShare, users, house, apartmenUsertList, houseContainer, option, _iterator2, _step2, _loop, _t2;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
@@ -1137,6 +1167,9 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 3:
               house = _context3.v;
               apartmenUsertList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
+              houseContainer = document.getElementById('houseId');
+              apartmenUsertList.innerHTML = '';
+              houseContainer.innerHTML = '';
               document.getElementById('number').value = apartment.number;
               document.getElementById('numbersOfRooms').value = apartment.numbersOfRooms;
               document.getElementById('entranceNumber').value = apartment.entranceNumber;
@@ -1146,7 +1179,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
               option = document.createElement('option');
               option.value = apartment.houseId;
               option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, " ").concat(house.number, " ");
-              document.getElementById('houseId').appendChild(option);
+              houseContainer.appendChild(option);
               _iterator2 = _createForOfIteratorHelper(users);
               _context3.p = 4;
               _loop = /*#__PURE__*/_regenerator().m(function _loop() {
@@ -1227,7 +1260,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
         var isSelected = selectedStatusIds.has(status.id) ? ' selected' : '';
         return "<option value=\"".concat(status.id, "\"").concat(isSelected, ">").concat(status.name, "</option>");
       }).join('');
-      var apartmentUserHTML = "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-apartment-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName-").concat(apartmentUser.userId, "\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber-").concat(apartmentUser.userId, "\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group multiselect\">\n                    <select id=\"statuses-").concat(apartmentUser.userId, "\" multiple>\n                        ").concat(statusOptions, "\n                    </select>                        \n                    <label for=\"statuses-").concat(apartmentUser.userId, "\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"number\" placeholder=\"\" name=\"share\" min=\"0\" id=\"share-").concat(apartmentUser.userId, "\" value=\"").concat(share, "\">                      \n                    <label for=\"share-").concat(apartmentUser.userId, "\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F</label>\n                    <div class=\"error invisible\" data-error=\"share\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u0434\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432</div>\n                </div>\n                <div class=\"save-icon icon-action\" data-status=\"save\" title=\"\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#128190;</div>\n            </div>\n        ");
+      var apartmentUserHTML = "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-apartment-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName-").concat(apartmentUser.userId, "\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber-").concat(apartmentUser.userId, "\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group multiselect\">\n                    <select id=\"statuses-").concat(apartmentUser.userId, "\" multiple>\n                        ").concat(statusOptions, "\n                    </select>                        \n                    <label for=\"statuses-").concat(apartmentUser.userId, "\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"number\" placeholder=\"\" name=\"share\" min=\"0\" id=\"share-").concat(apartmentUser.userId, "\" value=\"").concat(share, "\">                      \n                    <label for=\"share-").concat(apartmentUser.userId, "\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F</label>\n                    <div class=\"error invisible\" data-error=\"share\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u0434\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432</div>\n                </div>\n                <div class=\"save-icon icon-action\" data-status=\"save\" title=\"\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#128190;</div>\n                <div class=\"remove-icon icon-action\" data-status=\"remove\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#10060;</div>                \n            </div>\n        ");
       return apartmentUserHTML;
     }
   }, {
@@ -1427,37 +1460,85 @@ var ApartmentProfile = /*#__PURE__*/function () {
       return CollectApartmentDataAndSaveToCreate;
     }()
   }, {
+    key: "RemoveUserFromApartmentAndSave",
+    value: function RemoveUserFromApartmentAndSave(apartmentId) {
+      var _this4 = this;
+      document.addEventListener('click', /*#__PURE__*/function () {
+        var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(e) {
+          var _user, userId, isUserRemovedFromApartmentSuccessfull, _t3;
+          return _regenerator().w(function (_context7) {
+            while (1) switch (_context7.p = _context7.n) {
+              case 0:
+                if (!e.target.closest('[data-status="remove"]')) {
+                  _context7.n = 4;
+                  break;
+                }
+                _user = e.target.closest('[data-apartment-user-id]');
+                userId = _user.dataset.apartmentUserId;
+                _context7.p = 1;
+                _context7.n = 2;
+                return _this4.RemoveUserFromApartment(apartmentId, userId);
+              case 2:
+                isUserRemovedFromApartmentSuccessfull = _context7.v;
+                if (isUserRemovedFromApartmentSuccessfull) {
+                  _this4.EditApartmentProfile(apartmentId);
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_4__.Modal.ShowNotification('Пользователь удален успешно', 'green');
+                }
+                _context7.n = 4;
+                break;
+              case 3:
+                _context7.p = 3;
+                _t3 = _context7.v;
+                console.log(_t3);
+                _Modal_js__WEBPACK_IMPORTED_MODULE_4__.Modal.ShowNotification('Ошибка удаления пользователя', 'red');
+              case 4:
+                return _context7.a(2);
+            }
+          }, _callee6, null, [[1, 3]]);
+        }));
+        return function (_x4) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    }
+  }, {
     key: "AddNewUserToApartment",
     value: function AddNewUserToApartment(apartmentId) {
-      var _this4 = this;
+      var _this5 = this;
       var modalPhoneError = document.querySelector('[data-error="newPhoneNumber"]');
-      document.querySelector('[data-action="add-user-to-apartment"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-        var phoneNumber, _user;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.n) {
+      document.querySelector('[data-action="add-user-to-apartment"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+        var phoneNumber, _user2, isAddUserToApartmentSuccessfull;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.n) {
             case 0:
               phoneNumber = document.getElementById('newPhoneNumber').value;
-              if (!_this4.userValidator.validatePhoneNumber(phoneNumber).isValid) {
-                _context7.n = 3;
+              if (!_this5.userValidator.validatePhoneNumber(phoneNumber).isValid) {
+                _context8.n = 3;
                 break;
               }
               modalPhoneError.classList.add('invisible');
               console.log("\u0442\u0435\u043B\u0435\u0444\u043E\u043D \u0432\u0430\u043B\u0438\u0434\u043D\u044B\u0439");
-              _context7.n = 1;
-              return _this4.userProfile.getUserByPhone(phoneNumber);
+              _context8.n = 1;
+              return _this5.userProfile.getUserByPhone(phoneNumber);
             case 1:
-              _user = _context7.v;
-              _context7.n = 2;
-              return _this4.AddUserToApartment(apartmentId, _user.id);
+              _user2 = _context8.v;
+              _context8.n = 2;
+              return _this5.AddUserToApartment(apartmentId, _user2.id);
             case 2:
-              _context7.n = 4;
+              isAddUserToApartmentSuccessfull = _context8.v;
+              if (isAddUserToApartmentSuccessfull) {
+                _Modal_js__WEBPACK_IMPORTED_MODULE_4__.Modal.CloseModalImmediately();
+                _Modal_js__WEBPACK_IMPORTED_MODULE_4__.Modal.ShowNotification('Пользователь успешно добавлен', 'green');
+                _this5.EditApartmentProfile(apartmentId);
+              }
+              _context8.n = 4;
               break;
             case 3:
               modalPhoneError.classList.remove('invisible');
             case 4:
-              return _context7.a(2);
+              return _context8.a(2);
           }
-        }, _callee6);
+        }, _callee7);
       })));
     }
 
@@ -1465,58 +1546,14 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "GetApartmentsByUserId",
     value: function () {
-      var _GetApartmentsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
-        var response, data, _t3;
-        return _regenerator().w(function (_context8) {
-          while (1) switch (_context8.p = _context8.n) {
-            case 0:
-              _context8.p = 0;
-              _context8.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/user/").concat(userId), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context8.v;
-              _context8.n = 2;
-              return response.json();
-            case 2:
-              data = _context8.v;
-              if (response.ok) {
-                _context8.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
-              return _context8.a(2, data);
-            case 4:
-              _context8.p = 4;
-              _t3 = _context8.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t3);
-            case 5:
-              return _context8.a(2);
-          }
-        }, _callee7, this, [[0, 4]]);
-      }));
-      function GetApartmentsByUserId(_x4) {
-        return _GetApartmentsByUserId.apply(this, arguments);
-      }
-      return GetApartmentsByUserId;
-    }() //получить квартиры пользователя по номеру телефона пользователя
-  }, {
-    key: "GetApartmentsByUserPhone",
-    value: function () {
-      var _GetApartmentsByUserPhone = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(phone) {
+      var _GetApartmentsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(userId) {
         var response, data, _t4;
         return _regenerator().w(function (_context9) {
           while (1) switch (_context9.p = _context9.n) {
             case 0:
               _context9.p = 0;
               _context9.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/phone/").concat(phone), {
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/user/").concat(userId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -1534,33 +1571,33 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F \u0441 \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u043E\u043C ".concat(phone, ":"), data);
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
               return _context9.a(2, data);
             case 4:
               _context9.p = 4;
               _t4 = _context9.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t4);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t4);
             case 5:
               return _context9.a(2);
           }
         }, _callee8, this, [[0, 4]]);
       }));
-      function GetApartmentsByUserPhone(_x5) {
-        return _GetApartmentsByUserPhone.apply(this, arguments);
+      function GetApartmentsByUserId(_x5) {
+        return _GetApartmentsByUserId.apply(this, arguments);
       }
-      return GetApartmentsByUserPhone;
-    }() //получить квартиру по её id
+      return GetApartmentsByUserId;
+    }() //получить квартиры пользователя по номеру телефона пользователя
   }, {
-    key: "GetApartment",
+    key: "GetApartmentsByUserPhone",
     value: function () {
-      var _GetApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(id) {
+      var _GetApartmentsByUserPhone = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(phone) {
         var response, data, _t5;
         return _regenerator().w(function (_context0) {
           while (1) switch (_context0.p = _context0.n) {
             case 0:
               _context0.p = 0;
               _context0.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/phone/").concat(phone), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -1578,38 +1615,37 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, ":"), data);
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F \u0441 \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u043E\u043C ".concat(phone, ":"), data);
               return _context0.a(2, data);
             case 4:
               _context0.p = 4;
               _t5 = _context0.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t5);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u043F\u043E \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0443 ".concat(phone, ":"), _t5);
             case 5:
               return _context0.a(2);
           }
         }, _callee9, this, [[0, 4]]);
       }));
-      function GetApartment(_x6) {
-        return _GetApartment.apply(this, arguments);
+      function GetApartmentsByUserPhone(_x6) {
+        return _GetApartmentsByUserPhone.apply(this, arguments);
       }
-      return GetApartment;
-    }() //создать квартиру
+      return GetApartmentsByUserPhone;
+    }() //получить квартиру по её id
   }, {
-    key: "CreateApartment",
+    key: "GetApartment",
     value: function () {
-      var _CreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(apartmentData) {
+      var _GetApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(id) {
         var response, data, _t6;
         return _regenerator().w(function (_context1) {
           while (1) switch (_context1.p = _context1.n) {
             case 0:
               _context1.p = 0;
               _context1.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment"), {
-                method: 'POST',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
+                method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(apartmentData)
+                }
               });
             case 1:
               response = _context1.v;
@@ -1623,18 +1659,63 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log('Квартира создана:', data);
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, ":"), data);
               return _context1.a(2, data);
             case 4:
               _context1.p = 4;
               _t6 = _context1.v;
-              console.error('Ошибка создания квартиры:', _t6);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t6);
             case 5:
               return _context1.a(2);
           }
         }, _callee0, this, [[0, 4]]);
       }));
-      function CreateApartment(_x7) {
+      function GetApartment(_x7) {
+        return _GetApartment.apply(this, arguments);
+      }
+      return GetApartment;
+    }() //создать квартиру
+  }, {
+    key: "CreateApartment",
+    value: function () {
+      var _CreateApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(apartmentData) {
+        var response, data, _t7;
+        return _regenerator().w(function (_context10) {
+          while (1) switch (_context10.p = _context10.n) {
+            case 0:
+              _context10.p = 0;
+              _context10.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment"), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(apartmentData)
+              });
+            case 1:
+              response = _context10.v;
+              _context10.n = 2;
+              return response.json();
+            case 2:
+              data = _context10.v;
+              if (response.ok) {
+                _context10.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log('Квартира создана:', data);
+              return _context10.a(2, data);
+            case 4:
+              _context10.p = 4;
+              _t7 = _context10.v;
+              console.error('Ошибка создания квартиры:', _t7);
+            case 5:
+              return _context10.a(2);
+          }
+        }, _callee1, this, [[0, 4]]);
+      }));
+      function CreateApartment(_x8) {
         return _CreateApartment.apply(this, arguments);
       }
       return CreateApartment;
@@ -1642,13 +1723,13 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "DeleteApartment",
     value: function () {
-      var _DeleteApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee1(id) {
-        var response, _t7, _t8, _t9;
-        return _regenerator().w(function (_context10) {
-          while (1) switch (_context10.p = _context10.n) {
+      var _DeleteApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10(id) {
+        var response, _t8, _t9, _t0;
+        return _regenerator().w(function (_context11) {
+          while (1) switch (_context11.p = _context11.n) {
             case 0:
-              _context10.p = 0;
-              _context10.n = 1;
+              _context11.p = 0;
+              _context11.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(id), {
                 method: 'DELETE',
                 headers: {
@@ -1656,31 +1737,31 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context10.v;
+              response = _context11.v;
               if (response.ok) {
-                _context10.n = 3;
+                _context11.n = 3;
                 break;
               }
-              _t7 = Error;
-              _context10.n = 2;
+              _t8 = Error;
+              _context11.n = 2;
               return response.text();
             case 2:
-              _t8 = _context10.v;
-              throw new _t7(_t8);
+              _t9 = _context11.v;
+              throw new _t8(_t9);
             case 3:
               console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(id, " \u0443\u0434\u0430\u043B\u0435\u043D\u0430"));
-              _context10.n = 5;
+              _context11.n = 5;
               break;
             case 4:
-              _context10.p = 4;
-              _t9 = _context10.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t9);
+              _context11.p = 4;
+              _t0 = _context11.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t0);
             case 5:
-              return _context10.a(2);
+              return _context11.a(2);
           }
-        }, _callee1, this, [[0, 4]]);
+        }, _callee10, this, [[0, 4]]);
       }));
-      function DeleteApartment(_x8) {
+      function DeleteApartment(_x9) {
         return _DeleteApartment.apply(this, arguments);
       }
       return DeleteApartment;
@@ -1688,54 +1769,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "AddUserToApartment",
     value: function () {
-      var _AddUserToApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10(apartmentId, userId) {
-        var response, data, _t0;
-        return _regenerator().w(function (_context11) {
-          while (1) switch (_context11.p = _context11.n) {
-            case 0:
-              _context11.p = 0;
-              _context11.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify()
-              });
-            case 1:
-              response = _context11.v;
-              _context11.n = 2;
-              return response.text();
-            case 2:
-              data = _context11.v;
-              if (response.ok) {
-                _context11.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log(data);
-              console.log("\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(user.id, " \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u043A \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0435 \u0441 id ").concat(apartmentId));
-              _context11.n = 5;
-              break;
-            case 4:
-              _context11.p = 4;
-              _t0 = _context11.v;
-              console.error('Ошибка добавления пользователя к квартире:', _t0);
-            case 5:
-              return _context11.a(2);
-          }
-        }, _callee10, this, [[0, 4]]);
-      }));
-      function AddUserToApartment(_x9, _x0) {
-        return _AddUserToApartment.apply(this, arguments);
-      }
-      return AddUserToApartment;
-    }() //удалить пользователя из квартиры
-  }, {
-    key: "RemoveUserFromApartment",
-    value: function () {
-      var _RemoveUserFromApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(apartmentId, userId) {
+      var _AddUserToApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(apartmentId, userId) {
         var response, data, _t1;
         return _regenerator().w(function (_context12) {
           while (1) switch (_context12.p = _context12.n) {
@@ -1743,10 +1777,11 @@ var ApartmentProfile = /*#__PURE__*/function () {
               _context12.p = 0;
               _context12.n = 1;
               return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
-                method: 'DELETE',
+                method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify()
               });
             case 1:
               response = _context12.v;
@@ -1758,43 +1793,43 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 _context12.n = 3;
                 break;
               }
-              throw new Error(data);
-            case 3:
               console.log(data);
-              _context12.n = 5;
-              break;
+              console.log("\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(user.id, " \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u043A \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0435 \u0441 id ").concat(apartmentId));
+              return _context12.a(2, false);
+            case 3:
+              return _context12.a(2, true);
             case 4:
-              _context12.p = 4;
-              _t1 = _context12.v;
-              console.error('Ошибка удаления пользователя из квартиры:', _t1);
+              _context12.n = 6;
+              break;
             case 5:
+              _context12.p = 5;
+              _t1 = _context12.v;
+              console.error('Ошибка добавления пользователя к квартире:', _t1);
+            case 6:
               return _context12.a(2);
           }
-        }, _callee11, this, [[0, 4]]);
+        }, _callee11, this, [[0, 5]]);
       }));
-      function RemoveUserFromApartment(_x1, _x10) {
-        return _RemoveUserFromApartment.apply(this, arguments);
+      function AddUserToApartment(_x0, _x1) {
+        return _AddUserToApartment.apply(this, arguments);
       }
-      return RemoveUserFromApartment;
-    }() //обновить долю владения пользователя
+      return AddUserToApartment;
+    }() //удалить пользователя из квартиры
   }, {
-    key: "UpdateUserShare",
+    key: "RemoveUserFromApartment",
     value: function () {
-      var _UpdateUserShare = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(apartmentId, userId, share) {
+      var _RemoveUserFromApartment = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(apartmentId, userId) {
         var response, data, _t10;
         return _regenerator().w(function (_context13) {
           while (1) switch (_context13.p = _context13.n) {
             case 0:
               _context13.p = 0;
               _context13.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId, "/share"), {
-                method: 'PUT',
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId), {
+                method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  share: share
-                })
+                }
               });
             case 1:
               response = _context13.v;
@@ -1816,13 +1851,63 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 5:
               _context13.p = 5;
               _t10 = _context13.v;
-              console.error('Ошибка обновления доли:', _t10);
+              console.error('Ошибка удаления пользователя из квартиры:', _t10);
             case 6:
               return _context13.a(2);
           }
         }, _callee12, this, [[0, 5]]);
       }));
-      function UpdateUserShare(_x11, _x12, _x13) {
+      function RemoveUserFromApartment(_x10, _x11) {
+        return _RemoveUserFromApartment.apply(this, arguments);
+      }
+      return RemoveUserFromApartment;
+    }() //обновить долю владения пользователя
+  }, {
+    key: "UpdateUserShare",
+    value: function () {
+      var _UpdateUserShare = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(apartmentId, userId, share) {
+        var response, data, _t11;
+        return _regenerator().w(function (_context14) {
+          while (1) switch (_context14.p = _context14.n) {
+            case 0:
+              _context14.p = 0;
+              _context14.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/users/").concat(userId, "/share"), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  share: share
+                })
+              });
+            case 1:
+              response = _context14.v;
+              _context14.n = 2;
+              return response.text();
+            case 2:
+              data = _context14.v;
+              if (response.ok) {
+                _context14.n = 3;
+                break;
+              }
+              console.log(data);
+              return _context14.a(2, false);
+            case 3:
+              return _context14.a(2, true);
+            case 4:
+              _context14.n = 6;
+              break;
+            case 5:
+              _context14.p = 5;
+              _t11 = _context14.v;
+              console.error('Ошибка обновления доли:', _t11);
+            case 6:
+              return _context14.a(2);
+          }
+        }, _callee13, this, [[0, 5]]);
+      }));
+      function UpdateUserShare(_x12, _x13, _x14) {
         return _UpdateUserShare.apply(this, arguments);
       }
       return UpdateUserShare;
@@ -1830,58 +1915,14 @@ var ApartmentProfile = /*#__PURE__*/function () {
   }, {
     key: "GetApartmentShares",
     value: function () {
-      var _GetApartmentShares = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(apartmentId) {
-        var response, data, _t11;
-        return _regenerator().w(function (_context14) {
-          while (1) switch (_context14.p = _context14.n) {
-            case 0:
-              _context14.p = 0;
-              _context14.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/shares"), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context14.v;
-              _context14.n = 2;
-              return response.json();
-            case 2:
-              data = _context14.v;
-              if (response.ok) {
-                _context14.n = 3;
-                break;
-              }
-              throw new Error(data);
-            case 3:
-              console.log("\u0414\u043E\u043B\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
-              return _context14.a(2, data);
-            case 4:
-              _context14.p = 4;
-              _t11 = _context14.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t11);
-            case 5:
-              return _context14.a(2);
-          }
-        }, _callee13, this, [[0, 4]]);
-      }));
-      function GetApartmentShares(_x14) {
-        return _GetApartmentShares.apply(this, arguments);
-      }
-      return GetApartmentShares;
-    }() //получить статистику по квартире
-  }, {
-    key: "GetApartmentStatistics",
-    value: function () {
-      var _GetApartmentStatistics = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee14(apartmentId) {
+      var _GetApartmentShares = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee14(apartmentId) {
         var response, data, _t12;
         return _regenerator().w(function (_context15) {
           while (1) switch (_context15.p = _context15.n) {
             case 0:
               _context15.p = 0;
               _context15.n = 1;
-              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/statistics"), {
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/shares"), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -1899,28 +1940,72 @@ var ApartmentProfile = /*#__PURE__*/function () {
               }
               throw new Error(data);
             case 3:
-              console.log("\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0430 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
+              console.log("\u0414\u043E\u043B\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
               return _context15.a(2, data);
             case 4:
               _context15.p = 4;
               _t12 = _context15.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t12);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t12);
             case 5:
               return _context15.a(2);
           }
         }, _callee14, this, [[0, 4]]);
       }));
-      function GetApartmentStatistics(_x15) {
+      function GetApartmentShares(_x15) {
+        return _GetApartmentShares.apply(this, arguments);
+      }
+      return GetApartmentShares;
+    }() //получить статистику по квартире
+  }, {
+    key: "GetApartmentStatistics",
+    value: function () {
+      var _GetApartmentStatistics = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee15(apartmentId) {
+        var response, data, _t13;
+        return _regenerator().w(function (_context16) {
+          while (1) switch (_context16.p = _context16.n) {
+            case 0:
+              _context16.p = 0;
+              _context16.n = 1;
+              return fetch("".concat(this.ApartmentAPIAddress, "/api/Apartment/").concat(apartmentId, "/statistics"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context16.v;
+              _context16.n = 2;
+              return response.json();
+            case 2:
+              data = _context16.v;
+              if (response.ok) {
+                _context16.n = 3;
+                break;
+              }
+              throw new Error(data);
+            case 3:
+              console.log("\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0430 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), data);
+              return _context16.a(2, data);
+            case 4:
+              _context16.p = 4;
+              _t13 = _context16.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0438 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(apartmentId, ":"), _t13);
+            case 5:
+              return _context16.a(2);
+          }
+        }, _callee15, this, [[0, 4]]);
+      }));
+      function GetApartmentStatistics(_x16) {
         return _GetApartmentStatistics.apply(this, arguments);
       }
       return GetApartmentStatistics;
     }()
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee15() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee16() {
   var _event$detail, isAuthenticated, userData, Regex, apartmentProfile, userId, apartmentId;
-  return _regenerator().w(function (_context16) {
-    while (1) switch (_context16.n) {
+  return _regenerator().w(function (_context17) {
+    while (1) switch (_context17.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         Regex = new window.RegularExtension();
@@ -1940,12 +2025,13 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
             apartmentId = Regex.isValidEntityUrl(window.location.href).id;
             apartmentProfile.EditApartmentProfile(apartmentId);
             apartmentProfile.AddNewUserToApartment(apartmentId);
+            apartmentProfile.RemoveUserFromApartmentAndSave(apartmentId);
           }
         }
       case 1:
-        return _context16.a(2);
+        return _context17.a(2);
     }
-  }, _callee15);
+  }, _callee16);
 })));
 
 /***/ }),
@@ -3052,6 +3138,11 @@ var Modal = /*#__PURE__*/function () {
       }
     }
   }], [{
+    key: "CloseModalImmediately",
+    value: function CloseModalImmediately() {
+      document.querySelector('.modal-overview').classList.remove('active');
+    }
+  }, {
     key: "ShowNotification",
     value: function ShowNotification(text, color) {
       var notification = document.createElement('div');
@@ -3062,12 +3153,12 @@ var Modal = /*#__PURE__*/function () {
       // Добавляем уведомление в документ
       document.body.appendChild(notification);
 
-      // Через 2 секунды удаляем уведомление
+      // Через 3 секунды удаляем уведомление
       setTimeout(function () {
         if (notification.parentNode) {
           notification.parentNode.removeChild(notification);
         }
-      }, 2000);
+      }, 3000);
     }
   }]);
 }();

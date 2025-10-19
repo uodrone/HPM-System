@@ -295,7 +295,7 @@ export class ApartmentStatuses {
                     if (isShareUpdadeSuccessfull)
                     {
                         user.querySelector('[data-error="share"]').classList.add('invisible');
-                        Modal.ShowNotification('Данные о пользователях квартиры сохранены', 'green');         
+                        Modal.ShowNotification('Данные о пользователях квартиры сохранены', 'green');
                     }
                     else
                     {

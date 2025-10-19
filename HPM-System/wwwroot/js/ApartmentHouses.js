@@ -1,3 +1,5 @@
+import { Modal } from './Modal.js';
+
 export class ApartmentHouses {
     constructor () {
         this.ApartmentAPIAddress = 'https://localhost:55683';
@@ -253,10 +255,10 @@ export class ApartmentHouses {
         return houseHTML
     }
 
-    CollectHouseDataAndUpdateProfile () {
+    async CollectHouseDataAndUpdateProfile () {
         let house = {};
         const Regex = new RegularExtension();
-        const houseId = Regex.isValidHouseUrl(window.location.href).id;
+        const houseId = Regex.isValidEntityUrl(window.location.href).id;
 
         document.querySelectorAll('[data-group="house"] input').forEach(input => {
             const key = input.id;
@@ -277,12 +279,17 @@ export class ApartmentHouses {
         });
         let headId = document.getElementById('houseHead').value;
         //Переназначаем старшего по дому
-        this.AssignHead(houseId, headId);
+        let isAssignHeadSuccessfull = await this.AssignHead(houseId, headId);        
         //Обновляем данные о доме
-        this.UpdateHouse(houseId, house);
+        let isUpdateHouseSuccessfull = await this.UpdateHouse(houseId, house);
 
-        console.log(`собранные данные о доме`);
-        console.log(house);
+        if (isAssignHeadSuccessfull && isUpdateHouseSuccessfull) {
+            Modal.ShowNotification('Данные о доме успешно сохранены', 'green');
+            console.log(`собранные данные о доме`);
+            console.log(house);
+        } else {
+            Modal.ShowNotification('Ошибка сохранения данных', 'red');
+        }
     }
 
     // 1. Получить все дома
@@ -343,7 +350,11 @@ export class ApartmentHouses {
             });
             if (!response.ok) {
                 const error = await response.text();
-                throw new Error(error);
+                console.log(error);
+                //throw new Error(error);
+                return false;
+            } else {
+                return true;
             }
             console.log(`Дом ${id} обновлен`);
         } catch (error) {
@@ -373,9 +384,17 @@ export class ApartmentHouses {
                 headers: { 'Content-Type': 'application/json' }
             });
             const data = await response.text();
-            if (!response.ok) throw new Error(data);
-            console.log(`старший по дому назначен:`);
-            console.log(data);
+            if (!response.ok) 
+            {
+                console.log(data);
+                return false;
+                //throw new Error(data);
+            }
+            else {
+                console.log(`старший по дому назначен:`);
+                console.log(data);
+                return true;
+            }            
         } catch (error) {
             console.error(`Ошибка назначения старшего по дому ${houseId}:`, error);
         }
