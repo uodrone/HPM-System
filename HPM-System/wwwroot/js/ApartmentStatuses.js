@@ -1,4 +1,5 @@
 import {ApartmentProfile} from './ApartmentProfile.js';
+import { Modal } from './Modal.js';
 
 export class ApartmentStatuses {
     constructor () {
@@ -286,11 +287,27 @@ export class ApartmentStatuses {
                     statuses.push(status.dataset.value);
                 });
 
-                const share = user.querySelector('[name="share"]').value;                
+                let share = user.querySelector('[name="share"]').value != '' ? user.querySelector('[name="share"]').value : 0;
                 
-                await this.SetUserStatusesForApartment(apartmentId, userId, statuses);
-                await this.apartmentProfile.UpdateUserShare(apartmentId, userId, share);
-                console.log(`Статусы пользователя обновлен`);
+                try {
+                    await this.SetUserStatusesForApartment(apartmentId, userId, statuses);
+                    let isShareUpdadeSuccessfull = await this.apartmentProfile.UpdateUserShare(apartmentId, userId, share);
+                    if (isShareUpdadeSuccessfull)
+                    {
+                        user.querySelector('[data-error="share"]').classList.add('invisible');
+                        Modal.ShowNotification('Данные о пользователях квартиры сохранены', 'green');         
+                    }
+                    else
+                    {
+                        share = 0;
+                        user.querySelector('[data-error="share"]').classList.remove('invisible');
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                    user.querySelector('[data-error="share"]').classList.remove('invisible');
+                    Modal.ShowNotification('Ошибка сохранения данных', 'red');
+                }                
             }
         });
     }

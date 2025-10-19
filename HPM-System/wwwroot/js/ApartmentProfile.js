@@ -2,6 +2,7 @@
 import {ApartmentHouses} from './ApartmentHouses.js';
 import {UserProfile} from './UserProfile.js';
 import {UserValidator} from './UserValidator.js';
+import { Modal } from './Modal.js';
 
 export class ApartmentProfile {
     constructor () {
@@ -173,8 +174,9 @@ export class ApartmentProfile {
                     <label for="statuses-${apartmentUser.userId}">Статус пользователя</label>
                 </div>
                 <div class="form-group">
-                    <input type="number" placeholder="" name="share" id="share-${apartmentUser.userId}" value="${share}">                      
+                    <input type="number" placeholder="" name="share" min="0" id="share-${apartmentUser.userId}" value="${share}">                      
                     <label for="share-${apartmentUser.userId}">Доля владения</label>
+                    <div class="error invisible" data-error="share">Доля владения только для владельцев</div>
                 </div>
                 <div class="save-icon icon-action" data-status="save" title="Сохранить статусы пользователя">&#128190;</div>
             </div>
@@ -460,8 +462,12 @@ export class ApartmentProfile {
                 body: JSON.stringify({ share })
             });
             const data = await response.text();
-            if (!response.ok) throw new Error(data);
-            console.log(data);
+            if (!response.ok) {
+                console.log(data);
+                return false;
+            } else {
+                return true;
+            }
         } catch (error) {
             console.error('Ошибка обновления доли:', error);
         }

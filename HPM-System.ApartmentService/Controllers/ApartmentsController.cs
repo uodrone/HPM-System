@@ -439,7 +439,7 @@ namespace HPM_System.ApartmentService.Controllers
                 }
 
                 var isOwner = apartmentUser.Statuses.Any(aus => aus.Status.Name == "Владелец");
-                if (!isOwner)
+                if (!isOwner && updateShareDto.Share != 0)
                 {
                     return BadRequest("Долю владения можно устанавливать только для владельцев");
                 }
