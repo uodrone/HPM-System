@@ -1109,7 +1109,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
               try {
                 for (_iterator.s(); !(_step = _iterator.n()).done;) {
                   _step$value = _step.value, apartment = _step$value.apartment, house = _step$value.house;
-                  apartmentTemplate = this.SetApartmentTemplate(apartment, house);
+                  apartmentTemplate = this.SetApartmentTemplateForMainPage(apartment, house);
                   apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
                 }
               } catch (err) {
@@ -1136,14 +1136,25 @@ var ApartmentProfile = /*#__PURE__*/function () {
       return InsertApartmentDataToCardOnMainPage;
     }()
   }, {
-    key: "SetApartmentTemplate",
-    value: function SetApartmentTemplate(apartment, house) {
+    key: "SetApartmentTemplateForMainPage",
+    value: function SetApartmentTemplateForMainPage(apartment, house) {
       var apartmentHTML;
       if (apartment) {
         apartmentHTML = "\n                <div class=\"apartment-item\" data-apartment-id=\"".concat(apartment.id, "\">\n                    <div class=\"apartment-address\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</div>\n                    <div class=\"apartment-details\">\n                        ").concat(house.isApartmentBuilding ? "<div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u041D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</div>\n                            <div class=\"detail-value\">".concat(apartment.number, "</div>\n                        </div>") : '', "\n                        \n                        <div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u0427\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</div>\n                            <div class=\"detail-value\">").concat(apartment.numbersOfRooms, "</div>\n                        </div>\n\n                        <div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                            <div class=\"detail-value\">").concat(apartment.totalArea, "</div>\n                        </div>\n\n                        <div class=\"apartment-detail\">\n                            <div class=\"detail-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                            <div class=\"detail-value\">").concat(apartment.residentialArea, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return apartmentHTML;
     }
+  }, {
+    key: "SetApartmentTemplateForAllApartments",
+    value: function SetApartmentTemplateForAllApartments(apartment, house) {
+      var apartmentHTML;
+      if (apartment) {
+        apartmentHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"apartment\" data-apartment-id=\"".concat(apartment.id, "\" data-apartment-house=\"").concat(house.id, "\">\n                    <h3 class=\"card-header card-header_apartment w-100\">\u041F\u0440\u043E\u0444\u0438\u043B\u044C \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</h3>\n\n                    <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\">\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled placeholder=\"\" min=\"1\" max=\"10000\" name=\"number\" id=\"number\" value=\"").concat(apartment.number, "\">\n                            <label for=\"number\">\u041D\u043E\u043C\u0435\u0440 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</label>\n                            <div class=\"error invisible\" data-error=\"number\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440</div>\n                        </div>\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled placeholder=\"\" min=\"1\" max=\"100\" name=\"numbersOfRooms\" id=\"numbersOfRooms\" value=\"").concat(apartment.numbersOfRooms, "\">\n                            <label for=\"numbersOfRooms\">\u0427\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</label>\n                            <div class=\"error invisible\" data-error=\"numbersOfRooms\">\u041D\u0435\u0432\u0435\u0440\u043D\u043E\u0435 \u0447\u0438\u0441\u043B\u043E \u043A\u043E\u043C\u043D\u0430\u0442</div>\n                        </div>\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled placeholder=\"\" min=\"1\" max=\"100\" name=\"entranceNumber\" id=\"entranceNumber\" value=\"").concat(apartment.entranceNumber, "\">\n                            <label for=\"entranceNumber\">\u041D\u043E\u043C\u0435\u0440 \u043F\u043E\u0434\u044A\u0435\u0437\u0434\u0430</label>\n                            <div class=\"error invisible\" data-error=\"entranceNumber\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440 \u043F\u043E\u0434\u044A\u0435\u0437\u0434\u0430</div>\n                        </div>\n                    </div>\n                    <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 w-100\">\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled placeholder=\"\" min=\"1\" max=\"200\" name=\"floor\" id=\"floor\" value=\"").concat(apartment.floor, "\">\n                            <label for=\"floor\">\u042D\u0442\u0430\u0436</label>\n                            <div class=\"error invisible\" data-error=\"floor\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u044D\u0442\u0430\u0436</div>\n                        </div>\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled step=\"0.1\" min=\"1\" max=\"10000\" placeholder=\"\" name=\"totalArea\" id=\"totalArea\" value=\"").concat(apartment.floor, "\">\n                            <label for=\"totalArea\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</label>\n                            <div class=\"error invisible\" data-error=\"totalArea\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u043E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled step=\"0.1\" min=\"1\" max=\"10000\" placeholder=\"\" name=\"residentialArea\" id=\"residentialArea\" value=\"").concat(apartment.residentialArea, "\">\n                            <label for=\"residentialArea\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</label>\n                            <div class=\"error invisible\" data-error=\"residentialArea\">\u041D\u0435\u0432\u0435\u0440\u043D\u0430\u044F \u0436\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                    </div>\n                    <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 w-100\">\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled min=\"0\" max=\"30\" placeholder=\"\" name=\"apartmentUsers\" id=\"apartmentUsers\" value=\"").concat(apartment.users.length, "\">\n                            <label for=\"apartmentUsers\">\u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</label>\n                            <div class=\"error invisible\" data-error=\"apartmentUsers\">\u041D\u0435\u0432\u0435\u0440\u043D\u043E\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439</div>\n                        </div>\n                        <div class=\"form-group\">\n                            <input type=\"number\" disabled min=\"0\" max=\"30\" placeholder=\"\" name=\"apartmentOwners\" id=\"apartmentOwners\" value=\"").concat(apartment.users.length, "\">\n                            <label for=\"apartmentOwners\">\u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</label>\n                            <div class=\"error invisible\" data-error=\"apartmentOwners\">\u041D\u0435\u0432\u0435\u0440\u043D\u043E\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432</div>\n                        </div>\n                        <div class=\"form-group\">\n                            <input id=\"houseAddress\" placeholder=\"\" disabled value=\"").concat(house.city, ", \u0443\u043B. ").concat(house.street, " ").concat(house.number, "\">\n                            <label for=\"houseAddress\">\u0410\u0434\u0440\u0435\u0441 \u0434\u043E\u043C\u0430</label>\n                            <a href=\"/house/").concat(house.id, "\">\u041F\u0435\u0440\u0435\u0439\u0442\u0438 \u043A \u043F\u0440\u043E\u0444\u0438\u043B\u044E \u0434\u043E\u043C\u0430</a>\n                        </div>\n                    </div>\n                    <a href=\"/apartment/").concat(apartment.id, "\">\u041F\u0435\u0440\u0435\u0439\u0442\u0438 \u043A \u043F\u0440\u043E\u0444\u0438\u043B\u044E \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B</a>\n                </div>\n            ");
+      }
+      return apartmentHTML;
+    }
+
+    // Редактирование профиля квартиры
   }, {
     key: "EditApartmentProfile",
     value: function () {
@@ -1263,6 +1274,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
       var apartmentUserHTML = "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-apartment-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName-").concat(apartmentUser.userId, "\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber-").concat(apartmentUser.userId, "\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group multiselect\">\n                    <select id=\"statuses-").concat(apartmentUser.userId, "\" multiple>\n                        ").concat(statusOptions, "\n                    </select>                        \n                    <label for=\"statuses-").concat(apartmentUser.userId, "\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"number\" placeholder=\"\" name=\"share\" min=\"0\" id=\"share-").concat(apartmentUser.userId, "\" value=\"").concat(share, "\">                      \n                    <label for=\"share-").concat(apartmentUser.userId, "\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F</label>\n                    <div class=\"error invisible\" data-error=\"share\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u0434\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432</div>\n                </div>\n                <div class=\"save-icon icon-action\" data-status=\"save\" title=\"\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#128190;</div>\n                <div class=\"remove-icon icon-action\" data-status=\"remove\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#10060;</div>                \n            </div>\n        ");
       return apartmentUserHTML;
     }
+
+    //Получение домов для создания квартиры и привязки к ним
   }, {
     key: "SetHouseIdToCreateApartment",
     value: function () {
@@ -1330,7 +1343,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
         return _SetHouseIdToCreateApartment.apply(this, arguments);
       }
       return SetHouseIdToCreateApartment;
-    }()
+    }() // Коллекционирование данных квартир для сохранения и создания
   }, {
     key: "CollectApartmentDataAndSaveToCreate",
     value: function () {
@@ -1458,7 +1471,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
         return _CollectApartmentDataAndSaveToCreate.apply(this, arguments);
       }
       return CollectApartmentDataAndSaveToCreate;
-    }()
+    }() // Удаление пользователя из квартиры
   }, {
     key: "RemoveUserFromApartmentAndSave",
     value: function RemoveUserFromApartmentAndSave(apartmentId) {
@@ -1501,6 +1514,8 @@ var ApartmentProfile = /*#__PURE__*/function () {
         };
       }());
     }
+
+    // Добавление пользователя к квартире
   }, {
     key: "AddNewUserToApartment",
     value: function AddNewUserToApartment(apartmentId) {
@@ -2021,6 +2036,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
               apartmentProfile.CollectApartmentDataAndSaveToCreate();
             });
           }
+          if (Regex.getUrlPathParts(window.location.href).includes('apartment') && Regex.getUrlPathParts(window.location.href).includes(userId)) {}
           if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
             apartmentId = Regex.isValidEntityUrl(window.location.href).id;
             apartmentProfile.EditApartmentProfile(apartmentId);

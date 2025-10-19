@@ -58,7 +58,7 @@ export class ApartmentProfile {
             apartmentsListContainer.innerHTML = '';
 
             for (const { apartment, house } of apartmentWithHouse) {
-                const apartmentTemplate = this.SetApartmentTemplate(apartment, house);
+                const apartmentTemplate = this.SetApartmentTemplateForMainPage(apartment, house);
                 apartmentsListContainer.insertAdjacentHTML('beforeend', apartmentTemplate);
             }
         } catch (error) {
@@ -68,7 +68,7 @@ export class ApartmentProfile {
         }
     }
 
-    SetApartmentTemplate (apartment, house) {
+    SetApartmentTemplateForMainPage (apartment, house) {
         let apartmentHTML;
         if (apartment) {
             apartmentHTML = `
@@ -97,12 +97,78 @@ export class ApartmentProfile {
                     </div>
                 </div>
             `;
-        }
-        
+        }        
 
         return apartmentHTML;
     }
 
+    SetApartmentTemplateForAllApartments (apartment, house) {
+        let apartmentHTML;
+        if (apartment) {
+            apartmentHTML = `
+                <div class="profile-group dashboard-card my-4" data-group="apartment" data-apartment-id="${apartment.id}" data-apartment-house="${house.id}">
+                    <h3 class="card-header card-header_apartment w-100">Профиль квартиры</h3>
+
+                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100">
+                        <div class="form-group">
+                            <input type="number" disabled placeholder="" min="1" max="10000" name="number" id="number" value="${apartment.number}">
+                            <label for="number">Номер квартиры</label>
+                            <div class="error invisible" data-error="number">Неверный номер</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" disabled placeholder="" min="1" max="100" name="numbersOfRooms" id="numbersOfRooms" value="${apartment.numbersOfRooms}">
+                            <label for="numbersOfRooms">Число комнат</label>
+                            <div class="error invisible" data-error="numbersOfRooms">Неверное число комнат</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" disabled placeholder="" min="1" max="100" name="entranceNumber" id="entranceNumber" value="${apartment.entranceNumber}">
+                            <label for="entranceNumber">Номер подъезда</label>
+                            <div class="error invisible" data-error="entranceNumber">Неверный номер подъезда</div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
+                        <div class="form-group">
+                            <input type="number" disabled placeholder="" min="1" max="200" name="floor" id="floor" value="${apartment.floor}">
+                            <label for="floor">Этаж</label>
+                            <div class="error invisible" data-error="floor">Неверный этаж</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" disabled step="0.1" min="1" max="10000" placeholder="" name="totalArea" id="totalArea" value="${apartment.floor}">
+                            <label for="totalArea">Общая площадь</label>
+                            <div class="error invisible" data-error="totalArea">Неверная общая площадь</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" disabled step="0.1" min="1" max="10000" placeholder="" name="residentialArea" id="residentialArea" value="${apartment.residentialArea}">
+                            <label for="residentialArea">Жилая площадь</label>
+                            <div class="error invisible" data-error="residentialArea">Неверная жилая площадь</div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
+                        <div class="form-group">
+                            <input type="number" disabled min="0" max="30" placeholder="" name="apartmentUsers" id="apartmentUsers" value="${apartment.users.length}">
+                            <label for="apartmentUsers">Количество пользователей квартиры</label>
+                            <div class="error invisible" data-error="apartmentUsers">Неверное количество пользователей</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" disabled min="0" max="30" placeholder="" name="apartmentOwners" id="apartmentOwners" value="${apartment.users.length}">
+                            <label for="apartmentOwners">Количество владельцев квартиры</label>
+                            <div class="error invisible" data-error="apartmentOwners">Неверное количество владельцев</div>
+                        </div>
+                        <div class="form-group">
+                            <input id="houseAddress" placeholder="" disabled value="${house.city}, ул. ${house.street} ${house.number}">
+                            <label for="houseAddress">Адрес дома</label>
+                            <a href="/house/${house.id}">Перейти к профилю дома</a>
+                        </div>
+                    </div>
+                    <a href="/apartment/${apartment.id}">Перейти к профилю квартиры</a>
+                </div>
+            `;
+        }        
+
+        return apartmentHTML;
+    }
+
+    // Редактирование профиля квартиры
     async EditApartmentProfile (apartmentId) {
         const apartment = await this.GetApartment(apartmentId);
         const apartmentsShare = await this.GetApartmentShares(apartmentId);     
@@ -190,6 +256,7 @@ export class ApartmentProfile {
         return apartmentUserHTML;
     }
 
+    //Получение домов для создания квартиры и привязки к ним
     async SetHouseIdToCreateApartment () {
         let houseId = parseInt(localStorage.getItem('house'));
         const houseProfile = new ApartmentHouses();
@@ -220,6 +287,7 @@ export class ApartmentProfile {
         }
     }
 
+    // Коллекционирование данных квартир для сохранения и создания
     async CollectApartmentDataAndSaveToCreate () {
         let apartment = {};       
         
@@ -330,6 +398,7 @@ export class ApartmentProfile {
         }        
     }
 
+    // Удаление пользователя из квартиры
     RemoveUserFromApartmentAndSave (apartmentId) {
         document.addEventListener('click', async (e) => {
             // Проверяем, был ли клик по элементу с нужным data-атрибутом
@@ -353,6 +422,7 @@ export class ApartmentProfile {
         });
     }
 
+    // Добавление пользователя к квартире
     AddNewUserToApartment (apartmentId) {
         let modalPhoneError = document.querySelector('[data-error="newPhoneNumber"]');
 
@@ -568,6 +638,10 @@ document.addEventListener('authStateChanged', async () => {
             document.querySelector('[data-action="save-apartment-data"]').addEventListener('click', () => {
                 apartmentProfile.CollectApartmentDataAndSaveToCreate ();
             });            
+        }
+
+        if (Regex.getUrlPathParts(window.location.href).includes('apartment') && Regex.getUrlPathParts(window.location.href).includes(userId)) {
+
         }
 
         if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
