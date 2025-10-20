@@ -698,6 +698,11 @@ footer {
         padding: 1rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
+
+    a {
+        text-decoration: none;
+        color: #fff;
+    }
 }
 
 .areas-section {

@@ -102,19 +102,20 @@ export class ApartmentProfile {
         return apartmentHTML;
     }
 
+    async InsertApartmentProfileToAllApartments(apartment, house) {
+        let container = document.querySelector('.apartments-by-user-list');
+        const apartmentTemplate = this.SetApartmentTemplateForAllApartments(apartment, house);
+        container.insertAdjacentHTML('beforeend', apartmentTemplate);
+    }
+
     SetApartmentTemplateForAllApartments (apartment, house) {
         let apartmentHTML;
         if (apartment) {
             apartmentHTML = `
                 <div class="profile-group dashboard-card my-4" data-group="apartment" data-apartment-id="${apartment.id}" data-apartment-house="${house.id}">
-                    <h3 class="card-header card-header_apartment w-100">Профиль квартиры</h3>
+                    <h3 class="card-header card-header_apartment w-100"><a href="/apartment/${apartment.id}">${house.city}, ул. ${house.street} ${house.number}, квартира ${apartment.number}</a></h3>
 
                     <div class="d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100">
-                        <div class="form-group">
-                            <input type="number" disabled placeholder="" min="1" max="10000" name="number" id="number" value="${apartment.number}">
-                            <label for="number">Номер квартиры</label>
-                            <div class="error invisible" data-error="number">Неверный номер</div>
-                        </div>
                         <div class="form-group">
                             <input type="number" disabled placeholder="" min="1" max="100" name="numbersOfRooms" id="numbersOfRooms" value="${apartment.numbersOfRooms}">
                             <label for="numbersOfRooms">Число комнат</label>
@@ -125,13 +126,13 @@ export class ApartmentProfile {
                             <label for="entranceNumber">Номер подъезда</label>
                             <div class="error invisible" data-error="entranceNumber">Неверный номер подъезда</div>
                         </div>
-                    </div>
-                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
                         <div class="form-group">
                             <input type="number" disabled placeholder="" min="1" max="200" name="floor" id="floor" value="${apartment.floor}">
                             <label for="floor">Этаж</label>
                             <div class="error invisible" data-error="floor">Неверный этаж</div>
                         </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">                        
                         <div class="form-group">
                             <input type="number" disabled step="0.1" min="1" max="10000" placeholder="" name="totalArea" id="totalArea" value="${apartment.floor}">
                             <label for="totalArea">Общая площадь</label>
@@ -142,24 +143,12 @@ export class ApartmentProfile {
                             <label for="residentialArea">Жилая площадь</label>
                             <div class="error invisible" data-error="residentialArea">Неверная жилая площадь</div>
                         </div>
-                    </div>
-                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4 w-100">
-                        <div class="form-group">
+                        <div class="form-group" style="max-width: 407px">
                             <input type="number" disabled min="0" max="30" placeholder="" name="apartmentUsers" id="apartmentUsers" value="${apartment.users.length}">
                             <label for="apartmentUsers">Количество пользователей квартиры</label>
                             <div class="error invisible" data-error="apartmentUsers">Неверное количество пользователей</div>
                         </div>
-                        <div class="form-group">
-                            <input type="number" disabled min="0" max="30" placeholder="" name="apartmentOwners" id="apartmentOwners" value="${apartment.users.length}">
-                            <label for="apartmentOwners">Количество владельцев квартиры</label>
-                            <div class="error invisible" data-error="apartmentOwners">Неверное количество владельцев</div>
-                        </div>
-                        <div class="form-group">
-                            <input id="houseAddress" placeholder="" disabled value="${house.city}, ул. ${house.street} ${house.number}">
-                            <label for="houseAddress">Адрес дома</label>
-                            <a href="/house/${house.id}">Перейти к профилю дома</a>
-                        </div>
-                    </div>
+                    </div>                   
                     <a href="/apartment/${apartment.id}">Перейти к профилю квартиры</a>
                 </div>
             `;
@@ -173,7 +162,7 @@ export class ApartmentProfile {
         const apartment = await this.GetApartment(apartmentId);
         const apartmentsShare = await this.GetApartmentShares(apartmentId);     
         const users = apartment.users;
-        const house = await this.House.GetHouse(apartment.houseId);        
+        const house = await this.House.GetHouse(apartment.houseId);
         let apartmenUsertList = document.querySelector('[data-group="apartment-users"] .apartment-user-list');
         let houseContainer = document.getElementById('houseId');
 
@@ -244,7 +233,7 @@ export class ApartmentProfile {
                     <label for="statuses-${apartmentUser.userId}">Статус пользователя</label>
                 </div>
                 <div class="form-group">
-                    <input type="number" placeholder="" name="share" min="0" id="share-${apartmentUser.userId}" value="${share}">                      
+                    <input type="number" placeholder="" name="share" min="0" step="0.1" id="share-${apartmentUser.userId}" value="${share}">                      
                     <label for="share-${apartmentUser.userId}">Доля владения</label>
                     <div class="error invisible" data-error="share">Доля владения только для владельцев</div>
                 </div>
@@ -641,7 +630,38 @@ document.addEventListener('authStateChanged', async () => {
         }
 
         if (Regex.getUrlPathParts(window.location.href).includes('apartment') && Regex.getUrlPathParts(window.location.href).includes(userId)) {
+            const apartments = await apartmentProfile.GetApartmentsByUserId(userId);
+            if (!apartments || apartments.length === 0) {
+                document.querySelector('.apartments-by-user-list').innerHTML = '<p>Нет привязанных квартир</p>';
+                return;
+            }
 
+            // Получаем уникальные houseId
+            const houseIds = [...new Set(apartments.map(a => a.houseId))];
+
+            // Загружаем все дома параллельно
+            const housePromises = houseIds.map(id => apartmentProfile.House.GetHouse(id));
+            const houses = await Promise.all(housePromises);
+
+            // Создаём мапу
+            const houseMap = new Map(houses.map(h => [h.id, h]));
+
+            // Сортируем квартиры по номеру дома
+            const sorted = apartments
+                .map(a => ({ apartment: a, house: houseMap.get(a.houseId) }))
+                .filter(item => item.house)
+                .sort((a, b) => {
+                    const numA = parseInt(a.house.number) || 0;
+                    const numB = parseInt(b.house.number) || 0;
+                    return numA - numB;
+                });
+
+            // Вставляем с уже известным домом
+            const container = document.querySelector('.apartments-by-user-list');
+            container.innerHTML = '';
+            for (const { apartment, house } of sorted) {
+                apartmentProfile.InsertApartmentProfileToAllApartments(apartment, house);
+            }
         }
 
         if (Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('apartment')) {
