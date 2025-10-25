@@ -1,4 +1,5 @@
 import { Modal } from './Modal.js';
+import { HouseValidator } from './HouseValidator.js';
 
 export class ApartmentHouses {
     constructor () {
@@ -27,6 +28,7 @@ export class ApartmentHouses {
             document.getElementById('hasGas').checked = house.hasGas;
             document.getElementById('hasElectricity').checked = house.hasElectricity;
             document.getElementById('hasElevator').checked = house.hasElevator;
+            document.getElementById('builtYear').value = house.builtYear;
 
             houseUsers.forEach(user => {
                 const option = document.createElement('option');
@@ -39,7 +41,7 @@ export class ApartmentHouses {
             document.querySelector('[data-action="save-house-data"]').addEventListener('click', () => {
                 console.log(`клик по кнопке сохранения дома`);
                 this.CollectHouseDataAndUpdateProfile ();
-            });            
+            });    
 
         } catch (e) {
             console.error('Ошибка при загрузке данных дома:', e);
@@ -255,6 +257,49 @@ export class ApartmentHouses {
         return houseHTML
     }
 
+    async CollectHouseDataAndCreate () {
+        let house = {};
+
+        document.querySelectorAll('[data-group="house"] input').forEach(input => {
+            const key = input.id;
+
+            let value;
+            if (input.type === 'checkbox') {
+                value = input.checked;
+            } else if (input.type === 'number') {
+                // Пустое поле → 0
+                value = input.value === '' ? 0 : Number(input.value);                
+            } else if (input.tagName === 'SELECT') {
+                value = input.value === '' ? null : el.value;
+            } else {               
+                value = input.value || null;
+            }
+
+            house[key] = value;
+        });
+
+        // Валидация
+        const validation = HouseValidator.validate(house);
+        if (!validation.isValid) {
+            HouseValidator.displayErrors(validation.errors);
+            Modal.ShowNotification('Исправьте ошибки в форме', 'red');
+            return;
+        }
+
+        // Убираем ошибки перед попыткой отправки
+        HouseValidator.displayErrors({});
+
+        let isCreateHouseSuccessfull = await this.CreateHouse(house);
+
+        if (isCreateHouseSuccessfull) {
+            Modal.ShowNotification('Данные о доме успешно сохранены', 'green');
+            console.log(`собранные данные о доме`);
+            console.log(house);
+        } else {
+            Modal.ShowNotification('Ошибка сохранения данных', 'red');
+        }
+    }
+
     async CollectHouseDataAndUpdateProfile () {
         let house = {};
         const Regex = new RegularExtension();
@@ -277,6 +322,18 @@ export class ApartmentHouses {
 
             house[key] = value;
         });
+
+        // Валидация
+        const validation = HouseValidator.validate(house);
+        if (!validation.isValid) {
+            HouseValidator.displayErrors(validation.errors);
+            Modal.ShowNotification('Исправьте ошибки в форме', 'red');
+            return;
+        }
+
+        // Убираем ошибки перед попыткой отправки
+        HouseValidator.displayErrors({});
+
         let headId = document.getElementById('houseHead').value;
         //Переназначаем старшего по дому
         let isAssignHeadSuccessfull = await this.AssignHead(houseId, headId);        
@@ -332,9 +389,14 @@ export class ApartmentHouses {
                 body: JSON.stringify(houseData)
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data);
-            console.log('Дом создан:', data);
-            return data;
+            if (response.ok) {
+                //return data;
+                console.log('Дом создан:', data);
+                return true;
+            } else {
+                return false;
+                //throw new Error(data);
+            }
         } catch (error) {
             console.error('Ошибка создания дома:', error);
         }
@@ -535,6 +597,14 @@ document.addEventListener('authStateChanged', async () => {
             localStorage.setItem('house', houseId);
             await houseProfile.InsertHouseDataById(houseId);
             await houseProfile.InsertApartmentsInHouseDetails(houseId);
+        }
+
+        //где-то тут и на бэке надо бы сделать проверку на суперадминистратора :)
+        if (window.location.pathname.includes('/house/create')) {            
+            document.querySelector('[data-action="save-house-data"]').addEventListener('click', () => {
+                console.log(`клик по кнопке сохранения дома`);
+                houseProfile.CollectHouseDataAndCreate ();
+            }); 
         }
     }
 });
