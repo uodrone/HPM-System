@@ -36,6 +36,18 @@ namespace HPM_System.NotificationService.Infrastructure.Repositories
             }
         }
 
+        public Task<IEnumerable<Notification>> GetByUserIdAsync(Guid userId)
+        {
+            lock (_lock)
+            {
+                var userNotifications = _notifies
+                    .Where(notification => notification.Recipients.Any(recipient => recipient.UserId == userId))
+                    .ToList();
+
+                return Task.FromResult(userNotifications.AsEnumerable());
+            }
+        }
+
         public Task<bool> MarkAsReadAsync(Guid id)
         {
             lock (_lock)
