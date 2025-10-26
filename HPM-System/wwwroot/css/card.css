@@ -53,6 +53,7 @@
     color: white;
     border-radius: 8px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    width: 100%;
 
     &:first-child {
         border-radius: 8px;
@@ -80,6 +81,11 @@
         border-radius: 8px;
         padding: 1rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    a {
+        text-decoration: none;
+        color: #fff;
     }
 }
 
@@ -136,6 +142,7 @@
 
 
 /*Старые стили*/
+
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

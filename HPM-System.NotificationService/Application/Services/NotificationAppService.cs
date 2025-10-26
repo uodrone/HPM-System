@@ -45,6 +45,11 @@ namespace HPM_System.NotificationService.Application.Services
             return await _repository.GetByIdAsync(id);
         }
 
+        public async Task<IEnumerable<Notification>> GetByUserIdAsync(Guid userId)
+        {
+            return await _repository.GetByUserIdAsync(userId);
+        }
+
         public async Task<bool> MarkAsRead(Guid id)
         {           
             return await _repository.MarkAsReadAsync(id);

@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
   
@@ -8,6 +8,7 @@
     <div class="container">
         <!-- Приветствие для авторизованных пользователей -->
         <section data-auth-required class="auth-required">
+
             <h1 class="page-title text-center">Личный кабинет</h1>
 
             <div class="dashboard-grid">
@@ -85,7 +86,6 @@
                         <a data-user-id href="/events/by-user/" class="card-link event-link">
                             Все события
                         </a>
-
                     </div>
                 </div>
             </div>
@@ -95,8 +95,8 @@
         <section data-guest-only class="guest-only">
             <div class="text-center">
                 <h1>Добро пожаловать в HPM System</h1>
-                <p>Современная система управления жилыми сообществами</p>
-                <div class="d-flex flex-wrap justify-content-center gap-4">
+                <p>Система управления жилыми сообществами</p>
+                <div class="d-flex flex-wrap justify-content-center gap-4 mt-5" style="max-width: 600px; margin: 0 auto;">
                     <a href="https://localhost:55676/auth/login" class="btn btn_secondary" style="font-size: 1.1rem; padding: 12px 24px;">
                         Войти в систему
                     </a>

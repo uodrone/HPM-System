@@ -30,6 +30,12 @@ namespace HPM_System.NotificationService.Web.Controllers
             return await _notificationService.GetByIDAsync(id);
         }
 
+        [HttpGet("user/{userId:guid}")]
+        public async Task<IEnumerable<Notification>> GetByUserId(Guid userId)
+        {
+            return await _notificationService.GetByUserIdAsync(userId);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateNotificationDTO dto)
         {            

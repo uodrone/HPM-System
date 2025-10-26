@@ -6,6 +6,7 @@ namespace HPM_System.NotificationService.Application.Interfaces
     {
         Task<IEnumerable<Notification>> GetAllAsync(bool notReadOnly = false);
         Task<Notification?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Notification>> GetByUserIdAsync(Guid userId);
         Task<Notification> AddAsync(Notification notification);
         Task<bool> MarkAsReadAsync(Guid id);
     }

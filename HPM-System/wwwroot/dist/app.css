@@ -669,6 +669,7 @@ footer {
     color: white;
     border-radius: 8px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    width: 100%;
 
     &:first-child {
         border-radius: 8px;
@@ -696,6 +697,11 @@ footer {
         border-radius: 8px;
         padding: 1rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    a {
+        text-decoration: none;
+        color: #fff;
     }
 }
 
