@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "hpm-system": "StartDebugging",
-        "hpm-system.identityserver": "StartDebugging"
+        "hpm-system.identityserver": "StartDebugging",
+        "hpm-system.eventservice": "StartDebugging"
       }
     }
   }
