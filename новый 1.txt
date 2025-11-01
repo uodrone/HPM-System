@@ -1,0 +1,14 @@
+данные для CreateEventAsync
+
+
+{
+  "houseId": 1,
+  "userId": 1,
+  "eventDateTime": "2025-10-17T20:52:00",
+  "place": "123",
+  "eventName": "123",
+  "eventDescription": "123",
+  "imageIds": [
+    1, 2, 34, 77
+  ]
+}

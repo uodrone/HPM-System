@@ -1,5 +1,6 @@
 ﻿using HPM_System.EventService.Models;
 using HPM_System.EventService.Repositories;
+using HPM_System.EventService.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 
@@ -7,18 +8,16 @@ namespace HPM_System.EventService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EventController : ControllerBase
+    public class EventController : ControllerBase, IEventController
     {
-        private readonly IEventModelRepository _eventRepository;
+        
         private readonly ILogger<EventController> _logger;
+        private readonly IEventService _eventService;
 
-        public EventController(IEventModelRepository repository, ILogger<EventController> logger)
+        public EventController(ILogger<EventController> logger, IEventService eventService)
         {
-            _eventRepository = repository ?? throw new ArgumentNullException(nameof(repository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            // Необходимо создать сервис ЕвентСервис. В нем инкапсулировать логику всю. В том числе, при инициализации этого сервиса
-            // необходимо кэшировать все записи событий, ибо нечего ходить в БД постоянно
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
         }
 
         /// <summary>
@@ -26,7 +25,7 @@ namespace HPM_System.EventService.Controllers
         /// </summary>
         [HttpPost]
         [EndpointDescription("Создать новое событие")]
-        public async Task<ActionResult<EventModel>> CreateEventAsync([Description("Модель события для добавления")] [FromBody] EventModel? eventModel, CancellationToken ct)
+        public async Task<ActionResult<EventModel>> CreateEventAsync([Description("Модель события для добавления")][FromBody] EventModel? eventModel, CancellationToken ct)
         {
             try
             {
@@ -35,25 +34,9 @@ namespace HPM_System.EventService.Controllers
                     return BadRequest(ModelState);
                 }
 
-                Random r = new Random(10);
-                var next = r.Next(4);
+                var result =  await _eventService.CreateEventAsync(eventModel, ct);
 
-                var a = new EventModel();
-                a.Place = $"Место проведения {next}";
-                a.EventName = $"Название какото то события {next}";
-                a.EventDescription = $"Описание какого то события {next}";
-                a.EventDateTime = DateTime.UtcNow;
-                a.HouseId = 1L;
-                a.UserId = 15L;
-                a.ImageIds = new List<long>() 
-                {
-                    20L,25L,30L
-                };
-
-
-                var result = await _eventRepository.AddAsync(a, ct);
-
-                return Ok(a);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -71,7 +54,7 @@ namespace HPM_System.EventService.Controllers
         {
             try
             {
-                return Ok(await _eventRepository.GetAllAsync(ct));
+                return Ok(await _eventService.GetAllEventsAsync(ct));
             }
             catch (Exception ex)
             {
@@ -89,7 +72,7 @@ namespace HPM_System.EventService.Controllers
         {
             try
             {
-                var eventModel = await _eventRepository.GetByIdAsync(id, ct);
+                var eventModel = await _eventService.GetEventByIdAsync(id, ct);
 
                 if (eventModel == null)
                 {
@@ -114,14 +97,7 @@ namespace HPM_System.EventService.Controllers
         {
             try
             {
-                var eventModels = await _eventRepository.GetAllUserEventsAsync(userId, ct);
-
-                if (!eventModels.Any())
-                {
-                    return NotFound($"События пользователя с ID {userId} не найдены");
-                }
-
-                return Ok(eventModels);
+                return Ok(await _eventService.GetAllUserEventsAsync(userId, ct));
             }
             catch (Exception ex)
             {
@@ -129,7 +105,6 @@ namespace HPM_System.EventService.Controllers
                 return StatusCode(500, $"Внутренняя ошибка сервера {nameof(EventController)}");
             }
         }
-
 
         [HttpPut("{id}")]
         [EndpointDescription("Обновить событие")]
@@ -140,8 +115,8 @@ namespace HPM_System.EventService.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                await _eventRepository.UpdateAsync(updatedEvent, ct);
-                return NoContent();
+                await _eventService.UpdateEventAsync(updatedEvent, ct);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -159,16 +134,16 @@ namespace HPM_System.EventService.Controllers
         {
             try
             {
-                var eventToRemove = await _eventRepository.GetByIdAsync(id, ct);
+                var eventToRemove = await _eventService.GetEventByIdAsync(id, ct);
 
                 if (eventToRemove == null)
                 {
                     return NotFound($"Событие с ID {id} не найдено");
                 }
 
-                await _eventRepository.DeleteAsync(eventToRemove, ct);
+                await _eventService.DeleteEventAsync(id, ct);
 
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
