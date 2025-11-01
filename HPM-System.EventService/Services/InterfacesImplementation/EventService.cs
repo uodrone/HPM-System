@@ -22,22 +22,19 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
             //var allApartments = await _apartmentService.GetAllApartmentsAsync();
         }
 
-        public async Task<ActionResult<EventModel>> CreateEventAsync(EventModel? eventModel, CancellationToken ct)
+        public async Task<ActionResult<EventModel>> CreateEventAsync(EventModel eventModel, CancellationToken ct)
         {
             Random r = new Random(10);
             var next = r.Next(4);
 
             var newEvent = new EventModel();
-            newEvent.Place = $"Место проведения {next}";
-            newEvent.EventName = $"Название какото то события {next}";
-            newEvent.EventDescription = $"Описание какого то события {next}";
-            newEvent.EventDateTime = DateTime.UtcNow;
-            newEvent.HouseId = 1L;
-            newEvent.UserId = Guid.NewGuid();
-            newEvent.ImageIds = new List<long>()
-            {
-                20L,25L,30L
-            };
+            newEvent.Place = eventModel.Place;
+            newEvent.EventName = eventModel.EventName;
+            newEvent.EventDescription = eventModel.EventDescription;
+            newEvent.EventDateTime = eventModel.EventDateTime;
+            newEvent.HouseId = eventModel.HouseId;
+            newEvent.UserId = eventModel.UserId;
+            newEvent.ImageIds = eventModel.ImageIds;
 
             var result = await _eventRepository.AddAsync(newEvent, ct);
             newEvent.EventId = result;

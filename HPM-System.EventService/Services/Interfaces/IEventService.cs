@@ -5,7 +5,7 @@ namespace HPM_System.EventService.Services.Interfaces
 {
     public interface IEventService
     {
-        Task<ActionResult<EventModel>> CreateEventAsync( EventModel? eventModel, CancellationToken ct);
+        Task<ActionResult<EventModel>> CreateEventAsync(EventModel eventModel, CancellationToken ct);
         Task DeleteEventAsync(EventModel model, CancellationToken ct);
         Task<ActionResult<IEnumerable<EventModel>>> GetAllEventsAsync(CancellationToken ct);
         Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(Guid userId, CancellationToken ct);

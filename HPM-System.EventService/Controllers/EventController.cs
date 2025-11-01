@@ -28,7 +28,7 @@ namespace HPM_System.EventService.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                if (!ModelState.IsValid || eventModel == null)
                 {
                     return BadRequest(ModelState);
                 }
