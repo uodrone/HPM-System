@@ -24,9 +24,6 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
 
         public async Task<ActionResult<EventModel>> CreateEventAsync(EventModel eventModel, CancellationToken ct)
         {
-            Random r = new Random(10);
-            var next = r.Next(4);
-
             var newEvent = new EventModel();
             newEvent.Place = eventModel.Place;
             newEvent.EventName = eventModel.EventName;
