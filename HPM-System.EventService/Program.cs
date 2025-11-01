@@ -5,6 +5,7 @@ using HPM_System.EventService.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System;
+using System.Text.Json.Serialization;
 
 namespace HPM_System.EventService
 {
@@ -16,17 +17,23 @@ namespace HPM_System.EventService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var a = builder.Configuration.GetConnectionString(_connectionName);
-
             builder.Services.AddDbContext<ServiceDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString(_connectionName)));
 
-            // Add services to the container.
+            builder.Services.ConfigureServices(builder.Configuration);
 
-            builder.Services.ConfigureServices();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader();
+                });
+            });
 
             builder.Services.AddControllers();
-            
+
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
@@ -36,7 +43,6 @@ namespace HPM_System.EventService
             {
                 app.MapOpenApi();
                 app.MapScalarApiReference();
-                
             }
 
             app.UseCors("AllowAll");

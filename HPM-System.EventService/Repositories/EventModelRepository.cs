@@ -30,7 +30,7 @@ namespace HPM_System.EventService.Repositories
             return await _dbContext.Events.ToListAsync(ct);
         }
 
-        public async Task<IEnumerable<EventModel>> GetAllUserEventsAsync(long userId, CancellationToken ct)
+        public async Task<IEnumerable<EventModel>> GetAllUserEventsAsync(Guid userId, CancellationToken ct)
         {
             return await _dbContext.Events.Where(x => x.UserId == userId).ToListAsync(ct);
         }

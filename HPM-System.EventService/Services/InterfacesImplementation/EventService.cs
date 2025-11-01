@@ -25,7 +25,7 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
             newEvent.EventDescription = $"Описание какого то события {next}";
             newEvent.EventDateTime = DateTime.UtcNow;
             newEvent.HouseId = 1L;
-            newEvent.UserId = 15L;
+            newEvent.UserId = Guid.NewGuid();
             newEvent.ImageIds = new List<long>()
             {
                 20L,25L,30L
@@ -47,13 +47,13 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
             return result.ToList();
         }
 
-        public async Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(long userId, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(Guid userId, CancellationToken ct)
         {
             var result = await _eventRepository.GetAllUserEventsAsync(userId, ct);
             return result.ToList();
         }
 
-        public async Task<ActionResult<EventModel?>> GetEventByIdAsync(long id, CancellationToken ct)
+        public async Task<EventModel?> GetEventByIdAsync(long id, CancellationToken ct)
         {
             return await _eventRepository.GetByIdAsync(id, ct);
         }

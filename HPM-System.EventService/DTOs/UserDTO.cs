@@ -2,7 +2,7 @@
 {
     public class UserDTO
     {
-        public long UserId { get; set; }
+        public Guid UserId { get; set; }
         public IEnumerable<long> SubscribeEventIds { get; set; } = [];
     }
 }

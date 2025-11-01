@@ -8,8 +8,8 @@ namespace HPM_System.EventService.Services.Interfaces
         Task<ActionResult<EventModel>> CreateEventAsync( EventModel? eventModel, CancellationToken ct);
         Task DeleteEventAsync(EventModel model, CancellationToken ct);
         Task<ActionResult<IEnumerable<EventModel>>> GetAllEventsAsync(CancellationToken ct);
-        Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(long userId, CancellationToken ct);
-        Task<ActionResult<EventModel?>> GetEventByIdAsync(long id, CancellationToken ct);
+        Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(Guid userId, CancellationToken ct);
+        Task<EventModel?> GetEventByIdAsync(long id, CancellationToken ct);
         Task UpdateEventAsync(EventModel updatedEvent, CancellationToken ct);
     }
 }

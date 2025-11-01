@@ -1,7 +1,7 @@
 ﻿using HPM_System.EventService.Models;
-using HPM_System.EventService.Repositories;
 using HPM_System.EventService.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.ComponentModel;
 
 namespace HPM_System.EventService.Controllers
@@ -13,11 +13,14 @@ namespace HPM_System.EventService.Controllers
         
         private readonly ILogger<EventController> _logger;
         private readonly IEventService _eventService;
-
-        public EventController(ILogger<EventController> logger, IEventService eventService)
+        private readonly IUserServiceClient _userClient;
+        private readonly IApartmentServiceClient _apartmentService;
+        public EventController(ILogger<EventController> logger, IEventService eventService, IUserServiceClient userClient, IApartmentServiceClient apartmentService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
+            _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
+            _apartmentService = apartmentService ?? throw new ArgumentNullException(nameof(apartmentService));
         }
 
         /// <summary>
@@ -35,6 +38,13 @@ namespace HPM_System.EventService.Controllers
                 }
 
                 var result =  await _eventService.CreateEventAsync(eventModel, ct);
+
+                var str = "3e357b47-796c-45dd-8de3-a012c7a21ef5";
+                Guid guid = new Guid(str);
+
+                //var user = await _userClient.GetUserByIdAsync(guid);
+                var apartment = await _apartmentService.GetApartmentByIdAsync(15L);
+
 
                 return Ok(result);
             }
@@ -93,7 +103,7 @@ namespace HPM_System.EventService.Controllers
         /// </summary>
         [HttpGet("{userId}")]
         [EndpointDescription("Получить события пользователя")]
-        public async Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(long userId, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<EventModel>>> GetAllUserEventsAsync(Guid userId, CancellationToken ct)
         {
             try
             {
@@ -141,7 +151,7 @@ namespace HPM_System.EventService.Controllers
                     return NotFound($"Событие с ID {id} не найдено");
                 }
 
-                await _eventService.DeleteEventAsync(id, ct);
+                await _eventService.DeleteEventAsync(eventToRemove, ct);
 
                 return Ok();
             }

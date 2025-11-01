@@ -3,7 +3,7 @@
 
 {
   "houseId": 1,
-  "userId": 1,
+  "userId": "b6070e3a-189f-419c-a68e-21d8459ee474",
   "eventDateTime": "2025-10-17T20:52:00",
   "place": "123",
   "eventName": "123",

@@ -4,7 +4,7 @@
     {
         public long EventId { get; set; }
         public long? HouseId { get; set; }
-        public long UserId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime EventDateTime { get; set; }
         public string? Place { get; set; }
         public string? EventName { get; set; }
