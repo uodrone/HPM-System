@@ -1,5 +1,6 @@
 ﻿using HPM_System.EventService.DTOs;
 using HPM_System.EventService.Services.Interfaces;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -78,6 +79,59 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Неожиданное исключение при получении дома {apartmentID} по URL {Url}", apartmentID, requestUrl);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ApartmentDTO>?> GetAllApartmentsAsync()
+        {
+            string requestUrl = $"{_apartmentServiceBaseUrl}/api/Apartment/";
+            try
+            {
+                _logger.LogDebug("Отправка запроса на получение домов по ID: {Url}", requestUrl);
+
+                var response = await _httpClient.GetAsync(requestUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogDebug("Получен успешный ответ домов. Длина контента: {Length} символов.", jsonContent.Length);
+
+                    return JsonSerializer.Deserialize<IEnumerable<ApartmentDTO>>(
+                        jsonContent,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                _logger.LogWarning("Неуспешный HTTP статус при получении домов: {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                response.EnsureSuccessStatusCode();
+                return null;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP ошибка при получении домов по URL {Url}", requestUrl);
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Таймаут или отмена запроса при получении домов по URL {Url}", requestUrl);
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Ошибка десериализации JSON при получении домов  по URL {Url}", requestUrl);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Неожиданное исключение при получении домов  по URL {Url}", requestUrl);
                 throw;
             }
         }

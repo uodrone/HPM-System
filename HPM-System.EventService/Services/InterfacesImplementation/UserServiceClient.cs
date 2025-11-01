@@ -77,5 +77,58 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
                 throw;
             }
         }
+
+        public async Task<IEnumerable<UserDTO>?> GetAllUsersAsync()
+        {
+            string requestUrl = $"{_userServiceBaseUrl}/api/Users/";
+            try
+            {
+                _logger.LogDebug("Отправка запроса на получение пользователей по ID: {Url}", requestUrl);
+
+                var response = await _httpClient.GetAsync(requestUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogDebug("Получен успешный ответ пользователей. Длина контента: {Length} символов.", jsonContent.Length);
+
+                    return JsonSerializer.Deserialize<IEnumerable<UserDTO>>(
+                        jsonContent,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                _logger.LogWarning("Неуспешный HTTP статус при получении пользователей: {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                response.EnsureSuccessStatusCode();
+                return null;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP ошибка при получении пользователей по URL {Url}", requestUrl);
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Таймаут или отмена запроса при получении пользователей по URL {Url}", requestUrl);
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Ошибка десериализации JSON при получении пользователей  по URL {Url}", requestUrl);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Неожиданное исключение при получении пользователей  по URL {Url}", requestUrl);
+                throw;
+            }
+        }
     }
 }

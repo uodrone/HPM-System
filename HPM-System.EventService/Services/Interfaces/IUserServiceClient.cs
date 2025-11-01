@@ -5,5 +5,6 @@ namespace HPM_System.EventService.Services.Interfaces
     public interface IUserServiceClient
     {
         Task<UserDTO?> GetUserByIdAsync(Guid userId);
+        Task<IEnumerable<UserDTO>?> GetAllUsersAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using HPM_System.EventService.Models;
+﻿using HPM_System.EventService.DTOs;
+using HPM_System.EventService.Models;
 using HPM_System.EventService.Repositories;
 using HPM_System.EventService.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,17 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
     public class EventService : IEventService
     {
         private readonly IEventModelRepository _eventRepository;
-        public EventService(IEventModelRepository eventRepository)
+        private readonly IUserServiceClient _userClient;
+        private readonly IApartmentServiceClient _apartmentService;
+
+        public EventService(IEventModelRepository eventRepository, IUserServiceClient userClient, IApartmentServiceClient apartmentService)
         {
             _eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
-            // КЭШ !!!
+            _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
+            _apartmentService = apartmentService ?? throw new ArgumentNullException(nameof(apartmentService));
+
+            //var allUsers = await _userClient.GetAllUsersAsync();
+            //var allApartments = await _apartmentService.GetAllApartmentsAsync();
         }
 
         public async Task<ActionResult<EventModel>> CreateEventAsync(EventModel? eventModel, CancellationToken ct)
@@ -33,6 +41,7 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
 
             var result = await _eventRepository.AddAsync(newEvent, ct);
             newEvent.EventId = result;
+
             return newEvent;
         }
 
