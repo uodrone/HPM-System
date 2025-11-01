@@ -20,11 +20,6 @@ namespace HPM_System.EventService.DataContext
             modelBuilder.Entity<EventModel>(entity =>
             {
                 entity.HasKey(u => u.EventId);
-
-                //entity.HasMany(e => e.Images)
-                //  .WithOne(i => i.EventId)
-                //  .HasForeignKey(i => i.EventId)
-                //  .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ImageModel>(entity =>

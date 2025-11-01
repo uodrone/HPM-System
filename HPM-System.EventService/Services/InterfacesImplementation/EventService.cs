@@ -17,9 +17,6 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
             _eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
             _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
             _apartmentService = apartmentService ?? throw new ArgumentNullException(nameof(apartmentService));
-
-            //var allUsers = await _userClient.GetAllUsersAsync();
-            //var allApartments = await _apartmentService.GetAllApartmentsAsync();
         }
 
         public async Task<ActionResult<EventModel>> CreateEventAsync(EventModel eventModel, CancellationToken ct)
