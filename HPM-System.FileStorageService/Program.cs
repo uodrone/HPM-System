@@ -42,6 +42,17 @@ namespace HPMFileStorageService
                 options.Limits.MaxRequestBodySize = 104_857_600; // 100 МБ
             });
 
+            // Поддержка CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             // Автоматическое применение миграций при запуске
