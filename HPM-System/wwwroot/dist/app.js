@@ -5024,6 +5024,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
 /* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
 /* harmony import */ var _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NotificationClient.js */ "./wwwroot/js/NotificationClient.js");
+/* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -5041,6 +5042,7 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
 
 
 
@@ -5249,91 +5251,114 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     }()
   }, {
     key: "CollectNotificationDataToCreate",
-    value: function CollectNotificationDataToCreate() {
-      var _this3 = this;
-      var apartmentSelector = document.getElementById('apartments');
-      var tomSelectInstance = apartmentSelector.tomselect;
-      if (!tomSelectInstance) {
-        console.error('Tom Select не инициализирован');
-        return {
-          apartmentIds: [],
-          userIds: []
-        };
-      }
-
-      // Получаем массив выбранных значений
-      var selectedValues = tomSelectInstance.getValue();
-
-      // Фильтруем 'all' и 'clear', получаем только ID квартир
-      var apartmentIds = selectedValues.filter(function (value) {
-        return value !== 'all' && value !== 'clear';
-      });
-      console.log('Выбранные квартиры:', apartmentIds);
-
-      // Проверяем, какой radio button выбран
-      var toOwnersRadio = document.getElementById('toOwners');
-      var isOwnersOnly = toOwnersRadio ? toOwnersRadio.checked : false;
-      console.log('Radio toOwners checked:', isOwnersOnly);
-
-      // Собираем пользователей из выбранных квартир
-      var allUserIds = [];
-      apartmentIds.forEach(function (apartmentId) {
-        // Находим квартиру по ID из сохранённых данных
-        var apartment = _this3.currentApartments.find(function (apt) {
-          return apt.id.toString() === apartmentId;
-        });
-        if (apartment && apartment.users && Array.isArray(apartment.users)) {
-          console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(apartment.number, ", \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439:"), apartment.users.length);
-          apartment.users.forEach(function (user) {
-            console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(user.userId, ", \u0441\u0442\u0430\u0442\u0443\u0441\u044B:"), user.statuses);
-            if (isOwnersOnly) {
-              // Фильтруем только владельцев
-              var isOwner = user.statuses && user.statuses.some(function (status) {
-                return status.name === 'Владелец';
-              });
-              console.log("  \u042F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u043C: ".concat(isOwner));
-              if (isOwner) {
-                allUserIds.push(user.userId);
+    value: function () {
+      var _CollectNotificationDataToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+        var _this3 = this;
+        var apartmentSelector, tomSelectInstance, selectedValues, apartmentIds, toOwnersRadio, isOwnersOnly, allUserIds, uniqueUserIds, fileInput, file, fileManager, isFileUpload;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.n) {
+            case 0:
+              apartmentSelector = document.getElementById('apartments');
+              tomSelectInstance = apartmentSelector.tomselect;
+              if (tomSelectInstance) {
+                _context5.n = 1;
+                break;
               }
-            } else {
-              // Все пользователи
-              console.log("  \u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C \u0432\u0441\u0435\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439");
-              allUserIds.push(user.userId);
-            }
-          });
-        }
-      });
+              console.error('Tom Select не инициализирован');
+              return _context5.a(2, {
+                apartmentIds: [],
+                userIds: []
+              });
+            case 1:
+              // Получаем массив выбранных значений
+              selectedValues = tomSelectInstance.getValue(); // Фильтруем 'all' и 'clear', получаем только ID квартир
+              apartmentIds = selectedValues.filter(function (value) {
+                return value !== 'all' && value !== 'clear';
+              });
+              console.log('Выбранные квартиры:', apartmentIds);
 
-      // Получаем уникальных пользователей
-      var uniqueUserIds = _toConsumableArray(new Set(allUserIds));
-      console.log('Все пользователи:', allUserIds);
-      console.log('Уникальные пользователи:', uniqueUserIds);
-      console.log('Только собственники:', isOwnersOnly);
-      return {
-        apartmentIds: apartmentIds,
-        userIds: uniqueUserIds,
-        isOwnersOnly: isOwnersOnly
-      };
-    }
+              // Проверяем, какой radio button выбран
+              toOwnersRadio = document.getElementById('toOwners');
+              isOwnersOnly = toOwnersRadio ? toOwnersRadio.checked : false;
+              console.log('Radio toOwners checked:', isOwnersOnly);
+
+              // Собираем пользователей из выбранных квартир
+              allUserIds = [];
+              apartmentIds.forEach(function (apartmentId) {
+                // Находим квартиру по ID из сохранённых данных
+                var apartment = _this3.currentApartments.find(function (apt) {
+                  return apt.id.toString() === apartmentId;
+                });
+                if (apartment && apartment.users && Array.isArray(apartment.users)) {
+                  console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(apartment.number, ", \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439:"), apartment.users.length);
+                  apartment.users.forEach(function (user) {
+                    console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(user.userId, ", \u0441\u0442\u0430\u0442\u0443\u0441\u044B:"), user.statuses);
+                    if (isOwnersOnly) {
+                      // Фильтруем только владельцев
+                      var isOwner = user.statuses && user.statuses.some(function (status) {
+                        return status.name === 'Владелец';
+                      });
+                      console.log("  \u042F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u043C: ".concat(isOwner));
+                      if (isOwner) {
+                        allUserIds.push(user.userId);
+                      }
+                    } else {
+                      // Все пользователи
+                      console.log("  \u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C \u0432\u0441\u0435\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439");
+                      allUserIds.push(user.userId);
+                    }
+                  });
+                }
+              });
+
+              // Получаем уникальных пользователей
+              uniqueUserIds = _toConsumableArray(new Set(allUserIds));
+              console.log('Все пользователи:', allUserIds);
+              console.log('Уникальные пользователи:', uniqueUserIds);
+              console.log('Только собственники:', isOwnersOnly);
+
+              //собираем картинку
+              fileInput = document.getElementById('fileInput');
+              file = fileInput.files[0];
+              fileManager = new _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__.FileStorageClient();
+              _context5.n = 2;
+              return fileManager.uploadFile(file);
+            case 2:
+              isFileUpload = _context5.v;
+              console.log("\u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438");
+              console.log(isFileUpload);
+              return _context5.a(2, {
+                apartmentIds: apartmentIds,
+                userIds: uniqueUserIds,
+                isOwnersOnly: isOwnersOnly
+              });
+          }
+        }, _callee5);
+      }));
+      function CollectNotificationDataToCreate() {
+        return _CollectNotificationDataToCreate.apply(this, arguments);
+      }
+      return CollectNotificationDataToCreate;
+    }()
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
   var _event$detail, isAuthenticated, userData, notificationProfile;
-  return _regenerator().w(function (_context5) {
-    while (1) switch (_context5.n) {
+  return _regenerator().w(function (_context6) {
+    while (1) switch (_context6.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         if (!(isAuthenticated && userData)) {
-          _context5.n = 2;
+          _context6.n = 2;
           break;
         }
         notificationProfile = new NotificationProfileManager();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/notification/create')) {
-          _context5.n = 2;
+          _context6.n = 2;
           break;
         }
-        _context5.n = 1;
+        _context6.n = 1;
         return notificationProfile.InsertDataToCreateNotification();
       case 1:
         document.querySelector('[data-action="save-notification-data"]').addEventListener('click', function () {
@@ -5347,9 +5372,9 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           // await notificationClient.CreateNotification(notificationData);
         });
       case 2:
-        return _context5.a(2);
+        return _context6.a(2);
     }
-  }, _callee5);
+  }, _callee6);
 })));
 
 /***/ }),

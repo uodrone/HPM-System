@@ -1,6 +1,7 @@
 import { Modal } from './Modal.js';
 import { ApartmentHouses } from './ApartmentHouses.js';
 import { NotificationClient } from './NotificationClient.js';
+import { FileStorageClient } from './FileStorageClient.js';
 
 export class NotificationProfileManager {
     constructor() {
@@ -129,7 +130,7 @@ export class NotificationProfileManager {
         }, 0);
     }
 
-    CollectNotificationDataToCreate() {
+    async CollectNotificationDataToCreate() {
         const apartmentSelector = document.getElementById('apartments');
         const tomSelectInstance = apartmentSelector.tomselect;
 
@@ -186,6 +187,15 @@ export class NotificationProfileManager {
         console.log('Все пользователи:', allUserIds);
         console.log('Уникальные пользователи:', uniqueUserIds);
         console.log('Только собственники:', isOwnersOnly);
+
+        //собираем картинку
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        const fileManager = new FileStorageClient();
+        let isFileUpload = await fileManager.uploadFile(file);
+        console.log(`результат загрузки файла картинки`);
+        console.log(isFileUpload);
 
         return {
             apartmentIds: apartmentIds,

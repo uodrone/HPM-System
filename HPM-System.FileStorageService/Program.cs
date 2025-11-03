@@ -90,6 +90,7 @@ namespace HPMFileStorageService
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
