@@ -191,6 +191,8 @@ services:
     ports:
       - "${FILESTORAGESERVICE_HTTP}:8080"
       - "${FILESTORAGESERVICE_HTTPS}:8081"
+    volumes:
+      - ./certs:/https:ro
     networks: [hpm-network]
 
 volumes:

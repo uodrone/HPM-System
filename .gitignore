@@ -15,6 +15,9 @@
 #appsettings.json
 **/appsettings.Development.json
 
+certs/
+   *.pfx
+
 # Игнорировать файлы .env
 .env
 *.env
