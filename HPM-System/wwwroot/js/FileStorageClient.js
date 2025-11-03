@@ -1,5 +1,5 @@
 export class FileStorageClient {
-    constructor(baseUrl) {
+    constructor() {
         this.baseUrl = 'https://localhost:55693';
         this.apiPath = '/api/files';
     }
@@ -16,10 +16,14 @@ export class FileStorageClient {
     /**
      * Загрузить файл на сервер
      * @param {File} file - Файл для загрузки
-     * @returns {Promise<Object>} Метаданные загруженного файла
+     * @returns {Promise<Object>} Метаданные загруженного файла с URL
+     * @property {number} id - ID файла
+     * @property {string} fileUrl - URL для просмотра файла
+     * @property {string} downloadUrl - URL для скачивания файла
      * @example
      * const result = await client.uploadFile(file);
-     * console.log('Файл загружен, ID:', result.id);
+     * console.log('Файл доступен по:', result.fileUrl);
+     * document.getElementById('preview').src = result.fileUrl;
      */
     async uploadFile(file) {
         if (!(file instanceof File)) {
@@ -45,6 +49,31 @@ export class FileStorageClient {
             console.error('Ошибка при загрузке файла:', error);
             throw error;
         }
+    }
+
+    /**
+     * Получить URL для просмотра файла по имени
+     * @param {string} bucketName - Имя бакета
+     * @param {string} fileName - Имя файла
+     * @returns {string} URL для просмотра
+     * @example
+     * const url = client.getFileViewUrl('documents', 'abc123_document.pdf');
+     * document.getElementById('preview').src = url;
+     */
+    getFileViewUrl(bucketName, fileName) {
+        return this._getUrl(`/view/${bucketName}/${fileName}`);
+    }
+
+    /**
+     * Получить URL для скачивания файла по ID
+     * @param {number} id - ID файла
+     * @returns {string} URL для скачивания
+     * @example
+     * const url = client.getFileDownloadUrl(123);
+     * window.open(url, '_blank');
+     */
+    getFileDownloadUrl(id) {
+        return this._getUrl(`/download/${id}`);
     }
 
     /**
@@ -256,12 +285,18 @@ export class FileStorageClient {
         return await Promise.all(uploadPromises);
     }
 
-    // Установить базовый URL    
+    /**
+     * Установить базовый URL
+     * @param {string} newBaseUrl 
+     */
     setBaseUrl(newBaseUrl) {
         this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
 
-    // Получить текущий базовый URL
+    /**
+     * Получить текущий базовый URL
+     * @returns {string}
+     */
     getBaseUrl() {
         return this.baseUrl;
     }
@@ -280,6 +315,9 @@ document.addEventListener('authStateChanged', async () => {
 // ============================================
 
 /*
+// 1. Создание клиента
+const fileClient = new FileStorageClient('http://localhost:55692');
+
 // 2. Загрузка одного файла
 const fileInput = document.getElementById('fileInput');
 fileInput.addEventListener('change', async (e) => {

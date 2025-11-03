@@ -33,24 +33,41 @@
         border: none;
     }
 
+    input[type="radio"] + label {
+        line-height: 100%;
+    }
+
+    textarea {
+        width: 100%;
+        position: relative;        
+        min-height: 120px;
+        border: 1px solid var(--gray-any);
+        border-radius: 5px;
+        padding: 5px;
+    }
+
     label {
         transition: var(--standard-transition);
     }
 
-    input[type="text"] + label,  input[type="number"] + label {
+    input[type="text"] + label,  input[type="number"] + label, textarea + label {
         position: absolute;
         top: 0;
         left: 5px;
         color: rgba(0,0,0,.5);
     }
 
-    input[type="text"]:focus + label, input[type="number"]:focus + label {
+    textarea + label {
+        top: 5px;
+    }
+
+    input[type="text"]:focus + label, input[type="number"]:focus + label, textarea:focus + label {
         top: var(--label-focus-top);
         opacity: .7;
         font-size: var(--label-focus-size);
     }
 
-    input[type="text"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label {
+    input[type="text"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label, textarea:not(:placeholder-shown) + label {
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }

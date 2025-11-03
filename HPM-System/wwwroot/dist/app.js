@@ -27,6 +27,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/css/file-manager.css":
+/*!**************************************!*\
+  !*** ./wwwroot/css/file-manager.css ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./wwwroot/css/grid.css":
 /*!******************************!*\
   !*** ./wwwroot/css/grid.css ***!
@@ -3263,6 +3276,837 @@ window.logout = function () {
 
 /***/ }),
 
+/***/ "./wwwroot/js/FileHandler.js":
+/*!***********************************!*\
+  !*** ./wwwroot/js/FileHandler.js ***!
+  \***********************************/
+/***/ (() => {
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var FileHandler = /*#__PURE__*/function () {
+  function FileHandler(dropAreaSelector, fileInputSelector, previewImageSelector, removeBtnSelector, errorSelector) {
+    _classCallCheck(this, FileHandler);
+    this.dropArea = document.querySelector(dropAreaSelector);
+    this.fileInput = document.querySelector(fileInputSelector);
+    this.previewImage = document.querySelector(previewImageSelector);
+    this.previewContainer = this.previewImage.closest('.preview-container');
+    this.removeBtn = document.querySelector(removeBtnSelector);
+    this.errorMessage = document.querySelector(errorSelector);
+    this.maxFileSize = 10 * 1024 * 1024; // 10 МБ
+    this.allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif'];
+    this.allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif'];
+    this.init();
+  }
+  return _createClass(FileHandler, [{
+    key: "init",
+    value: function init() {
+      this.bindEvents();
+    }
+  }, {
+    key: "bindEvents",
+    value: function bindEvents() {
+      var _this = this;
+      // Выбор через клик
+      this.dropArea.addEventListener('click', function () {
+        return _this.fileInput.click();
+      });
+      this.fileInput.addEventListener('change', function (e) {
+        return _this.onFileSelected(e);
+      });
+
+      // Drag & Drop
+      var preventDefaults = function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
+        _this.dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+      ['dragenter', 'dragover'].forEach(function (eventName) {
+        _this.dropArea.addEventListener(eventName, function () {
+          return _this.dropArea.classList.add('drag-over');
+        }, false);
+      });
+      ['dragleave', 'drop'].forEach(function (eventName) {
+        _this.dropArea.addEventListener(eventName, function () {
+          return _this.dropArea.classList.remove('drag-over');
+        }, false);
+      });
+      this.dropArea.addEventListener('drop', function (e) {
+        return _this.onDrop(e);
+      });
+
+      // Кнопка удаления
+      this.removeBtn.addEventListener('click', function () {
+        return _this.resetPreview();
+      });
+    }
+  }, {
+    key: "onFileSelected",
+    value: function onFileSelected(event) {
+      var file = event.target.files[0];
+      if (file) this.processFile(file);
+    }
+  }, {
+    key: "onDrop",
+    value: function onDrop(event) {
+      var file = event.dataTransfer.files[0];
+      if (file) this.processFile(file);
+    }
+  }, {
+    key: "processFile",
+    value: function processFile(file) {
+      if (!this.isValidFile(file)) return;
+      this.displayPreview(file);
+    }
+  }, {
+    key: "isValidFile",
+    value: function isValidFile(file) {
+      // Проверка расширения
+      var ext = '.' + file.name.split('.').pop().toLowerCase();
+      var hasValidExt = this.allowedExtensions.includes(ext);
+      var hasValidType = this.allowedTypes.includes(file.type);
+      if (!hasValidExt && !hasValidType) {
+        this.showError('Недопустимый формат файла. Разрешены: JPG, JPEG, PNG, WEBP, SVG, GIF.');
+        return false;
+      }
+      if (file.size > this.maxFileSize) {
+        this.showError('Файл слишком большой. Максимум — 10 МБ.');
+        return false;
+      }
+      return true;
+    }
+  }, {
+    key: "displayPreview",
+    value: function displayPreview(file) {
+      var _this2 = this;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        _this2.previewImage.src = e.target.result;
+        _this2.previewImage.style.display = 'inline-block';
+        _this2.removeBtn.style.display = 'inline-block';
+        _this2.previewContainer.classList.remove('d-none');
+        _this2.dropArea.classList.add('d-none');
+      };
+      reader.readAsDataURL(file);
+    }
+  }, {
+    key: "resetPreview",
+    value: function resetPreview() {
+      this.previewImage.src = '';
+      this.previewImage.style.display = 'none';
+      this.removeBtn.style.display = 'none';
+      this.fileInput.value = '';
+      this.previewContainer.classList.add('d-none');
+      this.dropArea.classList.remove('d-none');
+    }
+  }, {
+    key: "showError",
+    value: function showError(message) {
+      var _this3 = this;
+      this.errorMessage.textContent = message;
+      setTimeout(function () {
+        _this3.errorMessage.textContent = '';
+      }, 5000);
+    }
+  }]);
+}();
+document.addEventListener('DOMContentLoaded', function () {
+  if (document.getElementById('imgDropArea') != null) {
+    new FileHandler('#imgDropArea', '#fileInput', '#previewImage', '#removeBtn', '#errorMessage');
+  }
+});
+
+/***/ }),
+
+/***/ "./wwwroot/js/FileStorageClient.js":
+/*!*****************************************!*\
+  !*** ./wwwroot/js/FileStorageClient.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FileStorageClient: () => (/* binding */ FileStorageClient)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var FileStorageClient = /*#__PURE__*/function () {
+  function FileStorageClient() {
+    _classCallCheck(this, FileStorageClient);
+    this.baseUrl = 'https://localhost:55693';
+    this.apiPath = '/api/files';
+  }
+
+  /**
+   * Получить полный URL для эндпоинта
+   * @param {string} endpoint 
+   * @returns {string}
+   */
+  return _createClass(FileStorageClient, [{
+    key: "_getUrl",
+    value: function _getUrl(endpoint) {
+      return "".concat(this.baseUrl).concat(this.apiPath).concat(endpoint);
+    }
+
+    /**
+     * Загрузить файл на сервер
+     * @param {File} file - Файл для загрузки
+     * @returns {Promise<Object>} Метаданные загруженного файла с URL
+     * @property {number} id - ID файла
+     * @property {string} fileUrl - URL для просмотра файла
+     * @property {string} downloadUrl - URL для скачивания файла
+     * @example
+     * const result = await client.uploadFile(file);
+     * console.log('Файл доступен по:', result.fileUrl);
+     * document.getElementById('preview').src = result.fileUrl;
+     */
+  }, {
+    key: "uploadFile",
+    value: (function () {
+      var _uploadFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(file) {
+        var formData, response, error, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              if (file instanceof File) {
+                _context.n = 1;
+                break;
+              }
+              throw new Error('Параметр должен быть экземпляром File');
+            case 1:
+              formData = new FormData();
+              formData.append('file', file);
+              _context.p = 2;
+              _context.n = 3;
+              return fetch(this._getUrl('/upload'), {
+                method: 'POST',
+                body: formData
+              });
+            case 3:
+              response = _context.v;
+              if (response.ok) {
+                _context.n = 5;
+                break;
+              }
+              _context.n = 4;
+              return response.text();
+            case 4:
+              error = _context.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438: ".concat(error));
+            case 5:
+              _context.n = 6;
+              return response.json();
+            case 6:
+              return _context.a(2, _context.v);
+            case 7:
+              _context.p = 7;
+              _t = _context.v;
+              console.error('Ошибка при загрузке файла:', _t);
+              throw _t;
+            case 8:
+              return _context.a(2);
+          }
+        }, _callee, this, [[2, 7]]);
+      }));
+      function uploadFile(_x) {
+        return _uploadFile.apply(this, arguments);
+      }
+      return uploadFile;
+    }()
+    /**
+     * Получить URL для просмотра файла по имени
+     * @param {string} bucketName - Имя бакета
+     * @param {string} fileName - Имя файла
+     * @returns {string} URL для просмотра
+     * @example
+     * const url = client.getFileViewUrl('documents', 'abc123_document.pdf');
+     * document.getElementById('preview').src = url;
+     */
+    )
+  }, {
+    key: "getFileViewUrl",
+    value: function getFileViewUrl(bucketName, fileName) {
+      return this._getUrl("/view/".concat(bucketName, "/").concat(fileName));
+    }
+
+    /**
+     * Получить URL для скачивания файла по ID
+     * @param {number} id - ID файла
+     * @returns {string} URL для скачивания
+     * @example
+     * const url = client.getFileDownloadUrl(123);
+     * window.open(url, '_blank');
+     */
+  }, {
+    key: "getFileDownloadUrl",
+    value: function getFileDownloadUrl(id) {
+      return this._getUrl("/download/".concat(id));
+    }
+
+    /**
+     * Получить метаданные файла по ID
+     * @param {number} id - ID файла
+     * @returns {Promise<Object>} Метаданные файла
+     * @example
+     * const metadata = await client.getFileMetadata(123);
+     * console.log('Размер файла:', metadata.fileSize);
+     */
+  }, {
+    key: "getFileMetadata",
+    value: (function () {
+      var _getFileMetadata = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
+        var response, error, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              _context2.n = 1;
+              return fetch(this._getUrl("/".concat(id)), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context2.v;
+              if (response.ok) {
+                _context2.n = 3;
+                break;
+              }
+              _context2.n = 2;
+              return response.text();
+            case 2:
+              error = _context2.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043C\u0435\u0442\u0430\u0434\u0430\u043D\u043D\u044B\u0445: ".concat(error));
+            case 3:
+              _context2.n = 4;
+              return response.json();
+            case 4:
+              return _context2.a(2, _context2.v);
+            case 5:
+              _context2.p = 5;
+              _t2 = _context2.v;
+              console.error('Ошибка при получении метаданных:', _t2);
+              throw _t2;
+            case 6:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[0, 5]]);
+      }));
+      function getFileMetadata(_x2) {
+        return _getFileMetadata.apply(this, arguments);
+      }
+      return getFileMetadata;
+    }()
+    /**
+     * Скачать файл по ID
+     * @param {number} id - ID файла
+     * @param {string} saveAs - Имя файла для сохранения (опционально, по умолчанию из сервера)
+     * @returns {Promise<void>}
+     * @example
+     * await client.downloadFile(123, 'my-document.pdf');
+     */
+    )
+  }, {
+    key: "downloadFile",
+    value: (function () {
+      var _downloadFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
+        var saveAs,
+          response,
+          error,
+          blob,
+          fileName,
+          contentDisposition,
+          matches,
+          url,
+          a,
+          _args3 = arguments,
+          _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              saveAs = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : null;
+              _context3.p = 1;
+              _context3.n = 2;
+              return fetch(this._getUrl("/download/".concat(id)), {
+                method: 'GET'
+              });
+            case 2:
+              response = _context3.v;
+              if (response.ok) {
+                _context3.n = 4;
+                break;
+              }
+              _context3.n = 3;
+              return response.text();
+            case 3:
+              error = _context3.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043A\u0430\u0447\u0438\u0432\u0430\u043D\u0438\u044F: ".concat(error));
+            case 4:
+              _context3.n = 5;
+              return response.blob();
+            case 5:
+              blob = _context3.v;
+              // Получаем имя файла из заголовка или используем переданное
+              fileName = saveAs;
+              if (!fileName) {
+                contentDisposition = response.headers.get('Content-Disposition');
+                if (contentDisposition) {
+                  matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                  if (matches && matches[1]) {
+                    fileName = matches[1].replace(/['"]/g, '');
+                  }
+                }
+              }
+              fileName = fileName || "file-".concat(id);
+
+              // Создаем ссылку для скачивания
+              url = URL.createObjectURL(blob);
+              a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              a.download = fileName;
+              document.body.appendChild(a);
+              a.click();
+
+              // Очищаем
+              URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+              _context3.n = 7;
+              break;
+            case 6:
+              _context3.p = 6;
+              _t3 = _context3.v;
+              console.error('Ошибка при скачивании файла:', _t3);
+              throw _t3;
+            case 7:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[1, 6]]);
+      }));
+      function downloadFile(_x3) {
+        return _downloadFile.apply(this, arguments);
+      }
+      return downloadFile;
+    }()
+    /**
+     * Получить Blob файла (без автоматического скачивания)
+     * Полезно для предпросмотра изображений или встраивания в страницу
+     * @param {number} id - ID файла
+     * @returns {Promise<Blob>}
+     * @example
+     * const blob = await client.getFileBlob(123);
+     * const url = URL.createObjectURL(blob);
+     * document.getElementById('preview').src = url;
+     */
+    )
+  }, {
+    key: "getFileBlob",
+    value: (function () {
+      var _getFileBlob = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
+        var response, error, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _context4.p = 0;
+              _context4.n = 1;
+              return fetch(this._getUrl("/download/".concat(id)), {
+                method: 'GET'
+              });
+            case 1:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 3;
+                break;
+              }
+              _context4.n = 2;
+              return response.text();
+            case 2:
+              error = _context4.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0444\u0430\u0439\u043B\u0430: ".concat(error));
+            case 3:
+              _context4.n = 4;
+              return response.blob();
+            case 4:
+              return _context4.a(2, _context4.v);
+            case 5:
+              _context4.p = 5;
+              _t4 = _context4.v;
+              console.error('Ошибка при получении blob:', _t4);
+              throw _t4;
+            case 6:
+              return _context4.a(2);
+          }
+        }, _callee4, this, [[0, 5]]);
+      }));
+      function getFileBlob(_x4) {
+        return _getFileBlob.apply(this, arguments);
+      }
+      return getFileBlob;
+    }()
+    /**
+     * Получить URL для предпросмотра файла
+     * @param {number} id - ID файла
+     * @returns {Promise<string>} Object URL для использования в src
+     * @example
+     * const url = await client.getFilePreviewUrl(123);
+     * document.getElementById('image').src = url;
+     * // Не забудьте вызвать URL.revokeObjectURL(url) когда URL больше не нужен
+     */
+    )
+  }, {
+    key: "getFilePreviewUrl",
+    value: (function () {
+      var _getFilePreviewUrl = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id) {
+        var blob;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.n) {
+            case 0:
+              _context5.n = 1;
+              return this.getFileBlob(id);
+            case 1:
+              blob = _context5.v;
+              return _context5.a(2, URL.createObjectURL(blob));
+          }
+        }, _callee5, this);
+      }));
+      function getFilePreviewUrl(_x5) {
+        return _getFilePreviewUrl.apply(this, arguments);
+      }
+      return getFilePreviewUrl;
+    }()
+    /**
+     * Удалить файл по ID
+     * @param {number} id - ID файла
+     * @returns {Promise<boolean>}
+     * @example
+     * await client.deleteFile(123);
+     * console.log('Файл удален');
+     */
+    )
+  }, {
+    key: "deleteFile",
+    value: (function () {
+      var _deleteFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
+        var response, error, _t5;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return fetch(this._getUrl("/".concat(id)), {
+                method: 'DELETE'
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 3;
+                break;
+              }
+              _context6.n = 2;
+              return response.text();
+            case 2:
+              error = _context6.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F: ".concat(error));
+            case 3:
+              return _context6.a(2, true);
+            case 4:
+              _context6.p = 4;
+              _t5 = _context6.v;
+              console.error('Ошибка при удалении файла:', _t5);
+              throw _t5;
+            case 5:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 4]]);
+      }));
+      function deleteFile(_x6) {
+        return _deleteFile.apply(this, arguments);
+      }
+      return deleteFile;
+    }()
+    /**
+     * Загрузить несколько файлов последовательно
+     * @param {File[]} files - Массив файлов
+     * @returns {Promise<Object[]>} Массив результатов загрузки
+     * @example
+     * const results = await client.uploadMultipleFiles(filesArray);
+     * const successful = results.filter(r => r.success);
+     * console.log(`Загружено ${successful.length} из ${results.length}`);
+     */
+    )
+  }, {
+    key: "uploadMultipleFiles",
+    value: (function () {
+      var _uploadMultipleFiles = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(files) {
+        var results, _iterator, _step, file, result, _t6, _t7;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              results = [];
+              _iterator = _createForOfIteratorHelper(files);
+              _context7.p = 1;
+              _iterator.s();
+            case 2:
+              if ((_step = _iterator.n()).done) {
+                _context7.n = 7;
+                break;
+              }
+              file = _step.value;
+              _context7.p = 3;
+              _context7.n = 4;
+              return this.uploadFile(file);
+            case 4:
+              result = _context7.v;
+              results.push({
+                success: true,
+                fileName: file.name,
+                data: result
+              });
+              _context7.n = 6;
+              break;
+            case 5:
+              _context7.p = 5;
+              _t6 = _context7.v;
+              results.push({
+                success: false,
+                fileName: file.name,
+                error: _t6.message
+              });
+            case 6:
+              _context7.n = 2;
+              break;
+            case 7:
+              _context7.n = 9;
+              break;
+            case 8:
+              _context7.p = 8;
+              _t7 = _context7.v;
+              _iterator.e(_t7);
+            case 9:
+              _context7.p = 9;
+              _iterator.f();
+              return _context7.f(9);
+            case 10:
+              return _context7.a(2, results);
+          }
+        }, _callee7, this, [[3, 5], [1, 8, 9, 10]]);
+      }));
+      function uploadMultipleFiles(_x7) {
+        return _uploadMultipleFiles.apply(this, arguments);
+      }
+      return uploadMultipleFiles;
+    }()
+    /**
+     * Загрузить несколько файлов параллельно (быстрее, но больше нагрузка на сервер)
+     * @param {File[]} files - Массив файлов
+     * @returns {Promise<Object[]>} Массив результатов загрузки
+     * @example
+     * const results = await client.uploadMultipleFilesParallel(filesArray);
+     */
+    )
+  }, {
+    key: "uploadMultipleFilesParallel",
+    value: (function () {
+      var _uploadMultipleFilesParallel = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(files) {
+        var _this = this;
+        var uploadPromises;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.n) {
+            case 0:
+              uploadPromises = files.map(/*#__PURE__*/function () {
+                var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(file) {
+                  var result, _t8;
+                  return _regenerator().w(function (_context8) {
+                    while (1) switch (_context8.p = _context8.n) {
+                      case 0:
+                        _context8.p = 0;
+                        _context8.n = 1;
+                        return _this.uploadFile(file);
+                      case 1:
+                        result = _context8.v;
+                        return _context8.a(2, {
+                          success: true,
+                          fileName: file.name,
+                          data: result
+                        });
+                      case 2:
+                        _context8.p = 2;
+                        _t8 = _context8.v;
+                        return _context8.a(2, {
+                          success: false,
+                          fileName: file.name,
+                          error: _t8.message
+                        });
+                    }
+                  }, _callee8, null, [[0, 2]]);
+                }));
+                return function (_x9) {
+                  return _ref.apply(this, arguments);
+                };
+              }());
+              _context9.n = 1;
+              return Promise.all(uploadPromises);
+            case 1:
+              return _context9.a(2, _context9.v);
+          }
+        }, _callee9);
+      }));
+      function uploadMultipleFilesParallel(_x8) {
+        return _uploadMultipleFilesParallel.apply(this, arguments);
+      }
+      return uploadMultipleFilesParallel;
+    }()
+    /**
+     * Установить базовый URL
+     * @param {string} newBaseUrl 
+     */
+    )
+  }, {
+    key: "setBaseUrl",
+    value: function setBaseUrl(newBaseUrl) {
+      this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
+    }
+
+    /**
+     * Получить текущий базовый URL
+     * @returns {string}
+     */
+  }, {
+    key: "getBaseUrl",
+    value: function getBaseUrl() {
+      return this.baseUrl;
+    }
+  }]);
+}();
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0() {
+  var _event$detail, isAuthenticated, userData, FileStorage;
+  return _regenerator().w(function (_context0) {
+    while (1) switch (_context0.n) {
+      case 0:
+        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        if (isAuthenticated && userData) {
+          FileStorage = new FileStorageClient();
+        }
+      case 1:
+        return _context0.a(2);
+    }
+  }, _callee0);
+})));
+
+// ============================================
+// Примеры использования
+// ============================================
+
+/*
+// 1. Создание клиента
+const fileClient = new FileStorageClient('http://localhost:55692');
+
+// 2. Загрузка одного файла
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    try {
+        const result = await fileClient.uploadFile(file);
+        console.log('Файл загружен:', result);
+        // result = { id: 123, bucket: "documents", message: "...", originalFileName: "..." }
+    } catch (error) {
+        console.error('Ошибка загрузки:', error.message);
+    }
+});
+
+// 3. Загрузка нескольких файлов
+const multiFileInput = document.getElementById('multiFileInput');
+multiFileInput.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    
+    // Последовательная загрузка (меньше нагрузка на сервер)
+    const results = await fileClient.uploadMultipleFiles(files);
+    
+    // Или параллельная (быстрее)
+    // const results = await fileClient.uploadMultipleFilesParallel(files);
+    
+    console.log('Результаты:', results);
+});
+
+// 4. Получение метаданных
+const metadata = await fileClient.getFileMetadata(123);
+console.log('Информация о файле:', metadata);
+
+// 5. Скачивание файла
+await fileClient.downloadFile(123); // Автоматически начнет загрузку
+// или с кастомным именем:
+await fileClient.downloadFile(123, 'мой-документ.pdf');
+
+// 6. Предпросмотр изображения
+const imageUrl = await fileClient.getFilePreviewUrl(123);
+document.getElementById('preview').src = imageUrl;
+// Важно: очистите URL когда он больше не нужен
+// URL.revokeObjectURL(imageUrl);
+
+// 7. Удаление файла
+const deleteBtn = document.getElementById('deleteBtn');
+deleteBtn.addEventListener('click', async () => {
+    try {
+        await fileClient.deleteFile(123);
+        console.log('Файл удален');
+    } catch (error) {
+        console.error('Ошибка удаления:', error.message);
+    }
+});
+
+// 8. Пример с async/await в try-catch
+async function handleFileUpload(file) {
+    try {
+        const uploadResult = await fileClient.uploadFile(file);
+        console.log('ID загруженного файла:', uploadResult.id);
+        
+        const metadata = await fileClient.getFileMetadata(uploadResult.id);
+        console.log('Размер файла:', metadata.fileSize, 'байт');
+        
+        return uploadResult.id;
+    } catch (error) {
+        console.error('Произошла ошибка:', error.message);
+        throw error;
+    }
+}
+
+// 9. Работа с Blob для встраивания
+async function embedFile(fileId, targetElement) {
+    const blob = await fileClient.getFileBlob(fileId);
+    const url = URL.createObjectURL(blob);
+    
+    targetElement.src = url;
+    
+    // Очистка после использования
+    targetElement.addEventListener('load', () => {
+        URL.revokeObjectURL(url);
+    });
+}
+*/
+
+/***/ }),
+
 /***/ "./wwwroot/js/HouseValidator.js":
 /*!**************************************!*\
   !*** ./wwwroot/js/HouseValidator.js ***!
@@ -3582,6 +4426,931 @@ var Multiselect = /*#__PURE__*/function () {
   }]);
 }();
 window.Multiselect = Multiselect;
+
+/***/ }),
+
+/***/ "./wwwroot/js/NotificationClient.js":
+/*!******************************************!*\
+  !*** ./wwwroot/js/NotificationClient.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NotificationClient: () => (/* binding */ NotificationClient)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var NotificationClient = /*#__PURE__*/function () {
+  function NotificationClient() {
+    _classCallCheck(this, NotificationClient);
+    this.baseUrl = 'https://localhost:55691';
+    this.apiPath = '/api/Notifications';
+  }
+
+  /**
+   * Получить полный URL для эндпоинта
+   * @param {string} endpoint 
+   * @returns {string}
+   */
+  return _createClass(NotificationClient, [{
+    key: "_getUrl",
+    value: function _getUrl(endpoint) {
+      return "".concat(this.baseUrl).concat(this.apiPath).concat(endpoint);
+    }
+
+    /**
+     * Получить все уведомления
+     * @returns {Promise<Array>} Массив всех уведомлений
+     * @example
+     * const notifications = await client.getAllNotifications();
+     * console.log('Всего уведомлений:', notifications.length);
+     */
+  }, {
+    key: "getAllNotifications",
+    value: (function () {
+      var _getAllNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+        var response, error, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return fetch(this._getUrl(''), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context.v;
+              if (response.ok) {
+                _context.n = 3;
+                break;
+              }
+              _context.n = 2;
+              return response.text();
+            case 2:
+              error = _context.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439: ".concat(error));
+            case 3:
+              _context.n = 4;
+              return response.json();
+            case 4:
+              return _context.a(2, _context.v);
+            case 5:
+              _context.p = 5;
+              _t = _context.v;
+              console.error('Ошибка при получении всех уведомлений:', _t);
+              throw _t;
+            case 6:
+              return _context.a(2);
+          }
+        }, _callee, this, [[0, 5]]);
+      }));
+      function getAllNotifications() {
+        return _getAllNotifications.apply(this, arguments);
+      }
+      return getAllNotifications;
+    }()
+    /**
+     * Получить уведомление по ID
+     * @param {string} id - GUID уведомления
+     * @returns {Promise<Object|null>} Уведомление или null
+     * @example
+     * const notification = await client.getNotificationById('123e4567-e89b-12d3-a456-426614174000');
+     * if (notification) {
+     *     console.log('Заголовок:', notification.title);
+     * }
+     */
+    )
+  }, {
+    key: "getNotificationById",
+    value: (function () {
+      var _getNotificationById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
+        var response, error, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              _context2.n = 1;
+              return fetch(this._getUrl("/".concat(id)), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context2.v;
+              if (response.ok) {
+                _context2.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context2.n = 2;
+                break;
+              }
+              return _context2.a(2, null);
+            case 2:
+              _context2.n = 3;
+              return response.text();
+            case 3:
+              error = _context2.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F: ".concat(error));
+            case 4:
+              _context2.n = 5;
+              return response.json();
+            case 5:
+              return _context2.a(2, _context2.v);
+            case 6:
+              _context2.p = 6;
+              _t2 = _context2.v;
+              console.error('Ошибка при получении уведомления по ID:', _t2);
+              throw _t2;
+            case 7:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[0, 6]]);
+      }));
+      function getNotificationById(_x) {
+        return _getNotificationById.apply(this, arguments);
+      }
+      return getNotificationById;
+    }()
+    /**
+     * Получить уведомления для конкретного пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>} Массив уведомлений пользователя
+     * @example
+     * const userNotifications = await client.getNotificationsByUserId('123e4567-e89b-12d3-a456-426614174000');
+     * console.log('Уведомлений для пользователя:', userNotifications.length);
+     */
+    )
+  }, {
+    key: "getNotificationsByUserId",
+    value: (function () {
+      var _getNotificationsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
+        var response, error, _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              _context3.p = 0;
+              _context3.n = 1;
+              return fetch(this._getUrl("/user/".concat(userId)), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context3.v;
+              if (response.ok) {
+                _context3.n = 3;
+                break;
+              }
+              _context3.n = 2;
+              return response.text();
+            case 2:
+              error = _context3.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F: ".concat(error));
+            case 3:
+              _context3.n = 4;
+              return response.json();
+            case 4:
+              return _context3.a(2, _context3.v);
+            case 5:
+              _context3.p = 5;
+              _t3 = _context3.v;
+              console.error('Ошибка при получении уведомлений пользователя:', _t3);
+              throw _t3;
+            case 6:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[0, 5]]);
+      }));
+      function getNotificationsByUserId(_x2) {
+        return _getNotificationsByUserId.apply(this, arguments);
+      }
+      return getNotificationsByUserId;
+    }()
+    /**
+     * Создать новое уведомление
+     * @param {Object} notificationData - Данные для создания уведомления
+     * @param {string} notificationData.title - Заголовок уведомления
+     * @param {string} notificationData.message - Текст уведомления
+     * @param {string} notificationData.type - Тип уведомления
+     * @param {string} notificationData.createdBy - GUID создателя уведомления
+     * @param {string} [notificationData.imageUrl] - URL изображения (опционально)
+     * @param {string[]} notificationData.userIdList - Массив GUID получателей
+     * @returns {Promise<Object>} Созданное уведомление
+     * @example
+     * const notification = await client.createNotification({
+     *     title: 'Новое сообщение',
+     *     message: 'У вас новое сообщение от администратора',
+     *     type: 'info',
+     *     createdBy: '123e4567-e89b-12d3-a456-426614174000',
+     *     imageUrl: 'https://example.com/icon.png',
+     *     userIdList: [
+     *         '223e4567-e89b-12d3-a456-426614174001',
+     *         '323e4567-e89b-12d3-a456-426614174002'
+     *     ]
+     * });
+     */
+    )
+  }, {
+    key: "createNotification",
+    value: (function () {
+      var _createNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(notificationData) {
+        var response, error, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              if (notificationData.title) {
+                _context4.n = 1;
+                break;
+              }
+              throw new Error('Поле title обязательно');
+            case 1:
+              if (notificationData.message) {
+                _context4.n = 2;
+                break;
+              }
+              throw new Error('Поле message обязательно');
+            case 2:
+              if (notificationData.type) {
+                _context4.n = 3;
+                break;
+              }
+              throw new Error('Поле type обязательно');
+            case 3:
+              if (notificationData.createdBy) {
+                _context4.n = 4;
+                break;
+              }
+              throw new Error('Поле createdBy обязательно');
+            case 4:
+              if (!(!Array.isArray(notificationData.userIdList) || notificationData.userIdList.length === 0)) {
+                _context4.n = 5;
+                break;
+              }
+              throw new Error('Поле userIdList должно быть непустым массивом');
+            case 5:
+              _context4.p = 5;
+              _context4.n = 6;
+              return fetch(this._getUrl(''), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(notificationData)
+              });
+            case 6:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 8;
+                break;
+              }
+              _context4.n = 7;
+              return response.text();
+            case 7:
+              error = _context4.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F: ".concat(error));
+            case 8:
+              _context4.n = 9;
+              return response.json();
+            case 9:
+              return _context4.a(2, _context4.v);
+            case 10:
+              _context4.p = 10;
+              _t4 = _context4.v;
+              console.error('Ошибка при создании уведомления:', _t4);
+              throw _t4;
+            case 11:
+              return _context4.a(2);
+          }
+        }, _callee4, this, [[5, 10]]);
+      }));
+      function createNotification(_x3) {
+        return _createNotification.apply(this, arguments);
+      }
+      return createNotification;
+    }()
+    /**
+     * Получить непрочитанные уведомления для пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>} Массив непрочитанных уведомлений
+     * @example
+     * const unread = await client.getUnreadNotifications('123e4567-e89b-12d3-a456-426614174000');
+     * console.log('Непрочитанных:', unread.length);
+     */
+    )
+  }, {
+    key: "getUnreadNotifications",
+    value: (function () {
+      var _getUnreadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
+        var notifications, _t5;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return this.getNotificationsByUserId(userId);
+            case 1:
+              notifications = _context5.v;
+              return _context5.a(2, notifications.filter(function (notification) {
+                return notification.recipients && notification.recipients.some(function (recipient) {
+                  return recipient.userId === userId && recipient.readAt === null;
+                });
+              }));
+            case 2:
+              _context5.p = 2;
+              _t5 = _context5.v;
+              console.error('Ошибка при получении непрочитанных уведомлений:', _t5);
+              throw _t5;
+            case 3:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 2]]);
+      }));
+      function getUnreadNotifications(_x4) {
+        return _getUnreadNotifications.apply(this, arguments);
+      }
+      return getUnreadNotifications;
+    }()
+    /**
+     * Получить прочитанные уведомления для пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>} Массив прочитанных уведомлений
+     * @example
+     * const read = await client.getReadNotifications('123e4567-e89b-12d3-a456-426614174000');
+     */
+    )
+  }, {
+    key: "getReadNotifications",
+    value: (function () {
+      var _getReadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(userId) {
+        var notifications, _t6;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return this.getNotificationsByUserId(userId);
+            case 1:
+              notifications = _context6.v;
+              return _context6.a(2, notifications.filter(function (notification) {
+                return notification.recipients && notification.recipients.some(function (recipient) {
+                  return recipient.userId === userId && recipient.readAt !== null;
+                });
+              }));
+            case 2:
+              _context6.p = 2;
+              _t6 = _context6.v;
+              console.error('Ошибка при получении прочитанных уведомлений:', _t6);
+              throw _t6;
+            case 3:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 2]]);
+      }));
+      function getReadNotifications(_x5) {
+        return _getReadNotifications.apply(this, arguments);
+      }
+      return getReadNotifications;
+    }()
+    /**
+     * Получить количество непрочитанных уведомлений для пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<number>} Количество непрочитанных уведомлений
+     * @example
+     * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
+     * document.getElementById('badge').textContent = count;
+     */
+    )
+  }, {
+    key: "getUnreadCount",
+    value: (function () {
+      var _getUnreadCount = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
+        var unread, _t7;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return this.getUnreadNotifications(userId);
+            case 1:
+              unread = _context7.v;
+              return _context7.a(2, unread.length);
+            case 2:
+              _context7.p = 2;
+              _t7 = _context7.v;
+              console.error('Ошибка при получении количества непрочитанных:', _t7);
+              throw _t7;
+            case 3:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 2]]);
+      }));
+      function getUnreadCount(_x6) {
+        return _getUnreadCount.apply(this, arguments);
+      }
+      return getUnreadCount;
+    }()
+    /**
+     * Установить базовый URL
+     * @param {string} newBaseUrl 
+     */
+    )
+  }, {
+    key: "setBaseUrl",
+    value: function setBaseUrl(newBaseUrl) {
+      this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
+    }
+
+    /**
+     * Получить текущий базовый URL
+     * @returns {string}
+     */
+  }, {
+    key: "getBaseUrl",
+    value: function getBaseUrl() {
+      return this.baseUrl;
+    }
+  }]);
+}();
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+  var _event$detail, isAuthenticated, userData, Notification;
+  return _regenerator().w(function (_context8) {
+    while (1) switch (_context8.n) {
+      case 0:
+        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        if (isAuthenticated && userData) {
+          Notification = new NotificationClient();
+        }
+      case 1:
+        return _context8.a(2);
+    }
+  }, _callee8);
+})));
+
+// ============================================
+// Примеры использования
+// ============================================
+
+/*
+// 1. Создание клиента
+const notificationClient = new NotificationClient();
+
+// 2. Получение всех уведомлений
+const allNotifications = await notificationClient.getAllNotifications();
+console.log('Всего уведомлений:', allNotifications.length);
+
+// 3. Получение уведомлений конкретного пользователя
+const userId = '123e4567-e89b-12d3-a456-426614174000';
+const userNotifications = await notificationClient.getNotificationsByUserId(userId);
+console.log('Уведомлений пользователя:', userNotifications.length);
+
+// 4. Получение непрочитанных уведомлений
+const unreadNotifications = await notificationClient.getUnreadNotifications(userId);
+console.log('Непрочитанных:', unreadNotifications.length);
+
+// 5. Получение количества непрочитанных (для бейджа)
+const unreadCount = await notificationClient.getUnreadCount(userId);
+document.getElementById('notification-badge').textContent = unreadCount;
+document.getElementById('notification-badge').style.display = unreadCount > 0 ? 'block' : 'none';
+
+// 6. Создание нового уведомления
+const newNotification = await notificationClient.createNotification({
+    title: 'Новое сообщение',
+    message: 'Вам пришло новое сообщение от администратора',
+    type: 'info', // или 'warning', 'error', 'success'
+    createdBy: 'admin-user-guid',
+    imageUrl: 'https://example.com/notification-icon.png',
+    userIdList: [
+        '123e4567-e89b-12d3-a456-426614174000',
+        '223e4567-e89b-12d3-a456-426614174001'
+    ]
+});
+console.log('Создано уведомление с ID:', newNotification.id);
+
+// 7. Получение конкретного уведомления по ID
+const notification = await notificationClient.getNotificationById(newNotification.id);
+console.log('Уведомление:', notification.title, notification.message);
+
+// 8. Пример интеграции в UI
+async function updateNotificationUI(userId) {
+    try {
+        // Получаем количество непрочитанных
+        const count = await notificationClient.getUnreadCount(userId);
+        
+        // Обновляем бейдж
+        const badge = document.getElementById('notification-badge');
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+        
+        // Получаем последние уведомления
+        const notifications = await notificationClient.getNotificationsByUserId(userId);
+        
+        // Отображаем в выпадающем списке
+        const list = document.getElementById('notification-list');
+        list.innerHTML = notifications.slice(0, 5).map(n => `
+            <div class="notification-item ${n.recipients.some(r => r.userId === userId && !r.readAt) ? 'unread' : ''}">
+                <h4>${n.title}</h4>
+                <p>${n.message}</p>
+                <small>${new Date(n.createdAt).toLocaleString()}</small>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Ошибка обновления UI:', error);
+    }
+}
+
+// 9. Автоматическое обновление каждые 30 секунд
+setInterval(() => {
+    const currentUserId = getCurrentUserId(); // ваша функция получения ID текущего пользователя
+    updateNotificationUI(currentUserId);
+}, 30000);
+
+// 10. Отправка уведомления всем пользователям квартиры
+async function notifyApartmentUsers(apartmentUserIds, title, message) {
+    try {
+        const notification = await notificationClient.createNotification({
+            title: title,
+            message: message,
+            type: 'info',
+            createdBy: getCurrentUserId(),
+            userIdList: apartmentUserIds
+        });
+        console.log('Уведомление отправлено:', notification.id);
+        return notification;
+    } catch (error) {
+        console.error('Ошибка отправки уведомления:', error);
+        throw error;
+    }
+}
+
+// 11. Фильтрация уведомлений по типу
+async function getNotificationsByType(userId, type) {
+    const notifications = await notificationClient.getNotificationsByUserId(userId);
+    return notifications.filter(n => n.type === type);
+}
+
+// Примеры типов: 'info', 'warning', 'error', 'success'
+const warningNotifications = await getNotificationsByType(userId, 'warning');
+*/
+
+/***/ }),
+
+/***/ "./wwwroot/js/NotificationProfileManager.js":
+/*!**************************************************!*\
+  !*** ./wwwroot/js/NotificationProfileManager.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NotificationProfileManager: () => (/* binding */ NotificationProfileManager)
+/* harmony export */ });
+/* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
+/* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
+/* harmony import */ var _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NotificationClient.js */ "./wwwroot/js/NotificationClient.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+
+var NotificationProfileManager = /*#__PURE__*/function () {
+  function NotificationProfileManager() {
+    _classCallCheck(this, NotificationProfileManager);
+    this.currentApartments = []; // Храним текущие квартиры
+    this.houseProfile = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
+    this.userId = null;
+  }
+  return _createClass(NotificationProfileManager, [{
+    key: "InsertDataToCreateNotification",
+    value: function () {
+      var _InsertDataToCreateNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var _this = this;
+        var houseSelector, apartmentSelector, notificationGroup, houses, houseChecks, results, eligibleHouses;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.n) {
+            case 0:
+              this.userId = window.authManager.userData.userId;
+              houseSelector = document.getElementById('houseId');
+              apartmentSelector = document.getElementById('apartments');
+              notificationGroup = document.querySelector('.profile-group[data-group="notification"]'); // Очистим селектор перед заполнением
+              houseSelector.innerHTML = '';
+              _context3.n = 1;
+              return this.houseProfile.GetHousesByUserId(this.userId);
+            case 1:
+              houses = _context3.v;
+              // Массив промисов для параллельного выполнения
+              houseChecks = houses.map(/*#__PURE__*/function () {
+                var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
+                  var houseHead;
+                  return _regenerator().w(function (_context) {
+                    while (1) switch (_context.n) {
+                      case 0:
+                        _context.n = 1;
+                        return _this.houseProfile.GetHead(house.id);
+                      case 1:
+                        houseHead = _context.v;
+                        return _context.a(2, {
+                          house: house,
+                          isHead: houseHead.id === _this.userId
+                        });
+                    }
+                  }, _callee);
+                }));
+                return function (_x) {
+                  return _ref.apply(this, arguments);
+                };
+              }()); // Дожидаемся всех проверок
+              _context3.n = 2;
+              return Promise.all(houseChecks);
+            case 2:
+              results = _context3.v;
+              // Фильтруем дома, где пользователь — глава
+              eligibleHouses = results.filter(function (_ref2) {
+                var isHead = _ref2.isHead;
+                return isHead;
+              }).map(function (_ref3) {
+                var house = _ref3.house;
+                return house;
+              });
+              if (!eligibleHouses.length) {
+                _context3.n = 4;
+                break;
+              }
+              // Пользователь — глава хотя бы в одном доме => показываем селект
+              eligibleHouses.forEach(function (house) {
+                var option = document.createElement('option');
+                option.value = house.id;
+                option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, ", ").concat(house.number);
+                houseSelector.appendChild(option);
+              });
+              _context3.n = 3;
+              return this.LoadApartmentsForSelect(houseSelector.value);
+            case 3:
+              _context3.n = 5;
+              break;
+            case 4:
+              // Ни в одном доме не глава => уведомление недоступно
+              if (notificationGroup) {
+                notificationGroup.innerHTML = "\u0421\u043E\u0437\u0434\u0430\u043D\u0438\u0435 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E";
+              }
+            case 5:
+              houseSelector.addEventListener('change', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+                return _regenerator().w(function (_context2) {
+                  while (1) switch (_context2.n) {
+                    case 0:
+                      _context2.n = 1;
+                      return _this.LoadApartmentsForSelect(houseSelector.value);
+                    case 1:
+                      return _context2.a(2);
+                  }
+                }, _callee2);
+              })));
+            case 6:
+              return _context3.a(2);
+          }
+        }, _callee3, this);
+      }));
+      function InsertDataToCreateNotification() {
+        return _InsertDataToCreateNotification.apply(this, arguments);
+      }
+      return InsertDataToCreateNotification;
+    }()
+  }, {
+    key: "LoadApartmentsForSelect",
+    value: function () {
+      var _LoadApartmentsForSelect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(houseId) {
+        var _this2 = this;
+        var apartmentSelector, clearOption, allOption, _iterator, _step, apartment, option, tomSelectInstance;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              apartmentSelector = document.getElementById('apartments'); // Получаем квартиры и сохраняем их
+              _context4.n = 1;
+              return this.houseProfile.GetApartmentsByHouseId(houseId);
+            case 1:
+              this.currentApartments = _context4.v;
+              // Очищаем селектор перед заполнением
+              apartmentSelector.innerHTML = '';
+
+              // Добавляем опцию "Очистить все"
+              clearOption = document.createElement('option');
+              clearOption.value = 'clear';
+              clearOption.textContent = 'Очистить все выбранные квартиры';
+              apartmentSelector.appendChild(clearOption);
+
+              // Добавляем опцию "Все квартиры дома"
+              allOption = document.createElement('option');
+              allOption.value = 'all';
+              allOption.textContent = 'Все квартиры дома';
+              apartmentSelector.appendChild(allOption);
+
+              // Добавляем квартиры
+              _iterator = _createForOfIteratorHelper(this.currentApartments);
+              try {
+                for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                  apartment = _step.value;
+                  option = document.createElement('option');
+                  option.value = apartment.id;
+                  option.textContent = "\u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(apartment.number);
+                  apartmentSelector.appendChild(option);
+                }
+
+                // Уничтожаем предыдущий экземпляр Tom Select, если он существует
+              } catch (err) {
+                _iterator.e(err);
+              } finally {
+                _iterator.f();
+              }
+              if (apartmentSelector.tomselect) {
+                apartmentSelector.tomselect.destroy();
+              }
+
+              // Инициализируем Tom Select
+              tomSelectInstance = new TomSelect('#apartments', {
+                plugins: ['remove_button'],
+                maxItems: null,
+                onChange: function onChange(values) {
+                  // Если выбрана опция "Очистить все"
+                  if (values.includes('clear')) {
+                    tomSelectInstance.clear();
+                    return;
+                  }
+
+                  // Если выбрана опция "Все квартиры"
+                  if (values.includes('all')) {
+                    var allApartmentIds = _this2.currentApartments.map(function (apt) {
+                      return apt.id.toString();
+                    });
+                    if (values[values.length - 1] === 'all') {
+                      tomSelectInstance.setValue(['all'].concat(_toConsumableArray(allApartmentIds)), true);
+                    }
+                  } else {
+                    var _allApartmentIds = _this2.currentApartments.map(function (apt) {
+                      return apt.id.toString();
+                    });
+                    var hasAll = _allApartmentIds.every(function (id) {
+                      return values.includes(id);
+                    });
+                    if (!hasAll && values.includes('all')) {
+                      tomSelectInstance.removeItem('all', true);
+                    }
+                  }
+                }
+              }); // Сохраняем экземпляр
+              apartmentSelector.tomselect = tomSelectInstance;
+
+              // Программно выбираем все квартиры при инициализации
+              setTimeout(function () {
+                var allApartmentIds = _this2.currentApartments.map(function (apt) {
+                  return apt.id.toString();
+                });
+                tomSelectInstance.setValue(['all'].concat(_toConsumableArray(allApartmentIds)));
+              }, 0);
+            case 2:
+              return _context4.a(2);
+          }
+        }, _callee4, this);
+      }));
+      function LoadApartmentsForSelect(_x2) {
+        return _LoadApartmentsForSelect.apply(this, arguments);
+      }
+      return LoadApartmentsForSelect;
+    }()
+  }, {
+    key: "CollectNotificationDataToCreate",
+    value: function CollectNotificationDataToCreate() {
+      var _this3 = this;
+      var apartmentSelector = document.getElementById('apartments');
+      var tomSelectInstance = apartmentSelector.tomselect;
+      if (!tomSelectInstance) {
+        console.error('Tom Select не инициализирован');
+        return {
+          apartmentIds: [],
+          userIds: []
+        };
+      }
+
+      // Получаем массив выбранных значений
+      var selectedValues = tomSelectInstance.getValue();
+
+      // Фильтруем 'all' и 'clear', получаем только ID квартир
+      var apartmentIds = selectedValues.filter(function (value) {
+        return value !== 'all' && value !== 'clear';
+      });
+      console.log('Выбранные квартиры:', apartmentIds);
+
+      // Проверяем, какой radio button выбран
+      var toOwnersRadio = document.getElementById('toOwners');
+      var isOwnersOnly = toOwnersRadio ? toOwnersRadio.checked : false;
+      console.log('Radio toOwners checked:', isOwnersOnly);
+
+      // Собираем пользователей из выбранных квартир
+      var allUserIds = [];
+      apartmentIds.forEach(function (apartmentId) {
+        // Находим квартиру по ID из сохранённых данных
+        var apartment = _this3.currentApartments.find(function (apt) {
+          return apt.id.toString() === apartmentId;
+        });
+        if (apartment && apartment.users && Array.isArray(apartment.users)) {
+          console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(apartment.number, ", \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439:"), apartment.users.length);
+          apartment.users.forEach(function (user) {
+            console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(user.userId, ", \u0441\u0442\u0430\u0442\u0443\u0441\u044B:"), user.statuses);
+            if (isOwnersOnly) {
+              // Фильтруем только владельцев
+              var isOwner = user.statuses && user.statuses.some(function (status) {
+                return status.name === 'Владелец';
+              });
+              console.log("  \u042F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u043C: ".concat(isOwner));
+              if (isOwner) {
+                allUserIds.push(user.userId);
+              }
+            } else {
+              // Все пользователи
+              console.log("  \u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C \u0432\u0441\u0435\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439");
+              allUserIds.push(user.userId);
+            }
+          });
+        }
+      });
+
+      // Получаем уникальных пользователей
+      var uniqueUserIds = _toConsumableArray(new Set(allUserIds));
+      console.log('Все пользователи:', allUserIds);
+      console.log('Уникальные пользователи:', uniqueUserIds);
+      console.log('Только собственники:', isOwnersOnly);
+      return {
+        apartmentIds: apartmentIds,
+        userIds: uniqueUserIds,
+        isOwnersOnly: isOwnersOnly
+      };
+    }
+  }]);
+}();
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+  var _event$detail, isAuthenticated, userData, notificationProfile;
+  return _regenerator().w(function (_context5) {
+    while (1) switch (_context5.n) {
+      case 0:
+        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        if (!(isAuthenticated && userData)) {
+          _context5.n = 2;
+          break;
+        }
+        notificationProfile = new NotificationProfileManager();
+        console.log('Аутентификация пройдена');
+        if (!window.location.pathname.includes('/notification/create')) {
+          _context5.n = 2;
+          break;
+        }
+        _context5.n = 1;
+        return notificationProfile.InsertDataToCreateNotification();
+      case 1:
+        document.querySelector('[data-action="save-notification-data"]').addEventListener('click', function () {
+          console.log('Клик по кнопке сохранения уведомления');
+
+          // Собираем данные уведомления
+          var notificationData = notificationProfile.CollectNotificationDataToCreate();
+          console.log('Данные для сохранения:', notificationData);
+
+          // Здесь можно отправить данные на сервер
+          // await notificationClient.CreateNotification(notificationData);
+        });
+      case 2:
+        return _context5.a(2);
+    }
+  }, _callee5);
+})));
 
 /***/ }),
 
@@ -5020,9 +6789,13 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/js/UserValidator.js");
 /******/ 	__webpack_require__("./wwwroot/js/UserProfile.js");
 /******/ 	__webpack_require__("./wwwroot/js/Regex.js");
+/******/ 	__webpack_require__("./wwwroot/js/NotificationProfileManager.js");
+/******/ 	__webpack_require__("./wwwroot/js/NotificationClient.js");
 /******/ 	__webpack_require__("./wwwroot/js/Multiselect.js");
 /******/ 	__webpack_require__("./wwwroot/js/Modal.js");
 /******/ 	__webpack_require__("./wwwroot/js/HouseValidator.js");
+/******/ 	__webpack_require__("./wwwroot/js/FileStorageClient.js");
+/******/ 	__webpack_require__("./wwwroot/js/FileHandler.js");
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentStatuses.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentProfile.js");
@@ -5036,6 +6809,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/css/icons.css");
 /******/ 	__webpack_require__("./wwwroot/css/house-and-apartments.css");
 /******/ 	__webpack_require__("./wwwroot/css/grid.css");
+/******/ 	__webpack_require__("./wwwroot/css/file-manager.css");
 /******/ 	__webpack_require__("./wwwroot/css/card.css");
 /******/ 	var __webpack_exports__ = __webpack_require__("./wwwroot/css/btn.css");
 /******/ 	

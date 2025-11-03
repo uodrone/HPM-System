@@ -22,6 +22,27 @@ namespace HPMFileStorageService.Controllers
            _maxFileSizeBytes = fileUploadSettings.Value.MaxFileSizeMB * 1024L * 1024L; // МБ переводим в байты
         }
 
+        [HttpGet("view/{bucketName}/{fileName}")]
+        public async Task<IActionResult> ViewFileByName(string bucketName, string fileName)
+        {
+            try
+            {
+                var fileStream = await _minioService.DownloadFileAsync(bucketName, fileName);
+
+                // Пытаемся найти метаданные для определения ContentType
+                var metadata = await _context.Files
+                    .FirstOrDefaultAsync(f => f.FileName == fileName && f.BucketName == bucketName);
+
+                var contentType = metadata?.ContentType ?? "application/octet-stream";
+
+                return File(fileStream, contentType, enableRangeProcessing: true);
+            }
+            catch (Exception ex)
+            {
+                return NotFound($"Файл не найден: {ex.Message}");
+            }
+        }
+
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
@@ -54,12 +75,18 @@ namespace HPMFileStorageService.Controllers
             var existingFile = await _context.Files.FirstOrDefaultAsync(f => f.FileHash == fileHash);
             if (existingFile != null)
             {
+                var fileUrl = $"{Request.Scheme}://{Request.Host}/api/files/view/{existingFile.BucketName}/{existingFile.FileName}";
+                var downloadUrl = $"{Request.Scheme}://{Request.Host}/api/files/download/{existingFile.Id}";
+
                 return Ok(new
                 {
                     Id = existingFile.Id,
+                    FileName = existingFile.FileName,
                     Message = "Файл уже существует",
                     OriginalFileName = existingFile.OriginalFileName,
-                    Bucket = existingFile.BucketName
+                    Bucket = existingFile.BucketName,
+                    FileUrl = fileUrl,
+                    DownloadUrl = downloadUrl
                 });
             }
 
@@ -87,12 +114,19 @@ namespace HPMFileStorageService.Controllers
                 _context.Files.Add(fileMetadata);
                 await _context.SaveChangesAsync();
 
+                // Формируем URL с именем файла
+                var fileUrl = $"{Request.Scheme}://{Request.Host}/api/files/view/{bucketName}/{uniqueFileName}";
+                var downloadUrl = $"{Request.Scheme}://{Request.Host}/api/files/download/{fileMetadata.Id}";
+
                 return Ok(new
                 {
                     Id = fileMetadata.Id,
+                    FileName = uniqueFileName,  // Уникальное имя файла в хранилище
                     Bucket = bucketName,
                     Message = "Файл успешно загружен",
-                    OriginalFileName = fileMetadata.OriginalFileName
+                    OriginalFileName = fileMetadata.OriginalFileName,
+                    FileUrl = fileUrl,           // URL с именем файла
+                    DownloadUrl = downloadUrl    // URL для скачивания с оригинальным именем
                 });
             }
             catch (Exception ex)
