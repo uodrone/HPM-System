@@ -22,6 +22,8 @@ namespace HPM_System.NotificationService
 
             //Подгружаем зависимости всякие
             builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
+            //комментирую за ненадобностью, но это для того, чтобы была сцылка на примитивы синхронизации
+            //builder.Services.AddSingleton<INotificationRepository, InMemoryNotificationRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<IRabbitMQHandler, RabbitUserHandler>();
 
