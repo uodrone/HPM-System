@@ -206,7 +206,7 @@ export class NotificationProfileManager {
             type: 0,
             createdBy: window.authManager.userData.userId,
             imageUrl: isFileUpload.fileUrl,
-            userIdList: allUserIds
+            userIdList: uniqueUserIds
         };
     }
 }
@@ -231,7 +231,11 @@ document.addEventListener('authStateChanged', async () => {
                 
                 //Отправляем данные на сервер
                 const notificationClient = new NotificationClient();
-                notificationClient.CreateNotification(notificationData)
+                const notificationCreate = notificationClient.CreateNotification(notificationData);
+
+                if (notificationCreate) {                        
+                    Modal.ShowNotification('Уведомление создано успешно!', 'green');                        
+                }
             });
         }
     }

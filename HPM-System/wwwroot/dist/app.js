@@ -5342,7 +5342,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
                 type: 0,
                 createdBy: window.authManager.userData.userId,
                 imageUrl: isFileUpload.fileUrl,
-                userIdList: allUserIds
+                userIdList: uniqueUserIds
               });
           }
         }, _callee5);
@@ -5374,7 +5374,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         return notificationProfile.InsertDataToCreateNotification();
       case 1:
         document.querySelector('[data-action="save-notification-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-          var notificationData, notificationClient;
+          var notificationData, notificationClient, notificationCreate;
           return _regenerator().w(function (_context6) {
             while (1) switch (_context6.n) {
               case 0:
@@ -5389,7 +5389,10 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
 
                 //Отправляем данные на сервер
                 notificationClient = new _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__.NotificationClient();
-                notificationClient.CreateNotification(notificationData);
+                notificationCreate = notificationClient.CreateNotification(notificationData);
+                if (notificationCreate) {
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Уведомление создано успешно!', 'green');
+                }
               case 2:
                 return _context6.a(2);
             }

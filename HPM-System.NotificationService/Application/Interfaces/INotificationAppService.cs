@@ -5,10 +5,10 @@ namespace HPM_System.NotificationService.Application.Interfaces
 {
     public interface INotificationAppService
     {
-        public Task<IEnumerable<Notification>> GetAllAsync();
-        public Task<Notification?> GetByIDAsync(Guid id);
-        Task<IEnumerable<Notification>> GetByUserIdAsync(Guid userId);
-        public Task<Notification> CreateNotificationAsync(CreateNotificationDTO dto);
-        public Task<bool> MarkAsRead(Guid id);
+        Task<IEnumerable<NotificationDto>> GetAllAsync();
+        Task<NotificationDto?> GetByIDAsync(Guid id);
+        Task<IEnumerable<NotificationDto>> GetByUserIdAsync(Guid userId);
+        Task<NotificationDto> CreateNotificationAsync(CreateNotificationDTO dto);
+        Task<bool> MarkAsRead(Guid recipientId);
     }
 }

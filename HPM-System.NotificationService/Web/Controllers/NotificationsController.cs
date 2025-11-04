@@ -1,8 +1,6 @@
-﻿using HPM_System.NotificationService.Application.DTO;
+﻿// HPM_System.NotificationService.Web.Controllers/NotificationsController.cs
+using HPM_System.NotificationService.Application.DTO;
 using HPM_System.NotificationService.Application.Interfaces;
-using HPM_System.NotificationService.Application.Services;
-using HPM_System.NotificationService.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HPM_System.NotificationService.Web.Controllers
@@ -11,35 +9,37 @@ namespace HPM_System.NotificationService.Web.Controllers
     [ApiController]
     public class NotificationsController : ControllerBase
     {
-        private readonly INotificationAppService _notificationService;
+        private readonly INotificationAppService _service;
 
-        public NotificationsController(INotificationAppService notificationService)
+        public NotificationsController(INotificationAppService service)
         {
-            _notificationService = notificationService;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Notification>> Get()
+        public async Task<ActionResult<IEnumerable<NotificationDto>>> Get()
         {
-            return await _notificationService.GetAllAsync();
+            return Ok(await _service.GetAllAsync());
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<Notification?> GetByID(Guid id)
+        public async Task<ActionResult<NotificationDto?>> GetByID(Guid id)
         {
-            return await _notificationService.GetByIDAsync(id);
+            var result = await _service.GetByIDAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
 
         [HttpGet("user/{userId:guid}")]
-        public async Task<IEnumerable<Notification>> GetByUserId(Guid userId)
+        public async Task<ActionResult<IEnumerable<NotificationDto>>> GetByUserId(Guid userId)
         {
-            return await _notificationService.GetByUserIdAsync(userId);
+            return Ok(await _service.GetByUserIdAsync(userId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateNotificationDTO dto)
-        {            
-            return Ok(await _notificationService.CreateNotificationAsync(dto));
+        public async Task<ActionResult<NotificationDto>> Create([FromBody] CreateNotificationDTO dto)
+        {
+            var result = await _service.CreateNotificationAsync(dto);
+            return CreatedAtAction(nameof(GetByID), new { id = result.Id }, result);
         }
     }
 }

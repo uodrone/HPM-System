@@ -2,8 +2,10 @@
 using HPM_System.NotificationService.Application.Handlers;
 using HPM_System.NotificationService.Application.Interfaces;
 using HPM_System.NotificationService.Application.Services;
+using HPM_System.NotificationService.Infrastructure.Persistence;
 using HPM_System.NotificationService.Infrastructure.RabbitMQ;
 using HPM_System.NotificationService.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -13,11 +15,14 @@ namespace HPM_System.NotificationService
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);                       
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             //Подгружаем зависимости всякие
             builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
-            builder.Services.AddSingleton<INotificationRepository, InMemoryNotificationRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<IRabbitMQHandler, RabbitUserHandler>();
 
             //Подгружаем BackgroundService
@@ -48,6 +53,24 @@ namespace HPM_System.NotificationService
             });
 
             var app = builder.Build();
+
+            // Применяем миграции при старте
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                var context = services.GetRequiredService<AppDbContext>();
+                try
+                {
+                    logger.LogInformation($"Применение миграций...");
+                    context.Database.Migrate();
+                    logger.LogInformation("HPM Apartment миграции успешны");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error applying HPM-System Apartments migrations: {ex.Message}");
+                }
+            }
 
             //Оставим настройку сваггера под дев. на будущее, пока что всем дадим сваггер
             //if (app.Environment.IsDevelopment())
