@@ -4729,12 +4729,13 @@ var NotificationClient = /*#__PURE__*/function () {
               return response.text();
             case 7:
               error = _context4.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F: ".concat(error));
+              console.error(error);
+              return _context4.a(2, false);
             case 8:
-              _context4.n = 9;
-              return response.json();
+              return _context4.a(2, true);
             case 9:
-              return _context4.a(2, _context4.v);
+              _context4.n = 11;
+              break;
             case 10:
               _context4.p = 10;
               _t4 = _context4.v;
@@ -5333,8 +5334,8 @@ var NotificationProfileManager = /*#__PURE__*/function () {
               isFileUpload = _context5.v;
               console.log("\u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438");
               console.log(isFileUpload);
-              title = document.getElementById('title');
-              message = document.getElementById('message');
+              title = document.getElementById('title').value;
+              message = document.getElementById('message').value;
               return _context5.a(2, {
                 title: title,
                 message: message,

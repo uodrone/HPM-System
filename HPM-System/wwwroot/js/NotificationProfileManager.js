@@ -197,8 +197,8 @@ export class NotificationProfileManager {
         console.log(`результат загрузки файла картинки`);
         console.log(isFileUpload);
 
-        const title = document.getElementById('title');
-        const message = document.getElementById('message');
+        const title = document.getElementById('title').value;
+        const message = document.getElementById('message').value;
 
         return {
             title: title,

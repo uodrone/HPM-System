@@ -164,10 +164,12 @@ export class NotificationClient {
 
             if (!response.ok) {
                 const error = await response.text();
-                throw new Error(`Ошибка создания уведомления: ${error}`);
+                console.error(error);
+                return false;
+                //throw new Error(`Ошибка создания уведомления: ${error}`);
+            } else {
+                return true;
             }
-
-            return await response.json();
         } catch (error) {
             console.error('Ошибка при создании уведомления:', error);
             throw error;
