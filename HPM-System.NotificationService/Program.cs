@@ -1,4 +1,4 @@
-
+п»ї
 using HPM_System.NotificationService.Application.Handlers;
 using HPM_System.NotificationService.Application.Interfaces;
 using HPM_System.NotificationService.Application.Services;
@@ -15,12 +15,12 @@ namespace HPM_System.NotificationService
         {
             var builder = WebApplication.CreateBuilder(args);                       
 
-            //Подгружаем зависимости всякие
+            //РџРѕРґРіСЂСѓР¶Р°РµРј Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РІСЃСЏРєРёРµ
             builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
             builder.Services.AddSingleton<INotificationRepository, InMemoryNotificationRepository>();
             builder.Services.AddScoped<IRabbitMQHandler, RabbitUserHandler>();
 
-            //Подгружаем BackgroundService
+            //РџРѕРґРіСЂСѓР¶Р°РµРј BackgroundService
             builder.Services.AddHostedService<RabbitMQConsumer>();
 
             // Add services to the container.
@@ -36,7 +36,7 @@ namespace HPM_System.NotificationService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Поддержка CORS
+            // РџРѕРґРґРµСЂР¶РєР° CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -49,7 +49,7 @@ namespace HPM_System.NotificationService
 
             var app = builder.Build();
 
-            //Оставим настройку сваггера под дев. на будущее, пока что всем дадим сваггер
+            //РћСЃС‚Р°РІРёРј РЅР°СЃС‚СЂРѕР№РєСѓ СЃРІР°РіРіРµСЂР° РїРѕРґ РґРµРІ. РЅР° Р±СѓРґСѓС‰РµРµ, РїРѕРєР° С‡С‚Рѕ РІСЃРµРј РґР°РґРёРј СЃРІР°РіРіРµСЂ
             //if (app.Environment.IsDevelopment())
             //{
             //    app.UseSwagger();
@@ -60,6 +60,7 @@ namespace HPM_System.NotificationService
             app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
             app.UseAuthorization();
 
 

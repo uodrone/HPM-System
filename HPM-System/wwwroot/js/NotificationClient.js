@@ -9,7 +9,7 @@ export class NotificationClient {
      * @param {string} endpoint 
      * @returns {string}
      */
-    _getUrl(endpoint) {
+    _GetUrl(endpoint) {
         return `${this.baseUrl}${this.apiPath}${endpoint}`;
     }
 
@@ -20,9 +20,9 @@ export class NotificationClient {
      * const notifications = await client.getAllNotifications();
      * console.log('Всего уведомлений:', notifications.length);
      */
-    async getAllNotifications() {
+    async GetAllNotifications() {
         try {
-            const response = await fetch(this._getUrl(''), {
+            const response = await fetch(this._GetUrl(''), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,9 +51,9 @@ export class NotificationClient {
      *     console.log('Заголовок:', notification.title);
      * }
      */
-    async getNotificationById(id) {
+    async GetNotificationById(id) {
         try {
-            const response = await fetch(this._getUrl(`/${id}`), {
+            const response = await fetch(this._GetUrl(`/${id}`), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -83,9 +83,9 @@ export class NotificationClient {
      * const userNotifications = await client.getNotificationsByUserId('123e4567-e89b-12d3-a456-426614174000');
      * console.log('Уведомлений для пользователя:', userNotifications.length);
      */
-    async getNotificationsByUserId(userId) {
+    async GetNotificationsByUserId(userId) {
         try {
-            const response = await fetch(this._getUrl(`/user/${userId}`), {
+            const response = await fetch(this._GetUrl(`/user/${userId}`), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -127,16 +127,13 @@ export class NotificationClient {
      *     ]
      * });
      */
-    async createNotification(notificationData) {
+    async CreateNotification(notificationData) {
         // Валидация обязательных полей
         if (!notificationData.title) {
             throw new Error('Поле title обязательно');
         }
         if (!notificationData.message) {
             throw new Error('Поле message обязательно');
-        }
-        if (!notificationData.type) {
-            throw new Error('Поле type обязательно');
         }
         if (!notificationData.createdBy) {
             throw new Error('Поле createdBy обязательно');
@@ -145,13 +142,24 @@ export class NotificationClient {
             throw new Error('Поле userIdList должно быть непустым массивом');
         }
 
+        // Подготовка данных с дефолтными значениями
+        const payload = {
+            title: notificationData.title,
+            message: notificationData.message,
+            imageUrl: notificationData.imageUrl || null,
+            createdBy: notificationData.createdBy,
+            type: notificationData.type === 0 ? 0 : 1, // 0 = User, иначе 1 = System
+            isReadable: notificationData.isReadable === false ? false : true, // false или true (по умолчанию)
+            userIdList: notificationData.userIdList
+        };
+
         try {
-            const response = await fetch(this._getUrl(''), {
+            const response = await fetch(this._GetUrl(''), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(notificationData)
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
@@ -174,7 +182,7 @@ export class NotificationClient {
      * const unread = await client.getUnreadNotifications('123e4567-e89b-12d3-a456-426614174000');
      * console.log('Непрочитанных:', unread.length);
      */
-    async getUnreadNotifications(userId) {
+    async GetUnreadNotifications(userId) {
         try {
             const notifications = await this.getNotificationsByUserId(userId);
             
@@ -198,7 +206,7 @@ export class NotificationClient {
      * @example
      * const read = await client.getReadNotifications('123e4567-e89b-12d3-a456-426614174000');
      */
-    async getReadNotifications(userId) {
+    async GetReadNotifications(userId) {
         try {
             const notifications = await this.getNotificationsByUserId(userId);
             
@@ -222,7 +230,7 @@ export class NotificationClient {
      * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
      * document.getElementById('badge').textContent = count;
      */
-    async getUnreadCount(userId) {
+    async GetUnreadCount(userId) {
         try {
             const unread = await this.getUnreadNotifications(userId);
             return unread.length;
@@ -236,7 +244,7 @@ export class NotificationClient {
      * Установить базовый URL
      * @param {string} newBaseUrl 
      */
-    setBaseUrl(newBaseUrl) {
+    SetBaseUrl(newBaseUrl) {
         this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
 
@@ -244,7 +252,7 @@ export class NotificationClient {
      * Получить текущий базовый URL
      * @returns {string}
      */
-    getBaseUrl() {
+    GetBaseUrl() {
         return this.baseUrl;
     }
 }

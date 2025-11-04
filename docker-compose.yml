@@ -143,9 +143,14 @@ services:
       - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
     ports:
       - "${NOTIFICATIONSERVICE_HTTP}:8080"
       - "${NOTIFICATIONSERVICE_HTTPS}:8081"
+    volumes:
+      - ./certs:/https:ro
     networks: [hpm-network]
 
   minio:
@@ -188,6 +193,8 @@ services:
       - MinIO__SecretKey=${MINIO_ROOT_PASSWORD}
       - MinIO__Region=us-east-1
       - FileUpload__MaxFileSizeMB=50
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
     ports:
       - "${FILESTORAGESERVICE_HTTP}:8080"
       - "${FILESTORAGESERVICE_HTTPS}:8081"

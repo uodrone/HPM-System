@@ -193,14 +193,20 @@ export class NotificationProfileManager {
         const file = fileInput.files[0];
 
         const fileManager = new FileStorageClient();
-        let isFileUpload = await fileManager.uploadFile(file);
+        let isFileUpload = await fileManager.UploadFile(file);
         console.log(`результат загрузки файла картинки`);
         console.log(isFileUpload);
 
+        const title = document.getElementById('title');
+        const message = document.getElementById('message');
+
         return {
-            apartmentIds: apartmentIds,
-            userIds: uniqueUserIds,
-            isOwnersOnly: isOwnersOnly
+            title: title,
+            message: message,
+            type: 0,
+            createdBy: window.authManager.userData.userId,
+            imageUrl: isFileUpload.fileUrl,
+            userIdList: allUserIds
         };
     }
 }
@@ -216,15 +222,16 @@ document.addEventListener('authStateChanged', async () => {
         if (window.location.pathname.includes('/notification/create')) {
             await notificationProfile.InsertDataToCreateNotification();
 
-            document.querySelector('[data-action="save-notification-data"]').addEventListener('click', () => {
+            document.querySelector('[data-action="save-notification-data"]').addEventListener('click', async () => {
                 console.log('Клик по кнопке сохранения уведомления');
                 
                 // Собираем данные уведомления
-                const notificationData = notificationProfile.CollectNotificationDataToCreate();
+                const notificationData = await notificationProfile.CollectNotificationDataToCreate();
                 console.log('Данные для сохранения:', notificationData);
                 
-                // Здесь можно отправить данные на сервер
-                // await notificationClient.CreateNotification(notificationData);
+                //Отправляем данные на сервер
+                const notificationClient = new NotificationClient();
+                notificationClient.CreateNotification(notificationData)
             });
         }
     }

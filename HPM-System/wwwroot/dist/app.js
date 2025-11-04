@@ -3461,8 +3461,8 @@ var FileStorageClient = /*#__PURE__*/function () {
    * @returns {string}
    */
   return _createClass(FileStorageClient, [{
-    key: "_getUrl",
-    value: function _getUrl(endpoint) {
+    key: "_GetUrl",
+    value: function _GetUrl(endpoint) {
       return "".concat(this.baseUrl).concat(this.apiPath).concat(endpoint);
     }
 
@@ -3479,9 +3479,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      * document.getElementById('preview').src = result.fileUrl;
      */
   }, {
-    key: "uploadFile",
+    key: "UploadFile",
     value: (function () {
-      var _uploadFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(file) {
+      var _UploadFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(file) {
         var formData, response, error, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
@@ -3496,7 +3496,7 @@ var FileStorageClient = /*#__PURE__*/function () {
               formData.append('file', file);
               _context.p = 2;
               _context.n = 3;
-              return fetch(this._getUrl('/upload'), {
+              return fetch(this._GetUrl('/upload'), {
                 method: 'POST',
                 body: formData
               });
@@ -3526,10 +3526,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee, this, [[2, 7]]);
       }));
-      function uploadFile(_x) {
-        return _uploadFile.apply(this, arguments);
+      function UploadFile(_x) {
+        return _UploadFile.apply(this, arguments);
       }
-      return uploadFile;
+      return UploadFile;
     }()
     /**
      * Получить URL для просмотра файла по имени
@@ -3542,9 +3542,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getFileViewUrl",
-    value: function getFileViewUrl(bucketName, fileName) {
-      return this._getUrl("/view/".concat(bucketName, "/").concat(fileName));
+    key: "GetFileViewUrl",
+    value: function GetFileViewUrl(bucketName, fileName) {
+      return this._GetUrl("/view/".concat(bucketName, "/").concat(fileName));
     }
 
     /**
@@ -3556,9 +3556,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      * window.open(url, '_blank');
      */
   }, {
-    key: "getFileDownloadUrl",
-    value: function getFileDownloadUrl(id) {
-      return this._getUrl("/download/".concat(id));
+    key: "GetFileDownloadUrl",
+    value: function GetFileDownloadUrl(id) {
+      return this._GetUrl("/download/".concat(id));
     }
 
     /**
@@ -3570,16 +3570,16 @@ var FileStorageClient = /*#__PURE__*/function () {
      * console.log('Размер файла:', metadata.fileSize);
      */
   }, {
-    key: "getFileMetadata",
+    key: "GetFileMetadata",
     value: (function () {
-      var _getFileMetadata = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
+      var _GetFileMetadata = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
         var response, error, _t2;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
               _context2.p = 0;
               _context2.n = 1;
-              return fetch(this._getUrl("/".concat(id)), {
+              return fetch(this._GetUrl("/".concat(id)), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -3611,10 +3611,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee2, this, [[0, 5]]);
       }));
-      function getFileMetadata(_x2) {
-        return _getFileMetadata.apply(this, arguments);
+      function GetFileMetadata(_x2) {
+        return _GetFileMetadata.apply(this, arguments);
       }
-      return getFileMetadata;
+      return GetFileMetadata;
     }()
     /**
      * Скачать файл по ID
@@ -3626,9 +3626,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "downloadFile",
+    key: "DownloadFile",
     value: (function () {
-      var _downloadFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
+      var _DownloadFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
         var saveAs,
           response,
           error,
@@ -3646,7 +3646,7 @@ var FileStorageClient = /*#__PURE__*/function () {
               saveAs = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : null;
               _context3.p = 1;
               _context3.n = 2;
-              return fetch(this._getUrl("/download/".concat(id)), {
+              return fetch(this._GetUrl("/download/".concat(id)), {
                 method: 'GET'
               });
             case 2:
@@ -3702,10 +3702,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee3, this, [[1, 6]]);
       }));
-      function downloadFile(_x3) {
-        return _downloadFile.apply(this, arguments);
+      function DownloadFile(_x3) {
+        return _DownloadFile.apply(this, arguments);
       }
-      return downloadFile;
+      return DownloadFile;
     }()
     /**
      * Получить Blob файла (без автоматического скачивания)
@@ -3719,16 +3719,16 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getFileBlob",
+    key: "GetFileBlob",
     value: (function () {
-      var _getFileBlob = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
+      var _GetFileBlob = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
         var response, error, _t4;
         return _regenerator().w(function (_context4) {
           while (1) switch (_context4.p = _context4.n) {
             case 0:
               _context4.p = 0;
               _context4.n = 1;
-              return fetch(this._getUrl("/download/".concat(id)), {
+              return fetch(this._GetUrl("/download/".concat(id)), {
                 method: 'GET'
               });
             case 1:
@@ -3757,10 +3757,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee4, this, [[0, 5]]);
       }));
-      function getFileBlob(_x4) {
-        return _getFileBlob.apply(this, arguments);
+      function GetFileBlob(_x4) {
+        return _GetFileBlob.apply(this, arguments);
       }
-      return getFileBlob;
+      return GetFileBlob;
     }()
     /**
      * Получить URL для предпросмотра файла
@@ -3773,9 +3773,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getFilePreviewUrl",
+    key: "GetFilePreviewUrl",
     value: (function () {
-      var _getFilePreviewUrl = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id) {
+      var _GetFilePreviewUrl = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(id) {
         var blob;
         return _regenerator().w(function (_context5) {
           while (1) switch (_context5.n) {
@@ -3788,10 +3788,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee5, this);
       }));
-      function getFilePreviewUrl(_x5) {
-        return _getFilePreviewUrl.apply(this, arguments);
+      function GetFilePreviewUrl(_x5) {
+        return _GetFilePreviewUrl.apply(this, arguments);
       }
-      return getFilePreviewUrl;
+      return GetFilePreviewUrl;
     }()
     /**
      * Удалить файл по ID
@@ -3803,16 +3803,16 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "deleteFile",
+    key: "DeleteFile",
     value: (function () {
-      var _deleteFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
+      var _DeleteFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(id) {
         var response, error, _t5;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
               _context6.p = 0;
               _context6.n = 1;
-              return fetch(this._getUrl("/".concat(id)), {
+              return fetch(this._GetUrl("/".concat(id)), {
                 method: 'DELETE'
               });
             case 1:
@@ -3838,10 +3838,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee6, this, [[0, 4]]);
       }));
-      function deleteFile(_x6) {
-        return _deleteFile.apply(this, arguments);
+      function DeleteFile(_x6) {
+        return _DeleteFile.apply(this, arguments);
       }
-      return deleteFile;
+      return DeleteFile;
     }()
     /**
      * Загрузить несколько файлов последовательно
@@ -3854,9 +3854,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "uploadMultipleFiles",
+    key: "UploadMultipleFiles",
     value: (function () {
-      var _uploadMultipleFiles = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(files) {
+      var _UploadMultipleFiles = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(files) {
         var results, _iterator, _step, file, result, _t6, _t7;
         return _regenerator().w(function (_context7) {
           while (1) switch (_context7.p = _context7.n) {
@@ -3910,10 +3910,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee7, this, [[3, 5], [1, 8, 9, 10]]);
       }));
-      function uploadMultipleFiles(_x7) {
-        return _uploadMultipleFiles.apply(this, arguments);
+      function UploadMultipleFiles(_x7) {
+        return _UploadMultipleFiles.apply(this, arguments);
       }
-      return uploadMultipleFiles;
+      return UploadMultipleFiles;
     }()
     /**
      * Загрузить несколько файлов параллельно (быстрее, но больше нагрузка на сервер)
@@ -3924,9 +3924,9 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "uploadMultipleFilesParallel",
+    key: "UploadMultipleFilesParallel",
     value: (function () {
-      var _uploadMultipleFilesParallel = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(files) {
+      var _UploadMultipleFilesParallel = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(files) {
         var _this = this;
         var uploadPromises;
         return _regenerator().w(function (_context9) {
@@ -3970,10 +3970,10 @@ var FileStorageClient = /*#__PURE__*/function () {
           }
         }, _callee9);
       }));
-      function uploadMultipleFilesParallel(_x8) {
-        return _uploadMultipleFilesParallel.apply(this, arguments);
+      function UploadMultipleFilesParallel(_x8) {
+        return _UploadMultipleFilesParallel.apply(this, arguments);
       }
-      return uploadMultipleFilesParallel;
+      return UploadMultipleFilesParallel;
     }()
     /**
      * Установить базовый URL
@@ -3981,8 +3981,8 @@ var FileStorageClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "setBaseUrl",
-    value: function setBaseUrl(newBaseUrl) {
+    key: "SetBaseUrl",
+    value: function SetBaseUrl(newBaseUrl) {
       this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
 
@@ -3991,8 +3991,8 @@ var FileStorageClient = /*#__PURE__*/function () {
      * @returns {string}
      */
   }, {
-    key: "getBaseUrl",
-    value: function getBaseUrl() {
+    key: "GetBaseUrl",
+    value: function GetBaseUrl() {
       return this.baseUrl;
     }
   }]);
@@ -4463,8 +4463,8 @@ var NotificationClient = /*#__PURE__*/function () {
    * @returns {string}
    */
   return _createClass(NotificationClient, [{
-    key: "_getUrl",
-    value: function _getUrl(endpoint) {
+    key: "_GetUrl",
+    value: function _GetUrl(endpoint) {
       return "".concat(this.baseUrl).concat(this.apiPath).concat(endpoint);
     }
 
@@ -4476,16 +4476,16 @@ var NotificationClient = /*#__PURE__*/function () {
      * console.log('Всего уведомлений:', notifications.length);
      */
   }, {
-    key: "getAllNotifications",
+    key: "GetAllNotifications",
     value: (function () {
-      var _getAllNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _GetAllNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
         var response, error, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
               _context.p = 0;
               _context.n = 1;
-              return fetch(this._getUrl(''), {
+              return fetch(this._GetUrl(''), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -4517,10 +4517,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee, this, [[0, 5]]);
       }));
-      function getAllNotifications() {
-        return _getAllNotifications.apply(this, arguments);
+      function GetAllNotifications() {
+        return _GetAllNotifications.apply(this, arguments);
       }
-      return getAllNotifications;
+      return GetAllNotifications;
     }()
     /**
      * Получить уведомление по ID
@@ -4534,16 +4534,16 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getNotificationById",
+    key: "GetNotificationById",
     value: (function () {
-      var _getNotificationById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
+      var _GetNotificationById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
         var response, error, _t2;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
               _context2.p = 0;
               _context2.n = 1;
-              return fetch(this._getUrl("/".concat(id)), {
+              return fetch(this._GetUrl("/".concat(id)), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -4581,10 +4581,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee2, this, [[0, 6]]);
       }));
-      function getNotificationById(_x) {
-        return _getNotificationById.apply(this, arguments);
+      function GetNotificationById(_x) {
+        return _GetNotificationById.apply(this, arguments);
       }
-      return getNotificationById;
+      return GetNotificationById;
     }()
     /**
      * Получить уведомления для конкретного пользователя
@@ -4596,16 +4596,16 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getNotificationsByUserId",
+    key: "GetNotificationsByUserId",
     value: (function () {
-      var _getNotificationsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
+      var _GetNotificationsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
         var response, error, _t3;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
               _context3.p = 0;
               _context3.n = 1;
-              return fetch(this._getUrl("/user/".concat(userId)), {
+              return fetch(this._GetUrl("/user/".concat(userId)), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -4637,10 +4637,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee3, this, [[0, 5]]);
       }));
-      function getNotificationsByUserId(_x2) {
-        return _getNotificationsByUserId.apply(this, arguments);
+      function GetNotificationsByUserId(_x2) {
+        return _GetNotificationsByUserId.apply(this, arguments);
       }
-      return getNotificationsByUserId;
+      return GetNotificationsByUserId;
     }()
     /**
      * Создать новое уведомление
@@ -4667,10 +4667,10 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "createNotification",
+    key: "CreateNotification",
     value: (function () {
-      var _createNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(notificationData) {
-        var response, error, _t4;
+      var _CreateNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(notificationData) {
+        var payload, response, error, _t4;
         return _regenerator().w(function (_context4) {
           while (1) switch (_context4.p = _context4.n) {
             case 0:
@@ -4686,32 +4686,38 @@ var NotificationClient = /*#__PURE__*/function () {
               }
               throw new Error('Поле message обязательно');
             case 2:
-              if (notificationData.type) {
+              if (notificationData.createdBy) {
                 _context4.n = 3;
                 break;
               }
-              throw new Error('Поле type обязательно');
+              throw new Error('Поле createdBy обязательно');
             case 3:
-              if (notificationData.createdBy) {
+              if (!(!Array.isArray(notificationData.userIdList) || notificationData.userIdList.length === 0)) {
                 _context4.n = 4;
                 break;
               }
-              throw new Error('Поле createdBy обязательно');
-            case 4:
-              if (!(!Array.isArray(notificationData.userIdList) || notificationData.userIdList.length === 0)) {
-                _context4.n = 5;
-                break;
-              }
               throw new Error('Поле userIdList должно быть непустым массивом');
-            case 5:
+            case 4:
+              // Подготовка данных с дефолтными значениями
+              payload = {
+                title: notificationData.title,
+                message: notificationData.message,
+                imageUrl: notificationData.imageUrl || null,
+                createdBy: notificationData.createdBy,
+                type: notificationData.type === 0 ? 0 : 1,
+                // 0 = User, иначе 1 = System
+                isReadable: notificationData.isReadable === false ? false : true,
+                // false или true (по умолчанию)
+                userIdList: notificationData.userIdList
+              };
               _context4.p = 5;
               _context4.n = 6;
-              return fetch(this._getUrl(''), {
+              return fetch(this._GetUrl(''), {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(notificationData)
+                body: JSON.stringify(payload)
               });
             case 6:
               response = _context4.v;
@@ -4739,10 +4745,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee4, this, [[5, 10]]);
       }));
-      function createNotification(_x3) {
-        return _createNotification.apply(this, arguments);
+      function CreateNotification(_x3) {
+        return _CreateNotification.apply(this, arguments);
       }
-      return createNotification;
+      return CreateNotification;
     }()
     /**
      * Получить непрочитанные уведомления для пользователя
@@ -4754,9 +4760,9 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getUnreadNotifications",
+    key: "GetUnreadNotifications",
     value: (function () {
-      var _getUnreadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
+      var _GetUnreadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
         var notifications, _t5;
         return _regenerator().w(function (_context5) {
           while (1) switch (_context5.p = _context5.n) {
@@ -4781,10 +4787,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee5, this, [[0, 2]]);
       }));
-      function getUnreadNotifications(_x4) {
-        return _getUnreadNotifications.apply(this, arguments);
+      function GetUnreadNotifications(_x4) {
+        return _GetUnreadNotifications.apply(this, arguments);
       }
-      return getUnreadNotifications;
+      return GetUnreadNotifications;
     }()
     /**
      * Получить прочитанные уведомления для пользователя
@@ -4795,9 +4801,9 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getReadNotifications",
+    key: "GetReadNotifications",
     value: (function () {
-      var _getReadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(userId) {
+      var _GetReadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(userId) {
         var notifications, _t6;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
@@ -4822,10 +4828,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee6, this, [[0, 2]]);
       }));
-      function getReadNotifications(_x5) {
-        return _getReadNotifications.apply(this, arguments);
+      function GetReadNotifications(_x5) {
+        return _GetReadNotifications.apply(this, arguments);
       }
-      return getReadNotifications;
+      return GetReadNotifications;
     }()
     /**
      * Получить количество непрочитанных уведомлений для пользователя
@@ -4837,9 +4843,9 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "getUnreadCount",
+    key: "GetUnreadCount",
     value: (function () {
-      var _getUnreadCount = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
+      var _GetUnreadCount = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
         var unread, _t7;
         return _regenerator().w(function (_context7) {
           while (1) switch (_context7.p = _context7.n) {
@@ -4860,10 +4866,10 @@ var NotificationClient = /*#__PURE__*/function () {
           }
         }, _callee7, this, [[0, 2]]);
       }));
-      function getUnreadCount(_x6) {
-        return _getUnreadCount.apply(this, arguments);
+      function GetUnreadCount(_x6) {
+        return _GetUnreadCount.apply(this, arguments);
       }
-      return getUnreadCount;
+      return GetUnreadCount;
     }()
     /**
      * Установить базовый URL
@@ -4871,8 +4877,8 @@ var NotificationClient = /*#__PURE__*/function () {
      */
     )
   }, {
-    key: "setBaseUrl",
-    value: function setBaseUrl(newBaseUrl) {
+    key: "SetBaseUrl",
+    value: function SetBaseUrl(newBaseUrl) {
       this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
 
@@ -4881,8 +4887,8 @@ var NotificationClient = /*#__PURE__*/function () {
      * @returns {string}
      */
   }, {
-    key: "getBaseUrl",
-    value: function getBaseUrl() {
+    key: "GetBaseUrl",
+    value: function GetBaseUrl() {
       return this.baseUrl;
     }
   }]);
@@ -5254,7 +5260,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     value: function () {
       var _CollectNotificationDataToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
         var _this3 = this;
-        var apartmentSelector, tomSelectInstance, selectedValues, apartmentIds, toOwnersRadio, isOwnersOnly, allUserIds, uniqueUserIds, fileInput, file, fileManager, isFileUpload;
+        var apartmentSelector, tomSelectInstance, selectedValues, apartmentIds, toOwnersRadio, isOwnersOnly, allUserIds, uniqueUserIds, fileInput, file, fileManager, isFileUpload, title, message;
         return _regenerator().w(function (_context5) {
           while (1) switch (_context5.n) {
             case 0:
@@ -5322,15 +5328,20 @@ var NotificationProfileManager = /*#__PURE__*/function () {
               file = fileInput.files[0];
               fileManager = new _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__.FileStorageClient();
               _context5.n = 2;
-              return fileManager.uploadFile(file);
+              return fileManager.UploadFile(file);
             case 2:
               isFileUpload = _context5.v;
               console.log("\u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438");
               console.log(isFileUpload);
+              title = document.getElementById('title');
+              message = document.getElementById('message');
               return _context5.a(2, {
-                apartmentIds: apartmentIds,
-                userIds: uniqueUserIds,
-                isOwnersOnly: isOwnersOnly
+                title: title,
+                message: message,
+                type: 0,
+                createdBy: window.authManager.userData.userId,
+                imageUrl: isFileUpload.fileUrl,
+                userIdList: allUserIds
               });
           }
         }, _callee5);
@@ -5342,39 +5353,51 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     }()
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
   var _event$detail, isAuthenticated, userData, notificationProfile;
-  return _regenerator().w(function (_context6) {
-    while (1) switch (_context6.n) {
+  return _regenerator().w(function (_context7) {
+    while (1) switch (_context7.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         if (!(isAuthenticated && userData)) {
-          _context6.n = 2;
+          _context7.n = 2;
           break;
         }
         notificationProfile = new NotificationProfileManager();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/notification/create')) {
-          _context6.n = 2;
+          _context7.n = 2;
           break;
         }
-        _context6.n = 1;
+        _context7.n = 1;
         return notificationProfile.InsertDataToCreateNotification();
       case 1:
-        document.querySelector('[data-action="save-notification-data"]').addEventListener('click', function () {
-          console.log('Клик по кнопке сохранения уведомления');
+        document.querySelector('[data-action="save-notification-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+          var notificationData, notificationClient;
+          return _regenerator().w(function (_context6) {
+            while (1) switch (_context6.n) {
+              case 0:
+                console.log('Клик по кнопке сохранения уведомления');
 
-          // Собираем данные уведомления
-          var notificationData = notificationProfile.CollectNotificationDataToCreate();
-          console.log('Данные для сохранения:', notificationData);
+                // Собираем данные уведомления
+                _context6.n = 1;
+                return notificationProfile.CollectNotificationDataToCreate();
+              case 1:
+                notificationData = _context6.v;
+                console.log('Данные для сохранения:', notificationData);
 
-          // Здесь можно отправить данные на сервер
-          // await notificationClient.CreateNotification(notificationData);
-        });
+                //Отправляем данные на сервер
+                notificationClient = new _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__.NotificationClient();
+                notificationClient.CreateNotification(notificationData);
+              case 2:
+                return _context6.a(2);
+            }
+          }, _callee6);
+        })));
       case 2:
-        return _context6.a(2);
+        return _context7.a(2);
     }
-  }, _callee6);
+  }, _callee7);
 })));
 
 /***/ }),

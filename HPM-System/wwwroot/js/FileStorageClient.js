@@ -9,7 +9,7 @@ export class FileStorageClient {
      * @param {string} endpoint 
      * @returns {string}
      */
-    _getUrl(endpoint) {
+    _GetUrl(endpoint) {
         return `${this.baseUrl}${this.apiPath}${endpoint}`;
     }
 
@@ -25,7 +25,7 @@ export class FileStorageClient {
      * console.log('Файл доступен по:', result.fileUrl);
      * document.getElementById('preview').src = result.fileUrl;
      */
-    async uploadFile(file) {
+    async UploadFile(file) {
         if (!(file instanceof File)) {
             throw new Error('Параметр должен быть экземпляром File');
         }
@@ -34,7 +34,7 @@ export class FileStorageClient {
         formData.append('file', file);
 
         try {
-            const response = await fetch(this._getUrl('/upload'), {
+            const response = await fetch(this._GetUrl('/upload'), {
                 method: 'POST',
                 body: formData
             });
@@ -60,8 +60,8 @@ export class FileStorageClient {
      * const url = client.getFileViewUrl('documents', 'abc123_document.pdf');
      * document.getElementById('preview').src = url;
      */
-    getFileViewUrl(bucketName, fileName) {
-        return this._getUrl(`/view/${bucketName}/${fileName}`);
+    GetFileViewUrl(bucketName, fileName) {
+        return this._GetUrl(`/view/${bucketName}/${fileName}`);
     }
 
     /**
@@ -72,8 +72,8 @@ export class FileStorageClient {
      * const url = client.getFileDownloadUrl(123);
      * window.open(url, '_blank');
      */
-    getFileDownloadUrl(id) {
-        return this._getUrl(`/download/${id}`);
+    GetFileDownloadUrl(id) {
+        return this._GetUrl(`/download/${id}`);
     }
 
     /**
@@ -84,9 +84,9 @@ export class FileStorageClient {
      * const metadata = await client.getFileMetadata(123);
      * console.log('Размер файла:', metadata.fileSize);
      */
-    async getFileMetadata(id) {
+    async GetFileMetadata(id) {
         try {
-            const response = await fetch(this._getUrl(`/${id}`), {
+            const response = await fetch(this._GetUrl(`/${id}`), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -113,9 +113,9 @@ export class FileStorageClient {
      * @example
      * await client.downloadFile(123, 'my-document.pdf');
      */
-    async downloadFile(id, saveAs = null) {
+    async DownloadFile(id, saveAs = null) {
         try {
-            const response = await fetch(this._getUrl(`/download/${id}`), {
+            const response = await fetch(this._GetUrl(`/download/${id}`), {
                 method: 'GET'
             });
 
@@ -167,9 +167,9 @@ export class FileStorageClient {
      * const url = URL.createObjectURL(blob);
      * document.getElementById('preview').src = url;
      */
-    async getFileBlob(id) {
+    async GetFileBlob(id) {
         try {
-            const response = await fetch(this._getUrl(`/download/${id}`), {
+            const response = await fetch(this._GetUrl(`/download/${id}`), {
                 method: 'GET'
             });
 
@@ -194,7 +194,7 @@ export class FileStorageClient {
      * document.getElementById('image').src = url;
      * // Не забудьте вызвать URL.revokeObjectURL(url) когда URL больше не нужен
      */
-    async getFilePreviewUrl(id) {
+    async GetFilePreviewUrl(id) {
         const blob = await this.getFileBlob(id);
         return URL.createObjectURL(blob);
     }
@@ -207,9 +207,9 @@ export class FileStorageClient {
      * await client.deleteFile(123);
      * console.log('Файл удален');
      */
-    async deleteFile(id) {
+    async DeleteFile(id) {
         try {
-            const response = await fetch(this._getUrl(`/${id}`), {
+            const response = await fetch(this._GetUrl(`/${id}`), {
                 method: 'DELETE'
             });
 
@@ -234,7 +234,7 @@ export class FileStorageClient {
      * const successful = results.filter(r => r.success);
      * console.log(`Загружено ${successful.length} из ${results.length}`);
      */
-    async uploadMultipleFiles(files) {
+    async UploadMultipleFiles(files) {
         const results = [];
 
         for (const file of files) {
@@ -264,7 +264,7 @@ export class FileStorageClient {
      * @example
      * const results = await client.uploadMultipleFilesParallel(filesArray);
      */
-    async uploadMultipleFilesParallel(files) {
+    async UploadMultipleFilesParallel(files) {
         const uploadPromises = files.map(async (file) => {
             try {
                 const result = await this.uploadFile(file);
@@ -289,7 +289,7 @@ export class FileStorageClient {
      * Установить базовый URL
      * @param {string} newBaseUrl 
      */
-    setBaseUrl(newBaseUrl) {
+    SetBaseUrl(newBaseUrl) {
         this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
 
@@ -297,7 +297,7 @@ export class FileStorageClient {
      * Получить текущий базовый URL
      * @returns {string}
      */
-    getBaseUrl() {
+    GetBaseUrl() {
         return this.baseUrl;
     }
 }
