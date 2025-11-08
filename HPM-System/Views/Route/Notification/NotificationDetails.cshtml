@@ -1,5 +1,17 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div id="notification-profile" class="profile">
+	<div class="container py-5">
+		<div class="profile-group dashboard-card my-4" data-group="notification">
+			<h3 class="card-header card-header_notification w-100">Профиль уведомления</h3>
+			<div class="w-100 text-start">
+				<div id="notification-date" class="notification-date mb-3"></div>
+				<div class="notification-image">
+					<img id="notification-image" src="" alt="Alternate Text" />
+				</div>
+				<h3 id="notification-title" class="my-4"></h3>
+				<div id="notification-message"></div>
+			</div>
+
+			@*@<div class="btn btn_danger d-none" data-action="remove-notification">Удалить уведомление</div>*@
+		</div>
+	</div>
+</div>

@@ -40,6 +40,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/css/fonts-colors-and-backgrounds.css":
+/*!******************************************************!*\
+  !*** ./wwwroot/css/fonts-colors-and-backgrounds.css ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./wwwroot/css/grid.css":
 /*!******************************!*\
   !*** ./wwwroot/css/grid.css ***!
@@ -3276,6 +3289,48 @@ window.logout = function () {
 
 /***/ }),
 
+/***/ "./wwwroot/js/DateFormat.js":
+/*!**********************************!*\
+  !*** ./wwwroot/js/DateFormat.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DateFormat: () => (/* binding */ DateFormat)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var DateFormat = /*#__PURE__*/function () {
+  function DateFormat() {
+    _classCallCheck(this, DateFormat);
+  }
+  return _createClass(DateFormat, null, [{
+    key: "DateFormatToRuString",
+    value: function DateFormatToRuString(isoString) {
+      var date = new Date(isoString);
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var day = date.getUTCDate(); // без ведущего нуля
+      var year = date.getUTCFullYear();
+      var months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+      var month = months[date.getUTCMonth()]; // getUTCMonth() → 0–11
+
+      return "".concat(day, " ").concat(month, " ").concat(year, ", ").concat(hours, ":").concat(minutes);
+    }
+  }]);
+}();
+document.addEventListener('DOMContentLoaded', function () {
+  new DateFormat();
+});
+
+/***/ }),
+
 /***/ "./wwwroot/js/FileHandler.js":
 /*!***********************************!*\
   !*** ./wwwroot/js/FileHandler.js ***!
@@ -5032,6 +5087,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
 /* harmony import */ var _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NotificationClient.js */ "./wwwroot/js/NotificationClient.js");
 /* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
+/* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -5049,6 +5105,7 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
 
 
 
@@ -5352,19 +5409,105 @@ var NotificationProfileManager = /*#__PURE__*/function () {
       }
       return CollectNotificationDataToCreate;
     }()
+  }, {
+    key: "InsertDataToMainPage",
+    value: function InsertDataToMainPage(data) {
+      var _this4 = this;
+      var notificationsContainer = document.querySelector('.notificatiions-list');
+      if (data.length) {
+        data.forEach(function (notification) {
+          var notificationMainPageTemplate = _this4.NotificationMainPageTemplate(notification);
+          notificationsContainer.insertAdjacentHTML('beforeend', notificationMainPageTemplate);
+        });
+      } else {
+        notificationsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "NotificationMainPageTemplate",
+    value: function NotificationMainPageTemplate(notification) {
+      var notificationHTML;
+      if (notification) {
+        notificationHTML = "\n                <a class=\"notification-item\" href=\"/notification/".concat(notification.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>\n                    <div class=\"font-weight-600\">").concat(notification.title, "</div>\n                </a>\n            ");
+      }
+      return notificationHTML;
+    }
+  }, {
+    key: "NotificationDetails",
+    value: function NotificationDetails(notification) {
+      var recipients = [];
+      notification.recipients.forEach(function (recipient) {
+        recipients.push(recipient.userId);
+      });
+      if (notification != null && recipients.includes(window.authManager.userData.userId)) {
+        var notificationDate = document.getElementById('notification-date');
+        notificationDate.innerHTML = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt);
+        var notificationImage = document.getElementById('notification-image');
+        notificationImage.setAttribute('src', notification.imageUrl);
+        var notificationTitle = document.getElementById('notification-title');
+        notificationTitle.innerHTML = notification.title;
+        var notificationMessage = document.getElementById('notification-message');
+        notificationMessage.innerHTML = notification.message;
+
+        /*if (notification.createdBy == window.authManager.userData.userId) {
+            document.querySelector(`[data-action="remove-notification"]`).classList.remove('d-none');
+        } else {
+            document.querySelector(`[data-action="remove-notification"]`).remove();
+        }*/
+      } else {
+        document.getElementById('notification-profile').innerHTML = 'Страница недоступна';
+      }
+    }
+  }, {
+    key: "NotificationListByUserId",
+    value: function NotificationListByUserId(notifications) {
+      var notificationsContainer = document.querySelector('.notifications-by-user-list');
+      if (notifications.length) {
+        var _iterator2 = _createForOfIteratorHelper(notifications),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var notification = _step2.value;
+            console.log("\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0435");
+            console.log(notification);
+            var notificationToListByUserId = this.NotificationTemplateByUserId(notification);
+            notificationsContainer.insertAdjacentHTML('beforeend', notificationToListByUserId);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      } else {
+        notificationsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "NotificationTemplateByUserId",
+    value: function NotificationTemplateByUserId(notification) {
+      var notificationHTML;
+      if (notification) {
+        notificationHTML = "\n                 <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100\"><a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a></h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\">\n                            <img id=\"notification-image\" src=\"").concat(notification.imageUrl, "\" alt=\"Alternate Text\" />\n                        </div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+      }
+      return notificationHTML;
+    }
   }]);
 }();
 document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
-  var _event$detail, isAuthenticated, userData, notificationProfile;
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, notificationProfile, notificationClient, notificationsByUser, notificationId, notification, _notificationsByUser;
   return _regenerator().w(function (_context7) {
     while (1) switch (_context7.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        Regex = new window.RegularExtension();
+        UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context7.n = 2;
+          _context7.n = 8;
           break;
         }
+        userId = window.authManager.userData.userId;
         notificationProfile = new NotificationProfileManager();
+        notificationClient = new _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__.NotificationClient();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/notification/create')) {
           _context7.n = 2;
@@ -5374,7 +5517,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         return notificationProfile.InsertDataToCreateNotification();
       case 1:
         document.querySelector('[data-action="save-notification-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-          var notificationData, notificationClient, notificationCreate;
+          var notificationData, notificationCreate;
           return _regenerator().w(function (_context6) {
             while (1) switch (_context6.n) {
               case 0:
@@ -5388,7 +5531,6 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
                 console.log('Данные для сохранения:', notificationData);
 
                 //Отправляем данные на сервер
-                notificationClient = new _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__.NotificationClient();
                 notificationCreate = notificationClient.CreateNotification(notificationData);
                 if (notificationCreate) {
                   _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Уведомление создано успешно!', 'green');
@@ -5399,6 +5541,39 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           }, _callee6);
         })));
       case 2:
+        if (!(window.location.pathname == '/')) {
+          _context7.n = 4;
+          break;
+        }
+        _context7.n = 3;
+        return notificationClient.GetNotificationsByUserId(userId);
+      case 3:
+        notificationsByUser = _context7.v;
+        console.log("\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
+        console.log(notificationsByUser);
+        notificationProfile.InsertDataToMainPage(notificationsByUser);
+      case 4:
+        if (!(Regex.isValidEntityUrl(window.location.href).valid && UrlParts.includes('notification'))) {
+          _context7.n = 6;
+          break;
+        }
+        notificationId = Regex.isValidEntityUrl(window.location.href).id;
+        _context7.n = 5;
+        return notificationClient.GetNotificationById(notificationId);
+      case 5:
+        notification = _context7.v;
+        notificationProfile.NotificationDetails(notification);
+      case 6:
+        if (!(UrlParts.includes("notification") && UrlParts.includes('by-user') && UrlParts.includes(userId))) {
+          _context7.n = 8;
+          break;
+        }
+        _context7.n = 7;
+        return notificationClient.GetNotificationsByUserId(userId);
+      case 7:
+        _notificationsByUser = _context7.v;
+        notificationProfile.NotificationListByUserId(_notificationsByUser);
+      case 8:
         return _context7.a(2);
     }
   }, _callee7);
@@ -5451,7 +5626,6 @@ var RegularExtension = /*#__PURE__*/function () {
     key: "isValidEntityUrl",
     value: function isValidEntityUrl(url) {
       try {
-        // Убираем завершающий слэш из всего URL (если есть)
         var normalizedUrl = url.replace(/\/$/, '');
         var urlObj = new URL(normalizedUrl);
         var path = urlObj.pathname;
@@ -5459,7 +5633,7 @@ var RegularExtension = /*#__PURE__*/function () {
           return part !== '';
         });
 
-        // Должно быть ровно две части: [тип, id]
+        // Случай 1: [type, id] — house или apartment с числовым ID
         if (parts.length === 2) {
           var _parts = _slicedToArray(parts, 2),
             type = _parts[0],
@@ -5469,6 +5643,21 @@ var RegularExtension = /*#__PURE__*/function () {
               valid: true,
               id: parseInt(idStr, 10),
               type: type
+            };
+          }
+        }
+
+        // Случай 2: [context, guid] — notification или user с GUID
+        if (parts.length === 2) {
+          var _parts2 = _slicedToArray(parts, 2),
+            _type = _parts2[0],
+            guid = _parts2[1];
+          if ((_type === 'notification' || _type === 'user') && this.isGuid(guid)) {
+            return {
+              valid: true,
+              id: guid,
+              // GUID остаётся строкой
+              type: _type
             };
           }
         }
@@ -5484,6 +5673,14 @@ var RegularExtension = /*#__PURE__*/function () {
           type: null
         };
       }
+    }
+
+    // Вспомогательный метод для проверки GUID v4
+  }, {
+    key: "isGuid",
+    value: function isGuid(str) {
+      var guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      return guidRegex.test(str);
     }
   }]);
 }();
@@ -6848,6 +7045,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/js/HouseValidator.js");
 /******/ 	__webpack_require__("./wwwroot/js/FileStorageClient.js");
 /******/ 	__webpack_require__("./wwwroot/js/FileHandler.js");
+/******/ 	__webpack_require__("./wwwroot/js/DateFormat.js");
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentStatuses.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentProfile.js");
@@ -6861,6 +7059,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/css/icons.css");
 /******/ 	__webpack_require__("./wwwroot/css/house-and-apartments.css");
 /******/ 	__webpack_require__("./wwwroot/css/grid.css");
+/******/ 	__webpack_require__("./wwwroot/css/fonts-colors-and-backgrounds.css");
 /******/ 	__webpack_require__("./wwwroot/css/file-manager.css");
 /******/ 	__webpack_require__("./wwwroot/css/card.css");
 /******/ 	var __webpack_exports__ = __webpack_require__("./wwwroot/css/btn.css");

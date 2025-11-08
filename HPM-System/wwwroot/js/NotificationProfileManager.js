@@ -2,6 +2,7 @@ import { Modal } from './Modal.js';
 import { ApartmentHouses } from './ApartmentHouses.js';
 import { NotificationClient } from './NotificationClient.js';
 import { FileStorageClient } from './FileStorageClient.js';
+import { DateFormat } from './DateFormat.js';
 
 export class NotificationProfileManager {
     constructor() {
@@ -209,13 +210,109 @@ export class NotificationProfileManager {
             userIdList: uniqueUserIds
         };
     }
+
+    InsertDataToMainPage (data) {
+        const notificationsContainer = document.querySelector('.notificatiions-list');        
+        if (data.length) {
+            data.forEach((notification) => {
+                const notificationMainPageTemplate = this.NotificationMainPageTemplate(notification);
+                notificationsContainer.insertAdjacentHTML('beforeend', notificationMainPageTemplate);
+            });
+        } else {
+            notificationsContainer.innerHTML = `Нет новых уведомлений`;
+        }
+    }
+
+    NotificationMainPageTemplate (notification) {
+        let notificationHTML;
+        if (notification) {
+            notificationHTML = `
+                <a class="notification-item" href="/notification/${notification.id}">
+                    <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>
+                    <div class="font-weight-600">${notification.title}</div>
+                </a>
+            `;            
+        }
+
+        return notificationHTML;
+    }
+
+    NotificationDetails (notification) {
+        let recipients = [];
+        notification.recipients.forEach(recipient => {
+            recipients.push(recipient.userId);
+        });
+
+        if (notification != null && recipients.includes(window.authManager.userData.userId)) {
+            const notificationDate = document.getElementById('notification-date');
+            notificationDate.innerHTML = DateFormat.DateFormatToRuString(notification.createdAt);
+
+            const notificationImage = document.getElementById('notification-image');
+            notificationImage.setAttribute('src', notification.imageUrl);
+
+            const notificationTitle = document.getElementById('notification-title');
+            notificationTitle.innerHTML = notification.title;
+            
+            const notificationMessage = document.getElementById('notification-message');
+            notificationMessage.innerHTML = notification.message;
+
+            /*if (notification.createdBy == window.authManager.userData.userId) {
+                document.querySelector(`[data-action="remove-notification"]`).classList.remove('d-none');
+            } else {
+                document.querySelector(`[data-action="remove-notification"]`).remove();
+            }*/
+        } else {
+            document.getElementById('notification-profile').innerHTML = 'Страница недоступна';
+        }        
+    }
+
+    NotificationListByUserId (notifications) {
+        const notificationsContainer = document.querySelector('.notifications-by-user-list');        
+        if (notifications.length) {
+            for (const notification of notifications) {
+                console.log(`уведомление`);
+                console.log(notification);
+                const notificationToListByUserId = this.NotificationTemplateByUserId(notification);
+                notificationsContainer.insertAdjacentHTML('beforeend', notificationToListByUserId);
+            }
+        } else {
+            notificationsContainer.innerHTML = `Нет новых уведомлений`;
+        }
+    }
+
+    NotificationTemplateByUserId (notification) {
+        let notificationHTML;
+        if (notification) {
+            notificationHTML = `
+                 <div class="profile-group dashboard-card my-4" data-group="notification" data-apartment-id="${notification.id}">
+                    <h3 class="card-header card-header_notification w-100"><a href="/notification/${notification.id}">${notification.title}</a></h3>
+
+                    <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
+                        <div class="notification-image">
+                            <img id="notification-image" src="${notification.imageUrl}" alt="Alternate Text" />
+                        </div>
+                        <div class="notification-content">
+                            <div id="notification-date" class="notification-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
+                            <div id="notification-message">${notification.message}</div>
+                        </div>
+                    </div>
+                </div>
+            `;            
+        }
+
+        return notificationHTML;
+    }
 }
 
 document.addEventListener('authStateChanged', async () => {
     const { isAuthenticated, userData } = event.detail;
+    const Regex = new window.RegularExtension();
+    const UrlParts = Regex.getUrlPathParts(window.location.href);
 
     if (isAuthenticated && userData) {
+        const userId = window.authManager.userData.userId;
         const notificationProfile = new NotificationProfileManager();
+        const notificationClient = new NotificationClient();
 
         console.log('Аутентификация пройдена');
 
@@ -230,13 +327,30 @@ document.addEventListener('authStateChanged', async () => {
                 console.log('Данные для сохранения:', notificationData);
                 
                 //Отправляем данные на сервер
-                const notificationClient = new NotificationClient();
                 const notificationCreate = notificationClient.CreateNotification(notificationData);
 
                 if (notificationCreate) {                        
                     Modal.ShowNotification('Уведомление создано успешно!', 'green');                        
                 }
             });
+        }
+
+        if (window.location.pathname == '/') {            
+            const notificationsByUser = await notificationClient.GetNotificationsByUserId(userId);
+            console.log(`уведомления для пользователя`);
+            console.log(notificationsByUser);
+            notificationProfile.InsertDataToMainPage(notificationsByUser);
+        }
+
+        if (Regex.isValidEntityUrl(window.location.href).valid && UrlParts.includes('notification')) {
+            const notificationId = Regex.isValidEntityUrl(window.location.href).id;            
+            const notification = await notificationClient.GetNotificationById(notificationId);
+            notificationProfile.NotificationDetails(notification);
+        }
+
+        if (UrlParts.includes(`notification`) && UrlParts.includes('by-user') && UrlParts.includes(userId)) {
+            const notificationsByUser = await notificationClient.GetNotificationsByUserId(userId);            
+            notificationProfile.NotificationListByUserId(notificationsByUser);
         }
     }
 });
