@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.NotificationServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.FileStorageService", "HPM-System.FileStorageService\HPM-System.FileStorageService.csproj", "{633524B0-2365-E9A9-2249-D1A76B94BA42}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.EventService", "HPM-System.EventService\HPM-System.EventService.csproj", "{39545E8F-C56A-9CA2-B981-9297FCF7118E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
