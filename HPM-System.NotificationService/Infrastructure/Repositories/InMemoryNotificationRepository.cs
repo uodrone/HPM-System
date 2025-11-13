@@ -17,11 +17,13 @@ namespace HPM_System.NotificationService.Infrastructure.Repositories
             }
         }
 
-        public Task<IEnumerable<Notification>> GetAllAsync(bool notReadOnly)
+        public Task<IEnumerable<Notification>> GetAllAsync(bool notReadOnly = false)
         {
             lock (_lock)
             {
-                var result = notReadOnly ? _notifies.Where(x => x.Recipients.Any(y => y.ReadAt == null)) : _notifies;
+                var result = notReadOnly
+                    ? _notifies.Where(x => x.Recipients.Any(y => y.ReadAt == null))
+                    : _notifies;
 
                 return Task.FromResult(result.ToList().AsEnumerable());
             }
@@ -48,18 +50,81 @@ namespace HPM_System.NotificationService.Infrastructure.Repositories
             }
         }
 
-        public Task<bool> MarkAsReadAsync(Guid id)
+        public Task<IEnumerable<Notification>> GetUnreadByUserIdAsync(Guid userId)
         {
             lock (_lock)
             {
-                var recipient = _notifies.SelectMany(n => n.Recipients).FirstOrDefault(r => r.Id == id);
+                var userNotifications = _notifies
+                    .Where(notification => notification.Recipients.Any(recipient => recipient.UserId == userId && recipient.ReadAt == null))
+                    .ToList();
+
+                return Task.FromResult(userNotifications.AsEnumerable());
+            }
+        }
+
+        public Task<int> GetUnreadCountAsync(Guid userId)
+        {
+            lock (_lock)
+            {
+                var count = _notifies
+                    .Sum(notification => notification.Recipients.Count(recipient => recipient.UserId == userId && recipient.ReadAt == null));
+
+                return Task.FromResult(count);
+            }
+        }
+
+        public Task<bool> MarkAsReadAsync(Guid recipientId)
+        {
+            lock (_lock)
+            {
+                var recipient = _notifies
+                    .SelectMany(n => n.Recipients)
+                    .FirstOrDefault(r => r.Id == recipientId);
 
                 if (recipient != null && recipient.ReadAt == null)
                 {
                     recipient.ReadAt = DateTime.UtcNow;
+                    return Task.FromResult(true);
                 }
 
-                return Task.FromResult(true);
+                return Task.FromResult(false);
+            }
+        }
+
+        public Task<bool> MarkAsReadByIdsAsync(Guid notificationId, Guid userId)
+        {
+            lock (_lock)
+            {
+                var recipient = _notifies
+                    .SelectMany(n => n.Recipients)
+                    .FirstOrDefault(r => r.NotificationId == notificationId && r.UserId == userId);
+
+                if (recipient != null && recipient.ReadAt == null)
+                {
+                    recipient.ReadAt = DateTime.UtcNow;
+                    return Task.FromResult(true);
+                }
+
+                return Task.FromResult(false);
+            }
+        }
+
+        public Task<int> MarkAllAsReadAsync(Guid userId)
+        {
+            lock (_lock)
+            {
+                var recipients = _notifies
+                    .SelectMany(n => n.Recipients)
+                    .Where(r => r.UserId == userId && r.ReadAt == null)
+                    .ToList();
+
+                var now = DateTime.UtcNow;
+                foreach (var recipient in recipients)
+                {
+                    recipient.ReadAt = now;
+                }
+
+                return Task.FromResult(recipients.Count);
             }
         }
     }

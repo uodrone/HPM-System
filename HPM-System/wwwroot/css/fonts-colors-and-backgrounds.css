@@ -1,0 +1,54 @@
+@import url(variables.css);
+
+/*размеры шрифта*/
+.font-size-12 {
+    font-size: clamp(0.625rem, 0.6rem + 0.125vw, 0.75rem);
+}
+
+.font-size-14 {
+    font-size: clamp(0.75rem, 0.725rem + 0.125vw, 0.875rem);
+}
+
+
+/*жирнота шрифта*/
+.font-weight-100 {
+    font-weight: 100;
+}
+
+.font-weight-200 {
+    font-weight: 200;
+}
+
+.font-weight-300 {
+    font-weight: 300;
+}
+
+.font-weight-400 {
+    font-weight: 400;
+}
+
+.font-weight-500 {
+    font-weight: 500;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.font-weight-700 {
+    font-weight: 700;
+}
+
+.font-weight-800 {
+    font-weight: 800;
+}
+
+.font-weight-900 {
+    font-weight: 900;
+}
+
+
+/*цвета шрифта*/
+.color-gray-any {
+    color: var(--gray-any);
+}

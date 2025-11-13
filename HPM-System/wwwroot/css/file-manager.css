@@ -1,0 +1,36 @@
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    max-width: 400px;
+    margin: 0 auto;
+    align-content: center;
+}
+
+.upload-area.drag-over {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+}
+
+.upload-area input {
+    display: none;
+}
+
+.preview-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.5vh, 16px);
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    display: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
