@@ -20,7 +20,7 @@ namespace HPM_System.NotificationService.Application.Services
             if (dto.UserIdList == null || !dto.UserIdList.Any())
                 throw new ArgumentException("UserIdList не может быть пустым.");
 
-            // 🔥 УДАЛЯЕМ ДУБЛИКАТЫ — это решает ошибку 23505
+            // удаляем дубликаты — это решает ошибку 23505
             var uniqueUserIds = dto.UserIdList.Distinct().ToList();
 
             var notification = new Notification
@@ -65,6 +65,27 @@ namespace HPM_System.NotificationService.Application.Services
         public async Task<bool> MarkAsRead(Guid recipientId)
         {
             return await _repository.MarkAsReadAsync(recipientId);
+        }
+
+        public async Task<IEnumerable<NotificationDto>> GetUnreadByUserIdAsync(Guid userId)
+        {
+            var entities = await _repository.GetUnreadByUserIdAsync(userId);
+            return entities.Select(MapToDto);
+        }
+
+        public async Task<int> GetUnreadCountAsync(Guid userId)
+        {
+            return await _repository.GetUnreadCountAsync(userId);
+        }
+
+        public async Task<bool> MarkAsReadByIdsAsync(Guid notificationId, Guid userId)
+        {
+            return await _repository.MarkAsReadByIdsAsync(notificationId, userId);
+        }
+
+        public async Task<int> MarkAllAsReadAsync(Guid userId)
+        {
+            return await _repository.MarkAllAsReadAsync(userId);
         }
 
         private static NotificationDto MapToDto(Notification n) => new()
