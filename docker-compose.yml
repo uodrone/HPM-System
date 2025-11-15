@@ -99,18 +99,22 @@ services:
     depends_on: [postgres, rabbitmq]
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      # - ASPNETCORE_URLS=https://+:8081;http://+:8080
-      # - ASPNETCORE_HTTPS_PORT=${APARTMENTSERVICE_HTTPS}
-      # - ASPNETCORE_HTTP_PORT=${APARTMENTSERVICE_HTTP}
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_HTTPS_PORT=${APARTMENTSERVICE_HTTPS}
+      - ASPNETCORE_HTTP_PORT=${APARTMENTSERVICE_HTTP}
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ApartmentService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
       - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
       - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
     ports:
       - "${APARTMENTSERVICE_HTTP}:8080"
       - "${APARTMENTSERVICE_HTTPS}:8081"
+    volumes:
+      - ./certs:/https:ro
     networks: [hpm-network]
 
   hpm-system.notificationservice:
