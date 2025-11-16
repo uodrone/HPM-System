@@ -280,12 +280,28 @@ export class NotificationProfileManager {
         }
     }
 
-    NotificationTemplateByUserId (notification) {
+    NotificationTemplateByUserId(notification) {
         let notificationHTML;
         if (notification) {
+            // Проверяем, есть ли текущий пользователь в recipients и прочитал ли он уведомление
+            const currentUser = window.authManager?.userData?.userId || window.authManager?.userData?.id; // в зависимости от структуры
+            const currentUserRecipient = notification.recipients?.find(recipient => recipient.userId === currentUser);
+
+            const isReadByCurrentUser = currentUserRecipient && currentUserRecipient.readAt !== null;
+            const readAt = isReadByCurrentUser ? currentUserRecipient.readAt : null;
+
+            // Формируем класс и span для даты прочтения
+            const readClass = isReadByCurrentUser ? 'readed' : '';
+            const readAtSpan = isReadByCurrentUser 
+                ? `<span class="read-at">Прочитано: ${DateFormat.DateFormatToRuString(readAt)}</span>`
+                : '';
+
             notificationHTML = `
-                 <div class="profile-group dashboard-card my-4" data-group="notification" data-apartment-id="${notification.id}">
-                    <h3 class="card-header card-header_notification w-100"><a href="/notification/${notification.id}">${notification.title}</a></h3>
+                <div class="profile-group dashboard-card my-4" data-group="notification" data-apartment-id="${notification.id}">
+                    <h3 class="card-header card-header_notification w-100 ${readClass}">
+                        <a href="/notification/${notification.id}">${notification.title}</a>
+                        ${readAtSpan}
+                    </h3>
 
                     <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
                         <div class="notification-image">
@@ -335,8 +351,10 @@ document.addEventListener('authStateChanged', async () => {
             });
         }
 
+        let readTimeoutId = null;
+
         if (window.location.pathname == '/') {            
-            const notificationsByUser = await notificationClient.GetNotificationsByUserId(userId);
+            const notificationsByUser = await notificationClient.GetUnreadNotificationsByUserId(userId);
             console.log(`уведомления для пользователя`);
             console.log(notificationsByUser);
             notificationProfile.InsertDataToMainPage(notificationsByUser);
@@ -346,6 +364,32 @@ document.addEventListener('authStateChanged', async () => {
             const notificationId = Regex.isValidEntityUrl(window.location.href).id;            
             const notification = await notificationClient.GetNotificationById(notificationId);
             notificationProfile.NotificationDetails(notification);
+
+            if (readTimeoutId) {
+                clearTimeout(readTimeoutId);
+            }
+
+            // Отсечка в 10 секунд для фиксации прочитанности сообщения
+            readTimeoutId = setTimeout(async () => {
+                try {
+                    const result = await notificationClient.MarkAsReadByIds(notificationId, userId);
+                    if (result) {
+                        console.log('Уведомление отмечено как прочитанное');
+                    } else {
+                        console.warn('Не удалось отметить уведомление как прочитанное');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при отметке уведомления как прочитанного:', error);
+                }
+            }, 10000);
+
+            // Отмена таймера при уходе со страницы, если ушел раньше 15 секунд, то сообщение не считается прочитанным
+            window.addEventListener('beforeunload', () => {
+                if (readTimeoutId) {
+                    clearTimeout(readTimeoutId);
+                    console.log('Таймер отменен при уходе со страницы');
+                }
+            });
         }
 
         if (UrlParts.includes(`notification`) && UrlParts.includes('by-user') && UrlParts.includes(userId)) {

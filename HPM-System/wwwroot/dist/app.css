@@ -832,6 +832,18 @@ footer {
 
     &.card-header_notification {
         background: linear-gradient(135deg, #22e042 0%, #078b00 100%);
+        
+        &.readed {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #ededed 0%, #6f6f6f 100%);
+
+            .read-at {
+                text-align: right;
+                font-size: 14px;
+            }
+        }
     }
 
     &.card-header_apartment {
