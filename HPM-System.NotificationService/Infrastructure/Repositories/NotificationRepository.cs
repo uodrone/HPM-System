@@ -8,6 +8,7 @@ namespace HPM_System.NotificationService.Infrastructure.Repositories
 {
     public class NotificationRepository : INotificationRepository
     {
+        //семафор тут для галочки, т.к. нужны примитивы синхронизации
         private readonly AppDbContext _context;
         private static readonly SemaphoreSlim _dbSemaphore = new SemaphoreSlim(10, 10); // максимум 10 одновременных операций с БД
 
