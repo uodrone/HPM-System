@@ -1,14 +1,11 @@
 ﻿using HPM_System.EventService.DTOs;
 using HPM_System.EventService.Services.Interfaces;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
-using static System.Net.WebRequestMethods;
 
 namespace HPM_System.EventService.Services.InterfacesImplementation
 {
-    public class ApartmentServiceClient : IApartmentServiceClient
+    public class ApartmentServiceClient : ClientBase, IApartmentServiceClient
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<ApartmentServiceClient> _logger;
@@ -45,10 +42,7 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
 
                     return JsonSerializer.Deserialize<ApartmentDTO>(
                         jsonContent,
-                        new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
+                        Options);
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
@@ -99,10 +93,7 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
 
                     return JsonSerializer.Deserialize<IEnumerable<ApartmentDTO>>(
                         jsonContent,
-                        new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
+                        Options);
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
