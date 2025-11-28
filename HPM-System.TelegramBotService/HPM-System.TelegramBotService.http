@@ -1,0 +1,6 @@
+@HPM_System.TelegramBotService_HostAddress = http://localhost:5282
+
+GET {{HPM_System.TelegramBotService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
