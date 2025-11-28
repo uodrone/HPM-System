@@ -5906,6 +5906,215 @@ window.RegularExtension = RegularExtension;
 
 /***/ }),
 
+/***/ "./wwwroot/js/Multiselect.js":
+/*!***********************************!*\
+  !*** ./wwwroot/js/Multiselect.js ***!
+  \***********************************/
+/***/ (() => {
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var Multiselect = /*#__PURE__*/function () {
+  function Multiselect() {
+    _classCallCheck(this, Multiselect);
+    this.instances = new Map(); // храним активные инстансы по ID
+  }
+
+  /**
+   * Инициализирует Tom Select с чекбоксами на <select multiple>
+   * @param {string} elementId — ID элемента <select>
+   * @param {Object} [customOptions] — дополнительные опции Tom Select
+   * @returns {TomSelect | null}
+   */
+  return _createClass(Multiselect, [{
+    key: "init",
+    value: function init(elementId) {
+      var customOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var selectElement = document.getElementById(elementId);
+      if (!selectElement) {
+        console.warn("Multiselect: \u044D\u043B\u0435\u043C\u0435\u043D\u0442 \u0441 id=\"".concat(elementId, "\" \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D."));
+        return null;
+      }
+
+      // Защита от повторной инициализации
+      if (this.instances.has(elementId)) {
+        console.warn("Multiselect: \u0443\u0436\u0435 \u0438\u043D\u0438\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D \u043D\u0430 \"".concat(elementId, "\"."));
+        return this.instances.get(elementId);
+      }
+
+      // Базовые настройки: мультиселект + чекбоксы
+      var defaultOptions = {
+        plugins: {
+          checkbox_options: {} // ← чекбоксы в выпадающем списке
+        },
+        maxItems: null,
+        // разрешить множественный выбор
+        hidePlaceholder: true,
+        closeAfterSelect: false,
+        // не закрывать после выбора (удобно при мультивыборе)
+        dropdownParent: 'body' // чтобы не обрезалось в модалках и т.п.
+      };
+      var finalOptions = _objectSpread(_objectSpread({}, defaultOptions), customOptions);
+
+      // Создаём экземпляр Tom Select
+      var tomSelectInstance = new TomSelect("#".concat(elementId), finalOptions);
+
+      // Сохраняем для последующего доступа
+      this.instances.set(elementId, tomSelectInstance);
+      selectElement._tomSelect = tomSelectInstance;
+      return tomSelectInstance;
+    }
+
+    /**
+     * Получить экземпляр Tom Select по ID
+     * @param {string} elementId
+     * @returns {TomSelect | undefined}
+     */
+  }, {
+    key: "getInstance",
+    value: function getInstance(elementId) {
+      return this.instances.get(elementId);
+    }
+
+    /**
+     * Уничтожить инстанс (например, при удалении из DOM)
+     * @param {string} elementId
+     */
+  }, {
+    key: "destroy",
+    value: function destroy(elementId) {
+      var instance = this.instances.get(elementId);
+      if (instance) {
+        instance.destroy();
+        this.instances["delete"](elementId);
+        var el = document.getElementById(elementId);
+        if (el) delete el._tomSelect;
+      }
+    }
+
+    /**
+     * Получить выбранные значения (массив строк)
+     * @param {string} elementId
+     * @returns {string[]}
+     */
+  }, {
+    key: "getValues",
+    value: function getValues(elementId) {
+      var instance = this.getInstance(elementId);
+      return instance ? instance.getValue() : [];
+    }
+
+    /**
+     * Установить значения программно
+     * @param {string} elementId
+     * @param {string[]} values
+     */
+  }, {
+    key: "setValues",
+    value: function setValues(elementId, values) {
+      var instance = this.getInstance(elementId);
+      if (instance) {
+        instance.setValue(values, false); // false = не вызывать onChange
+      }
+    }
+  }]);
+}();
+window.Multiselect = Multiselect;
+
+/***/ }),
+
+/***/ "./wwwroot/js/Regex.js":
+/*!*****************************!*\
+  !*** ./wwwroot/js/Regex.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   RegularExtension: () => (/* binding */ RegularExtension)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var RegularExtension = /*#__PURE__*/function () {
+  function RegularExtension() {
+    _classCallCheck(this, RegularExtension);
+  }
+  return _createClass(RegularExtension, [{
+    key: "getUrlPathParts",
+    value: function getUrlPathParts(url) {
+      try {
+        var urlObj = new URL(url);
+        var path = urlObj.pathname;
+        return path.split('/').filter(function (part) {
+          return part !== '';
+        });
+      } catch (e) {
+        // Если URL некорректен — возвращаем пустой массив
+        return [];
+      }
+    }
+  }, {
+    key: "isValidEntityUrl",
+    value: function isValidEntityUrl(url) {
+      try {
+        // Убираем завершающий слэш из всего URL (если есть)
+        var normalizedUrl = url.replace(/\/$/, '');
+        var urlObj = new URL(normalizedUrl);
+        var path = urlObj.pathname;
+        var parts = path.split('/').filter(function (part) {
+          return part !== '';
+        });
+
+        // Должно быть ровно две части: [тип, id]
+        if (parts.length === 2) {
+          var _parts = _slicedToArray(parts, 2),
+            type = _parts[0],
+            idStr = _parts[1];
+          if ((type === 'house' || type === 'apartment') && /^\d+$/.test(idStr)) {
+            return {
+              valid: true,
+              id: parseInt(idStr, 10),
+              type: type
+            };
+          }
+        }
+        return {
+          valid: false,
+          id: null,
+          type: null
+        };
+      } catch (e) {
+        return {
+          valid: false,
+          id: null,
+          type: null
+        };
+      }
+    }
+  }]);
+}();
+window.RegularExtension = RegularExtension;
+
+/***/ }),
+
 /***/ "./wwwroot/js/UserProfile.js":
 /*!***********************************!*\
   !*** ./wwwroot/js/UserProfile.js ***!
