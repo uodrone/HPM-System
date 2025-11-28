@@ -59,7 +59,13 @@ public class RabbitMqConsumerService : BackgroundService
             try
             {
                 var json = Encoding.UTF8.GetString(args.Body.ToArray());
-                var notification = JsonSerializer.Deserialize<NotificationDto>(json);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = false
+                };
+
+                var notification = JsonSerializer.Deserialize<NotificationDto>(json, options);
 
                 if (notification == null)
                 {
@@ -85,27 +91,72 @@ public class RabbitMqConsumerService : BackgroundService
                             continue;
                         }
 
+                        // Формируем текст сообщения один раз
                         var msg = $"<b>{notification.Title}</b>\n{notification.Message}";
 
-                        if (!string.IsNullOrEmpty(notification.ImageUrl))
+                        if (!string.IsNullOrWhiteSpace(notification.ImageUrl))
                         {
-                            await _botClient.SendPhoto(
-                                chatId: new ChatId(chatId.Value),
-                                photo: InputFile.FromUri(notification.ImageUrl),
-                                caption: msg,
-                                parseMode: ParseMode.Html,
-                                cancellationToken: ct);
-                        }
-                        else
-                        {
-                            await _botClient.SendMessage(
-                                chatId: new ChatId(chatId.Value),
-                                text: msg,
-                                parseMode: ParseMode.Html,
-                                cancellationToken: ct);
+                            // Пытаемся распарсить URL
+                            if (Uri.TryCreate(notification.ImageUrl, UriKind.Absolute, out var uri))
+                            {
+                                // Проверяем схему: только http/https
+                                if ((uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+                                {
+                                    // Проверяем, не является ли хост "внутренним" (localhost, Docker-имена, приватные сети)
+                                    var host = uri.Host.ToLowerInvariant();
+                                    if (host != "localhost" &&
+                                        !host.EndsWith(".local") &&
+                                        !host.Contains("192.168.") &&
+                                        !host.Contains("10.") &&
+                                        !(host.StartsWith("172.") &&
+                                          int.TryParse(host.Split('.')[1], out var secondOctet) &&
+                                          secondOctet >= 16 && secondOctet <= 31) &&
+                                        !host.Contains("hpmsystem") && // ← Docker-имена ваших сервисов
+                                        !host.Contains("filestorageservice") &&
+                                        !host.Contains("minio"))
+                                    {
+                                        // Всё в порядке — отправляем фото
+                                        try
+                                        {
+                                            await _botClient.SendPhoto(
+                                                chatId: new ChatId(chatId.Value),
+                                                photo: InputFile.FromUri(uri),
+                                                caption: msg,
+                                                parseMode: ParseMode.Html,
+                                                cancellationToken: ct);
+
+                                            _logger.LogInformation("Фото-уведомление отправлено пользователю {UserId}", userId);
+                                            continue; // переходим к следующему пользователю
+                                        }
+                                        catch (Exception photoEx)
+                                        {
+                                            _logger.LogWarning(photoEx, "Не удалось отправить фото. Пытаемся отправить текстовое сообщение. URL: {ImageUrl}", notification.ImageUrl);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _logger.LogWarning("ImageUrl использует внутренний хост ({Host}). Отправляю текстовое сообщение.", host);
+                                    }
+                                }
+                                else
+                                {
+                                    _logger.LogWarning("ImageUrl использует недопустимую схему '{Scheme}'. Отправляю текстовое сообщение.", uri.Scheme);
+                                }
+                            }
+                            else
+                            {
+                                _logger.LogWarning("ImageUrl не является валидным абсолютным URI: '{ImageUrl}'. Отправляю текстовое сообщение.", notification.ImageUrl);
+                            }
                         }
 
-                        _logger.LogInformation("Сообщение отправлено пользователю {UserId}", userId);
+                        // Если дошли сюда — фото не отправлено, отправляем текст
+                        await _botClient.SendMessage(
+                            chatId: new ChatId(chatId.Value),
+                            text: msg,
+                            parseMode: ParseMode.Html,
+                            cancellationToken: ct);
+
+                        _logger.LogInformation("Текстовое уведомление отправлено пользователю {UserId}", userId);
                     }
                     catch (Exception ex)
                     {
