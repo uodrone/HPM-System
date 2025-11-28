@@ -91,18 +91,18 @@ public class RabbitMqConsumerService : BackgroundService
                             continue;
                         }
 
-                        // Формируем текст сообщения один раз
+                        // Формируем текст сообщения
                         var msg = $"<b>{notification.Title}</b>\n{notification.Message}";
 
                         if (!string.IsNullOrWhiteSpace(notification.ImageUrl))
                         {
-                            // Пытаемся распарсить URL
+                            // Сильно пытаемся распарсить URL
                             if (Uri.TryCreate(notification.ImageUrl, UriKind.Absolute, out var uri))
                             {
                                 // Проверяем схему: только http/https
                                 if ((uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
                                 {
-                                    // Проверяем, не является ли хост "внутренним" (localhost, Docker-имена, приватные сети)
+                                    // Проверяем, не является ли хост внутренним (localhost, Docker-имена и прочая шалупень)
                                     var host = uri.Host.ToLowerInvariant();
                                     if (host != "localhost" &&
                                         !host.EndsWith(".local") &&
@@ -111,11 +111,11 @@ public class RabbitMqConsumerService : BackgroundService
                                         !(host.StartsWith("172.") &&
                                           int.TryParse(host.Split('.')[1], out var secondOctet) &&
                                           secondOctet >= 16 && secondOctet <= 31) &&
-                                        !host.Contains("hpmsystem") && // ← Docker-имена ваших сервисов
+                                        !host.Contains("hpmsystem") && // всякие разные Docker-имена сервисов, на всякий случай
                                         !host.Contains("filestorageservice") &&
                                         !host.Contains("minio"))
                                     {
-                                        // Всё в порядке — отправляем фото
+                                        // Коли всё в порядке — отправляем уведомление с фоткой
                                         try
                                         {
                                             await _botClient.SendPhoto(
