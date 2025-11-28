@@ -59,20 +59,22 @@ public class RabbitMqConsumerService : BackgroundService
             try
             {
                 var json = Encoding.UTF8.GetString(args.Body.ToArray());
-                var evt = JsonSerializer.Deserialize<NotificationPublishedEvent>(json);
+                var notification = JsonSerializer.Deserialize<NotificationDto>(json);
 
-                if (evt == null)
+                if (notification == null)
                 {
                     _logger.LogWarning("Не удалось десериализовать сообщение");
                     await channel.BasicNackAsync(args.DeliveryTag, false, requeue: false, ct);
                     return;
                 }
 
-                // Создаём scope для получения scoped-сервиса
                 using var scope = _serviceProvider.CreateScope();
                 var userService = scope.ServiceProvider.GetRequiredService<IDbTelegramUserService>();
 
-                foreach (var userId in evt.RecipientUserIds)
+                // Получаем список userId из Recipients
+                var recipientUserIds = notification.Recipients.Select(r => r.UserId).ToList();
+
+                foreach (var userId in recipientUserIds)
                 {
                     try
                     {
@@ -83,13 +85,13 @@ public class RabbitMqConsumerService : BackgroundService
                             continue;
                         }
 
-                        var msg = $"<b>{evt.Title}</b>\n{evt.Message}";
+                        var msg = $"<b>{notification.Title}</b>\n{notification.Message}";
 
-                        if (!string.IsNullOrEmpty(evt.ImageUrl))
+                        if (!string.IsNullOrEmpty(notification.ImageUrl))
                         {
                             await _botClient.SendPhoto(
                                 chatId: new ChatId(chatId.Value),
-                                photo: InputFile.FromUri(evt.ImageUrl),
+                                photo: InputFile.FromUri(notification.ImageUrl),
                                 caption: msg,
                                 parseMode: ParseMode.Html,
                                 cancellationToken: ct);
