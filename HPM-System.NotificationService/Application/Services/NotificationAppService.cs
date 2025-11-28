@@ -1,18 +1,26 @@
-﻿// HPM_System.NotificationService.Application.Services/NotificationAppService.cs
-using HPM_System.NotificationService.Application.DTO;
+﻿using HPM_System.NotificationService.Application.DTO;
 using HPM_System.NotificationService.Application.Interfaces;
 using HPM_System.NotificationService.Domain.Entities;
-using System.Linq; // ⚠️ ОБЯЗАТЕЛЬНО
+using HPM_System.NotificationService.Infrastructure.RabbitMQ;
+using System.Linq;
 
 namespace HPM_System.NotificationService.Application.Services
 {
     public class NotificationAppService : INotificationAppService
     {
         private readonly INotificationRepository _repository;
+        private readonly RabbitMQProducer _rabbitMQProducer;
+        private readonly ILogger<NotificationAppService> _logger;
 
-        public NotificationAppService(INotificationRepository repository)
+        // ⬇️ ОБНОВЛЁННЫЙ КОНСТРУКТОР
+        public NotificationAppService(
+            INotificationRepository repository,
+            RabbitMQProducer rabbitMQProducer,
+            ILogger<NotificationAppService> logger)
         {
             _repository = repository;
+            _rabbitMQProducer = rabbitMQProducer;
+            _logger = logger;
         }
 
         public async Task<NotificationDto> CreateNotificationAsync(CreateNotificationDTO dto)
@@ -20,7 +28,7 @@ namespace HPM_System.NotificationService.Application.Services
             if (dto.UserIdList == null || !dto.UserIdList.Any())
                 throw new ArgumentException("UserIdList не может быть пустым.");
 
-            // удаляем дубликаты — это решает ошибку 23505
+            // Удаляем дубликаты
             var uniqueUserIds = dto.UserIdList.Distinct().ToList();
 
             var notification = new Notification
@@ -40,8 +48,28 @@ namespace HPM_System.NotificationService.Application.Services
                 }).ToList()
             };
 
+            // Сохраняем в базу данных
             var saved = await _repository.AddAsync(notification);
-            return MapToDto(saved);
+            var savedDto = MapToDto(saved);
+
+            try
+            {
+                // Публикуем NotificationDto в RabbitMQ
+                await _rabbitMQProducer.PublishAsync(
+                    routingKey: "notification.created",
+                    message: savedDto
+                );
+
+                _logger.LogInformation(
+                    "Уведомление {NotificationId} успешно создано и опубликовано в RabbitMQ для {Count} получателей",
+                    saved.Id, uniqueUserIds.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при публикации уведомления {NotificationId} в RabbitMQ", saved.Id);
+            }
+
+            return savedDto;
         }
 
         public async Task<IEnumerable<NotificationDto>> GetAllAsync()

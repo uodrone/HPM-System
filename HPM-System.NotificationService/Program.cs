@@ -20,15 +20,16 @@ namespace HPM_System.NotificationService
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            //Подгружаем BackgroundService
+            builder.Services.AddHostedService<RabbitMQConsumer>();
+            builder.Services.AddSingleton<RabbitMQProducer>();
+
             //Подгружаем зависимости всякие
             builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
             //комментирую за ненадобностью, но это для того, чтобы была сцылка на примитивы синхронизации
             //builder.Services.AddSingleton<INotificationRepository, InMemoryNotificationRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<IRabbitMQHandler, RabbitUserHandler>();
-
-            //Подгружаем BackgroundService
-            builder.Services.AddHostedService<RabbitMQConsumer>();
 
             // Add services to the container.
             builder.Services.AddControllers();

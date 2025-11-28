@@ -193,6 +193,27 @@ services:
       - ./certs:/https:ro
     networks: [hpm-network]
 
+  hpm-system.telegrambotservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemtelegrambotservice
+    build:
+      context: .
+      dockerfile: HPM-System.TelegramBotService/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TelegramBotService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
+      - Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
+    networks: [hpm-network]
+
   hpm-system.eventservice:
       image: ${DOCKER_REGISTRY-}hpmsystemeventservice
       build:

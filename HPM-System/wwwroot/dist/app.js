@@ -4698,6 +4698,294 @@ var NotificationClient = /*#__PURE__*/function () {
       return GetNotificationsByUserId;
     }()
     /**
+     * Получить непрочитанные уведомления для конкретного пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>} Массив непрочитанных уведомлений
+     * @example
+     * const unread = await client.getUnreadNotificationsByUserId('123e4567-e89b-12d3-a456-426614174000');
+     * console.log('Непрочитанных:', unread.length);
+     */
+    )
+  }, {
+    key: "GetUnreadNotificationsByUserId",
+    value: (function () {
+      var _GetUnreadNotificationsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId) {
+        var response, error, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _context4.p = 0;
+              _context4.n = 1;
+              return fetch(this._GetUrl("/user/".concat(userId, "/unread")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 3;
+                break;
+              }
+              _context4.n = 2;
+              return response.text();
+            case 2:
+              error = _context4.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043D\u0435\u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439: ".concat(error));
+            case 3:
+              _context4.n = 4;
+              return response.json();
+            case 4:
+              return _context4.a(2, _context4.v);
+            case 5:
+              _context4.p = 5;
+              _t4 = _context4.v;
+              console.error('Ошибка при получении непрочитанных уведомлений пользователя:', _t4);
+              throw _t4;
+            case 6:
+              return _context4.a(2);
+          }
+        }, _callee4, this, [[0, 5]]);
+      }));
+      function GetUnreadNotificationsByUserId(_x3) {
+        return _GetUnreadNotificationsByUserId.apply(this, arguments);
+      }
+      return GetUnreadNotificationsByUserId;
+    }()
+    /**
+     * Получить количество непрочитанных уведомлений для пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<number>} Количество непрочитанных уведомлений
+     * @example
+     * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
+     * document.getElementById('badge').textContent = count;
+     */
+    )
+  }, {
+    key: "GetUnreadCount",
+    value: (function () {
+      var _GetUnreadCount = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
+        var response, error, _t5;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return fetch(this._GetUrl("/user/".concat(userId, "/unread/count")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context5.v;
+              if (response.ok) {
+                _context5.n = 3;
+                break;
+              }
+              _context5.n = 2;
+              return response.text();
+            case 2:
+              error = _context5.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u043D\u0435\u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445: ".concat(error));
+            case 3:
+              _context5.n = 4;
+              return response.json();
+            case 4:
+              return _context5.a(2, _context5.v);
+            case 5:
+              _context5.p = 5;
+              _t5 = _context5.v;
+              console.error('Ошибка при получении количества непрочитанных уведомлений:', _t5);
+              throw _t5;
+            case 6:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 5]]);
+      }));
+      function GetUnreadCount(_x4) {
+        return _GetUnreadCount.apply(this, arguments);
+      }
+      return GetUnreadCount;
+    }()
+    /**
+     * Отметить уведомление как прочитанное (по ID получателя)
+     * @param {string} recipientId - GUID записи NotificationUsers
+     * @returns {Promise<boolean>} true, если успешно, иначе false
+     * @example
+     * const result = await client.markAsReadByRecipientId('123e4567-e89b-12d3-a456-426614174000');
+     * if (result) console.log('Уведомление отмечено как прочитанное');
+     */
+    )
+  }, {
+    key: "MarkAsReadByRecipientId",
+    value: (function () {
+      var _MarkAsReadByRecipientId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(recipientId) {
+        var response, error, _t6;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return fetch(this._GetUrl("/recipient/".concat(recipientId, "/mark-read")), {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context6.n = 2;
+                break;
+              }
+              return _context6.a(2, false);
+            case 2:
+              _context6.n = 3;
+              return response.text();
+            case 3:
+              error = _context6.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043C\u0435\u0442\u043A\u0438 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043A\u0430\u043A \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u043E\u0433\u043E: ".concat(error));
+            case 4:
+              return _context6.a(2, true);
+            case 5:
+              _context6.p = 5;
+              _t6 = _context6.v;
+              console.error('Ошибка при отметке уведомления как прочитанного:', _t6);
+              throw _t6;
+            case 6:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 5]]);
+      }));
+      function MarkAsReadByRecipientId(_x5) {
+        return _MarkAsReadByRecipientId.apply(this, arguments);
+      }
+      return MarkAsReadByRecipientId;
+    }()
+    /**
+     * Отметить уведомление как прочитанное (по ID уведомления и ID пользователя)
+     * @param {string} notificationId - GUID уведомления
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<boolean>} true, если успешно, иначе false
+     * @example
+     * const result = await client.markAsReadByIds('123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001');
+     * if (result) console.log('Уведомление отмечено как прочитанное');
+     */
+    )
+  }, {
+    key: "MarkAsReadByIds",
+    value: (function () {
+      var _MarkAsReadByIds = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(notificationId, userId) {
+        var response, error, _t7;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return fetch(this._GetUrl("/notification/".concat(notificationId, "/user/").concat(userId, "/mark-read")), {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context7.v;
+              if (response.ok) {
+                _context7.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context7.n = 2;
+                break;
+              }
+              return _context7.a(2, false);
+            case 2:
+              _context7.n = 3;
+              return response.text();
+            case 3:
+              error = _context7.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043C\u0435\u0442\u043A\u0438 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043A\u0430\u043A \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u043E\u0433\u043E: ".concat(error));
+            case 4:
+              return _context7.a(2, true);
+            case 5:
+              _context7.p = 5;
+              _t7 = _context7.v;
+              console.error('Ошибка при отметке уведомления как прочитанного (по ID):', _t7);
+              throw _t7;
+            case 6:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 5]]);
+      }));
+      function MarkAsReadByIds(_x6, _x7) {
+        return _MarkAsReadByIds.apply(this, arguments);
+      }
+      return MarkAsReadByIds;
+    }()
+    /**
+     * Отметить все уведомления пользователя как прочитанные
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<number>} Количество отмеченных уведомлений
+     * @example
+     * const count = await client.markAllAsRead('123e4567-e89b-12d3-a456-426614174000');
+     * console.log(`Отмечено: ${count} уведомлений`);
+     */
+    )
+  }, {
+    key: "MarkAllAsRead",
+    value: (function () {
+      var _MarkAllAsRead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(userId) {
+        var response, error, result, _t8;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
+            case 0:
+              _context8.p = 0;
+              _context8.n = 1;
+              return fetch(this._GetUrl("/user/".concat(userId, "/mark-all-read")), {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context8.v;
+              if (response.ok) {
+                _context8.n = 3;
+                break;
+              }
+              _context8.n = 2;
+              return response.text();
+            case 2:
+              error = _context8.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043C\u0435\u0442\u043A\u0438 \u0432\u0441\u0435\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439 \u043A\u0430\u043A \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445: ".concat(error));
+            case 3:
+              _context8.n = 4;
+              return response.json();
+            case 4:
+              result = _context8.v;
+              return _context8.a(2, result.message ? parseInt(result.message.match(/\d+/)[0]) : 0);
+            case 5:
+              _context8.p = 5;
+              _t8 = _context8.v;
+              console.error('Ошибка при отметке всех уведомлений как прочитанных:', _t8);
+              throw _t8;
+            case 6:
+              return _context8.a(2);
+          }
+        }, _callee8, this, [[0, 5]]);
+      }));
+      function MarkAllAsRead(_x8) {
+        return _MarkAllAsRead.apply(this, arguments);
+      }
+      return MarkAllAsRead;
+    }()
+    /**
      * Создать новое уведомление
      * @param {Object} notificationData - Данные для создания уведомления
      * @param {string} notificationData.title - Заголовок уведомления
@@ -4706,14 +4994,13 @@ var NotificationClient = /*#__PURE__*/function () {
      * @param {string} notificationData.createdBy - GUID создателя уведомления
      * @param {string} [notificationData.imageUrl] - URL изображения (опционально)
      * @param {string[]} notificationData.userIdList - Массив GUID получателей
-     * @returns {Promise<Object>} Созданное уведомление
+     * @returns {Promise<boolean>} true, если успешно создано, иначе false
      * @example
-     * const notification = await client.createNotification({
+     * const success = await client.createNotification({
      *     title: 'Новое сообщение',
      *     message: 'У вас новое сообщение от администратора',
      *     type: 'info',
      *     createdBy: '123e4567-e89b-12d3-a456-426614174000',
-     *     imageUrl: 'https://example.com/icon.png',
      *     userIdList: [
      *         '223e4567-e89b-12d3-a456-426614174001',
      *         '323e4567-e89b-12d3-a456-426614174002'
@@ -4724,31 +5011,31 @@ var NotificationClient = /*#__PURE__*/function () {
   }, {
     key: "CreateNotification",
     value: (function () {
-      var _CreateNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(notificationData) {
-        var payload, response, error, _t4;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.p = _context4.n) {
+      var _CreateNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(notificationData) {
+        var payload, response, error, _t9;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
             case 0:
               if (notificationData.title) {
-                _context4.n = 1;
+                _context9.n = 1;
                 break;
               }
               throw new Error('Поле title обязательно');
             case 1:
               if (notificationData.message) {
-                _context4.n = 2;
+                _context9.n = 2;
                 break;
               }
               throw new Error('Поле message обязательно');
             case 2:
               if (notificationData.createdBy) {
-                _context4.n = 3;
+                _context9.n = 3;
                 break;
               }
               throw new Error('Поле createdBy обязательно');
             case 3:
               if (!(!Array.isArray(notificationData.userIdList) || notificationData.userIdList.length === 0)) {
-                _context4.n = 4;
+                _context9.n = 4;
                 break;
               }
               throw new Error('Поле userIdList должно быть непустым массивом');
@@ -4765,8 +5052,8 @@ var NotificationClient = /*#__PURE__*/function () {
                 // false или true (по умолчанию)
                 userIdList: notificationData.userIdList
               };
-              _context4.p = 5;
-              _context4.n = 6;
+              _context9.p = 5;
+              _context9.n = 6;
               return fetch(this._GetUrl(''), {
                 method: 'POST',
                 headers: {
@@ -4775,157 +5062,36 @@ var NotificationClient = /*#__PURE__*/function () {
                 body: JSON.stringify(payload)
               });
             case 6:
-              response = _context4.v;
+              response = _context9.v;
               if (response.ok) {
-                _context4.n = 8;
+                _context9.n = 8;
                 break;
               }
-              _context4.n = 7;
+              _context9.n = 7;
               return response.text();
             case 7:
-              error = _context4.v;
+              error = _context9.v;
               console.error(error);
-              return _context4.a(2, false);
+              return _context9.a(2, false);
             case 8:
-              return _context4.a(2, true);
+              return _context9.a(2, true);
             case 9:
-              _context4.n = 11;
+              _context9.n = 11;
               break;
             case 10:
-              _context4.p = 10;
-              _t4 = _context4.v;
-              console.error('Ошибка при создании уведомления:', _t4);
-              throw _t4;
+              _context9.p = 10;
+              _t9 = _context9.v;
+              console.error('Ошибка при создании уведомления:', _t9);
+              throw _t9;
             case 11:
-              return _context4.a(2);
+              return _context9.a(2);
           }
-        }, _callee4, this, [[5, 10]]);
+        }, _callee9, this, [[5, 10]]);
       }));
-      function CreateNotification(_x3) {
+      function CreateNotification(_x9) {
         return _CreateNotification.apply(this, arguments);
       }
       return CreateNotification;
-    }()
-    /**
-     * Получить непрочитанные уведомления для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>} Массив непрочитанных уведомлений
-     * @example
-     * const unread = await client.getUnreadNotifications('123e4567-e89b-12d3-a456-426614174000');
-     * console.log('Непрочитанных:', unread.length);
-     */
-    )
-  }, {
-    key: "GetUnreadNotifications",
-    value: (function () {
-      var _GetUnreadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
-        var notifications, _t5;
-        return _regenerator().w(function (_context5) {
-          while (1) switch (_context5.p = _context5.n) {
-            case 0:
-              _context5.p = 0;
-              _context5.n = 1;
-              return this.getNotificationsByUserId(userId);
-            case 1:
-              notifications = _context5.v;
-              return _context5.a(2, notifications.filter(function (notification) {
-                return notification.recipients && notification.recipients.some(function (recipient) {
-                  return recipient.userId === userId && recipient.readAt === null;
-                });
-              }));
-            case 2:
-              _context5.p = 2;
-              _t5 = _context5.v;
-              console.error('Ошибка при получении непрочитанных уведомлений:', _t5);
-              throw _t5;
-            case 3:
-              return _context5.a(2);
-          }
-        }, _callee5, this, [[0, 2]]);
-      }));
-      function GetUnreadNotifications(_x4) {
-        return _GetUnreadNotifications.apply(this, arguments);
-      }
-      return GetUnreadNotifications;
-    }()
-    /**
-     * Получить прочитанные уведомления для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>} Массив прочитанных уведомлений
-     * @example
-     * const read = await client.getReadNotifications('123e4567-e89b-12d3-a456-426614174000');
-     */
-    )
-  }, {
-    key: "GetReadNotifications",
-    value: (function () {
-      var _GetReadNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(userId) {
-        var notifications, _t6;
-        return _regenerator().w(function (_context6) {
-          while (1) switch (_context6.p = _context6.n) {
-            case 0:
-              _context6.p = 0;
-              _context6.n = 1;
-              return this.getNotificationsByUserId(userId);
-            case 1:
-              notifications = _context6.v;
-              return _context6.a(2, notifications.filter(function (notification) {
-                return notification.recipients && notification.recipients.some(function (recipient) {
-                  return recipient.userId === userId && recipient.readAt !== null;
-                });
-              }));
-            case 2:
-              _context6.p = 2;
-              _t6 = _context6.v;
-              console.error('Ошибка при получении прочитанных уведомлений:', _t6);
-              throw _t6;
-            case 3:
-              return _context6.a(2);
-          }
-        }, _callee6, this, [[0, 2]]);
-      }));
-      function GetReadNotifications(_x5) {
-        return _GetReadNotifications.apply(this, arguments);
-      }
-      return GetReadNotifications;
-    }()
-    /**
-     * Получить количество непрочитанных уведомлений для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<number>} Количество непрочитанных уведомлений
-     * @example
-     * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
-     * document.getElementById('badge').textContent = count;
-     */
-    )
-  }, {
-    key: "GetUnreadCount",
-    value: (function () {
-      var _GetUnreadCount = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
-        var unread, _t7;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.p = _context7.n) {
-            case 0:
-              _context7.p = 0;
-              _context7.n = 1;
-              return this.getUnreadNotifications(userId);
-            case 1:
-              unread = _context7.v;
-              return _context7.a(2, unread.length);
-            case 2:
-              _context7.p = 2;
-              _t7 = _context7.v;
-              console.error('Ошибка при получении количества непрочитанных:', _t7);
-              throw _t7;
-            case 3:
-              return _context7.a(2);
-          }
-        }, _callee7, this, [[0, 2]]);
-      }));
-      function GetUnreadCount(_x6) {
-        return _GetUnreadCount.apply(this, arguments);
-      }
-      return GetUnreadCount;
     }()
     /**
      * Установить базовый URL
@@ -4949,19 +5115,19 @@ var NotificationClient = /*#__PURE__*/function () {
     }
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0() {
   var _event$detail, isAuthenticated, userData, Notification;
-  return _regenerator().w(function (_context8) {
-    while (1) switch (_context8.n) {
+  return _regenerator().w(function (_context0) {
+    while (1) switch (_context0.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         if (isAuthenticated && userData) {
           Notification = new NotificationClient();
         }
       case 1:
-        return _context8.a(2);
+        return _context0.a(2);
     }
-  }, _callee8);
+  }, _callee0);
 })));
 
 // ============================================
@@ -5487,22 +5653,34 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     value: function NotificationTemplateByUserId(notification) {
       var notificationHTML;
       if (notification) {
-        notificationHTML = "\n                 <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100\"><a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a></h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\">\n                            <img id=\"notification-image\" src=\"").concat(notification.imageUrl, "\" alt=\"Alternate Text\" />\n                        </div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        var _window$authManager, _window$authManager2, _notification$recipie;
+        // Проверяем, есть ли текущий пользователь в recipients и прочитал ли он уведомление
+        var currentUser = ((_window$authManager = window.authManager) === null || _window$authManager === void 0 || (_window$authManager = _window$authManager.userData) === null || _window$authManager === void 0 ? void 0 : _window$authManager.userId) || ((_window$authManager2 = window.authManager) === null || _window$authManager2 === void 0 || (_window$authManager2 = _window$authManager2.userData) === null || _window$authManager2 === void 0 ? void 0 : _window$authManager2.id); // в зависимости от структуры
+        var currentUserRecipient = (_notification$recipie = notification.recipients) === null || _notification$recipie === void 0 ? void 0 : _notification$recipie.find(function (recipient) {
+          return recipient.userId === currentUser;
+        });
+        var isReadByCurrentUser = currentUserRecipient && currentUserRecipient.readAt !== null;
+        var readAt = isReadByCurrentUser ? currentUserRecipient.readAt : null;
+
+        // Формируем класс и span для даты прочтения
+        var readClass = isReadByCurrentUser ? 'readed' : '';
+        var readAtSpan = isReadByCurrentUser ? "<span class=\"read-at\">\u041F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(readAt), "</span>") : '';
+        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\">\n                            <img id=\"notification-image\" src=\"").concat(notification.imageUrl, "\" alt=\"Alternate Text\" />\n                        </div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return notificationHTML;
     }
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
-  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, notificationProfile, notificationClient, notificationsByUser, notificationId, notification, _notificationsByUser;
-  return _regenerator().w(function (_context7) {
-    while (1) switch (_context7.n) {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, notificationProfile, notificationClient, readTimeoutId, notificationsByUser, notificationId, notification, _notificationsByUser;
+  return _regenerator().w(function (_context8) {
+    while (1) switch (_context8.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context7.n = 8;
+          _context8.n = 8;
           break;
         }
         userId = window.authManager.userData.userId;
@@ -5510,10 +5688,10 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         notificationClient = new _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__.NotificationClient();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/notification/create')) {
-          _context7.n = 2;
+          _context8.n = 2;
           break;
         }
-        _context7.n = 1;
+        _context8.n = 1;
         return notificationProfile.InsertDataToCreateNotification();
       case 1:
         document.querySelector('[data-action="save-notification-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
@@ -5541,42 +5719,82 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           }, _callee6);
         })));
       case 2:
+        readTimeoutId = null;
         if (!(window.location.pathname == '/')) {
-          _context7.n = 4;
+          _context8.n = 4;
           break;
         }
-        _context7.n = 3;
-        return notificationClient.GetNotificationsByUserId(userId);
+        _context8.n = 3;
+        return notificationClient.GetUnreadNotificationsByUserId(userId);
       case 3:
-        notificationsByUser = _context7.v;
+        notificationsByUser = _context8.v;
         console.log("\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
         console.log(notificationsByUser);
         notificationProfile.InsertDataToMainPage(notificationsByUser);
       case 4:
         if (!(Regex.isValidEntityUrl(window.location.href).valid && UrlParts.includes('notification'))) {
-          _context7.n = 6;
+          _context8.n = 6;
           break;
         }
         notificationId = Regex.isValidEntityUrl(window.location.href).id;
-        _context7.n = 5;
+        _context8.n = 5;
         return notificationClient.GetNotificationById(notificationId);
       case 5:
-        notification = _context7.v;
+        notification = _context8.v;
         notificationProfile.NotificationDetails(notification);
+        if (readTimeoutId) {
+          clearTimeout(readTimeoutId);
+        }
+
+        // Отсечка в 10 секунд для фиксации прочитанности сообщения
+        readTimeoutId = setTimeout(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+          var result, _t;
+          return _regenerator().w(function (_context7) {
+            while (1) switch (_context7.p = _context7.n) {
+              case 0:
+                _context7.p = 0;
+                _context7.n = 1;
+                return notificationClient.MarkAsReadByIds(notificationId, userId);
+              case 1:
+                result = _context7.v;
+                if (result) {
+                  console.log('Уведомление отмечено как прочитанное');
+                } else {
+                  console.warn('Не удалось отметить уведомление как прочитанное');
+                }
+                _context7.n = 3;
+                break;
+              case 2:
+                _context7.p = 2;
+                _t = _context7.v;
+                console.error('Ошибка при отметке уведомления как прочитанного:', _t);
+              case 3:
+                return _context7.a(2);
+            }
+          }, _callee7, null, [[0, 2]]);
+        })), 10000);
+
+        // Отмена таймера при уходе со страницы, если ушел раньше 15 секунд, то сообщение не считается прочитанным
+        window.addEventListener('beforeunload', function () {
+          if (readTimeoutId) {
+            clearTimeout(readTimeoutId);
+            console.log('Таймер отменен при уходе со страницы');
+          }
+        });
       case 6:
         if (!(UrlParts.includes("notification") && UrlParts.includes('by-user') && UrlParts.includes(userId))) {
-          _context7.n = 8;
+          _context8.n = 8;
           break;
         }
-        _context7.n = 7;
+        _context8.n = 7;
         return notificationClient.GetNotificationsByUserId(userId);
       case 7:
-        _notificationsByUser = _context7.v;
+        _notificationsByUser = _context8.v;
         notificationProfile.NotificationListByUserId(_notificationsByUser);
       case 8:
-        return _context7.a(2);
+        return _context8.a(2);
     }
-  }, _callee7);
+  }, _callee8);
 })));
 
 /***/ }),

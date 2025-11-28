@@ -105,6 +105,159 @@ export class NotificationClient {
     }
 
     /**
+     * Получить непрочитанные уведомления для конкретного пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>} Массив непрочитанных уведомлений
+     * @example
+     * const unread = await client.getUnreadNotificationsByUserId('123e4567-e89b-12d3-a456-426614174000');
+     * console.log('Непрочитанных:', unread.length);
+     */
+    async GetUnreadNotificationsByUserId(userId) {
+        try {
+            const response = await fetch(this._GetUrl(`/user/${userId}/unread`), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`Ошибка получения непрочитанных уведомлений: ${error}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Ошибка при получении непрочитанных уведомлений пользователя:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Получить количество непрочитанных уведомлений для пользователя
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<number>} Количество непрочитанных уведомлений
+     * @example
+     * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
+     * document.getElementById('badge').textContent = count;
+     */
+    async GetUnreadCount(userId) {
+        try {
+            const response = await fetch(this._GetUrl(`/user/${userId}/unread/count`), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`Ошибка получения количества непрочитанных: ${error}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Ошибка при получении количества непрочитанных уведомлений:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Отметить уведомление как прочитанное (по ID получателя)
+     * @param {string} recipientId - GUID записи NotificationUsers
+     * @returns {Promise<boolean>} true, если успешно, иначе false
+     * @example
+     * const result = await client.markAsReadByRecipientId('123e4567-e89b-12d3-a456-426614174000');
+     * if (result) console.log('Уведомление отмечено как прочитанное');
+     */
+    async MarkAsReadByRecipientId(recipientId) {
+        try {
+            const response = await fetch(this._GetUrl(`/recipient/${recipientId}/mark-read`), {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    return false;
+                }
+                const error = await response.text();
+                throw new Error(`Ошибка отметки уведомления как прочитанного: ${error}`);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Ошибка при отметке уведомления как прочитанного:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Отметить уведомление как прочитанное (по ID уведомления и ID пользователя)
+     * @param {string} notificationId - GUID уведомления
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<boolean>} true, если успешно, иначе false
+     * @example
+     * const result = await client.markAsReadByIds('123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001');
+     * if (result) console.log('Уведомление отмечено как прочитанное');
+     */
+    async MarkAsReadByIds(notificationId, userId) {
+        try {
+            const response = await fetch(this._GetUrl(`/notification/${notificationId}/user/${userId}/mark-read`), {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    return false;
+                }
+                const error = await response.text();
+                throw new Error(`Ошибка отметки уведомления как прочитанного: ${error}`);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Ошибка при отметке уведомления как прочитанного (по ID):', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Отметить все уведомления пользователя как прочитанные
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<number>} Количество отмеченных уведомлений
+     * @example
+     * const count = await client.markAllAsRead('123e4567-e89b-12d3-a456-426614174000');
+     * console.log(`Отмечено: ${count} уведомлений`);
+     */
+    async MarkAllAsRead(userId) {
+        try {
+            const response = await fetch(this._GetUrl(`/user/${userId}/mark-all-read`), {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`Ошибка отметки всех уведомлений как прочитанных: ${error}`);
+            }
+
+            const result = await response.json();
+            return result.message ? parseInt(result.message.match(/\d+/)[0]) : 0;
+        } catch (error) {
+            console.error('Ошибка при отметке всех уведомлений как прочитанных:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Создать новое уведомление
      * @param {Object} notificationData - Данные для создания уведомления
      * @param {string} notificationData.title - Заголовок уведомления
@@ -113,14 +266,13 @@ export class NotificationClient {
      * @param {string} notificationData.createdBy - GUID создателя уведомления
      * @param {string} [notificationData.imageUrl] - URL изображения (опционально)
      * @param {string[]} notificationData.userIdList - Массив GUID получателей
-     * @returns {Promise<Object>} Созданное уведомление
+     * @returns {Promise<boolean>} true, если успешно создано, иначе false
      * @example
-     * const notification = await client.createNotification({
+     * const success = await client.createNotification({
      *     title: 'Новое сообщение',
      *     message: 'У вас новое сообщение от администратора',
      *     type: 'info',
      *     createdBy: '123e4567-e89b-12d3-a456-426614174000',
-     *     imageUrl: 'https://example.com/icon.png',
      *     userIdList: [
      *         '223e4567-e89b-12d3-a456-426614174001',
      *         '323e4567-e89b-12d3-a456-426614174002'
@@ -166,78 +318,11 @@ export class NotificationClient {
                 const error = await response.text();
                 console.error(error);
                 return false;
-                //throw new Error(`Ошибка создания уведомления: ${error}`);
             } else {
                 return true;
             }
         } catch (error) {
             console.error('Ошибка при создании уведомления:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Получить непрочитанные уведомления для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>} Массив непрочитанных уведомлений
-     * @example
-     * const unread = await client.getUnreadNotifications('123e4567-e89b-12d3-a456-426614174000');
-     * console.log('Непрочитанных:', unread.length);
-     */
-    async GetUnreadNotifications(userId) {
-        try {
-            const notifications = await this.getNotificationsByUserId(userId);
-            
-            // Фильтруем уведомления, у которых есть непрочитанные получатели
-            return notifications.filter(notification => 
-                notification.recipients && 
-                notification.recipients.some(recipient => 
-                    recipient.userId === userId && recipient.readAt === null
-                )
-            );
-        } catch (error) {
-            console.error('Ошибка при получении непрочитанных уведомлений:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Получить прочитанные уведомления для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>} Массив прочитанных уведомлений
-     * @example
-     * const read = await client.getReadNotifications('123e4567-e89b-12d3-a456-426614174000');
-     */
-    async GetReadNotifications(userId) {
-        try {
-            const notifications = await this.getNotificationsByUserId(userId);
-            
-            return notifications.filter(notification => 
-                notification.recipients && 
-                notification.recipients.some(recipient => 
-                    recipient.userId === userId && recipient.readAt !== null
-                )
-            );
-        } catch (error) {
-            console.error('Ошибка при получении прочитанных уведомлений:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Получить количество непрочитанных уведомлений для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<number>} Количество непрочитанных уведомлений
-     * @example
-     * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
-     * document.getElementById('badge').textContent = count;
-     */
-    async GetUnreadCount(userId) {
-        try {
-            const unread = await this.getUnreadNotifications(userId);
-            return unread.length;
-        } catch (error) {
-            console.error('Ошибка при получении количества непрочитанных:', error);
             throw error;
         }
     }
