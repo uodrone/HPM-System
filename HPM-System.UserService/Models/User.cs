@@ -14,6 +14,5 @@ namespace HPM_System.UserService.Models
         public bool IsSystemAdmin { get; set; }
         // Список автомобилей
         public ICollection<Car> Cars { get; set; } = new List<Car>();
-        
     }
 }

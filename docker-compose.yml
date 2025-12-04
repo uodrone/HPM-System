@@ -13,19 +13,6 @@ services:
       - ./init-db:/docker-entrypoint-initdb.d
     networks: [hpm-network]
 
-  postgres-notification:
-    image: postgres:latest
-    container_name: postgres-notification
-    environment:
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: NotificationService
-    ports:
-        - "${POSTGRES_NOTIFICATION_PORT}:5432"
-    volumes:
-        - postgres_notification_data:/var/lib/postgresql/data
-    networks: [hpm-network]
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -121,9 +108,13 @@ services:
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
       - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
     ports:
       - "${APARTMENTSERVICE_HTTP}:8080"
       - "${APARTMENTSERVICE_HTTPS}:8081"
+    volumes:
+      - ./certs:/https:ro
     networks: [hpm-network]
 
   hpm-system.notificationservice:
@@ -134,24 +125,122 @@ services:
     depends_on:
         rabbitmq:
             condition: service_healthy
-        postgres-notification:
+        postgres:
             condition: service_started
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ConnectionStrings__DefaultConnection=Host=postgres-notification;Port=5432;Database=NotificationService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=NotificationService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - RabbitMQ__HostName=${RABBITMQ_HOSTNAME}
       - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
     ports:
       - "${NOTIFICATIONSERVICE_HTTP}:8080"
       - "${NOTIFICATIONSERVICE_HTTPS}:8081"
+    volumes:
+      - ./certs:/https:ro
     networks: [hpm-network]
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "${MINIO_API_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks: [hpm-network]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  hpm-system.filestorageservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemfilestorageservice
+    build:
+      context: .
+      dockerfile: HPM-System.FileStorageService/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_started
+      minio:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_HTTPS_PORT=${FILESTORAGESERVICE_HTTPS}
+      - ASPNETCORE_HTTP_PORT=${FILESTORAGESERVICE_HTTP}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=FileStorageService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - MinIO__Endpoint=minio:9000
+      - MinIO__AccessKey=${MINIO_ROOT_USER}
+      - MinIO__SecretKey=${MINIO_ROOT_PASSWORD}
+      - MinIO__Region=us-east-1
+      - FileUpload__MaxFileSizeMB=50
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+    ports:
+      - "${FILESTORAGESERVICE_HTTP}:8080"
+      - "${FILESTORAGESERVICE_HTTPS}:8081"
+    volumes:
+      - ./certs:/https:ro
+    networks: [hpm-network]
+
+  hpm-system.telegrambotservice:
+    image: ${DOCKER_REGISTRY-}hpmsystemtelegrambotservice
+    build:
+      context: .
+      dockerfile: HPM-System.TelegramBotService/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TelegramBotService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
+      - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+      - RabbitMQ__Username=${RABBITMQ_USER}
+      - RabbitMQ__Password=${RABBITMQ_PASS}
+      - Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
+    networks: [hpm-network]
+
+  hpm-system.eventservice:
+      image: ${DOCKER_REGISTRY-}hpmsystemeventservice
+      build:
+        context: .
+        dockerfile: HPM-System.EventService/Dockerfile
+      depends_on: 
+        - postgres
+        - rabbitmq
+        - hpm-system.apartmentservice
+      environment:
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=EventService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+        - RabbitMQ__HostName=${RABBITMQ_HOSTNAME}
+        - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
+        - RabbitMQ__Username=${RABBITMQ_USER}
+        - RabbitMQ__Password=${RABBITMQ_PASS}
+        - Services__ApartmentService__BaseUrl=http://hpm-system.apartmentservice:8080
+        - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      ports:
+        - "${EVENTSERVICE_HTTP}:8080"
+        - "${EVENTSERVICE_HTTPS}:8081"
+      networks: [hpm-network]
 
 volumes:
   postgres_data:
   rabbitmq_data:
-  postgres_notification_data:
+  minio_data:
 
 networks:
   hpm-network:

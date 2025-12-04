@@ -53,6 +53,7 @@
     color: white;
     border-radius: 8px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    width: 100%;
 
     &:first-child {
         border-radius: 8px;
@@ -72,6 +73,18 @@
 
     &.card-header_notification {
         background: linear-gradient(135deg, #22e042 0%, #078b00 100%);
+        
+        &.readed {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #ededed 0%, #6f6f6f 100%);
+
+            .read-at {
+                text-align: right;
+                font-size: 14px;
+            }
+        }
     }
 
     &.card-header_apartment {
@@ -80,6 +93,11 @@
         border-radius: 8px;
         padding: 1rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    a {
+        text-decoration: none;
+        color: #fff;
     }
 }
 
@@ -136,6 +154,7 @@
 
 
 /*Старые стили*/
+
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

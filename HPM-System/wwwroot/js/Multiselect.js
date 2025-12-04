@@ -1,6 +1,6 @@
 class Multiselect {
     constructor() {
-        this.instances = new Map(); // храним активные инстансы по ID
+        this.instances = new Map();
     }
 
     /**
