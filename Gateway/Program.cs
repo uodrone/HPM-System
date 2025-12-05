@@ -11,14 +11,13 @@ namespace Gateway
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // === 1. CORS (должен быть ПЕРВЫМ) ===
+            // Определяем параметры CORS для фронта
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy.WithOrigins(
-                        "http://localhost:55670",  // HPM-System фронтенд
-                        "http://localhost:55671",
+                        "http://localhost:55670",
                         "https://localhost:55671"
                     )
                     .AllowAnyMethod()
@@ -27,7 +26,7 @@ namespace Gateway
                 });
             });
 
-            // === 2. JWT Authentication ===
+            // JWT Аутентификация
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is required");
             var issuer = jwtSettings["Issuer"];
@@ -68,14 +67,14 @@ namespace Gateway
                 };
             });
 
-            // === 3. Authorization Policies ===
+            // Политики авторизации
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("authenticated", policy =>
                     policy.RequireAuthenticatedUser());
             });
 
-            // === 4. YARP Reverse Proxy ===
+            // YARP Reverse Proxy
             builder.Services.AddReverseProxy()
                             .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
                             .AddTransforms(transformBuilder =>
@@ -91,19 +90,20 @@ namespace Gateway
                                 });
                             });
 
-            // === 5. Controllers & Swagger ===
+            // Контроллеры (на всякий) и Swagger
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // === Middleware Pipeline (ПОРЯДОК ВАЖЕН!) ===
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Дальше порядок должен быть строго соблюдён, иначе ничерта не работает и можно голову сломать почему
 
             // CORS должен быть первым
             app.UseCors("AllowFrontend");
