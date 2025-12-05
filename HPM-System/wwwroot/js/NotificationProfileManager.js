@@ -22,14 +22,17 @@ export class NotificationProfileManager {
 
         const houses = await this.houseProfile.GetHousesByUserId(this.userId);
 
-        // Массив промисов для параллельного выполнения
-        const houseChecks = houses.map(async (house) => {
-            const houseHead = await this.houseProfile.GetHead(house.id);
-            return { house, isHead: houseHead.id === this.userId };
-        });
+        const houseChecks = await Promise.all(
+            // Массив промисов для параллельного выполнения
+            houses.map(async (house) => {
+                const houseHead = await this.houseProfile.GetHead(house.id);
+                if (houseHead == null) return null;
+                return { house, isHead: houseHead.id === this.userId };
+            })
+        );
 
-        // Дожидаемся всех проверок
-        const results = await Promise.all(houseChecks);
+        // Фильтруем только ненулевые значения, т.е. там где есть старший по дому
+        const results = houseChecks.filter(item => item !== null);
 
         // Фильтруем дома, где пользователь — глава
         const eligibleHouses = results
@@ -237,7 +240,7 @@ export class NotificationProfileManager {
         return notificationHTML;
     }
 
-    NotificationDetails (notification) {
+    NotificationDetails (notification, gatewayUrl) {
         let recipients = [];
         notification.recipients.forEach(recipient => {
             recipients.push(recipient.userId);
@@ -248,7 +251,7 @@ export class NotificationProfileManager {
             notificationDate.innerHTML = DateFormat.DateFormatToRuString(notification.createdAt);
 
             const notificationImage = document.getElementById('notification-image');
-            notificationImage.setAttribute('src', notification.imageUrl);
+            notificationImage.setAttribute('src', `${gatewayUrl}${notification.imageUrl}`);
 
             const notificationTitle = document.getElementById('notification-title');
             notificationTitle.innerHTML = notification.title;
@@ -266,13 +269,13 @@ export class NotificationProfileManager {
         }        
     }
 
-    NotificationListByUserId (notifications) {
+    NotificationListByUserId (notifications, gatewayUrl) {
         const notificationsContainer = document.querySelector('.notifications-by-user-list');        
         if (notifications.length) {
             for (const notification of notifications) {
                 console.log(`уведомление`);
                 console.log(notification);
-                const notificationToListByUserId = this.NotificationTemplateByUserId(notification);
+                const notificationToListByUserId = this.NotificationTemplateByUserId(notification, gatewayUrl);
                 notificationsContainer.insertAdjacentHTML('beforeend', notificationToListByUserId);
             }
         } else {
@@ -280,7 +283,7 @@ export class NotificationProfileManager {
         }
     }
 
-    NotificationTemplateByUserId(notification) {
+    NotificationTemplateByUserId(notification, gatewayUrl) {
         let notificationHTML;
         if (notification) {
             // Проверяем, есть ли текущий пользователь в recipients и прочитал ли он уведомление
@@ -305,7 +308,7 @@ export class NotificationProfileManager {
 
                     <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
                         <div class="notification-image">
-                            <img id="notification-image" src="${notification.imageUrl}" alt="Alternate Text" />
+                            <img id="notification-image" src="${gatewayUrl}${notification.imageUrl}" alt="Alternate Text" />
                         </div>
                         <div class="notification-content">
                             <div id="notification-date" class="notification-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
@@ -363,7 +366,7 @@ document.addEventListener('authStateChanged', async () => {
         if (Regex.isValidEntityUrl(window.location.href).valid && UrlParts.includes('notification')) {
             const notificationId = Regex.isValidEntityUrl(window.location.href).id;            
             const notification = await notificationClient.GetNotificationById(notificationId);
-            notificationProfile.NotificationDetails(notification);
+            notificationProfile.NotificationDetails(notification, notificationClient.gatewayUrl);
 
             if (readTimeoutId) {
                 clearTimeout(readTimeoutId);
@@ -394,7 +397,7 @@ document.addEventListener('authStateChanged', async () => {
 
         if (UrlParts.includes(`notification`) && UrlParts.includes('by-user') && UrlParts.includes(userId)) {
             const notificationsByUser = await notificationClient.GetNotificationsByUserId(userId);            
-            notificationProfile.NotificationListByUserId(notificationsByUser);
+            notificationProfile.NotificationListByUserId(notificationsByUser, notificationClient.gatewayUrl);
         }
     }
 });

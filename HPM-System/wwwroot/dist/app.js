@@ -5116,8 +5116,10 @@ var NotificationProfileManager = /*#__PURE__*/function () {
               return this.houseProfile.GetHousesByUserId(this.userId);
             case 1:
               houses = _context3.v;
+              _context3.n = 2;
+              return Promise.all(
               // Массив промисов для параллельного выполнения
-              houseChecks = houses.map(/*#__PURE__*/function () {
+              houses.map(/*#__PURE__*/function () {
                 var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
                   var houseHead;
                   return _regenerator().w(function (_context) {
@@ -5127,6 +5129,12 @@ var NotificationProfileManager = /*#__PURE__*/function () {
                         return _this.houseProfile.GetHead(house.id);
                       case 1:
                         houseHead = _context.v;
+                        if (!(houseHead == null)) {
+                          _context.n = 2;
+                          break;
+                        }
+                        return _context.a(2, null);
+                      case 2:
                         return _context.a(2, {
                           house: house,
                           isHead: houseHead.id === _this.userId
@@ -5137,12 +5145,13 @@ var NotificationProfileManager = /*#__PURE__*/function () {
                 return function (_x) {
                   return _ref.apply(this, arguments);
                 };
-              }()); // Дожидаемся всех проверок
-              _context3.n = 2;
-              return Promise.all(houseChecks);
+              }()));
             case 2:
-              results = _context3.v;
-              // Фильтруем дома, где пользователь — глава
+              houseChecks = _context3.v;
+              // Фильтруем только ненулевые значения, т.е. там где есть старший по дому
+              results = houseChecks.filter(function (item) {
+                return item !== null;
+              }); // Фильтруем дома, где пользователь — глава
               eligibleHouses = results.filter(function (_ref2) {
                 var isHead = _ref2.isHead;
                 return isHead;
@@ -5415,7 +5424,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     }
   }, {
     key: "NotificationDetails",
-    value: function NotificationDetails(notification) {
+    value: function NotificationDetails(notification, gatewayUrl) {
       var recipients = [];
       notification.recipients.forEach(function (recipient) {
         recipients.push(recipient.userId);
@@ -5424,7 +5433,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
         var notificationDate = document.getElementById('notification-date');
         notificationDate.innerHTML = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt);
         var notificationImage = document.getElementById('notification-image');
-        notificationImage.setAttribute('src', notification.imageUrl);
+        notificationImage.setAttribute('src', "".concat(gatewayUrl).concat(notification.imageUrl));
         var notificationTitle = document.getElementById('notification-title');
         notificationTitle.innerHTML = notification.title;
         var notificationMessage = document.getElementById('notification-message');
@@ -5441,7 +5450,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     }
   }, {
     key: "NotificationListByUserId",
-    value: function NotificationListByUserId(notifications) {
+    value: function NotificationListByUserId(notifications, gatewayUrl) {
       var notificationsContainer = document.querySelector('.notifications-by-user-list');
       if (notifications.length) {
         var _iterator2 = _createForOfIteratorHelper(notifications),
@@ -5451,7 +5460,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
             var notification = _step2.value;
             console.log("\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0435");
             console.log(notification);
-            var notificationToListByUserId = this.NotificationTemplateByUserId(notification);
+            var notificationToListByUserId = this.NotificationTemplateByUserId(notification, gatewayUrl);
             notificationsContainer.insertAdjacentHTML('beforeend', notificationToListByUserId);
           }
         } catch (err) {
@@ -5465,7 +5474,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     }
   }, {
     key: "NotificationTemplateByUserId",
-    value: function NotificationTemplateByUserId(notification) {
+    value: function NotificationTemplateByUserId(notification, gatewayUrl) {
       var notificationHTML;
       if (notification) {
         var _window$authManager, _window$authManager2, _notification$recipie;
@@ -5480,7 +5489,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
         // Формируем класс и span для даты прочтения
         var readClass = isReadByCurrentUser ? 'readed' : '';
         var readAtSpan = isReadByCurrentUser ? "<span class=\"read-at\">\u041F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(readAt), "</span>") : '';
-        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\">\n                            <img id=\"notification-image\" src=\"").concat(notification.imageUrl, "\" alt=\"Alternate Text\" />\n                        </div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\">\n                            <img id=\"notification-image\" src=\"").concat(gatewayUrl).concat(notification.imageUrl, "\" alt=\"Alternate Text\" />\n                        </div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return notificationHTML;
     }
@@ -5556,7 +5565,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         return notificationClient.GetNotificationById(notificationId);
       case 5:
         notification = _context8.v;
-        notificationProfile.NotificationDetails(notification);
+        notificationProfile.NotificationDetails(notification, notificationClient.gatewayUrl);
         if (readTimeoutId) {
           clearTimeout(readTimeoutId);
         }
@@ -5605,7 +5614,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         return notificationClient.GetNotificationsByUserId(userId);
       case 7:
         _notificationsByUser = _context8.v;
-        notificationProfile.NotificationListByUserId(_notificationsByUser);
+        notificationProfile.NotificationListByUserId(_notificationsByUser, notificationClient.gatewayUrl);
       case 8:
         return _context8.a(2);
     }
