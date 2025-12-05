@@ -186,6 +186,8 @@ namespace HPM_System.EventService.Controllers
 
                         eventModelWithImageRequest.Images.Add(image);
                     }
+
+                    output.Add(eventModelWithImageRequest);
                 }
 
                 return Ok(output);
@@ -242,6 +244,26 @@ namespace HPM_System.EventService.Controllers
                         var id = await _imageService.CreateImageAsync(imageToAdd, ct);
                         oldEvent.ImageIds.Add(id);
                     }
+                }
+
+                if (oldEvent.EventName != updatedEvent.EventName)
+                {
+                    oldEvent.EventName = updatedEvent.EventName;
+                }
+
+                if (oldEvent.EventDescription != updatedEvent.EventDescription)
+                {
+                    oldEvent.EventDescription = updatedEvent.EventDescription;
+                }
+
+                if (oldEvent.EventDateTime != updatedEvent.EventDateTime)
+                {
+                    oldEvent.EventDateTime = updatedEvent.EventDateTime;
+                }
+
+                if (oldEvent.Place != updatedEvent.Place)
+                {
+                    oldEvent.Place = updatedEvent.Place;
                 }
 
                 await _eventService.UpdateEventAsync(oldEvent, ct);
