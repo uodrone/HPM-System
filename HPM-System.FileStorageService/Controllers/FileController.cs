@@ -2,6 +2,7 @@
 using HPMFileStorageService.Models;
 using HPMFileStorageService.Services;
 using HPMFileStorageService.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -23,6 +24,7 @@ namespace HPMFileStorageService.Controllers
         }
 
         [HttpGet("view/{bucketName}/{fileName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> ViewFileByName(string bucketName, string fileName)
         {
             try

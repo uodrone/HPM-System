@@ -38,10 +38,16 @@ services:
       context: .
       dockerfile: Gateway/Dockerfile
     ports:
-      - "55699:8080"
+    - "${GATEWAY_HTTP}:8080"
+    - "${GATEWAY_HTTPS}:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
     depends_on:
       - hpm-system.userservice
       - hpm-system.identityserver
@@ -49,6 +55,8 @@ services:
       - hpm-system.notificationservice
       - hpm-system.filestorageservice
       - hpm-system.eventservice
+    volumes:
+      - ./certs:/https:ro 
     networks: [hpm-network]
 
   hpm-system:
@@ -87,6 +95,9 @@ services:
       - RabbitMQ__Port=${RABBITMQ_PORT_AMQP}
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
     ports:
       - "${IDENTITYSERVER_HTTP}:8080"
       - "${IDENTITYSERVER_HTTPS}:8081"

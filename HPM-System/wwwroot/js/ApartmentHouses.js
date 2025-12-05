@@ -181,6 +181,10 @@ export class ApartmentHouses {
 
     HousesListHouseTemplate (house, headTemplate, managementCompanyTemplate, headOfHouse) {
         let houseHTML;
+
+        console.log(`дом:`);
+        console.log(house);
+
         if (house) {
              houseHTML = `
                 <div class="card card_house" data-house-id="${house.id}">
@@ -234,10 +238,11 @@ export class ApartmentHouses {
                         </div>
                     </div>
 
-                    ${headOfHouse.id == window.authManager.userData.userId ? 
-                        `<div class="text-center">
-                            <a href="/house/${house.id}">Редактировать дом</a>
-                        </div>` : ``}
+                    ${headOfHouse && headOfHouse.id === window.authManager.userData.userId 
+                    ? `<div class="text-center">
+                        <a href="/house/${house.id}">Редактировать дом</a>
+                    </div>` 
+                    : ''}
 
                     <!-- Старший по дому -->
                     <div class="senior-section">

@@ -408,8 +408,10 @@ var ApartmentHouses = /*#__PURE__*/function () {
     key: "HousesListHouseTemplate",
     value: function HousesListHouseTemplate(house, headTemplate, managementCompanyTemplate, headOfHouse) {
       var houseHTML;
+      console.log("\u0434\u043E\u043C:");
+      console.log(house);
       if (house) {
-        houseHTML = "\n                <div class=\"card card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"card-header card-header_house\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n\n                    <!-- \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 -->\n                    <div class=\"basic-details\">\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430</span>\n                            <span class=\"detail-value\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u0442\u0430\u0436\u0435\u0439</span>\n                            <span class=\"detail-value\">").concat(house.floors, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432</span>\n                            <span class=\"detail-value\">").concat(house.entrances, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u0430\u0437</span>\n                            <span class=\"detail-value ").concat(house.hasGas ? 'utility-yes' : 'utility-no', "\">").concat(house.hasGas ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E</span>\n                            <span class=\"detail-value ").concat(house.hasElectricity ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElectricity ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041B\u0438\u0444\u0442\u044B</span>\n                            <span class=\"detail-value ").concat(house.hasElevator ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElevator ? 'Есть' : 'Нет', "</span>\n                        </div>                        \n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438</span>\n                            <span class=\"detail-value\">").concat(house.builtYear, "</span>\n                        </div>\n                    </div>\n\n                    <!-- \u041F\u043B\u043E\u0449\u0430\u0434\u0438 -->\n                    <div class=\"areas-section\">\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.totalArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.apartmentsArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.landArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438</div>\n                        </div>\n                    </div>\n\n                    ").concat(headOfHouse.id == window.authManager.userData.userId ? "<div class=\"text-center\">\n                            <a href=\"/house/".concat(house.id, "\">\u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0434\u043E\u043C</a>\n                        </div>") : "", "\n\n                    <!-- \u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 -->\n                    <div class=\"senior-section\">\n                        <h6 class=\"section-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                        ").concat(headTemplate, "                        \n                    </div>\n                    \n\n                    <!-- \u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F -->\n                    <div class=\"card card_management mb-0\">\n                        <h6 class=\"section-title\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h6>\n                        ").concat(managementCompanyTemplate, "\n                    </div>\n                </div>\n            ");
+        houseHTML = "\n                <div class=\"card card_house\" data-house-id=\"".concat(house.id, "\">\n                    <h3 class=\"card-header card-header_house\">").concat(house.city, ", \u0443\u043B\u0438\u0446\u0430 ").concat(house.street, ", \u0434\u043E\u043C ").concat(house.number, "</h3>\n\n                    <!-- \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 -->\n                    <div class=\"basic-details\">\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0422\u0438\u043F \u0434\u043E\u043C\u0430</span>\n                            <span class=\"detail-value\">").concat(house.isApartmentBuilding ? "многоквартирный" : "индивидуальный", "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u0442\u0430\u0436\u0435\u0439</span>\n                            <span class=\"detail-value\">").concat(house.floors, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041F\u043E\u0434\u044A\u0435\u0437\u0434\u043E\u0432</span>\n                            <span class=\"detail-value\">").concat(house.entrances, "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u0430\u0437</span>\n                            <span class=\"detail-value ").concat(house.hasGas ? 'utility-yes' : 'utility-no', "\">").concat(house.hasGas ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u042D\u043B\u0435\u043A\u0442\u0440\u0438\u0447\u0435\u0441\u0442\u0432\u043E</span>\n                            <span class=\"detail-value ").concat(house.hasElectricity ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElectricity ? 'Есть' : 'Нет', "</span>\n                        </div>\n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u041B\u0438\u0444\u0442\u044B</span>\n                            <span class=\"detail-value ").concat(house.hasElevator ? 'utility-yes' : 'utility-no', "\">").concat(house.hasElevator ? 'Есть' : 'Нет', "</span>\n                        </div>                        \n                        <div class=\"detail-item\">\n                            <span class=\"detail-label\">\u0413\u043E\u0434 \u043F\u043E\u0441\u0442\u0440\u043E\u0439\u043A\u0438</span>\n                            <span class=\"detail-value\">").concat(house.builtYear, "</span>\n                        </div>\n                    </div>\n\n                    <!-- \u041F\u043B\u043E\u0449\u0430\u0434\u0438 -->\n                    <div class=\"areas-section\">\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.totalArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041E\u0431\u0449\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.apartmentsArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u0416\u0438\u043B\u0430\u044F \u043F\u043B\u043E\u0449\u0430\u0434\u044C</div>\n                        </div>\n                        <div class=\"card card_area mb-0\">\n                            <div class=\"area-value\">").concat(house.landArea, " \u043C\xB2</div>\n                            <div class=\"area-label\">\u041F\u043B\u043E\u0449\u0430\u0434\u044C \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438</div>\n                        </div>\n                    </div>\n\n                    ").concat(headOfHouse && headOfHouse.id === window.authManager.userData.userId ? "<div class=\"text-center\">\n                        <a href=\"/house/".concat(house.id, "\">\u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0434\u043E\u043C</a>\n                    </div>") : '', "\n\n                    <!-- \u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443 -->\n                    <div class=\"senior-section\">\n                        <h6 class=\"section-title\">\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443</h6>\n                        ").concat(headTemplate, "                        \n                    </div>\n                    \n\n                    <!-- \u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F -->\n                    <div class=\"card card_management mb-0\">\n                        <h6 class=\"section-title\">\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0430\u044F \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</h6>\n                        ").concat(managementCompanyTemplate, "\n                    </div>\n                </div>\n            ");
       }
       return houseHTML;
     }
@@ -3041,22 +3043,18 @@ var AuthManager = /*#__PURE__*/function () {
     _classCallCheck(this, AuthManager);
     this.tokenKey = 'hpm_auth_token';
     this.userDataKey = 'hpm_user_data';
-
-    // ВАЖНО: Теперь все запросы идут через Gateway!
-    this.gatewayUrl = 'http://localhost:55699'; // Порт Gateway
-    this.authApiUrl = "".concat(this.gatewayUrl, "/api/account"); // AccountController через Gateway
-
+    // OIDC UI — напрямую в IdentityServer
+    this.identityServerUrl = 'https://localhost:55676';
+    // API — через Gateway
+    this.gatewayUrl = 'http://localhost:55699';
+    this.authApiUrl = "".concat(this.gatewayUrl, "/api/account");
     this.isAuthenticated = false;
     this.userData = null;
     this.initialize();
   }
-
-  /**
-   * Инициализация менеджера аутентификации
-   */
   return _createClass(AuthManager, [{
     key: "initialize",
-    value: (function () {
+    value: function () {
       var _initialize = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
         var urlParams, authCode;
         return _regenerator().w(function (_context) {
@@ -3088,13 +3086,9 @@ var AuthManager = /*#__PURE__*/function () {
       }
       return initialize;
     }()
-    /**
-     * Обменивает код аутентификации на токен
-     */
-    )
   }, {
     key: "exchangeAuthCode",
-    value: (function () {
+    value: function () {
       var _exchangeAuthCode = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(authCode) {
         var response, result, _t;
         return _regenerator().w(function (_context2) {
@@ -3154,13 +3148,9 @@ var AuthManager = /*#__PURE__*/function () {
       }
       return exchangeAuthCode;
     }()
-    /**
-     * Проверяет сохраненный токен
-     */
-    )
   }, {
     key: "checkStoredToken",
-    value: (function () {
+    value: function () {
       var _checkStoredToken = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
         var token, userData, response, _t2;
         return _regenerator().w(function (_context3) {
@@ -3211,147 +3201,44 @@ var AuthManager = /*#__PURE__*/function () {
         return _checkStoredToken.apply(this, arguments);
       }
       return checkStoredToken;
-    }()
-    /**
-     * Логин пользователя
-     */
-    )
+    }() // НЕ ИСПОЛЬЗУЕТСЯ — логин происходит через редирект на IdentityServer
   }, {
     key: "login",
-    value: (function () {
+    value: function () {
       var _login = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(email, password) {
-        var response, result, _t3;
         return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.p = _context4.n) {
+          while (1) switch (_context4.n) {
             case 0:
-              _context4.p = 0;
-              _context4.n = 1;
-              return fetch("".concat(this.authApiUrl, "/login"), {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  email: email,
-                  password: password
-                })
-              });
+              console.warn('Метод login() не должен вызываться — используется OIDC-редирект');
+              window.location.href = "".concat(this.identityServerUrl, "/Auth/Login?returnUrl=").concat(encodeURIComponent(window.location.href));
             case 1:
-              response = _context4.v;
-              _context4.n = 2;
-              return response.json();
-            case 2:
-              result = _context4.v;
-              if (!(response.ok && result.token)) {
-                _context4.n = 3;
-                break;
-              }
-              this.setAuthData(result.token, {
-                userId: result.userId,
-                email: result.email,
-                phoneNumber: result.phoneNumber
-              });
-              console.log('✅ Логин успешен');
-              this.showNotification('Вход выполнен успешно!', 'success');
-              return _context4.a(2, {
-                success: true
-              });
-            case 3:
-              console.warn('❌ Ошибка логина:', result.message);
-              return _context4.a(2, {
-                success: false,
-                message: result.message || 'Неверные учетные данные'
-              });
-            case 4:
-              _context4.n = 6;
-              break;
-            case 5:
-              _context4.p = 5;
-              _t3 = _context4.v;
-              console.error('❌ Ошибка при логине:', _t3);
-              return _context4.a(2, {
-                success: false,
-                message: 'Произошла ошибка при входе'
-              });
-            case 6:
               return _context4.a(2);
           }
-        }, _callee4, this, [[0, 5]]);
+        }, _callee4, this);
       }));
       function login(_x2, _x3) {
         return _login.apply(this, arguments);
       }
       return login;
-    }()
-    /**
-     * Регистрация пользователя
-     */
-    )
+    }() // НЕ ИСПОЛЬЗУЕТСЯ — регистрация через редирект
   }, {
     key: "register",
-    value: (function () {
-      var _register = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(registerData) {
-        var response, result, _t4;
+    value: function () {
+      var _register = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
         return _regenerator().w(function (_context5) {
-          while (1) switch (_context5.p = _context5.n) {
+          while (1) switch (_context5.n) {
             case 0:
-              _context5.p = 0;
-              _context5.n = 1;
-              return fetch("".concat(this.authApiUrl, "/register"), {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(registerData)
-              });
+              window.location.href = "".concat(this.identityServerUrl, "/Auth/Register?returnUrl=").concat(encodeURIComponent(window.location.href));
             case 1:
-              response = _context5.v;
-              _context5.n = 2;
-              return response.json();
-            case 2:
-              result = _context5.v;
-              if (!response.ok) {
-                _context5.n = 3;
-                break;
-              }
-              console.log('✅ Регистрация успешна');
-              this.showNotification('Регистрация успешна! Теперь можете войти.', 'success');
-              return _context5.a(2, {
-                success: true,
-                data: result
-              });
-            case 3:
-              console.warn('❌ Ошибка регистрации:', result.message);
-              return _context5.a(2, {
-                success: false,
-                message: result.message,
-                errors: result.errors
-              });
-            case 4:
-              _context5.n = 6;
-              break;
-            case 5:
-              _context5.p = 5;
-              _t4 = _context5.v;
-              console.error('❌ Ошибка при регистрации:', _t4);
-              return _context5.a(2, {
-                success: false,
-                message: 'Произошла ошибка при регистрации'
-              });
-            case 6:
               return _context5.a(2);
           }
-        }, _callee5, this, [[0, 5]]);
+        }, _callee5, this);
       }));
-      function register(_x4) {
+      function register() {
         return _register.apply(this, arguments);
       }
       return register;
     }()
-    /**
-     * Устанавливает данные аутентификации
-     */
-    )
   }, {
     key: "setAuthData",
     value: function setAuthData(token, userData) {
@@ -3361,10 +3248,6 @@ var AuthManager = /*#__PURE__*/function () {
       localStorage.setItem(this.userDataKey, JSON.stringify(userData));
       this.updateUI();
     }
-
-    /**
-     * Очищает данные аутентификации
-     */
   }, {
     key: "clearAuthData",
     value: function clearAuthData() {
@@ -3374,32 +3257,17 @@ var AuthManager = /*#__PURE__*/function () {
       localStorage.removeItem(this.userDataKey);
       this.updateUI();
     }
-
-    /**
-     * Выполняет выход из системы
-     */
   }, {
     key: "logout",
     value: function logout() {
       this.clearAuthData();
       this.showNotification('Вы вышли из системы', 'info');
-
-      // Можно перенаправить на страницу входа
-      // window.location.href = '/login';
     }
-
-    /**
-     * Получает токен для API запросов
-     */
   }, {
     key: "getAuthToken",
     value: function getAuthToken() {
       return localStorage.getItem(this.tokenKey);
     }
-
-    /**
-     * Создает заголовки для авторизованных запросов
-     */
   }, {
     key: "getAuthHeaders",
     value: function getAuthHeaders() {
@@ -3408,14 +3276,9 @@ var AuthManager = /*#__PURE__*/function () {
         'Authorization': "Bearer ".concat(token)
       } : {};
     }
-
-    /**
-     * Fetch с автоматической авторизацией
-     * ИСПОЛЬЗУЙТЕ ЭТОТ МЕТОД ДЛЯ ВСЕХ API ЗАПРОСОВ!
-     */
   }, {
     key: "fetchWithAuth",
-    value: (function () {
+    value: function () {
       var _fetchWithAuth = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(url) {
         var options,
           headers,
@@ -3425,7 +3288,6 @@ var AuthManager = /*#__PURE__*/function () {
           while (1) switch (_context6.n) {
             case 0:
               options = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : {};
-              // Добавляем токен к запросу
               headers = _objectSpread(_objectSpread({}, options.headers), this.getAuthHeaders());
               _context6.n = 1;
               return fetch(url, _objectSpread(_objectSpread({}, options), {}, {
@@ -3433,7 +3295,6 @@ var AuthManager = /*#__PURE__*/function () {
               }));
             case 1:
               response = _context6.v;
-              // Если получили 401 - токен невалиден, выходим
               if (response.status === 401) {
                 console.warn('❌ Получен 401, токен невалиден');
                 this.clearAuthData();
@@ -3443,56 +3304,44 @@ var AuthManager = /*#__PURE__*/function () {
           }
         }, _callee6, this);
       }));
-      function fetchWithAuth(_x5) {
+      function fetchWithAuth(_x4) {
         return _fetchWithAuth.apply(this, arguments);
       }
       return fetchWithAuth;
     }()
-    /**
-     * Обновляет UI в зависимости от состояния авторизации
-     */
-    )
   }, {
     key: "updateUI",
     value: function updateUI() {
       var _this = this;
       var authElements = document.querySelectorAll('[data-auth-required]');
       var guestElements = document.querySelectorAll('[data-guest-only]');
-      authElements.forEach(function (element) {
-        element.style.display = _this.isAuthenticated ? 'block' : 'none';
+      authElements.forEach(function (el) {
+        return el.style.display = _this.isAuthenticated ? 'block' : 'none';
       });
-      guestElements.forEach(function (element) {
-        element.style.display = _this.isAuthenticated ? 'none' : 'block';
+      guestElements.forEach(function (el) {
+        return el.style.display = _this.isAuthenticated ? 'none' : 'block';
       });
       if (this.isAuthenticated && this.userData) {
-        var userEmailElements = document.querySelectorAll('[data-user-email]');
-        userEmailElements.forEach(function (element) {
-          element.textContent = _this.userData.email;
+        document.querySelectorAll('[data-user-email]').forEach(function (el) {
+          el.textContent = _this.userData.email;
         });
       }
-      var loginButtons = document.querySelectorAll('[data-login-btn]');
-      var logoutButtons = document.querySelectorAll('[data-logout-btn]');
-      loginButtons.forEach(function (btn) {
+      document.querySelectorAll('[data-login-btn]').forEach(function (btn) {
         btn.style.display = _this.isAuthenticated ? 'none' : 'inline-block';
       });
-      logoutButtons.forEach(function (btn) {
+      document.querySelectorAll('[data-logout-btn]').forEach(function (btn) {
         btn.style.display = _this.isAuthenticated ? 'inline-block' : 'none';
         btn.onclick = function () {
           return _this.logout();
         };
       });
-      var authEvent = new CustomEvent('authStateChanged', {
+      document.dispatchEvent(new CustomEvent('authStateChanged', {
         detail: {
           isAuthenticated: this.isAuthenticated,
           userData: this.userData
         }
-      });
-      document.dispatchEvent(authEvent);
+      }));
     }
-
-    /**
-     * Удаляет код аутентификации из URL
-     */
   }, {
     key: "clearAuthCodeFromUrl",
     value: function clearAuthCodeFromUrl() {
@@ -3500,10 +3349,6 @@ var AuthManager = /*#__PURE__*/function () {
       url.searchParams["delete"]('auth');
       window.history.replaceState(null, '', url);
     }
-
-    /**
-     * Показывает уведомление пользователю
-     */
   }, {
     key: "showNotification",
     value: function showNotification(message) {
@@ -3514,17 +3359,17 @@ var AuthManager = /*#__PURE__*/function () {
       notification.style.cssText = "\n            position: fixed;\n            top: 20px;\n            right: 20px;\n            padding: 12px 20px;\n            border-radius: 4px;\n            color: white;\n            z-index: 10000;\n            font-weight: 500;\n            box-shadow: 0 4px 8px rgba(0,0,0,0.1);\n            ".concat(type === 'success' ? 'background-color: #10B981;' : '', "\n            ").concat(type === 'error' ? 'background-color: #EF4444;' : '', "\n            ").concat(type === 'info' ? 'background-color: #3B82F6;' : '', "\n        ");
       document.body.appendChild(notification);
       setTimeout(function () {
-        notification.remove();
+        return notification.remove();
       }, 5000);
       notification.onclick = function () {
         return notification.remove();
       };
     }
   }]);
-}(); // Глобальный экземпляр менеджера аутентификации
+}(); // Создаём глобальный экземпляр
 window.authManager = new AuthManager();
 
-// Глобальные функции для удобства
+// Удобные глобальные функции
 window.isAuthenticated = function () {
   return window.authManager.isAuthenticated;
 };
@@ -3534,8 +3379,6 @@ window.getCurrentUser = function () {
 window.logout = function () {
   return window.authManager.logout();
 };
-
-// ВАЖНАЯ ФУНКЦИЯ! Используйте её для всех API запросов
 window.apiCall = function (url, options) {
   return window.authManager.fetchWithAuth(url, options);
 };

@@ -105,20 +105,22 @@ namespace Gateway
                 app.UseSwaggerUI();
             }
 
-            // 1. CORS должен быть первым
+            // CORS должен быть первым
             app.UseCors("AllowFrontend");
 
-            // 2. Authentication & Authorization
+            // Аутентификация
             app.UseAuthentication();
-            app.UseAuthorization();
 
-            // 3. Routing
+            // Роутинг — ДО авторизации!
             app.UseRouting();
 
-            // 4. YARP Proxy
+            // Авторизация — ПОСЛЕ роутинга!
+            app.UseAuthorization();
+
+            // YARP — ПОСЛЕ авторизации
             app.MapReverseProxy();
 
-            // 5. Controllers
+            // Controllers
             app.MapControllers();
 
             app.Run();
