@@ -4,6 +4,10 @@
     {
         public ICollection<ImageRequest> Images { get; set; } = new List<ImageRequest>();
 
+        public EventModelWithImageRequest()
+        {
+        }
+
         public EventModelWithImageRequest(EventModel eventModel)
         {
             EventDateTime = eventModel.EventDateTime;

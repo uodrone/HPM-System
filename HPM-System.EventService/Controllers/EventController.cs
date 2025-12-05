@@ -116,7 +116,7 @@ namespace HPM_System.EventService.Controllers
         /// <summary>
         /// Получить событие по ID
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("{id:long}")]
         [EndpointDescription("Получить событие по ИД")]
         public async Task<ActionResult<EventModelWithImageRequest>> GetEventByIdAsync(long id, CancellationToken ct)
         {

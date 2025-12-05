@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HPM_System.UserService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251004042616_AddSystemAdminStatus")]
-    partial class AddSystemAdminStatus
+    [Migration("20251205081345_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

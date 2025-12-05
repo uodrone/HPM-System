@@ -1,11 +1,8 @@
 
 using HPM_System.EventService.DataContext;
 using HPM_System.EventService.Extensions;
-using HPM_System.EventService.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System;
-using System.Text.Json.Serialization;
 
 namespace HPM_System.EventService
 {
