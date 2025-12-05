@@ -2,11 +2,14 @@
     constructor() {
         this.tokenKey = 'hpm_auth_token';
         this.userDataKey = 'hpm_user_data';
-        this.authApiUrl = '/api/auth';
+        
+        // ВАЖНО: Теперь все запросы идут через Gateway!
+        this.gatewayUrl = 'http://localhost:55699'; // Порт Gateway
+        this.authApiUrl = `${this.gatewayUrl}/api/account`; // AccountController через Gateway
+        
         this.isAuthenticated = false;
         this.userData = null;
 
-        // Автоматически инициализируем при загрузке
         this.initialize();
     }
 
@@ -14,18 +17,14 @@
      * Инициализация менеджера аутентификации
      */
     async initialize() {
-        // Проверяем наличие кода аутентификации в URL
         const urlParams = new URLSearchParams(window.location.search);
         const authCode = urlParams.get('auth');
 
         if (authCode) {
             console.log('Найден код аутентификации в URL');
             await this.exchangeAuthCode(authCode);
-
-            // Удаляем код из URL после обработки
             this.clearAuthCodeFromUrl();
         } else {
-            // Проверяем сохраненный токен
             await this.checkStoredToken();
         }
     }
@@ -35,7 +34,7 @@
      */
     async exchangeAuthCode(authCode) {
         try {
-            const response = await fetch(`${this.authApiUrl}/exchange-code`, {
+            const response = await fetch(`${this.authApiUrl}/exchange-auth-code`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -45,24 +44,27 @@
 
             const result = await response.json();
 
-            if (response.ok && result.isAuthenticated) {
+            if (response.ok && result.token) {
                 this.setAuthData(result.token, {
                     userId: result.userId,
                     email: result.email,
                     phoneNumber: result.phoneNumber
                 });
 
-                console.log('✅ Авторизация успешна');
+                console.log('✅ Авторизация успешна через Gateway');
                 this.showNotification('Добро пожаловать!', 'success');
+                return true;
             } else {
-                console.warn('❌ Ошибка при обмене кода аутентификации:', result.message);
+                console.warn('❌ Ошибка при обмене кода:', result.message);
                 this.clearAuthData();
                 this.showNotification(result.message || 'Ошибка авторизации', 'error');
+                return false;
             }
         } catch (error) {
             console.error('❌ Ошибка при обмене кода аутентификации:', error);
             this.clearAuthData();
             this.showNotification('Произошла ошибка при авторизации', 'error');
+            return false;
         }
     }
 
@@ -71,37 +73,96 @@
      */
     async checkStoredToken() {
         const token = localStorage.getItem(this.tokenKey);
+        const userData = localStorage.getItem(this.userDataKey);
 
-        if (!token) {
+        if (!token || !userData) {
             this.clearAuthData();
-            return;
+            return false;
         }
 
         try {
-            const response = await fetch(`${this.authApiUrl}/validate-token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ token: token })
+            // Проверяем токен, делая тестовый запрос к защищенному эндпоинту
+            const response = await this.fetchWithAuth(`${this.gatewayUrl}/api/users`, {
+                method: 'GET'
             });
 
-            const result = await response.json();
-
-            if (response.ok && result.isAuthenticated) {
-                this.setAuthData(token, {
-                    userId: result.userId,
-                    email: result.email,
-                    phoneNumber: result.phoneNumber
-                });
+            if (response.ok) {
+                this.setAuthData(token, JSON.parse(userData));
                 console.log('✅ Токен валиден, пользователь авторизован');
+                return true;
             } else {
                 console.log('❌ Токен невалиден, очищаем данные');
                 this.clearAuthData();
+                return false;
             }
         } catch (error) {
             console.error('❌ Ошибка при проверке токена:', error);
             this.clearAuthData();
+            return false;
+        }
+    }
+
+    /**
+     * Логин пользователя
+     */
+    async login(email, password) {
+        try {
+            const response = await fetch(`${this.authApiUrl}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.token) {
+                this.setAuthData(result.token, {
+                    userId: result.userId,
+                    email: result.email,
+                    phoneNumber: result.phoneNumber
+                });
+
+                console.log('✅ Логин успешен');
+                this.showNotification('Вход выполнен успешно!', 'success');
+                return { success: true };
+            } else {
+                console.warn('❌ Ошибка логина:', result.message);
+                return { success: false, message: result.message || 'Неверные учетные данные' };
+            }
+        } catch (error) {
+            console.error('❌ Ошибка при логине:', error);
+            return { success: false, message: 'Произошла ошибка при входе' };
+        }
+    }
+
+    /**
+     * Регистрация пользователя
+     */
+    async register(registerData) {
+        try {
+            const response = await fetch(`${this.authApiUrl}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(registerData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log('✅ Регистрация успешна');
+                this.showNotification('Регистрация успешна! Теперь можете войти.', 'success');
+                return { success: true, data: result };
+            } else {
+                console.warn('❌ Ошибка регистрации:', result.message);
+                return { success: false, message: result.message, errors: result.errors };
+            }
+        } catch (error) {
+            console.error('❌ Ошибка при регистрации:', error);
+            return { success: false, message: 'Произошла ошибка при регистрации' };
         }
     }
 
@@ -114,9 +175,6 @@
 
         localStorage.setItem(this.tokenKey, token);
         localStorage.setItem(this.userDataKey, JSON.stringify(userData));
-
-        // Устанавливаем токен в cookie для серверных запросов
-        document.cookie = `auth_token=${token}; path=/; max-age=3600; samesite=strict`;
 
         this.updateUI();
     }
@@ -131,22 +189,18 @@
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userDataKey);
 
-        // Удаляем cookie
-        document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-
         this.updateUI();
     }
 
     /**
      * Выполняет выход из системы
      */
-    async logout() {
+    logout() {
         this.clearAuthData();
         this.showNotification('Вы вышли из системы', 'info');
-
-        // Перенаправляем на страницу входа IdentityServer
-        const identityServerUrl = window.location.protocol + '//' + window.location.hostname + ':55674';
-        window.location.href = `${identityServerUrl}/Auth/Login`;
+        
+        // Можно перенаправить на страницу входа
+        // window.location.href = '/login';
     }
 
     /**
@@ -165,10 +219,35 @@
     }
 
     /**
+     * Fetch с автоматической авторизацией
+     * ИСПОЛЬЗУЙТЕ ЭТОТ МЕТОД ДЛЯ ВСЕХ API ЗАПРОСОВ!
+     */
+    async fetchWithAuth(url, options = {}) {
+        // Добавляем токен к запросу
+        const headers = {
+            ...options.headers,
+            ...this.getAuthHeaders()
+        };
+
+        const response = await fetch(url, {
+            ...options,
+            headers
+        });
+
+        // Если получили 401 - токен невалиден, выходим
+        if (response.status === 401) {
+            console.warn('❌ Получен 401, токен невалиден');
+            this.clearAuthData();
+            this.showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
+        }
+
+        return response;
+    }
+
+    /**
      * Обновляет UI в зависимости от состояния авторизации
      */
     updateUI() {
-        // Показываем/скрываем элементы для авторизованных пользователей
         const authElements = document.querySelectorAll('[data-auth-required]');
         const guestElements = document.querySelectorAll('[data-guest-only]');
 
@@ -180,16 +259,13 @@
             element.style.display = this.isAuthenticated ? 'none' : 'block';
         });
 
-        // Обновляем информацию о пользователе
         if (this.isAuthenticated && this.userData) {
-            const userEmailElements = document.querySelectorAll('[data-user-email]');            
-
+            const userEmailElements = document.querySelectorAll('[data-user-email]');
             userEmailElements.forEach(element => {
                 element.textContent = this.userData.email;
-            });            
+            });
         }
 
-        // Обновляем состояние кнопок
         const loginButtons = document.querySelectorAll('[data-login-btn]');
         const logoutButtons = document.querySelectorAll('[data-logout-btn]');
 
@@ -202,7 +278,6 @@
             btn.onclick = () => this.logout();
         });
 
-        // Генерируем кастомное событие для других скриптов
         const authEvent = new CustomEvent('authStateChanged', {
             detail: {
                 isAuthenticated: this.isAuthenticated,
@@ -210,7 +285,6 @@
             }
         });
         document.dispatchEvent(authEvent);
-        console.log(`генерация события`);
     }
 
     /**
@@ -226,7 +300,6 @@
      * Показывает уведомление пользователю
      */
     showNotification(message, type = 'info') {
-        // Создаем простое уведомление
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.textContent = message;
@@ -248,12 +321,10 @@
 
         document.body.appendChild(notification);
 
-        // Автоматически удаляем через 5 секунд
         setTimeout(() => {
             notification.remove();
         }, 5000);
 
-        // Добавляем возможность закрытия по клику
         notification.onclick = () => notification.remove();
     }
 }
@@ -261,7 +332,10 @@
 // Глобальный экземпляр менеджера аутентификации
 window.authManager = new AuthManager();
 
-// Глобальные функции
+// Глобальные функции для удобства
 window.isAuthenticated = () => window.authManager.isAuthenticated;
 window.getCurrentUser = () => window.authManager.userData;
 window.logout = () => window.authManager.logout();
+
+// ВАЖНАЯ ФУНКЦИЯ! Используйте её для всех API запросов
+window.apiCall = (url, options) => window.authManager.fetchWithAuth(url, options);

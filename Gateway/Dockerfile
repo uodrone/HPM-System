@@ -1,25 +1,26 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
+# Stage 1: сборка
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["Gateway/Gateway.csproj", "Gateway/"]
-RUN dotnet restore "./Gateway/Gateway.csproj"
+
+# Копируем .csproj для восстановления зависимостей
+COPY ["Gateway/HPM-System.Gateway.csproj", "Gateway/"]
+
+# Восстанавливаем зависимости
+RUN dotnet restore "Gateway/HPM-System.Gateway.csproj"
+
+# Копируем всё остальное
 COPY . .
 WORKDIR "/src/Gateway"
-RUN dotnet build "./Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# Собираем в Release
+RUN dotnet build "HPM-System.Gateway.csproj" -c Release -o /app/build
+
+# Stage 2: публикация
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "HPM-System.Gateway.csproj" -c Release -o /app/publish --no-build
 
-FROM base AS final
+# Stage 3: финальный образ
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Gateway.dll"]
+ENTRYPOINT ["dotnet", "HPM-System.Gateway.dll"]
