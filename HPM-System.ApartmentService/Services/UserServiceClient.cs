@@ -18,7 +18,6 @@ namespace HPM_System.ApartmentService.Services
             _userServiceBaseUrl = configuration["Services:UserService:BaseUrl"]?.TrimEnd('/') ?? "http://hpm-system.userservice:8080";
         }
 
-        /// <inheritdoc />
         public async Task<UserDto?> GetUserByIdAsync(Guid userId)
         {
             if (userId == null)

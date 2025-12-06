@@ -43,9 +43,6 @@ namespace HPM_System.EventService.Repositories
                 return;
             }
 
-            entity.ImageName = value.ImageName;
-            entity.ImageUrl = value.ImageUrl;
-
             await _dbContext.SaveChangesAsync(ct);
         }
     }

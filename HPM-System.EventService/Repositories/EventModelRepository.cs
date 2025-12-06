@@ -1,27 +1,30 @@
 ﻿using HPM_System.EventService.DataContext;
 using HPM_System.EventService.Models;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HPM_System.EventService.Repositories
 {
     public class EventModelRepository : IEventModelRepository
     {
         private readonly ServiceDbContext _dbContext;
+        private readonly IImageModelRepository _imageRepository;
         public EventModelRepository(ServiceDbContext context, IImageModelRepository imageRepository)
         {            
-            _dbContext = context ?? throw new ArgumentNullException(nameof(context));            
+            _dbContext = context ?? throw new ArgumentNullException(nameof(context));
+            _imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         }
 
         public async Task<int> AddAsync(EventModel value, CancellationToken ct)
         {
             var result = await _dbContext.Events.AddAsync(value, ct);
+
             return await _dbContext.SaveChangesAsync(ct);
         }
 
         public async Task DeleteAsync(EventModel value, CancellationToken ct)
         {
             _dbContext.Events.Remove(value);
+
             await _dbContext.SaveChangesAsync(ct);
         }
 

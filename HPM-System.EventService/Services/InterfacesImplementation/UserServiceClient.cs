@@ -1,13 +1,11 @@
 ﻿using HPM_System.EventService.DTOs;
 using HPM_System.EventService.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
 
 namespace HPM_System.EventService.Services.InterfacesImplementation
 {
-    public class UserServiceClient : IUserServiceClient
+    public class UserServiceClient : ClientBase, IUserServiceClient
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<UserServiceClient> _logger;
@@ -40,10 +38,7 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
                     
                     return JsonSerializer.Deserialize<UserDTO>(
                         jsonContent, 
-                        new JsonSerializerOptions
-                            {
-                                PropertyNameCaseInsensitive = true
-                            });
+                        Options);
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
@@ -94,10 +89,7 @@ namespace HPM_System.EventService.Services.InterfacesImplementation
 
                     return JsonSerializer.Deserialize<IEnumerable<UserDTO>>(
                         jsonContent,
-                        new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
+                        Options);
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound)

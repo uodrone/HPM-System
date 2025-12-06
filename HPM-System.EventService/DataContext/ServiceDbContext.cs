@@ -7,7 +7,7 @@ namespace HPM_System.EventService.DataContext
     {
         public ServiceDbContext(DbContextOptions<ServiceDbContext> options) : base(options)
         {
-            Database.EnsureCreated();
+
         }
 
         public DbSet<EventModel> Events { get; set; }

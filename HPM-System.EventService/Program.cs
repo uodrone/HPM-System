@@ -1,11 +1,8 @@
 
 using HPM_System.EventService.DataContext;
 using HPM_System.EventService.Extensions;
-using HPM_System.EventService.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System;
-using System.Text.Json.Serialization;
 
 namespace HPM_System.EventService
 {
@@ -37,6 +34,12 @@ namespace HPM_System.EventService
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ServiceDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
