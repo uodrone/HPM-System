@@ -15,6 +15,7 @@ namespace HPM_System.EventService.Extensions
         public static void ConfigureRepository(this IServiceCollection services)
         {
             services.AddScoped<IEventService, Services.InterfacesImplementation.EventService>();
+            services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IImageModelRepository, ImageModelRepository>();
             services.AddScoped<IEventModelRepository, EventModelRepository>();
         }
@@ -33,6 +34,14 @@ namespace HPM_System.EventService.Extensions
             services.AddHttpClient<IApartmentServiceClient, ApartmentServiceClient>((sp, client) =>
             {
                 var baseUrl = configuration["Services:ApartmentService:BaseUrl"] ?? "http://hpm-system.apartmentservice:8080";
+                client.BaseAddress = new Uri(baseUrl);
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
+
+            // Для взаимодействия с FileStorageService
+            services.AddHttpClient<IFileStorageClient, FileStorageClient>((sp, client) =>
+            {
+                var baseUrl = configuration["Services:FileStorageService:BaseUrl"] ?? "http://hpm-system.filestorageservice:8080";
                 client.BaseAddress = new Uri(baseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
             });

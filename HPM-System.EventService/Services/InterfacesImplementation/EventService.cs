@@ -1,5 +1,4 @@
-﻿using HPM_System.EventService.DTOs;
-using HPM_System.EventService.Models;
+﻿using HPM_System.EventService.Models;
 using HPM_System.EventService.Repositories;
 using HPM_System.EventService.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
