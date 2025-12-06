@@ -18,6 +18,12 @@
     word-wrap: break-word;
 }
 
+#notification-profile {
+    img {
+        max-height: 400px;
+    }
+}
+
 /* Анимация появления */
 .notification {
     animation: fadeInOut 2s ease-in-out;
@@ -59,8 +65,14 @@
 }
 
 .notification-image {
-    img {
-        max-height: 400px;
+    max-width: 200px;
+    aspect-ratio: 1/1;
+    width: 100%;
+    background-position: 50% 50%;    
+    background-size: cover;
+
+    @media (max-width: 767px) {
+        max-width: 100%;
     }
 }
 

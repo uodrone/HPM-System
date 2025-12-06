@@ -307,9 +307,7 @@ export class NotificationProfileManager {
                     </h3>
 
                     <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
-                        <div class="notification-image">
-                            <img id="notification-image" src="${gatewayUrl}${notification.imageUrl}" alt="Alternate Text" />
-                        </div>
+                        <div class="notification-image" style="background-image: url(${gatewayUrl}${notification.imageUrl});"></div>
                         <div class="notification-content">
                             <div id="notification-date" class="notification-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
                             <div id="notification-message">${notification.message}</div>
