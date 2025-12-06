@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HPM-System.UserService", "H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HPM-System.ApartmentService", "HPM-System.ApartmentService\HPM-System.ApartmentService.csproj", "{F0D484DB-DAED-60DB-4033-2803CAD01534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.Gateway", "Gateway\HPM-System.Gateway.csproj", "{DBA780A5-6B30-4020-9AA5-7CA40FEA3130}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.NotificationService", "HPM-System.NotificationService\HPM-System.NotificationService.csproj", "{DEB489F6-45CE-4F49-B8E4-CF43CA583606}"
 EndProject

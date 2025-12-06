@@ -2,235 +2,173 @@
     constructor() {
         this.tokenKey = 'hpm_auth_token';
         this.userDataKey = 'hpm_user_data';
-        this.authApiUrl = '/api/auth';
+        // OIDC UI — напрямую в IdentityServer
+        this.identityServerUrl = 'https://localhost:55676';
+        // API — через Gateway
+        this.gatewayUrl = 'http://localhost:55699';
+        this.authApiUrl = `${this.gatewayUrl}/api/account`;
         this.isAuthenticated = false;
         this.userData = null;
-
-        // Автоматически инициализируем при загрузке
         this.initialize();
     }
 
-    /**
-     * Инициализация менеджера аутентификации
-     */
     async initialize() {
-        // Проверяем наличие кода аутентификации в URL
         const urlParams = new URLSearchParams(window.location.search);
         const authCode = urlParams.get('auth');
-
         if (authCode) {
             console.log('Найден код аутентификации в URL');
             await this.exchangeAuthCode(authCode);
-
-            // Удаляем код из URL после обработки
             this.clearAuthCodeFromUrl();
         } else {
-            // Проверяем сохраненный токен
             await this.checkStoredToken();
         }
     }
 
-    /**
-     * Обменивает код аутентификации на токен
-     */
     async exchangeAuthCode(authCode) {
         try {
-            const response = await fetch(`${this.authApiUrl}/exchange-code`, {
+            const response = await fetch(`${this.authApiUrl}/exchange-auth-code`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ authCode: authCode })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ authCode })
             });
-
             const result = await response.json();
-
-            if (response.ok && result.isAuthenticated) {
+            if (response.ok && result.token) {
                 this.setAuthData(result.token, {
                     userId: result.userId,
                     email: result.email,
                     phoneNumber: result.phoneNumber
                 });
-
-                console.log('✅ Авторизация успешна');
+                console.log('✅ Авторизация успешна через Gateway');
                 this.showNotification('Добро пожаловать!', 'success');
+                return true;
             } else {
-                console.warn('❌ Ошибка при обмене кода аутентификации:', result.message);
+                console.warn('❌ Ошибка при обмене кода:', result.message);
                 this.clearAuthData();
                 this.showNotification(result.message || 'Ошибка авторизации', 'error');
+                return false;
             }
         } catch (error) {
             console.error('❌ Ошибка при обмене кода аутентификации:', error);
             this.clearAuthData();
             this.showNotification('Произошла ошибка при авторизации', 'error');
+            return false;
         }
     }
 
-    /**
-     * Проверяет сохраненный токен
-     */
     async checkStoredToken() {
         const token = localStorage.getItem(this.tokenKey);
-
-        if (!token) {
+        const userData = localStorage.getItem(this.userDataKey);
+        if (!token || !userData) {
             this.clearAuthData();
-            return;
+            return false;
         }
-
         try {
-            const response = await fetch(`${this.authApiUrl}/validate-token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ token: token })
+            const response = await this.fetchWithAuth(`${this.gatewayUrl}/api/users`, {
+                method: 'GET'
             });
-
-            const result = await response.json();
-
-            if (response.ok && result.isAuthenticated) {
-                this.setAuthData(token, {
-                    userId: result.userId,
-                    email: result.email,
-                    phoneNumber: result.phoneNumber
-                });
+            if (response.ok) {
+                this.setAuthData(token, JSON.parse(userData));
                 console.log('✅ Токен валиден, пользователь авторизован');
+                return true;
             } else {
                 console.log('❌ Токен невалиден, очищаем данные');
                 this.clearAuthData();
+                return false;
             }
         } catch (error) {
             console.error('❌ Ошибка при проверке токена:', error);
             this.clearAuthData();
+            return false;
         }
     }
 
-    /**
-     * Устанавливает данные аутентификации
-     */
+    // НЕ ИСПОЛЬЗУЕТСЯ — логин происходит через редирект на IdentityServer
+    async login(email, password) {
+        console.warn('Метод login() не должен вызываться — используется OIDC-редирект');
+        window.location.href = `${this.identityServerUrl}/Auth/Login?returnUrl=${encodeURIComponent(window.location.href)}`;
+    }
+
+    // НЕ ИСПОЛЬЗУЕТСЯ — регистрация через редирект
+    async register() {
+        window.location.href = `${this.identityServerUrl}/Auth/Register?returnUrl=${encodeURIComponent(window.location.href)}`;
+    }
+
     setAuthData(token, userData) {
         this.isAuthenticated = true;
         this.userData = userData;
-
         localStorage.setItem(this.tokenKey, token);
         localStorage.setItem(this.userDataKey, JSON.stringify(userData));
-
-        // Устанавливаем токен в cookie для серверных запросов
-        document.cookie = `auth_token=${token}; path=/; max-age=3600; samesite=strict`;
-
         this.updateUI();
     }
 
-    /**
-     * Очищает данные аутентификации
-     */
     clearAuthData() {
         this.isAuthenticated = false;
         this.userData = null;
-
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userDataKey);
-
-        // Удаляем cookie
-        document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-
         this.updateUI();
     }
 
-    /**
-     * Выполняет выход из системы
-     */
-    async logout() {
+    logout() {
         this.clearAuthData();
         this.showNotification('Вы вышли из системы', 'info');
-
-        // Перенаправляем на страницу входа IdentityServer
-        const identityServerUrl = window.location.protocol + '//' + window.location.hostname + ':55674';
-        window.location.href = `${identityServerUrl}/Auth/Login`;
     }
 
-    /**
-     * Получает токен для API запросов
-     */
     getAuthToken() {
         return localStorage.getItem(this.tokenKey);
     }
 
-    /**
-     * Создает заголовки для авторизованных запросов
-     */
     getAuthHeaders() {
         const token = this.getAuthToken();
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
-    /**
-     * Обновляет UI в зависимости от состояния авторизации
-     */
+    async fetchWithAuth(url, options = {}) {
+        const headers = { ...options.headers, ...this.getAuthHeaders() };
+        const response = await fetch(url, { ...options, headers });
+        if (response.status === 401) {
+            console.warn('❌ Получен 401, токен невалиден');
+            this.clearAuthData();
+            this.showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
+        }
+        return response;
+    }
+
     updateUI() {
-        // Показываем/скрываем элементы для авторизованных пользователей
         const authElements = document.querySelectorAll('[data-auth-required]');
         const guestElements = document.querySelectorAll('[data-guest-only]');
+        authElements.forEach(el => el.style.display = this.isAuthenticated ? 'block' : 'none');
+        guestElements.forEach(el => el.style.display = this.isAuthenticated ? 'none' : 'block');
 
-        authElements.forEach(element => {
-            element.style.display = this.isAuthenticated ? 'block' : 'none';
-        });
-
-        guestElements.forEach(element => {
-            element.style.display = this.isAuthenticated ? 'none' : 'block';
-        });
-
-        // Обновляем информацию о пользователе
         if (this.isAuthenticated && this.userData) {
-            const userEmailElements = document.querySelectorAll('[data-user-email]');            
-
-            userEmailElements.forEach(element => {
-                element.textContent = this.userData.email;
-            });            
+            document.querySelectorAll('[data-user-email]').forEach(el => {
+                el.textContent = this.userData.email;
+            });
         }
 
-        // Обновляем состояние кнопок
-        const loginButtons = document.querySelectorAll('[data-login-btn]');
-        const logoutButtons = document.querySelectorAll('[data-logout-btn]');
-
-        loginButtons.forEach(btn => {
+        document.querySelectorAll('[data-login-btn]').forEach(btn => {
             btn.style.display = this.isAuthenticated ? 'none' : 'inline-block';
         });
-
-        logoutButtons.forEach(btn => {
+        document.querySelectorAll('[data-logout-btn]').forEach(btn => {
             btn.style.display = this.isAuthenticated ? 'inline-block' : 'none';
             btn.onclick = () => this.logout();
         });
 
-        // Генерируем кастомное событие для других скриптов
-        const authEvent = new CustomEvent('authStateChanged', {
-            detail: {
-                isAuthenticated: this.isAuthenticated,
-                userData: this.userData
-            }
-        });
-        document.dispatchEvent(authEvent);
-        console.log(`генерация события`);
+        document.dispatchEvent(new CustomEvent('authStateChanged', {
+            detail: { isAuthenticated: this.isAuthenticated, userData: this.userData }
+        }));
     }
 
-    /**
-     * Удаляет код аутентификации из URL
-     */
     clearAuthCodeFromUrl() {
         const url = new URL(window.location);
         url.searchParams.delete('auth');
         window.history.replaceState(null, '', url);
     }
 
-    /**
-     * Показывает уведомление пользователю
-     */
     showNotification(message, type = 'info') {
-        // Создаем простое уведомление
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.textContent = message;
-
         notification.style.cssText = `
             position: fixed;
             top: 20px;
@@ -245,23 +183,17 @@
             ${type === 'error' ? 'background-color: #EF4444;' : ''}
             ${type === 'info' ? 'background-color: #3B82F6;' : ''}
         `;
-
         document.body.appendChild(notification);
-
-        // Автоматически удаляем через 5 секунд
-        setTimeout(() => {
-            notification.remove();
-        }, 5000);
-
-        // Добавляем возможность закрытия по клику
+        setTimeout(() => notification.remove(), 5000);
         notification.onclick = () => notification.remove();
     }
 }
 
-// Глобальный экземпляр менеджера аутентификации
+// Создаём глобальный экземпляр
 window.authManager = new AuthManager();
 
-// Глобальные функции
+// Удобные глобальные функции
 window.isAuthenticated = () => window.authManager.isAuthenticated;
 window.getCurrentUser = () => window.authManager.userData;
 window.logout = () => window.authManager.logout();
+window.apiCall = (url, options) => window.authManager.fetchWithAuth(url, options);
