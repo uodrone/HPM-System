@@ -1,6 +1,5 @@
 export class NotificationClient {
     constructor() {
-        // ИЗМЕНЕНИЕ 1: Используем Gateway вместо прямого адреса микросервиса
         this.gatewayUrl = 'http://localhost:55699'; // Gateway
         this.apiPath = '/api/notifications'; // lowercase по соглашению Gateway
     }

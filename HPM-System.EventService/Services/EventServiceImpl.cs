@@ -26,49 +26,61 @@ namespace HPM_System.EventService.Services
             _logger = logger;
         }
 
+        // HPM_System.EventService.Services/EventService.cs
         public async Task<EventDto> CreateEventAsync(CreateEventRequest request, Guid initiatorUserId, CancellationToken ct = default)
         {
-            // 1. Создаём событие
+            // === Валидация ===
+            if (string.IsNullOrWhiteSpace(request.Title))
+                throw new ArgumentException("Заголовок события обязателен.", nameof(request.Title));
+
+            // === Создаём событие ===
             var newEvent = new Event
             {
-                Title = request.Title ?? throw new ArgumentNullException(nameof(request.Title)),
+                Title = request.Title,
                 Description = request.Description,
-                ImageUrl = request.ImageUrl, // может быть null
+                ImageUrl = request.ImageUrl,
                 EventDateTime = request.EventDateTime,
                 Place = request.Place,
                 CreatedAt = DateTime.UtcNow
             };
 
             _dbContext.Events.Add(newEvent);
-            await _dbContext.SaveChangesAsync(ct); // получаем Id
+            await _dbContext.SaveChangesAsync(ct);
 
-            // 2. Определяем целевую аудиторию
+            // Определяем целевую аудиторию
             List<Guid> targetUserIds = new();
 
-            if (request.HouseId.HasValue && request.HouseId > 0)
+            if (request.CommunityId.HasValue)
             {
-                // Получаем только ID владельцев (без ФИО, без квартир)
-                targetUserIds = await _apartmentService.GetHouseOwnerIdsAsync(request.HouseId.Value, ct);
-                if (targetUserIds == null) targetUserIds = new();
+                // Поддерживаем пока только House
+                if (request.CommunityType == CommunityType.House)
+                {
+                    targetUserIds = await _apartmentService.GetHouseOwnerIdsAsync(request.CommunityId.Value, ct);
+                }
+                else
+                {
+                    // В будущем можно расширить, но сейчас — ошибка
+                    throw new ArgumentException($"Тип сообщества {request.CommunityType} не поддерживается.");
+                }
+                targetUserIds ??= new();
             }
             else
             {
-                // Если не указан дом — событие приватное (только для инициатора)
+                // Приватное событие — только инициатор
                 targetUserIds.Add(initiatorUserId);
             }
 
             if (!targetUserIds.Any())
             {
-                // Никому отправлять — логируем, но не падаем
                 _logger.LogWarning("Событие ID={EventId} создано без получателей", newEvent.Id);
             }
 
-            // 3. Создаём участников события
+            // Создаём участников события
             var participants = targetUserIds.Select(userId => new EventParticipant
             {
                 EventId = newEvent.Id,
                 UserId = userId,
-                IsSubscribed = false, // по умолчанию: получил уведомление, но не подписан
+                IsSubscribed = false,
                 InvitedAt = DateTime.UtcNow,
                 InvitedBy = initiatorUserId
             }).ToList();
@@ -79,7 +91,7 @@ namespace HPM_System.EventService.Services
                 await _dbContext.SaveChangesAsync(ct);
             }
 
-            // 4. Отправляем массовое уведомление
+            // Отправляем уведомление
             if (targetUserIds.Any())
             {
                 var notification = new CreateEventNotificationRequest
@@ -95,7 +107,7 @@ namespace HPM_System.EventService.Services
                 await _notificationService.CreateAsync(notification, ct);
             }
 
-            // 5. Возвращаем DTO
+            // Возвращаем DTO
             return new EventDto
             {
                 Id = newEvent.Id,
