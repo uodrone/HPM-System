@@ -3934,6 +3934,29 @@ var NotificationProfileManager = /*#__PURE__*/function () {
       }
       return CollectEventDataToCreate;
     }()
+  }, {
+    key: "InsertDataToMainPage",
+    value: function InsertDataToMainPage(data) {
+      var _this2 = this;
+      var eventsContainer = document.querySelector('.notificatiions-list');
+      if (data.length) {
+        data.forEach(function (event) {
+          var eventMainPageTemplate = _this2.EventMainPageTemplate(event);
+          eventsContainer.insertAdjacentHTML('beforeend', eventMainPageTemplate);
+        });
+      } else {
+        eventsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "EventMainPageTemplate",
+    value: function EventMainPageTemplate(event) {
+      var eventHTML;
+      if (event) {
+        eventHTML = "\n                <a class=\"event-item\" href=\"/event/".concat(event.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.EventDateTime), "</div>\n                    <div class=\"font-weight-600\">").concat(event.title, "</div>\n                </a>\n            ");
+      }
+      return eventHTML;
+    }
   }]);
 }();
 document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
@@ -3964,9 +3987,6 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           return _regenerator().w(function (_context4) {
             while (1) switch (_context4.n) {
               case 0:
-                console.log('Клик по кнопке сохранения уведомления');
-
-                // Собираем данные уведомления
                 _context4.n = 1;
                 return eventProfile.CollectEventDataToCreate();
               case 1:
@@ -6108,9 +6128,6 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           return _regenerator().w(function (_context6) {
             while (1) switch (_context6.n) {
               case 0:
-                console.log('Клик по кнопке сохранения уведомления');
-
-                // Собираем данные уведомления
                 _context6.n = 1;
                 return notificationProfile.CollectNotificationDataToCreate();
               case 1:

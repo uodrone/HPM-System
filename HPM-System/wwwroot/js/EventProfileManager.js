@@ -78,6 +78,32 @@ export class NotificationProfileManager {
 
         return eventData;
     }
+
+    InsertDataToMainPage (data) {
+        const eventsContainer = document.querySelector('.notificatiions-list');        
+        if (data.length) {
+            data.forEach((event) => {
+                const eventMainPageTemplate = this.EventMainPageTemplate(event);
+                eventsContainer.insertAdjacentHTML('beforeend', eventMainPageTemplate);
+            });
+        } else {
+            eventsContainer.innerHTML = `Нет новых уведомлений`;
+        }
+    }
+
+    EventMainPageTemplate (event) {
+        let eventHTML;
+        if (event) {
+            eventHTML = `
+                <a class="event-item" href="/event/${event.id}">
+                    <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(event.EventDateTime)}</div>
+                    <div class="font-weight-600">${event.title}</div>
+                </a>
+            `;            
+        }
+
+        return eventHTML;
+    }
 }
 
 document.addEventListener('authStateChanged', async () => {
@@ -95,9 +121,7 @@ document.addEventListener('authStateChanged', async () => {
         if (window.location.pathname.includes('/event/create')) {
             await eventProfile.InsertDataToCreateEvent();
 
-            document.querySelector('[data-action="save-event-data"]').addEventListener('click', async () => {
-                console.log('Клик по кнопке сохранения уведомления');
-                
+            document.querySelector('[data-action="save-event-data"]').addEventListener('click', async () => {                
                 // Собираем данные уведомления
                 const eventData = await eventProfile.CollectEventDataToCreate();
                 console.log('Данные для сохранения:', eventData);
