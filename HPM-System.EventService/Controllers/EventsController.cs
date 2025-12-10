@@ -1,17 +1,20 @@
-﻿using HPM_System.EventService.Services.Interfaces;
+﻿using HPM_System.EventService.DTOs;
+using HPM_System.EventService.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HPM_System.EventService.DTOs;
+using HPM_System.EventService.Helpers;
 
 namespace HPM_System.EventService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EventController : ControllerBase
+    [Authorize]
+    public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
-        private readonly ILogger<EventController> _logger;
+        private readonly ILogger<EventsController> _logger;
 
-        public EventController(IEventService eventService, ILogger<EventController> logger)
+        public EventsController(IEventService eventService, ILogger<EventsController> logger)
         {
             _eventService = eventService;
             _logger = logger;
@@ -22,7 +25,7 @@ namespace HPM_System.EventService.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var userId = GetUserIdFromClaims();
+            var userId = User.GetUserId();
             var dto = await _eventService.CreateEventAsync(request, userId, ct);
             return CreatedAtAction(nameof(GetEventById), new { id = dto.Id }, dto);
         }
@@ -38,7 +41,7 @@ namespace HPM_System.EventService.Controllers
         [HttpGet]
         public async Task<ActionResult<List<EventDto>>> GetUserEvents(CancellationToken ct = default)
         {
-            var userId = GetUserIdFromClaims();
+            var userId = User.GetUserId();
             var events = await _eventService.GetAllEventsForUserAsync(userId, ct);
             return Ok(events);
         }
@@ -46,7 +49,7 @@ namespace HPM_System.EventService.Controllers
         [HttpPost("{id:long}/subscribe")]
         public async Task<IActionResult> Subscribe(long id, CancellationToken ct = default)
         {
-            var userId = GetUserIdFromClaims();
+            var userId = User.GetUserId();
             await _eventService.SubscribeAsync(id, userId, ct);
             return Ok();
         }
@@ -54,17 +57,9 @@ namespace HPM_System.EventService.Controllers
         [HttpDelete("{id:long}/unsubscribe")]
         public async Task<IActionResult> Unsubscribe(long id, CancellationToken ct = default)
         {
-            var userId = GetUserIdFromClaims();
+            var userId = User.GetUserId();
             await _eventService.UnsubscribeAsync(id, userId, ct);
             return Ok();
-        }
-
-        private Guid GetUserIdFromClaims()
-        {
-            var userIdStr = User.FindFirst("sub")?.Value;
-            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
-                throw new UnauthorizedAccessException("Пользователь не авторизован");
-            return userId;
         }
     }
 }

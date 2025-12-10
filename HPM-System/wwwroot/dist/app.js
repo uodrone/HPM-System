@@ -3895,18 +3895,57 @@ var NotificationProfileManager = /*#__PURE__*/function () {
       }
       return InsertDataToCreateEvent;
     }()
+  }, {
+    key: "CollectEventDataToCreate",
+    value: function () {
+      var _CollectEventDataToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var fileInput, file, fileManager, isFileUpload, eventData;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.n) {
+            case 0:
+              //собираем картинку
+              fileInput = document.getElementById('fileInput');
+              file = fileInput.files[0];
+              fileManager = new _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__.FileStorageClient();
+              _context3.n = 1;
+              return fileManager.UploadFile(file);
+            case 1:
+              isFileUpload = _context3.v;
+              console.log("\u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438");
+              console.log(isFileUpload);
+              eventData = null;
+              if (isFileUpload != null) {
+                eventData = {
+                  title: document.getElementById('title').value,
+                  description: document.getElementById('message').value,
+                  imageUrl: isFileUpload.fileUrl,
+                  eventDateTime: new Date(document.getElementById('eventDateTime').value).toISOString(),
+                  place: document.getElementById('place').value,
+                  communityId: document.getElementById('houseId').value,
+                  communityType: 0
+                };
+              }
+              return _context3.a(2, eventData);
+          }
+        }, _callee3);
+      }));
+      function CollectEventDataToCreate() {
+        return _CollectEventDataToCreate.apply(this, arguments);
+      }
+      return CollectEventDataToCreate;
+    }()
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
   var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, eventsByUser;
-  return _regenerator().w(function (_context4) {
-    while (1) switch (_context4.n) {
+  return _regenerator().w(function (_context5) {
+    while (1) switch (_context5.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context4.n = 6;
+          _context5.n = 6;
           break;
         }
         userId = window.authManager.userData.userId;
@@ -3914,24 +3953,24 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         eventClient = new _EventClient_js__WEBPACK_IMPORTED_MODULE_2__.EventClient();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/event/create')) {
-          _context4.n = 2;
+          _context5.n = 2;
           break;
         }
-        _context4.n = 1;
+        _context5.n = 1;
         return eventProfile.InsertDataToCreateEvent();
       case 1:
-        document.querySelector('[data-action="save-event-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        document.querySelector('[data-action="save-event-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
           var eventData, eventCreate;
-          return _regenerator().w(function (_context3) {
-            while (1) switch (_context3.n) {
+          return _regenerator().w(function (_context4) {
+            while (1) switch (_context4.n) {
               case 0:
                 console.log('Клик по кнопке сохранения уведомления');
 
                 // Собираем данные уведомления
-                _context3.n = 1;
+                _context4.n = 1;
                 return eventProfile.CollectEventDataToCreate();
               case 1:
-                eventData = _context3.v;
+                eventData = _context4.v;
                 console.log('Данные для сохранения:', eventData);
 
                 //Отправляем данные на сервер
@@ -3940,36 +3979,36 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
                   _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Событие создано успешно!', 'green');
                 }
               case 2:
-                return _context3.a(2);
+                return _context4.a(2);
             }
-          }, _callee3);
+          }, _callee4);
         })));
       case 2:
         if (!(window.location.pathname == '/')) {
-          _context4.n = 4;
+          _context5.n = 4;
           break;
         }
-        _context4.n = 3;
+        _context5.n = 3;
         return eventClient.GetUserEvents(userId);
       case 3:
-        eventByUser = _context4.v;
+        eventByUser = _context5.v;
         console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
         console.log(eventByUser);
         eventProfile.InsertDataToMainPage(eventByUser);
       case 4:
         if (!(UrlParts.includes("event") && UrlParts.includes('by-user') && UrlParts.includes(userId))) {
-          _context4.n = 6;
+          _context5.n = 6;
           break;
         }
-        _context4.n = 5;
+        _context5.n = 5;
         return eventClient.GetUserEvents(userId);
       case 5:
-        eventsByUser = _context4.v;
+        eventsByUser = _context5.v;
         eventProfileProfile.EventListListByUserId(notificationsByUser, notificationClient.gatewayUrl);
       case 6:
-        return _context4.a(2);
+        return _context5.a(2);
     }
-  }, _callee4);
+  }, _callee5);
 })));
 
 /***/ }),

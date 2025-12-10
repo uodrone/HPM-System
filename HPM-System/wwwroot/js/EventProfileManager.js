@@ -51,6 +51,33 @@ export class NotificationProfileManager {
             }
         }
     }
+
+    async CollectEventDataToCreate() {
+        //собираем картинку
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        const fileManager = new FileStorageClient();
+        let isFileUpload = await fileManager.UploadFile(file);
+        console.log(`результат загрузки файла картинки`);
+        console.log(isFileUpload);
+
+        let eventData = null;
+
+        if (isFileUpload != null) {
+            eventData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('message').value,
+                imageUrl: isFileUpload.fileUrl,
+                eventDateTime: new Date(document.getElementById('eventDateTime').value).toISOString(),
+                place: document.getElementById('place').value,
+                communityId: document.getElementById('houseId').value,
+                communityType: 0
+            };
+        }
+
+        return eventData;
+    }
 }
 
 document.addEventListener('authStateChanged', async () => {

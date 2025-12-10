@@ -3,8 +3,11 @@ using HPM_System.EventService.Interfaces;
 using HPM_System.EventService.Services;
 using HPM_System.EventService.Services.HttpClients;
 using HPM_System.EventService.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Text;
 
 namespace HPM_System.EventService
 {
@@ -17,6 +20,47 @@ namespace HPM_System.EventService
             // DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // JWT Аутентификация
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is required");
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = !string.IsNullOrEmpty(issuer),
+                    ValidateAudience = !string.IsNullOrEmpty(audience),
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<Program>>();
+                        logger.LogWarning("JWT Auth Failed: {Message}", context.Exception.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<Program>>();
+                        logger.LogInformation("JWT Token validated for user: {User}",
+                            context.Principal?.Identity?.Name ?? "Unknown");
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             // HTTP клиенты для связи с другими микросервисами
             builder.Services.AddHttpClient<IApartmentServiceClient, ApartmentServiceClient>(client =>
