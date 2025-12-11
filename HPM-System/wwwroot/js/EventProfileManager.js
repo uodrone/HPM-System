@@ -80,7 +80,7 @@ export class NotificationProfileManager {
     }
 
     InsertDataToMainPage (data) {
-        const eventsContainer = document.querySelector('.notificatiions-list');        
+        const eventsContainer = document.querySelector('.events-list');        
         if (data.length) {
             data.forEach((event) => {
                 const eventMainPageTemplate = this.EventMainPageTemplate(event);

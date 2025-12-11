@@ -3938,7 +3938,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     key: "InsertDataToMainPage",
     value: function InsertDataToMainPage(data) {
       var _this2 = this;
-      var eventsContainer = document.querySelector('.notificatiions-list');
+      var eventsContainer = document.querySelector('.events-list');
       if (data.length) {
         data.forEach(function (event) {
           var eventMainPageTemplate = _this2.EventMainPageTemplate(event);
