@@ -54,11 +54,10 @@ namespace HPM_System.EventService.DataContext
                 // Composite primary key: (EventId, UserId)
                 entity.HasKey(ep => new { ep.EventId, ep.UserId });
 
-                // Внешний ключ на Event (каскадное удаление)
-                entity.HasOne<Event>()
-                      .WithMany()
+                entity.HasOne(ep => ep.Event)
+                      .WithMany(e => e.Participants)
                       .HasForeignKey(ep => ep.EventId)
-                      .OnDelete(DeleteBehavior.Cascade); // если удалим событие — удалятся и участники
+                      .OnDelete(DeleteBehavior.Cascade);
 
                 // Индексы для быстрого поиска
                 entity.HasIndex(ep => ep.UserId);
