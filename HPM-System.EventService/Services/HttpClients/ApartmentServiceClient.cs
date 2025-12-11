@@ -14,36 +14,32 @@ namespace HPM_System.EventService.Services.HttpClients
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<List<Guid>> GetHouseOwnerIdsAsync(long houseId, CancellationToken ct = default)
+        public async Task<List<Guid>> GetHouseUserIdsAsync(long houseId, CancellationToken ct = default)
         {
-            if (houseId <= 0)
-                throw new ArgumentException("Некорректный ID дома", nameof(houseId));
-
-            var requestUrl = $"api/house/{houseId}/owner-ids";
-
             try
             {
-                var response = await _httpClient.GetAsync(requestUrl, ct);
-                if (response.IsSuccessStatusCode)
-                {
-                    var json = await response.Content.ReadAsStringAsync(ct);
-                    var userIds = JsonSerializer.Deserialize<List<Guid>>(
-                        json,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                    );
-                    return userIds ?? new List<Guid>();
-                }
+                var response = await _httpClient.GetAsync($"api/apartment/house/{houseId}/user-ids", ct);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    // Дом не найден → возвращаем пустой список
                     return new List<Guid>();
+                }
 
                 response.EnsureSuccessStatusCode();
-                return new List<Guid>();
+
+                var json = await response.Content.ReadAsStringAsync();
+                var userIds = JsonSerializer.Deserialize<List<Guid>>(json, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                return userIds ?? new List<Guid>();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при получении владельцев дома {HouseId}", houseId);
-                throw;
+                _logger.LogError(ex, "Ошибка при вызове ApartmentService для получения user-ids дома {HouseId}", houseId);
+                throw; // или return new List<Guid>() — по политике отработки ошибок
             }
         }
     }

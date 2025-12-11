@@ -38,5 +38,26 @@ namespace HPM_System.EventService.Services.HttpClients
                 _logger.LogError(ex, "Не удалось отправить уведомление о событии");
             }
         }
+
+        public async Task CreateReminderAsync(CreateEventNotificationRequest request, CancellationToken ct = default)
+        {
+            if (request.UserIdList == null || !request.UserIdList.Any()) return;
+
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync("api/notifications", content, ct);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка отправки напоминания о событии");
+            }
+        }
     }
 }

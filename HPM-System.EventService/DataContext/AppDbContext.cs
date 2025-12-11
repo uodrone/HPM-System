@@ -41,6 +41,11 @@ namespace HPM_System.EventService.DataContext
                 entity.HasIndex(e => e.EventDateTime);
                 entity.HasIndex(e => e.Title);
                 entity.HasIndex(e => e.CreatedAt);
+
+                // Также полезен индекс по времени события + флагу (для поиска "актуальных" событий)
+                modelBuilder.Entity<Event>()
+                    .HasIndex(e => e.EventDateTime)
+                    .HasDatabaseName("IX_Event_EventDateTime");
             });
 
             // === EventParticipant ===
@@ -60,6 +65,14 @@ namespace HPM_System.EventService.DataContext
                 entity.HasIndex(ep => ep.IsSubscribed);
                 entity.HasIndex(ep => new { ep.EventId, ep.IsSubscribed });
                 entity.HasIndex(ep => ep.InvitedAt);
+
+                // Для фоновой задачи: найти подписчиков, которым нужно отправить 24h напоминание
+                entity.HasIndex(ep => new { ep.EventId, ep.IsSubscribed, ep.Reminder24hSent })
+                      .HasDatabaseName("IX_EventParticipant_24hReminder");
+
+                // Аналогично для 2h
+                entity.HasIndex(ep => new { ep.EventId, ep.IsSubscribed, ep.Reminder2hSent })
+                      .HasDatabaseName("IX_EventParticipant_2hReminder");
             });
         }
     }

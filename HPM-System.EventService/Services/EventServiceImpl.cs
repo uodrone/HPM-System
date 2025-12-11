@@ -1,39 +1,42 @@
-﻿using HPM_System.EventService.DataContext;
+﻿// HPM_System.EventService.Services/EventServiceImpl.cs
 using HPM_System.EventService.DTOs;
 using HPM_System.EventService.Interfaces;
 using HPM_System.EventService.Models;
+using HPM_System.EventService.Repositories;
+using HPM_System.EventService.Services.HttpClients;
 using HPM_System.EventService.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HPM_System.EventService.Services
 {
     public class EventServiceImpl : IEventService
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IEventRepository _eventRepo;
+        private readonly IEventParticipantRepository _participantRepo;
         private readonly IApartmentServiceClient _apartmentService;
         private readonly INotificationServiceClient _notificationService;
         private readonly ILogger<EventServiceImpl> _logger;
 
         public EventServiceImpl(
-            AppDbContext dbContext,
+            IEventRepository eventRepo,
+            IEventParticipantRepository participantRepo,
             IApartmentServiceClient apartmentService,
             INotificationServiceClient notificationService,
             ILogger<EventServiceImpl> logger)
         {
-            _dbContext = dbContext;
+            _eventRepo = eventRepo;
+            _participantRepo = participantRepo;
             _apartmentService = apartmentService;
             _notificationService = notificationService;
             _logger = logger;
         }
 
-        // HPM_System.EventService.Services/EventService.cs
         public async Task<EventDto> CreateEventAsync(CreateEventRequest request, Guid initiatorUserId, CancellationToken ct = default)
         {
-            // === Валидация ===
             if (string.IsNullOrWhiteSpace(request.Title))
                 throw new ArgumentException("Заголовок события обязателен.", nameof(request.Title));
 
-            // === Создаём событие ===
+            // Создаём событие
             var newEvent = new Event
             {
                 Title = request.Title,
@@ -44,30 +47,26 @@ namespace HPM_System.EventService.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _dbContext.Events.Add(newEvent);
-            await _dbContext.SaveChangesAsync(ct);
+            await _eventRepo.AddAsync(newEvent, ct);
 
-            // Определяем целевую аудиторию
+            // Определяем получателей
             List<Guid> targetUserIds = new();
 
             if (request.CommunityId.HasValue)
             {
-                // Поддерживаем пока только House
                 if (request.CommunityType == CommunityType.House)
                 {
-                    targetUserIds = await _apartmentService.GetHouseOwnerIdsAsync(request.CommunityId.Value, ct);
+                    targetUserIds = await _apartmentService.GetHouseUserIdsAsync(request.CommunityId.Value, ct);
                 }
                 else
                 {
-                    // В будущем можно расширить, но сейчас — ошибка
                     throw new ArgumentException($"Тип сообщества {request.CommunityType} не поддерживается.");
                 }
                 targetUserIds ??= new();
             }
             else
             {
-                // Приватное событие — только инициатор
-                targetUserIds.Add(initiatorUserId);
+                targetUserIds.Add(initiatorUserId); // приватное событие
             }
 
             if (!targetUserIds.Any())
@@ -75,7 +74,7 @@ namespace HPM_System.EventService.Services
                 _logger.LogWarning("Событие ID={EventId} создано без получателей", newEvent.Id);
             }
 
-            // Создаём участников события
+            // Создаём участников
             var participants = targetUserIds.Select(userId => new EventParticipant
             {
                 EventId = newEvent.Id,
@@ -87,11 +86,11 @@ namespace HPM_System.EventService.Services
 
             if (participants.Any())
             {
-                await _dbContext.EventParticipants.AddRangeAsync(participants, ct);
-                await _dbContext.SaveChangesAsync(ct);
+                await _participantRepo.AddRangeAsync(participants, ct);
+                await _participantRepo.SaveChangesAsync(ct);
             }
 
-            // Отправляем уведомление
+            // Отправляем уведомление о создании события
             if (targetUserIds.Any())
             {
                 var notification = new CreateEventNotificationRequest
@@ -107,7 +106,6 @@ namespace HPM_System.EventService.Services
                 await _notificationService.CreateAsync(notification, ct);
             }
 
-            // Возвращаем DTO
             return new EventDto
             {
                 Id = newEvent.Id,
@@ -123,11 +121,10 @@ namespace HPM_System.EventService.Services
 
         public async Task<EventDto?> GetEventByIdAsync(long eventId, CancellationToken ct = default)
         {
-            var ev = await _dbContext.Events.FindAsync(new object[] { eventId }, ct);
+            var ev = await _eventRepo.GetByIdAsync(eventId, ct);
             if (ev == null) return null;
 
-            var subscribedCount = await _dbContext.EventParticipants
-                .CountAsync(p => p.EventId == eventId && p.IsSubscribed, ct);
+            var subscribedCount = await _eventRepo.GetSubscribedCountAsync(eventId, ct);
 
             return new EventDto
             {
@@ -144,24 +141,15 @@ namespace HPM_System.EventService.Services
 
         public async Task<List<EventDto>> GetAllEventsForUserAsync(Guid userId, CancellationToken ct = default)
         {
-            var eventIds = await _dbContext.EventParticipants
-                .Where(p => p.UserId == userId)
-                .Select(p => p.EventId)
-                .Distinct()
-                .ToListAsync(ct);
-
+            var eventIds = await _participantRepo.GetEventIdsForUserAsync(userId, ct);
             if (!eventIds.Any()) return new();
 
-            var events = await _dbContext.Events
-                .Where(e => eventIds.Contains(e.Id))
-                .ToListAsync(ct);
-
+            var events = await _eventRepo.GetByIdsAsync(eventIds, ct);
             var result = new List<EventDto>();
+
             foreach (var ev in events)
             {
-                var isSubscribed = await _dbContext.EventParticipants
-                    .AnyAsync(p => p.EventId == ev.Id && p.UserId == userId && p.IsSubscribed, ct);
-
+                var isSubscribed = await _participantRepo.IsUserSubscribedAsync(ev.Id, userId, ct);
                 result.Add(new EventDto
                 {
                     Id = ev.Id,
@@ -180,37 +168,32 @@ namespace HPM_System.EventService.Services
 
         public async Task SubscribeAsync(long eventId, Guid userId, CancellationToken ct = default)
         {
-            var participant = await _dbContext.EventParticipants
-                .FirstOrDefaultAsync(p => p.EventId == eventId && p.UserId == userId, ct);
-
+            var participant = await _participantRepo.GetAsync(eventId, userId, ct);
             if (participant == null)
                 throw new InvalidOperationException("Пользователь не является получателем этого события");
 
-            if (participant.IsSubscribed) return; // уже подписан
+            if (participant.IsSubscribed) return;
 
             participant.IsSubscribed = true;
             participant.SubscribedAt = DateTime.UtcNow;
 
-            await _dbContext.SaveChangesAsync(ct);
+            await _participantRepo.SaveChangesAsync(ct);
         }
 
         public async Task UnsubscribeAsync(long eventId, Guid userId, CancellationToken ct = default)
         {
-            var participant = await _dbContext.EventParticipants
-                .FirstOrDefaultAsync(p => p.EventId == eventId && p.UserId == userId, ct);
-
+            var participant = await _participantRepo.GetAsync(eventId, userId, ct);
             if (participant == null || !participant.IsSubscribed) return;
 
             participant.IsSubscribed = false;
             participant.SubscribedAt = null;
 
-            await _dbContext.SaveChangesAsync(ct);
+            await _participantRepo.SaveChangesAsync(ct);
         }
 
         public async Task<bool> IsUserSubscribedAsync(long eventId, Guid userId, CancellationToken ct = default)
         {
-            return await _dbContext.EventParticipants
-                .AnyAsync(p => p.EventId == eventId && p.UserId == userId && p.IsSubscribed, ct);
+            return await _participantRepo.IsUserSubscribedAsync(eventId, userId, ct);
         }
     }
 }

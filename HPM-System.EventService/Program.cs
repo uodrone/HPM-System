@@ -1,5 +1,6 @@
 using HPM_System.EventService.DataContext;
 using HPM_System.EventService.Interfaces;
+using HPM_System.EventService.Repositories;
 using HPM_System.EventService.Services;
 using HPM_System.EventService.Services.HttpClients;
 using HPM_System.EventService.Services.Interfaces;
@@ -17,52 +18,60 @@ namespace HPM_System.EventService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // DbContext
+            // === DbContext ===
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // JWT Аутентификация
+            // === Репозитории ===
+            builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<IEventParticipantRepository, EventParticipantRepository>();
+
+            // === JWT-аутентификация (только если секрет задан) ===
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is required");
-            var issuer = jwtSettings["Issuer"];
-            var audience = jwtSettings["Audience"];
+            var secretKey = jwtSettings["SecretKey"];
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            if (!string.IsNullOrEmpty(secretKey))
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = !string.IsNullOrEmpty(issuer),
-                    ValidateAudience = !string.IsNullOrEmpty(audience),
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = issuer,
-                    ValidAudience = audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                    ClockSkew = TimeSpan.FromMinutes(5)
-                };
+                var issuer = jwtSettings["Issuer"];
+                var audience = jwtSettings["Audience"];
 
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
+                builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
                     {
-                        var logger = context.HttpContext.RequestServices
-                            .GetRequiredService<ILogger<Program>>();
-                        logger.LogWarning("JWT Auth Failed: {Message}", context.Exception.Message);
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = context =>
-                    {
-                        var logger = context.HttpContext.RequestServices
-                            .GetRequiredService<ILogger<Program>>();
-                        logger.LogInformation("JWT Token validated for user: {User}",
-                            context.Principal?.Identity?.Name ?? "Unknown");
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = !string.IsNullOrEmpty(issuer),
+                            ValidateAudience = !string.IsNullOrEmpty(audience),
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = issuer,
+                            ValidAudience = audience,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                            ClockSkew = TimeSpan.FromMinutes(5)
+                        };
 
-            // HTTP клиенты для связи с другими микросервисами
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnAuthenticationFailed = context =>
+                            {
+                                var logger = context.HttpContext.RequestServices
+                                    .GetRequiredService<ILogger<Program>>();
+                                logger.LogWarning("JWT Auth Failed: {Message}", context.Exception.Message);
+                                return Task.CompletedTask;
+                            },
+                            OnTokenValidated = context =>
+                            {
+                                var logger = context.HttpContext.RequestServices
+                                    .GetRequiredService<ILogger<Program>>();
+                                logger.LogInformation("JWT Token validated for user: {User}",
+                                    context.Principal?.Identity?.Name ?? "Unknown");
+                                return Task.CompletedTask;
+                            }
+                        };
+                    });
+            }
+
+            // === HTTP-клиенты ===
             builder.Services.AddHttpClient<IApartmentServiceClient, ApartmentServiceClient>(client =>
             {
                 var baseUrl = builder.Configuration["Services:ApartmentService:BaseUrl"]
@@ -77,28 +86,25 @@ namespace HPM_System.EventService
                 client.BaseAddress = new Uri(baseUrl);
             });
 
-            // Основной EventService
+            // === Сервисы ===
             builder.Services.AddScoped<IEventService, EventServiceImpl>();
+            builder.Services.AddHostedService<ReminderBackgroundService>();
 
-            // Controllers & OpenAPI
+            // === ASP.NET Core ===
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddOpenApi();
-
-            // CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+                    policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 });
             });
 
             var app = builder.Build();
 
-            // Автомиграции
+            // === Автомиграции (только в Development) ===
             if (app.Environment.IsDevelopment())
             {
                 using var scope = app.Services.CreateScope();
@@ -106,7 +112,7 @@ namespace HPM_System.EventService
                 dbContext.Database.Migrate();
             }
 
-            // Middleware
+            // === Middleware ===
             app.UseCors("AllowAll");
 
             if (!app.Environment.IsDevelopment())
@@ -114,10 +120,13 @@ namespace HPM_System.EventService
                 app.UseHttpsRedirection();
             }
 
-            app.UseAuthentication(); // обязательно для получения User.Claims!
-            app.UseAuthorization();
+            // Включаем аутентификацию ТОЛЬКО если JWT был зарегистрирован
+            if (!string.IsNullOrEmpty(secretKey))
+            {
+                app.UseAuthentication();
+                app.UseAuthorization();
+            }
 
-            // Endpoints
             app.MapControllers();
 
             if (app.Environment.IsDevelopment())

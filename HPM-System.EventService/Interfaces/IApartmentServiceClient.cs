@@ -2,6 +2,6 @@
 {
     public interface IApartmentServiceClient
     {
-        Task<List<Guid>> GetHouseOwnerIdsAsync(long houseId, CancellationToken ct = default);
+        Task<List<Guid>> GetHouseUserIdsAsync(long houseId, CancellationToken ct = default);
     }
 }
