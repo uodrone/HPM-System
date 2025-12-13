@@ -768,6 +768,23 @@ footer {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/*!*************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/event.css ***!
+  \*************************************************************************/
+.event-item {
+    text-decoration: none;
+    cursor: pointer;
+    color: #000;
+    background: linear-gradient(135deg, #ffe0ec 0%, #ffaed5 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #f769a2;
+    display: block;
+
+    &:hover {
+        color: #000;
+    }
+}
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/card.css ***!
   \************************************************************************/

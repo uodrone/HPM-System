@@ -96,7 +96,7 @@ export class NotificationProfileManager {
         if (event) {
             eventHTML = `
                 <a class="event-item" href="/event/${event.id}">
-                    <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(event.EventDateTime)}</div>
+                    <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(event.eventDateTime)}</div>
                     <div class="font-weight-600">${event.title}</div>
                 </a>
             `;            

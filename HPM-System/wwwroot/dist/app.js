@@ -27,6 +27,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/css/event.css":
+/*!*******************************!*\
+  !*** ./wwwroot/css/event.css ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./wwwroot/css/file-manager.css":
 /*!**************************************!*\
   !*** ./wwwroot/css/file-manager.css ***!
@@ -3409,15 +3422,20 @@ var DateFormat = /*#__PURE__*/function () {
   return _createClass(DateFormat, null, [{
     key: "DateFormatToRuString",
     value: function DateFormatToRuString(isoString) {
-      var date = new Date(isoString);
+      var date = new Date(isoString); // ISO строка автоматически интерпретируется как UTC
+
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
       var hours = date.getHours();
       var minutes = date.getMinutes();
-      var day = date.getUTCDate(); // без ведущего нуля
-      var year = date.getUTCFullYear();
       var months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-      var month = months[date.getUTCMonth()]; // getUTCMonth() → 0–11
+      var month = months[monthIndex];
 
-      return "".concat(day, " ").concat(month, " ").concat(year, ", ").concat(hours, ":").concat(minutes);
+      // Форматируем часы и минуты с ведущим нулём при необходимости
+      var hh = String(hours).padStart(2, '0');
+      var mm = String(minutes).padStart(2, '0');
+      return "".concat(day, " ").concat(month, " ").concat(year, ", ").concat(hh, ":").concat(mm);
     }
   }]);
 }();
@@ -3953,7 +3971,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     value: function EventMainPageTemplate(event) {
       var eventHTML;
       if (event) {
-        eventHTML = "\n                <a class=\"event-item\" href=\"/event/".concat(event.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.EventDateTime), "</div>\n                    <div class=\"font-weight-600\">").concat(event.title, "</div>\n                </a>\n            ");
+        eventHTML = "\n                <a class=\"event-item\" href=\"/event/".concat(event.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime), "</div>\n                    <div class=\"font-weight-600\">").concat(event.title, "</div>\n                </a>\n            ");
       }
       return eventHTML;
     }
@@ -7713,6 +7731,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/css/grid.css");
 /******/ 	__webpack_require__("./wwwroot/css/fonts-colors-and-backgrounds.css");
 /******/ 	__webpack_require__("./wwwroot/css/file-manager.css");
+/******/ 	__webpack_require__("./wwwroot/css/event.css");
 /******/ 	__webpack_require__("./wwwroot/css/card.css");
 /******/ 	var __webpack_exports__ = __webpack_require__("./wwwroot/css/btn.css");
 /******/ 	
