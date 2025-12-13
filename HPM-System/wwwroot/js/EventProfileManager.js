@@ -126,6 +126,43 @@ export class EventProfileManager {
         }        
     }
 
+    EventsListByUserId (events, gatewayUrl) {
+        const eventsContainer = document.querySelector('.events-by-user-list');        
+        if (events.length) {
+            for (const event of events) {
+                console.log(`событие`);
+                console.log(event);
+                const eventToListByUserId = this.EventTemplateByUserId(event, gatewayUrl);
+                eventsContainer.insertAdjacentHTML('beforeend', eventToListByUserId);
+            }
+        } else {
+            eventsContainer.innerHTML = `Нет новых уведомлений`;
+        }
+    }
+    
+    EventTemplateByUserId(event, gatewayUrl) {
+        let eventHTML;
+        if (event) {
+            eventHTML = `
+                <div class="profile-group dashboard-card my-4" data-group="event" data-event-id="${event.id}">
+                    <h3 class="card-header card-header_event w-100">
+                        <a href="/notification/${event.id}">${event.title}</a>
+                    </h3>
+
+                    <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
+                        <div class="card-image" style="background-image: url(${gatewayUrl}${event.imageUrl});"></div>
+                        <div class="card-content">
+                            <div id="notification-date" class="card-date mb-3">${DateFormat.DateFormatToRuString(event.eventDateTime)}</div>                        
+                            <div id="notification-message">${event.description}</div>
+                        </div>
+                    </div>
+                </div>
+            `;            
+        }
+
+        return eventHTML;
+    }
+
     HideButtonsSubcribeToEvent (IsCurrentUserSubscribed) {
         if (IsCurrentUserSubscribed) {
             document.querySelector('.btn[data-action="subscribe-to-event"]').classList.add('d-none');
@@ -201,8 +238,10 @@ document.addEventListener('authStateChanged', async () => {
 
         if (UrlParts.includes(`event`)) {
             if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {
-                const eventsByUser = await eventClient.GetUserEvents();            
-                eventProfile.EventListListByUserId(notificationsByUser, eventClient.gatewayUrl);
+                const EventsListByUserId = await eventClient.GetUserEvents();
+                console.log('все события пользователя:');
+                console.log(EventsListByUserId);
+                eventProfile.EventsListByUserId(EventsListByUserId, eventClient.gatewayUrl);
             } else if (!isNaN(Number(UrlParts[1]))) {     
                 const eventId = UrlParts[1];           
                 const isUserParticipant = await eventClient.isUserParticipant(userId, eventId);

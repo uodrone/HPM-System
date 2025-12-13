@@ -3902,6 +3902,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
 /* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -4086,6 +4089,39 @@ var EventProfileManager = /*#__PURE__*/function () {
       }
     }
   }, {
+    key: "EventsListByUserId",
+    value: function EventsListByUserId(events, gatewayUrl) {
+      var eventsContainer = document.querySelector('.events-by-user-list');
+      if (events.length) {
+        var _iterator = _createForOfIteratorHelper(events),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _event = _step.value;
+            console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u0435");
+            console.log(_event);
+            var eventToListByUserId = this.EventTemplateByUserId(_event, gatewayUrl);
+            eventsContainer.insertAdjacentHTML('beforeend', eventToListByUserId);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      } else {
+        eventsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "EventTemplateByUserId",
+    value: function EventTemplateByUserId(event, gatewayUrl) {
+      var eventHTML;
+      if (event) {
+        eventHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"event\" data-event-id=\"".concat(event.id, "\">\n                    <h3 class=\"card-header card-header_event w-100\">\n                        <a href=\"/notification/").concat(event.id, "\">").concat(event.title, "</a>\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"card-image\" style=\"background-image: url(").concat(gatewayUrl).concat(event.imageUrl, ");\"></div>\n                        <div class=\"card-content\">\n                            <div id=\"notification-date\" class=\"card-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime), "</div>                        \n                            <div id=\"notification-message\">").concat(event.description, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+      }
+      return eventHTML;
+    }
+  }, {
     key: "HideButtonsSubcribeToEvent",
     value: function HideButtonsSubcribeToEvent(IsCurrentUserSubscribed) {
       if (IsCurrentUserSubscribed) {
@@ -4145,7 +4181,7 @@ var EventProfileManager = /*#__PURE__*/function () {
   }]);
 }();
 document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
-  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, eventsByUser, eventId, isUserParticipant, _event, IsCurrentUserSubscribed;
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, EventsListByUserId, eventId, isUserParticipant, _event2, IsCurrentUserSubscribed;
   return _regenerator().w(function (_context7) {
     while (1) switch (_context7.n) {
       case 0:
@@ -4215,8 +4251,10 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         _context7.n = 5;
         return eventClient.GetUserEvents();
       case 5:
-        eventsByUser = _context7.v;
-        eventProfile.EventListListByUserId(notificationsByUser, eventClient.gatewayUrl);
+        EventsListByUserId = _context7.v;
+        console.log('все события пользователя:');
+        console.log(EventsListByUserId);
+        eventProfile.EventsListByUserId(EventsListByUserId, eventClient.gatewayUrl);
         _context7.n = 11;
         break;
       case 6:
@@ -4236,8 +4274,8 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         _context7.n = 8;
         return eventClient.GetEventById(eventId);
       case 8:
-        _event = _context7.v;
-        eventProfile.EventDetails(_event, eventClient.gatewayUrl);
+        _event2 = _context7.v;
+        eventProfile.EventDetails(_event2, eventClient.gatewayUrl);
         _context7.n = 9;
         return eventClient.IsCurrentUserSubscribed(eventId);
       case 9:
@@ -6316,7 +6354,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
         // Формируем класс и span для даты прочтения
         var readClass = isReadByCurrentUser ? 'readed' : '';
         var readAtSpan = isReadByCurrentUser ? "<span class=\"read-at\">\u041F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(readAt), "</span>") : '';
-        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"card-image\" style=\"background-image: url(").concat(gatewayUrl).concat(notification.imageUrl, ");\"></div>\n                        <div class=\"card-content\">\n                            <div id=\"notification-date\" class=\"card-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-notification-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"card-image\" style=\"background-image: url(").concat(gatewayUrl).concat(notification.imageUrl, ");\"></div>\n                        <div class=\"card-content\">\n                            <div id=\"notification-date\" class=\"card-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return notificationHTML;
     }

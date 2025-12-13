@@ -300,7 +300,7 @@ export class NotificationProfileManager {
                 : '';
 
             notificationHTML = `
-                <div class="profile-group dashboard-card my-4" data-group="notification" data-apartment-id="${notification.id}">
+                <div class="profile-group dashboard-card my-4" data-group="notification" data-notification-id="${notification.id}">
                     <h3 class="card-header card-header_notification w-100 ${readClass}">
                         <a href="/notification/${notification.id}">${notification.title}</a>
                         ${readAtSpan}
