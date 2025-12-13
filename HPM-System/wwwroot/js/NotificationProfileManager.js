@@ -345,7 +345,7 @@ document.addEventListener('authStateChanged', async () => {
                 const notificationCreate = notificationClient.CreateNotification(notificationData);
 
                 if (notificationCreate) {                        
-                    Modal.ShowNotification('Уведомление создано успешно!', 'green');                        
+                    Modal.ShowNotification('Уведомление создано успешно!', 'green');
                 }
             });
         }

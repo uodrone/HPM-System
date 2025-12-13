@@ -125,6 +125,42 @@ export class EventProfileManager {
             document.getElementById('event-profile').innerHTML = 'Страница недоступна';
         }        
     }
+
+    HideButtonsSubcribeToEvent (IsCurrentUserSubscribed) {
+        if (IsCurrentUserSubscribed) {
+            document.querySelector('.btn[data-action="subscribe-to-event"]').classList.add('d-none');
+            document.querySelector('.btn[data-action="unsubscribe-to-event"]').classList.remove('d-none');
+        } else {
+            document.querySelector('.btn[data-action="unsubscribe-to-event"]').classList.add('d-none');
+            document.querySelector('.btn[data-action="subscribe-to-event"]').classList.remove('d-none');
+        }
+    }
+
+    SubscribeUnsubscribeActions (eventClient, eventId, IsCurrentUserSubscribed) {
+        this.HideButtonsSubcribeToEvent(IsCurrentUserSubscribed);
+
+        if (document.querySelector('.btn[data-action="subscribe-to-event"]') != null) {
+            document.querySelector('.btn[data-action="subscribe-to-event"]').addEventListener('click', async () => {
+                const subscribe = await eventClient.SubscribeToEvent(eventId);                        
+
+                if (subscribe) {
+                    this.HideButtonsSubcribeToEvent(subscribe);
+                    Modal.ShowNotification('Подписка на событие прошла успешно!', 'green');
+                }
+            });
+        }
+        
+        if (document.querySelector('.btn[data-action="unsubscribe-to-event"]') != null) {
+            document.querySelector('.btn[data-action="unsubscribe-to-event"]').addEventListener('click', async () => {
+                const unsubscribe = await eventClient.UnsubscribeFromEvent(eventId);
+                
+                if (unsubscribe) {
+                    Modal.ShowNotification('Подписка на событие прошла успешно!', 'green');
+                    this.HideButtonsSubcribeToEvent(!unsubscribe);
+                }                        
+            });
+        }
+    }
 }
 
 document.addEventListener('authStateChanged', async () => {
@@ -148,7 +184,7 @@ document.addEventListener('authStateChanged', async () => {
                 console.log('Данные для сохранения:', eventData);
                 
                 //Отправляем данные на сервер
-                const eventCreate = eventClient.CreateEvent(eventData);
+                const eventCreate = await eventClient.CreateEvent(eventData);
 
                 if (eventCreate) {                        
                     Modal.ShowNotification('Событие создано успешно!', 'green');                        
@@ -173,12 +209,9 @@ document.addEventListener('authStateChanged', async () => {
                 if (isUserParticipant) {
                     const event = await eventClient.GetEventById(eventId);
                     eventProfile.EventDetails(event, eventClient.gatewayUrl);
-                    
-                    const IsCurrentUserSubscribed = await eventClient.IsCurrentUserSubscribed(eventId);
-                    if (IsCurrentUserSubscribed)
-                        document.querySelector('.btn[data-action="subscribe-to-event"]').remove();
-                    else
-                        document.querySelector('.btn[data-action="unsubscribe-to-event"]').remove();
+
+                    const IsCurrentUserSubscribed = await eventClient.IsCurrentUserSubscribed(eventId);                    
+                    eventProfile.SubscribeUnsubscribeActions(eventClient, eventId, IsCurrentUserSubscribed);
                 } else {
                     document.getElementById('event-profile').innerHTML = 'Страница недоступна';
                 }

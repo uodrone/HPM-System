@@ -157,6 +157,7 @@ export class EventClient {
                 throw new Error(`Ошибка подписки на событие: ${errorText}`);
             }
 
+            console.log(`подписка прошла успешно`);
             return true;
         } catch (error) {
             console.error('Ошибка при подписке на событие:', error);
@@ -181,6 +182,7 @@ export class EventClient {
                 throw new Error(`Ошибка отписки от события: ${errorText}`);
             }
 
+            console.log(`вы успешно отписаны от события`);
             return true;
         } catch (error) {
             console.error('Ошибка при отписке от события:', error);

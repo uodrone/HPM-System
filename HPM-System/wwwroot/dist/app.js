@@ -3794,6 +3794,7 @@ var EventClient = /*#__PURE__*/function () {
               errorText = _context6.v;
               throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0438 \u043D\u0430 \u0441\u043E\u0431\u044B\u0442\u0438\u0435: ".concat(errorText));
             case 3:
+              console.log("\u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0430 \u043F\u0440\u043E\u0448\u043B\u0430 \u0443\u0441\u043F\u0435\u0448\u043D\u043E");
               return _context6.a(2, true);
             case 4:
               _context6.p = 4;
@@ -3844,6 +3845,7 @@ var EventClient = /*#__PURE__*/function () {
               errorText = _context7.v;
               throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043F\u0438\u0441\u043A\u0438 \u043E\u0442 \u0441\u043E\u0431\u044B\u0442\u0438\u044F: ".concat(errorText));
             case 3:
+              console.log("\u0432\u044B \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u043E\u0442\u043F\u0438\u0441\u0430\u043D\u044B \u043E\u0442 \u0441\u043E\u0431\u044B\u0442\u0438\u044F");
               return _context7.a(2, true);
             case 4:
               _context7.p = 4;
@@ -4083,18 +4085,75 @@ var EventProfileManager = /*#__PURE__*/function () {
         document.getElementById('event-profile').innerHTML = 'Страница недоступна';
       }
     }
+  }, {
+    key: "HideButtonsSubcribeToEvent",
+    value: function HideButtonsSubcribeToEvent(IsCurrentUserSubscribed) {
+      if (IsCurrentUserSubscribed) {
+        document.querySelector('.btn[data-action="subscribe-to-event"]').classList.add('d-none');
+        document.querySelector('.btn[data-action="unsubscribe-to-event"]').classList.remove('d-none');
+      } else {
+        document.querySelector('.btn[data-action="unsubscribe-to-event"]').classList.add('d-none');
+        document.querySelector('.btn[data-action="subscribe-to-event"]').classList.remove('d-none');
+      }
+    }
+  }, {
+    key: "SubscribeUnsubscribeActions",
+    value: function SubscribeUnsubscribeActions(eventClient, eventId, IsCurrentUserSubscribed) {
+      var _this3 = this;
+      this.HideButtonsSubcribeToEvent(IsCurrentUserSubscribed);
+      if (document.querySelector('.btn[data-action="subscribe-to-event"]') != null) {
+        document.querySelector('.btn[data-action="subscribe-to-event"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+          var subscribe;
+          return _regenerator().w(function (_context4) {
+            while (1) switch (_context4.n) {
+              case 0:
+                _context4.n = 1;
+                return eventClient.SubscribeToEvent(eventId);
+              case 1:
+                subscribe = _context4.v;
+                if (subscribe) {
+                  _this3.HideButtonsSubcribeToEvent(subscribe);
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Подписка на событие прошла успешно!', 'green');
+                }
+              case 2:
+                return _context4.a(2);
+            }
+          }, _callee4);
+        })));
+      }
+      if (document.querySelector('.btn[data-action="unsubscribe-to-event"]') != null) {
+        document.querySelector('.btn[data-action="unsubscribe-to-event"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+          var unsubscribe;
+          return _regenerator().w(function (_context5) {
+            while (1) switch (_context5.n) {
+              case 0:
+                _context5.n = 1;
+                return eventClient.UnsubscribeFromEvent(eventId);
+              case 1:
+                unsubscribe = _context5.v;
+                if (unsubscribe) {
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Подписка на событие прошла успешно!', 'green');
+                  _this3.HideButtonsSubcribeToEvent(!unsubscribe);
+                }
+              case 2:
+                return _context5.a(2);
+            }
+          }, _callee5);
+        })));
+      }
+    }
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
   var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, eventsByUser, eventId, isUserParticipant, _event, IsCurrentUserSubscribed;
-  return _regenerator().w(function (_context5) {
-    while (1) switch (_context5.n) {
+  return _regenerator().w(function (_context7) {
+    while (1) switch (_context7.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context5.n = 11;
+          _context7.n = 11;
           break;
         }
         userId = window.authManager.userData.userId;
@@ -4102,93 +4161,96 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         eventClient = new _EventClient_js__WEBPACK_IMPORTED_MODULE_2__.EventClient();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/event/create')) {
-          _context5.n = 2;
+          _context7.n = 2;
           break;
         }
-        _context5.n = 1;
+        _context7.n = 1;
         return eventProfile.InsertDataToCreateEvent();
       case 1:
-        document.querySelector('[data-action="save-event-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+        document.querySelector('[data-action="save-event-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
           var eventData, eventCreate;
-          return _regenerator().w(function (_context4) {
-            while (1) switch (_context4.n) {
+          return _regenerator().w(function (_context6) {
+            while (1) switch (_context6.n) {
               case 0:
-                _context4.n = 1;
+                _context6.n = 1;
                 return eventProfile.CollectEventDataToCreate();
               case 1:
-                eventData = _context4.v;
+                eventData = _context6.v;
                 console.log('Данные для сохранения:', eventData);
 
                 //Отправляем данные на сервер
-                eventCreate = eventClient.CreateEvent(eventData);
+                _context6.n = 2;
+                return eventClient.CreateEvent(eventData);
+              case 2:
+                eventCreate = _context6.v;
                 if (eventCreate) {
                   _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Событие создано успешно!', 'green');
                 }
-              case 2:
-                return _context4.a(2);
+              case 3:
+                return _context6.a(2);
             }
-          }, _callee4);
+          }, _callee6);
         })));
       case 2:
         if (!(window.location.pathname == '/')) {
-          _context5.n = 4;
+          _context7.n = 4;
           break;
         }
-        _context5.n = 3;
+        _context7.n = 3;
         return eventClient.GetUserEvents(userId);
       case 3:
-        eventByUser = _context5.v;
+        eventByUser = _context7.v;
         console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
         console.log(eventByUser);
         eventProfile.InsertDataToMainPage(eventByUser);
       case 4:
         if (!UrlParts.includes("event")) {
-          _context5.n = 11;
+          _context7.n = 11;
           break;
         }
         if (!(UrlParts.includes('by-user') && UrlParts.includes(userId))) {
-          _context5.n = 6;
+          _context7.n = 6;
           break;
         }
-        _context5.n = 5;
+        _context7.n = 5;
         return eventClient.GetUserEvents();
       case 5:
-        eventsByUser = _context5.v;
+        eventsByUser = _context7.v;
         eventProfile.EventListListByUserId(notificationsByUser, eventClient.gatewayUrl);
-        _context5.n = 11;
+        _context7.n = 11;
         break;
       case 6:
         if (isNaN(Number(UrlParts[1]))) {
-          _context5.n = 11;
+          _context7.n = 11;
           break;
         }
         eventId = UrlParts[1];
-        _context5.n = 7;
+        _context7.n = 7;
         return eventClient.isUserParticipant(userId, eventId);
       case 7:
-        isUserParticipant = _context5.v;
+        isUserParticipant = _context7.v;
         if (!isUserParticipant) {
-          _context5.n = 10;
+          _context7.n = 10;
           break;
         }
-        _context5.n = 8;
+        _context7.n = 8;
         return eventClient.GetEventById(eventId);
       case 8:
-        _event = _context5.v;
+        _event = _context7.v;
         eventProfile.EventDetails(_event, eventClient.gatewayUrl);
-        _context5.n = 9;
+        _context7.n = 9;
         return eventClient.IsCurrentUserSubscribed(eventId);
       case 9:
-        IsCurrentUserSubscribed = _context5.v;
-        if (IsCurrentUserSubscribed) document.querySelector('.btn[data-action="subscribe-to-event"]').remove();else document.querySelector('.btn[data-action="unsubscribe-to-event"]').remove();
-        _context5.n = 11;
+        IsCurrentUserSubscribed = _context7.v;
+        eventProfile.SubscribeUnsubscribeActions(eventClient, eventId, IsCurrentUserSubscribed);
+        _context7.n = 11;
         break;
       case 10:
         document.getElementById('event-profile').innerHTML = 'Страница недоступна';
       case 11:
-        return _context5.a(2);
+        return _context7.a(2);
     }
-  }, _callee5);
+  }, _callee7);
 })));
 
 /***/ }),
