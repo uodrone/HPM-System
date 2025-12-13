@@ -10,6 +10,7 @@ namespace HPM_System.EventService.Interfaces
         Task<List<Guid>> GetSubscribedUserIdsAsync(long eventId, CancellationToken ct = default);
         Task<bool> IsUserSubscribedAsync(long eventId, Guid userId, CancellationToken ct = default);
         Task AddRangeAsync(IEnumerable<EventParticipant> participants, CancellationToken ct = default);
+        Task<bool> IsUserParticipantAsync(long eventId, Guid userId, CancellationToken ct = default);
         Task<List<EventParticipant>> GetParticipantsForReminderAsync(
             DateTime from,
             DateTime to,

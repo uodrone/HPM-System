@@ -230,7 +230,7 @@ export class NotificationProfileManager {
         let notificationHTML;
         if (notification) {
             notificationHTML = `
-                <a class="notification-item" href="/notification/${notification.id}">
+                <a class="card-item card-item_notification" href="/notification/${notification.id}">
                     <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>
                     <div class="font-weight-600">${notification.title}</div>
                 </a>
@@ -307,9 +307,9 @@ export class NotificationProfileManager {
                     </h3>
 
                     <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
-                        <div class="notification-image" style="background-image: url(${gatewayUrl}${notification.imageUrl});"></div>
-                        <div class="notification-content">
-                            <div id="notification-date" class="notification-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
+                        <div class="card-image" style="background-image: url(${gatewayUrl}${notification.imageUrl});"></div>
+                        <div class="card-content">
+                            <div id="notification-date" class="card-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
                             <div id="notification-message">${notification.message}</div>
                         </div>
                     </div>

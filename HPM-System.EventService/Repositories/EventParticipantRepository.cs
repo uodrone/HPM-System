@@ -30,6 +30,12 @@ namespace HPM_System.EventService.Repositories
                 .ToListAsync(ct);
         }
 
+        public async Task<bool> IsUserParticipantAsync(long eventId, Guid userId, CancellationToken ct = default)
+        {
+            return await _context.EventParticipants
+                .AnyAsync(ep => ep.EventId == eventId && ep.UserId == userId, ct);
+        }
+
         public async Task<List<Guid>> GetSubscribedUserIdsAsync(long eventId, CancellationToken ct = default)
         {
             return await _context.EventParticipants

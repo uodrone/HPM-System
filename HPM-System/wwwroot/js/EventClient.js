@@ -101,6 +101,46 @@ export class EventClient {
     }
 
     /**
+    * Получить bool является ли пользователь с id участником события с id?
+    */
+    async isUserParticipant(userId, eventId) {
+        const response = await window.apiCall(
+            this._getUrl(`/${eventId}/participants/${userId}`),
+            { method: 'GET' }
+        );
+        if (!response.ok) throw new Error('Ошибка проверки участия');
+        return await response.json(); // true или false
+    }
+
+    /**
+     * Проверяет, подписан ли текущий пользователь на событие
+     * @param {number} eventId
+     * @returns {Promise<boolean>}
+     */
+    async IsCurrentUserSubscribed(eventId) {
+        try {
+            const response = await window.apiCall(
+                this._getUrl(`/${eventId}/is-subscribed`),
+                {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                    // window.apiCall должен автоматически добавить Authorization!
+                }
+            );
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Ошибка проверки подписки: ${errorText}`);
+            }
+
+            return await response.json(); // true или false
+        } catch (error) {
+            console.error('Ошибка при проверке подписки на событие:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Подписаться на событие
      * @param {number} eventId
      * @returns {Promise<boolean>}

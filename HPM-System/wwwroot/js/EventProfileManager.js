@@ -4,7 +4,7 @@ import { EventClient } from './EventClient.js';
 import { FileStorageClient } from './FileStorageClient.js';
 import { DateFormat } from './DateFormat.js';
 
-export class NotificationProfileManager {
+export class EventProfileManager {
     constructor () {
         this.houseProfile = new ApartmentHouses();
         this.userId = window.authManager.userData.userId;
@@ -95,7 +95,7 @@ export class NotificationProfileManager {
         let eventHTML;
         if (event) {
             eventHTML = `
-                <a class="event-item" href="/event/${event.id}">
+                <a class="card-item card-item_event" href="/event/${event.id}">
                     <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(event.eventDateTime)}</div>
                     <div class="font-weight-600">${event.title}</div>
                 </a>
@@ -103,6 +103,27 @@ export class NotificationProfileManager {
         }
 
         return eventHTML;
+    }
+
+    EventDetails (event, gatewayUrl) {
+        console.log(`событие`);
+        console.log(event);
+
+        if (event != null) {
+            const eventData = document.getElementById('event-date');
+            eventData.innerHTML = DateFormat.DateFormatToRuString(event.eventDateTime);
+
+            const eventImage = document.getElementById('event-image');
+            eventImage.setAttribute('src', `${gatewayUrl}${event.imageUrl}`);
+
+            const eventTitle = document.getElementById('event-title');
+            eventTitle.innerHTML = event.title;
+            
+            const eventDescription = document.getElementById('event-description');
+            eventDescription.innerHTML = event.description;
+        } else {
+            document.getElementById('event-profile').innerHTML = 'Страница недоступна';
+        }        
     }
 }
 
@@ -113,7 +134,7 @@ document.addEventListener('authStateChanged', async () => {
 
     if (isAuthenticated && userData) {
         const userId = window.authManager.userData.userId;
-        const eventProfile = new NotificationProfileManager();
+        const eventProfile = new EventProfileManager();
         const eventClient = new EventClient();
 
         console.log('Аутентификация пройдена');
@@ -142,10 +163,26 @@ document.addEventListener('authStateChanged', async () => {
             eventProfile.InsertDataToMainPage(eventByUser);
         }
 
-
-        if (UrlParts.includes(`event`) && UrlParts.includes('by-user') && UrlParts.includes(userId)) {
-            const eventsByUser = await eventClient.GetUserEvents(userId);            
-            eventProfileProfile.EventListListByUserId(notificationsByUser, notificationClient.gatewayUrl);
+        if (UrlParts.includes(`event`)) {
+            if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {
+                const eventsByUser = await eventClient.GetUserEvents();            
+                eventProfile.EventListListByUserId(notificationsByUser, eventClient.gatewayUrl);
+            } else if (!isNaN(Number(UrlParts[1]))) {     
+                const eventId = UrlParts[1];           
+                const isUserParticipant = await eventClient.isUserParticipant(userId, eventId);
+                if (isUserParticipant) {
+                    const event = await eventClient.GetEventById(eventId);
+                    eventProfile.EventDetails(event, eventClient.gatewayUrl);
+                    
+                    const IsCurrentUserSubscribed = await eventClient.IsCurrentUserSubscribed(eventId);
+                    if (IsCurrentUserSubscribed)
+                        document.querySelector('.btn[data-action="subscribe-to-event"]').remove();
+                    else
+                        document.querySelector('.btn[data-action="unsubscribe-to-event"]').remove();
+                } else {
+                    document.getElementById('event-profile').innerHTML = 'Страница недоступна';
+                }
+            }
         }
     }
 });

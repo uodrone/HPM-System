@@ -46,6 +46,23 @@ namespace HPM_System.EventService.Controllers
             return Ok(events);
         }
 
+        [HttpGet("{eventId:long}/participants/{userId:guid}")]
+        [Authorize]
+        public async Task<ActionResult<bool>> IsUserEventParticipant(Guid userId, long eventId, CancellationToken ct = default)
+        {
+            var isParticipant = await _eventService.IsUserParticipantAsync(eventId, userId, ct);
+            return Ok(isParticipant);
+        }
+
+        [HttpGet("{eventId:long}/is-subscribed")]
+        [Authorize] // ← только для авторизованных
+        public async Task<ActionResult<bool>> IsCurrentUserSubscribed(long eventId, CancellationToken ct = default)
+        {
+            var userId = User.GetUserId();
+            var isSubscribed = await _eventService.IsUserSubscribedAsync(eventId, userId, ct);
+            return Ok(isSubscribed);
+        }
+
         [HttpPost("{id:long}/subscribe")]
         public async Task<IActionResult> Subscribe(long id, CancellationToken ct = default)
         {

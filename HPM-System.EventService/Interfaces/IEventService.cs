@@ -12,5 +12,6 @@ namespace HPM_System.EventService.Services.Interfaces
         Task SubscribeAsync(long eventId, Guid userId, CancellationToken ct = default);
         Task UnsubscribeAsync(long eventId, Guid userId, CancellationToken ct = default);
         Task<bool> IsUserSubscribedAsync(long eventId, Guid userId, CancellationToken ct = default);
+        Task<bool> IsUserParticipantAsync(long eventId, Guid userId, CancellationToken ct = default);
     }
 }

@@ -1,5 +1,20 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div id="event-profile" class="profile">
+	<div class="container py-5">
+		<div class="profile-group dashboard-card my-4" data-group="event">
+			<h3 class="card-header card-header_event w-100">Профиль события</h3>
+			<div class="w-100 text-start">
+				<div id="event-date" class="event-date mb-3"></div>
+				<div>
+					<img id="event-image" src="" alt="Alternate Text" />
+				</div>
+				<h3 id="event-title" class="my-4"></h3>
+				<div id="event-description"></div>
+			</div>
+
+			<div class="d-flex gap-4 w-100">
+				<div class="btn btn_primary" title="При подписке на событие - вам придет напоминание о грядущих событиях в Telegram-bot" data-action="subscribe-to-event">Принять участие</div>
+				<div class="btn btn_primary" title="Перестать получать уведомления о событии" data-action="unsubscribe-to-event">Отписаться от события</div>
+			</div>
+		</div>
+	</div>
+</div>

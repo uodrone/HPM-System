@@ -3671,6 +3671,96 @@ var EventClient = /*#__PURE__*/function () {
       return GetUserEvents;
     }()
     /**
+    * Получить bool является ли пользователь с id участником события с id?
+    */
+    )
+  }, {
+    key: "isUserParticipant",
+    value: (function () {
+      var _isUserParticipant = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId, eventId) {
+        var response;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              _context4.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId, "/participants/").concat(userId)), {
+                method: 'GET'
+              });
+            case 1:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 2;
+                break;
+              }
+              throw new Error('Ошибка проверки участия');
+            case 2:
+              _context4.n = 3;
+              return response.json();
+            case 3:
+              return _context4.a(2, _context4.v);
+          }
+        }, _callee4, this);
+      }));
+      function isUserParticipant(_x3, _x4) {
+        return _isUserParticipant.apply(this, arguments);
+      }
+      return isUserParticipant;
+    }()
+    /**
+     * Проверяет, подписан ли текущий пользователь на событие
+     * @param {number} eventId
+     * @returns {Promise<boolean>}
+     */
+    )
+  }, {
+    key: "IsCurrentUserSubscribed",
+    value: (function () {
+      var _IsCurrentUserSubscribed = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(eventId) {
+        var response, errorText, _t4;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId, "/is-subscribed")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+                // window.apiCall должен автоматически добавить Authorization!
+              });
+            case 1:
+              response = _context5.v;
+              if (response.ok) {
+                _context5.n = 3;
+                break;
+              }
+              _context5.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context5.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0438 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0438: ".concat(errorText));
+            case 3:
+              _context5.n = 4;
+              return response.json();
+            case 4:
+              return _context5.a(2, _context5.v);
+            case 5:
+              _context5.p = 5;
+              _t4 = _context5.v;
+              console.error('Ошибка при проверке подписки на событие:', _t4);
+              throw _t4;
+            case 6:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 5]]);
+      }));
+      function IsCurrentUserSubscribed(_x5) {
+        return _IsCurrentUserSubscribed.apply(this, arguments);
+      }
+      return IsCurrentUserSubscribed;
+    }()
+    /**
      * Подписаться на событие
      * @param {number} eventId
      * @returns {Promise<boolean>}
@@ -3679,13 +3769,13 @@ var EventClient = /*#__PURE__*/function () {
   }, {
     key: "SubscribeToEvent",
     value: (function () {
-      var _SubscribeToEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(eventId) {
-        var response, errorText, _t4;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.p = _context4.n) {
+      var _SubscribeToEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(eventId) {
+        var response, errorText, _t5;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
             case 0:
-              _context4.p = 0;
-              _context4.n = 1;
+              _context6.p = 0;
+              _context6.n = 1;
               return window.apiCall(this._getUrl("/".concat(eventId, "/subscribe")), {
                 method: 'POST',
                 headers: {
@@ -3693,29 +3783,29 @@ var EventClient = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context4.v;
+              response = _context6.v;
               if (response.ok) {
-                _context4.n = 3;
+                _context6.n = 3;
                 break;
               }
-              _context4.n = 2;
+              _context6.n = 2;
               return response.text();
             case 2:
-              errorText = _context4.v;
+              errorText = _context6.v;
               throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0438 \u043D\u0430 \u0441\u043E\u0431\u044B\u0442\u0438\u0435: ".concat(errorText));
             case 3:
-              return _context4.a(2, true);
+              return _context6.a(2, true);
             case 4:
-              _context4.p = 4;
-              _t4 = _context4.v;
-              console.error('Ошибка при подписке на событие:', _t4);
-              throw _t4;
+              _context6.p = 4;
+              _t5 = _context6.v;
+              console.error('Ошибка при подписке на событие:', _t5);
+              throw _t5;
             case 5:
-              return _context4.a(2);
+              return _context6.a(2);
           }
-        }, _callee4, this, [[0, 4]]);
+        }, _callee6, this, [[0, 4]]);
       }));
-      function SubscribeToEvent(_x3) {
+      function SubscribeToEvent(_x6) {
         return _SubscribeToEvent.apply(this, arguments);
       }
       return SubscribeToEvent;
@@ -3729,13 +3819,13 @@ var EventClient = /*#__PURE__*/function () {
   }, {
     key: "UnsubscribeFromEvent",
     value: (function () {
-      var _UnsubscribeFromEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(eventId) {
-        var response, errorText, _t5;
-        return _regenerator().w(function (_context5) {
-          while (1) switch (_context5.p = _context5.n) {
+      var _UnsubscribeFromEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(eventId) {
+        var response, errorText, _t6;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
             case 0:
-              _context5.p = 0;
-              _context5.n = 1;
+              _context7.p = 0;
+              _context7.n = 1;
               return window.apiCall(this._getUrl("/".concat(eventId, "/unsubscribe")), {
                 method: 'DELETE',
                 headers: {
@@ -3743,29 +3833,29 @@ var EventClient = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context5.v;
+              response = _context7.v;
               if (response.ok) {
-                _context5.n = 3;
+                _context7.n = 3;
                 break;
               }
-              _context5.n = 2;
+              _context7.n = 2;
               return response.text();
             case 2:
-              errorText = _context5.v;
+              errorText = _context7.v;
               throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043F\u0438\u0441\u043A\u0438 \u043E\u0442 \u0441\u043E\u0431\u044B\u0442\u0438\u044F: ".concat(errorText));
             case 3:
-              return _context5.a(2, true);
+              return _context7.a(2, true);
             case 4:
-              _context5.p = 4;
-              _t5 = _context5.v;
-              console.error('Ошибка при отписке от события:', _t5);
-              throw _t5;
+              _context7.p = 4;
+              _t6 = _context7.v;
+              console.error('Ошибка при отписке от события:', _t6);
+              throw _t6;
             case 5:
-              return _context5.a(2);
+              return _context7.a(2);
           }
-        }, _callee5, this, [[0, 4]]);
+        }, _callee7, this, [[0, 4]]);
       }));
-      function UnsubscribeFromEvent(_x4) {
+      function UnsubscribeFromEvent(_x7) {
         return _UnsubscribeFromEvent.apply(this, arguments);
       }
       return UnsubscribeFromEvent;
@@ -3802,7 +3892,7 @@ var EventClient = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   NotificationProfileManager: () => (/* binding */ NotificationProfileManager)
+/* harmony export */   EventProfileManager: () => (/* binding */ EventProfileManager)
 /* harmony export */ });
 /* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
 /* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
@@ -3824,13 +3914,13 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 
-var NotificationProfileManager = /*#__PURE__*/function () {
-  function NotificationProfileManager() {
-    _classCallCheck(this, NotificationProfileManager);
+var EventProfileManager = /*#__PURE__*/function () {
+  function EventProfileManager() {
+    _classCallCheck(this, EventProfileManager);
     this.houseProfile = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
     this.userId = window.authManager.userData.userId;
   }
-  return _createClass(NotificationProfileManager, [{
+  return _createClass(EventProfileManager, [{
     key: "InsertDataToCreateEvent",
     value: function () {
       var _InsertDataToCreateEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
@@ -3971,14 +4061,32 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     value: function EventMainPageTemplate(event) {
       var eventHTML;
       if (event) {
-        eventHTML = "\n                <a class=\"event-item\" href=\"/event/".concat(event.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime), "</div>\n                    <div class=\"font-weight-600\">").concat(event.title, "</div>\n                </a>\n            ");
+        eventHTML = "\n                <a class=\"card-item card-item_event\" href=\"/event/".concat(event.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime), "</div>\n                    <div class=\"font-weight-600\">").concat(event.title, "</div>\n                </a>\n            ");
       }
       return eventHTML;
+    }
+  }, {
+    key: "EventDetails",
+    value: function EventDetails(event, gatewayUrl) {
+      console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u0435");
+      console.log(event);
+      if (event != null) {
+        var eventData = document.getElementById('event-date');
+        eventData.innerHTML = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime);
+        var eventImage = document.getElementById('event-image');
+        eventImage.setAttribute('src', "".concat(gatewayUrl).concat(event.imageUrl));
+        var eventTitle = document.getElementById('event-title');
+        eventTitle.innerHTML = event.title;
+        var eventDescription = document.getElementById('event-description');
+        eventDescription.innerHTML = event.description;
+      } else {
+        document.getElementById('event-profile').innerHTML = 'Страница недоступна';
+      }
     }
   }]);
 }();
 document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, eventsByUser;
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, eventsByUser, eventId, isUserParticipant, _event, IsCurrentUserSubscribed;
   return _regenerator().w(function (_context5) {
     while (1) switch (_context5.n) {
       case 0:
@@ -3986,11 +4094,11 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context5.n = 6;
+          _context5.n = 11;
           break;
         }
         userId = window.authManager.userData.userId;
-        eventProfile = new NotificationProfileManager();
+        eventProfile = new EventProfileManager();
         eventClient = new _EventClient_js__WEBPACK_IMPORTED_MODULE_2__.EventClient();
         console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/event/create')) {
@@ -4034,16 +4142,50 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         console.log(eventByUser);
         eventProfile.InsertDataToMainPage(eventByUser);
       case 4:
-        if (!(UrlParts.includes("event") && UrlParts.includes('by-user') && UrlParts.includes(userId))) {
+        if (!UrlParts.includes("event")) {
+          _context5.n = 11;
+          break;
+        }
+        if (!(UrlParts.includes('by-user') && UrlParts.includes(userId))) {
           _context5.n = 6;
           break;
         }
         _context5.n = 5;
-        return eventClient.GetUserEvents(userId);
+        return eventClient.GetUserEvents();
       case 5:
         eventsByUser = _context5.v;
-        eventProfileProfile.EventListListByUserId(notificationsByUser, notificationClient.gatewayUrl);
+        eventProfile.EventListListByUserId(notificationsByUser, eventClient.gatewayUrl);
+        _context5.n = 11;
+        break;
       case 6:
+        if (isNaN(Number(UrlParts[1]))) {
+          _context5.n = 11;
+          break;
+        }
+        eventId = UrlParts[1];
+        _context5.n = 7;
+        return eventClient.isUserParticipant(userId, eventId);
+      case 7:
+        isUserParticipant = _context5.v;
+        if (!isUserParticipant) {
+          _context5.n = 10;
+          break;
+        }
+        _context5.n = 8;
+        return eventClient.GetEventById(eventId);
+      case 8:
+        _event = _context5.v;
+        eventProfile.EventDetails(_event, eventClient.gatewayUrl);
+        _context5.n = 9;
+        return eventClient.IsCurrentUserSubscribed(eventId);
+      case 9:
+        IsCurrentUserSubscribed = _context5.v;
+        if (IsCurrentUserSubscribed) document.querySelector('.btn[data-action="subscribe-to-event"]').remove();else document.querySelector('.btn[data-action="unsubscribe-to-event"]').remove();
+        _context5.n = 11;
+        break;
+      case 10:
+        document.getElementById('event-profile').innerHTML = 'Страница недоступна';
+      case 11:
         return _context5.a(2);
     }
   }, _callee5);
@@ -6041,7 +6183,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     value: function NotificationMainPageTemplate(notification) {
       var notificationHTML;
       if (notification) {
-        notificationHTML = "\n                <a class=\"notification-item\" href=\"/notification/".concat(notification.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>\n                    <div class=\"font-weight-600\">").concat(notification.title, "</div>\n                </a>\n            ");
+        notificationHTML = "\n                <a class=\"card-item card-item_notification\" href=\"/notification/".concat(notification.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>\n                    <div class=\"font-weight-600\">").concat(notification.title, "</div>\n                </a>\n            ");
       }
       return notificationHTML;
     }
@@ -6112,7 +6254,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
         // Формируем класс и span для даты прочтения
         var readClass = isReadByCurrentUser ? 'readed' : '';
         var readAtSpan = isReadByCurrentUser ? "<span class=\"read-at\">\u041F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(readAt), "</span>") : '';
-        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\" style=\"background-image: url(").concat(gatewayUrl).concat(notification.imageUrl, ");\"></div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"card-image\" style=\"background-image: url(").concat(gatewayUrl).concat(notification.imageUrl, ");\"></div>\n                        <div class=\"card-content\">\n                            <div id=\"notification-date\" class=\"card-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return notificationHTML;
     }

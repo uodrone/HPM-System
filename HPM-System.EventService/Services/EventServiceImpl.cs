@@ -5,6 +5,7 @@ using HPM_System.EventService.Models;
 using HPM_System.EventService.Repositories;
 using HPM_System.EventService.Services.HttpClients;
 using HPM_System.EventService.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HPM_System.EventService.Services
@@ -164,6 +165,11 @@ namespace HPM_System.EventService.Services
             }
 
             return result;
+        }
+
+        public async Task<bool> IsUserParticipantAsync(long eventId, Guid userId, CancellationToken ct = default)
+        {
+            return await _participantRepo.IsUserParticipantAsync(eventId, userId, ct);
         }
 
         public async Task SubscribeAsync(long eventId, Guid userId, CancellationToken ct = default)
