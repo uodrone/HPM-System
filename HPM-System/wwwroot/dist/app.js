@@ -27,6 +27,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/css/event.css":
+/*!*******************************!*\
+  !*** ./wwwroot/css/event.css ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./wwwroot/css/file-manager.css":
 /*!**************************************!*\
   !*** ./wwwroot/css/file-manager.css ***!
@@ -3409,21 +3422,874 @@ var DateFormat = /*#__PURE__*/function () {
   return _createClass(DateFormat, null, [{
     key: "DateFormatToRuString",
     value: function DateFormatToRuString(isoString) {
-      var date = new Date(isoString);
+      var date = new Date(isoString); // ISO строка автоматически интерпретируется как UTC
+
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
       var hours = date.getHours();
       var minutes = date.getMinutes();
-      var day = date.getUTCDate(); // без ведущего нуля
-      var year = date.getUTCFullYear();
       var months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-      var month = months[date.getUTCMonth()]; // getUTCMonth() → 0–11
+      var month = months[monthIndex];
 
-      return "".concat(day, " ").concat(month, " ").concat(year, ", ").concat(hours, ":").concat(minutes);
+      // Форматируем часы и минуты с ведущим нулём при необходимости
+      var hh = String(hours).padStart(2, '0');
+      var mm = String(minutes).padStart(2, '0');
+      return "".concat(day, " ").concat(month, " ").concat(year, ", ").concat(hh, ":").concat(mm);
     }
   }]);
 }();
 document.addEventListener('DOMContentLoaded', function () {
   new DateFormat();
 });
+
+/***/ }),
+
+/***/ "./wwwroot/js/EventClient.js":
+/*!***********************************!*\
+  !*** ./wwwroot/js/EventClient.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EventClient: () => (/* binding */ EventClient)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var EventClient = /*#__PURE__*/function () {
+  function EventClient() {
+    _classCallCheck(this, EventClient);
+    this.gatewayUrl = 'http://localhost:55699'; // Gateway
+    this.apiPath = '/api/events'; // lowercase — по соглашению Gateway
+  }
+
+  /**
+   * Получить полный URL для эндпоинта (через Gateway)
+   * @param {string} endpoint 
+   * @returns {string}
+   */
+  return _createClass(EventClient, [{
+    key: "_getUrl",
+    value: function _getUrl(endpoint) {
+      return "".concat(this.gatewayUrl).concat(this.apiPath).concat(endpoint);
+    }
+
+    /**
+     * Создать новое событие
+     * @param {Object} eventData
+     * @returns {Promise<Object>} — созданное событие
+     */
+  }, {
+    key: "CreateEvent",
+    value: (function () {
+      var _CreateEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(eventData) {
+        var payload, response, errorText, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              if (eventData.title) {
+                _context.n = 1;
+                break;
+              }
+              throw new Error('Поле title обязательно');
+            case 1:
+              if (eventData.eventDateTime) {
+                _context.n = 2;
+                break;
+              }
+              throw new Error('Поле eventDateTime обязательно');
+            case 2:
+              payload = {
+                title: eventData.title,
+                description: eventData.description || null,
+                imageUrl: eventData.imageUrl || null,
+                eventDateTime: eventData.eventDateTime,
+                // ISO 8601 строка или Date
+                place: eventData.place || null,
+                communityId: eventData.communityId || null,
+                communityType: eventData.communityType || 0 // 0 = House
+              };
+              _context.p = 3;
+              _context.n = 4;
+              return window.apiCall(this._getUrl(''), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+              });
+            case 4:
+              response = _context.v;
+              if (response.ok) {
+                _context.n = 6;
+                break;
+              }
+              _context.n = 5;
+              return response.text();
+            case 5:
+              errorText = _context.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u044F \u0441\u043E\u0431\u044B\u0442\u0438\u044F: ".concat(errorText));
+            case 6:
+              _context.n = 7;
+              return response.json();
+            case 7:
+              return _context.a(2, _context.v);
+            case 8:
+              _context.p = 8;
+              _t = _context.v;
+              console.error('Ошибка при создании события:', _t);
+              throw _t;
+            case 9:
+              return _context.a(2);
+          }
+        }, _callee, this, [[3, 8]]);
+      }));
+      function CreateEvent(_x) {
+        return _CreateEvent.apply(this, arguments);
+      }
+      return CreateEvent;
+    }()
+    /**
+     * Получить событие по ID
+     * @param {number} eventId
+     * @returns {Promise<Object|null>}
+     */
+    )
+  }, {
+    key: "GetEventById",
+    value: (function () {
+      var _GetEventById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(eventId) {
+        var response, errorText, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
+              _context2.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId)), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context2.v;
+              if (response.ok) {
+                _context2.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context2.n = 2;
+                break;
+              }
+              return _context2.a(2, null);
+            case 2:
+              _context2.n = 3;
+              return response.text();
+            case 3:
+              errorText = _context2.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u043E\u0431\u044B\u0442\u0438\u044F: ".concat(errorText));
+            case 4:
+              _context2.n = 5;
+              return response.json();
+            case 5:
+              return _context2.a(2, _context2.v);
+            case 6:
+              _context2.p = 6;
+              _t2 = _context2.v;
+              console.error('Ошибка при получении события по ID:', _t2);
+              throw _t2;
+            case 7:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[0, 6]]);
+      }));
+      function GetEventById(_x2) {
+        return _GetEventById.apply(this, arguments);
+      }
+      return GetEventById;
+    }()
+    /**
+     * Получить все события текущего пользователя
+     * @returns {Promise<Array>}
+     */
+    )
+  }, {
+    key: "GetUserEvents",
+    value: (function () {
+      var _GetUserEvents = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var response, errorText, _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              _context3.p = 0;
+              _context3.n = 1;
+              return window.apiCall(this._getUrl(''), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context3.v;
+              if (response.ok) {
+                _context3.n = 3;
+                break;
+              }
+              _context3.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context3.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u043E\u0431\u044B\u0442\u0438\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F: ".concat(errorText));
+            case 3:
+              _context3.n = 4;
+              return response.json();
+            case 4:
+              return _context3.a(2, _context3.v);
+            case 5:
+              _context3.p = 5;
+              _t3 = _context3.v;
+              console.error('Ошибка при получении событий пользователя:', _t3);
+              throw _t3;
+            case 6:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[0, 5]]);
+      }));
+      function GetUserEvents() {
+        return _GetUserEvents.apply(this, arguments);
+      }
+      return GetUserEvents;
+    }()
+    /**
+    * Получить bool является ли пользователь с id участником события с id?
+    */
+    )
+  }, {
+    key: "isUserParticipant",
+    value: (function () {
+      var _isUserParticipant = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId, eventId) {
+        var response;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              _context4.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId, "/participants/").concat(userId)), {
+                method: 'GET'
+              });
+            case 1:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 2;
+                break;
+              }
+              throw new Error('Ошибка проверки участия');
+            case 2:
+              _context4.n = 3;
+              return response.json();
+            case 3:
+              return _context4.a(2, _context4.v);
+          }
+        }, _callee4, this);
+      }));
+      function isUserParticipant(_x3, _x4) {
+        return _isUserParticipant.apply(this, arguments);
+      }
+      return isUserParticipant;
+    }()
+    /**
+     * Проверяет, подписан ли текущий пользователь на событие
+     * @param {number} eventId
+     * @returns {Promise<boolean>}
+     */
+    )
+  }, {
+    key: "IsCurrentUserSubscribed",
+    value: (function () {
+      var _IsCurrentUserSubscribed = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(eventId) {
+        var response, errorText, _t4;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              _context5.p = 0;
+              _context5.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId, "/is-subscribed")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+                // window.apiCall должен автоматически добавить Authorization!
+              });
+            case 1:
+              response = _context5.v;
+              if (response.ok) {
+                _context5.n = 3;
+                break;
+              }
+              _context5.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context5.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0438 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0438: ".concat(errorText));
+            case 3:
+              _context5.n = 4;
+              return response.json();
+            case 4:
+              return _context5.a(2, _context5.v);
+            case 5:
+              _context5.p = 5;
+              _t4 = _context5.v;
+              console.error('Ошибка при проверке подписки на событие:', _t4);
+              throw _t4;
+            case 6:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[0, 5]]);
+      }));
+      function IsCurrentUserSubscribed(_x5) {
+        return _IsCurrentUserSubscribed.apply(this, arguments);
+      }
+      return IsCurrentUserSubscribed;
+    }()
+    /**
+     * Подписаться на событие
+     * @param {number} eventId
+     * @returns {Promise<boolean>}
+     */
+    )
+  }, {
+    key: "SubscribeToEvent",
+    value: (function () {
+      var _SubscribeToEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(eventId) {
+        var response, errorText, _t5;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId, "/subscribe")), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 3;
+                break;
+              }
+              _context6.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context6.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0438 \u043D\u0430 \u0441\u043E\u0431\u044B\u0442\u0438\u0435: ".concat(errorText));
+            case 3:
+              console.log("\u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0430 \u043F\u0440\u043E\u0448\u043B\u0430 \u0443\u0441\u043F\u0435\u0448\u043D\u043E");
+              return _context6.a(2, true);
+            case 4:
+              _context6.p = 4;
+              _t5 = _context6.v;
+              console.error('Ошибка при подписке на событие:', _t5);
+              throw _t5;
+            case 5:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 4]]);
+      }));
+      function SubscribeToEvent(_x6) {
+        return _SubscribeToEvent.apply(this, arguments);
+      }
+      return SubscribeToEvent;
+    }()
+    /**
+     * Отписаться от события
+     * @param {number} eventId
+     * @returns {Promise<boolean>}
+     */
+    )
+  }, {
+    key: "UnsubscribeFromEvent",
+    value: (function () {
+      var _UnsubscribeFromEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(eventId) {
+        var response, errorText, _t6;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return window.apiCall(this._getUrl("/".concat(eventId, "/unsubscribe")), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context7.v;
+              if (response.ok) {
+                _context7.n = 3;
+                break;
+              }
+              _context7.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context7.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043F\u0438\u0441\u043A\u0438 \u043E\u0442 \u0441\u043E\u0431\u044B\u0442\u0438\u044F: ".concat(errorText));
+            case 3:
+              console.log("\u0432\u044B \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u043E\u0442\u043F\u0438\u0441\u0430\u043D\u044B \u043E\u0442 \u0441\u043E\u0431\u044B\u0442\u0438\u044F");
+              return _context7.a(2, true);
+            case 4:
+              _context7.p = 4;
+              _t6 = _context7.v;
+              console.error('Ошибка при отписке от события:', _t6);
+              throw _t6;
+            case 5:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 4]]);
+      }));
+      function UnsubscribeFromEvent(_x7) {
+        return _UnsubscribeFromEvent.apply(this, arguments);
+      }
+      return UnsubscribeFromEvent;
+    }()
+    /**
+     * Установить базовый URL Gateway (для продакшена)
+     */
+    )
+  }, {
+    key: "SetBaseUrl",
+    value: function SetBaseUrl(newBaseUrl) {
+      this.gatewayUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
+    }
+
+    /**
+     * Получить текущий базовый URL
+     */
+  }, {
+    key: "GetBaseUrl",
+    value: function GetBaseUrl() {
+      return this.gatewayUrl;
+    }
+  }]);
+}();
+
+/***/ }),
+
+/***/ "./wwwroot/js/EventProfileManager.js":
+/*!*******************************************!*\
+  !*** ./wwwroot/js/EventProfileManager.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EventProfileManager: () => (/* binding */ EventProfileManager)
+/* harmony export */ });
+/* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
+/* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
+/* harmony import */ var _EventClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EventClient.js */ "./wwwroot/js/EventClient.js");
+/* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
+/* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+
+
+
+var EventProfileManager = /*#__PURE__*/function () {
+  function EventProfileManager() {
+    _classCallCheck(this, EventProfileManager);
+    this.houseProfile = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
+    this.userId = window.authManager.userData.userId;
+  }
+  return _createClass(EventProfileManager, [{
+    key: "InsertDataToCreateEvent",
+    value: function () {
+      var _InsertDataToCreateEvent = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+        var _this = this;
+        var houseSelector, eventGroup, houses, houseChecks, results, eligibleHouses;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
+            case 0:
+              houseSelector = document.getElementById('houseId');
+              eventGroup = document.querySelector('.profile-group[data-group="event"]'); // Очистим селектор перед заполнением
+              houseSelector.innerHTML = '';
+              _context2.n = 1;
+              return this.houseProfile.GetHousesByUserId(this.userId);
+            case 1:
+              houses = _context2.v;
+              _context2.n = 2;
+              return Promise.all(
+              // Массив промисов для параллельного выполнения
+              houses.map(/*#__PURE__*/function () {
+                var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
+                  var houseHead;
+                  return _regenerator().w(function (_context) {
+                    while (1) switch (_context.n) {
+                      case 0:
+                        _context.n = 1;
+                        return _this.houseProfile.GetHead(house.id);
+                      case 1:
+                        houseHead = _context.v;
+                        if (!(houseHead == null)) {
+                          _context.n = 2;
+                          break;
+                        }
+                        return _context.a(2, null);
+                      case 2:
+                        return _context.a(2, {
+                          house: house,
+                          isHead: houseHead.id === _this.userId
+                        });
+                    }
+                  }, _callee);
+                }));
+                return function (_x) {
+                  return _ref.apply(this, arguments);
+                };
+              }()));
+            case 2:
+              houseChecks = _context2.v;
+              // Фильтруем только ненулевые значения, т.е. там где есть старший по дому
+              results = houseChecks.filter(function (item) {
+                return item !== null;
+              }); // Фильтруем дома, где пользователь — глава
+              eligibleHouses = results.filter(function (_ref2) {
+                var isHead = _ref2.isHead;
+                return isHead;
+              }).map(function (_ref3) {
+                var house = _ref3.house;
+                return house;
+              });
+              if (eligibleHouses.length) {
+                // Пользователь — глава хотя бы в одном доме => показываем селект
+                eligibleHouses.forEach(function (house) {
+                  var option = document.createElement('option');
+                  option.value = house.id;
+                  option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, ", ").concat(house.number);
+                  houseSelector.appendChild(option);
+                });
+              } else {
+                // Ни в одном доме не глава => событие недоступно
+                if (eventGroup) {
+                  eventGroup.innerHTML = "\u0421\u043E\u0437\u0434\u0430\u043D\u0438\u0435 \u0441\u043E\u0431\u044B\u0442\u0438\u044F \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E";
+                }
+              }
+            case 3:
+              return _context2.a(2);
+          }
+        }, _callee2, this);
+      }));
+      function InsertDataToCreateEvent() {
+        return _InsertDataToCreateEvent.apply(this, arguments);
+      }
+      return InsertDataToCreateEvent;
+    }()
+  }, {
+    key: "CollectEventDataToCreate",
+    value: function () {
+      var _CollectEventDataToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var fileInput, file, fileManager, isFileUpload, eventData;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.n) {
+            case 0:
+              //собираем картинку
+              fileInput = document.getElementById('fileInput');
+              file = fileInput.files[0];
+              fileManager = new _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__.FileStorageClient();
+              _context3.n = 1;
+              return fileManager.UploadFile(file);
+            case 1:
+              isFileUpload = _context3.v;
+              console.log("\u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438");
+              console.log(isFileUpload);
+              eventData = null;
+              if (isFileUpload != null) {
+                eventData = {
+                  title: document.getElementById('title').value,
+                  description: document.getElementById('message').value,
+                  imageUrl: isFileUpload.fileUrl,
+                  eventDateTime: new Date(document.getElementById('eventDateTime').value).toISOString(),
+                  place: document.getElementById('place').value,
+                  communityId: document.getElementById('houseId').value,
+                  communityType: 0
+                };
+              }
+              return _context3.a(2, eventData);
+          }
+        }, _callee3);
+      }));
+      function CollectEventDataToCreate() {
+        return _CollectEventDataToCreate.apply(this, arguments);
+      }
+      return CollectEventDataToCreate;
+    }()
+  }, {
+    key: "InsertDataToMainPage",
+    value: function InsertDataToMainPage(data) {
+      var _this2 = this;
+      var eventsContainer = document.querySelector('.events-list');
+      if (data.length) {
+        data.forEach(function (event) {
+          var eventMainPageTemplate = _this2.EventMainPageTemplate(event);
+          eventsContainer.insertAdjacentHTML('beforeend', eventMainPageTemplate);
+        });
+      } else {
+        eventsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "EventMainPageTemplate",
+    value: function EventMainPageTemplate(event) {
+      var eventHTML;
+      if (event) {
+        eventHTML = "\n                <a class=\"card-item card-item_event\" href=\"/event/".concat(event.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime), "</div>\n                    <div class=\"font-weight-600\">").concat(event.title, "</div>\n                </a>\n            ");
+      }
+      return eventHTML;
+    }
+  }, {
+    key: "EventDetails",
+    value: function EventDetails(event, gatewayUrl) {
+      console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u0435");
+      console.log(event);
+      if (event != null) {
+        var eventData = document.getElementById('event-date');
+        eventData.innerHTML = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime);
+        var eventImage = document.getElementById('event-image');
+        eventImage.setAttribute('src', "".concat(gatewayUrl).concat(event.imageUrl));
+        var eventTitle = document.getElementById('event-title');
+        eventTitle.innerHTML = event.title;
+        var eventDescription = document.getElementById('event-description');
+        eventDescription.innerHTML = event.description;
+      } else {
+        document.getElementById('event-profile').innerHTML = 'Страница недоступна';
+      }
+    }
+  }, {
+    key: "EventsListByUserId",
+    value: function EventsListByUserId(events, gatewayUrl) {
+      var eventsContainer = document.querySelector('.events-by-user-list');
+      if (events.length) {
+        var _iterator = _createForOfIteratorHelper(events),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _event = _step.value;
+            console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u0435");
+            console.log(_event);
+            var eventToListByUserId = this.EventTemplateByUserId(_event, gatewayUrl);
+            eventsContainer.insertAdjacentHTML('beforeend', eventToListByUserId);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      } else {
+        eventsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "EventTemplateByUserId",
+    value: function EventTemplateByUserId(event, gatewayUrl) {
+      var eventHTML;
+      if (event) {
+        eventHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"event\" data-event-id=\"".concat(event.id, "\">\n                    <h3 class=\"card-header card-header_event w-100\">\n                        <a href=\"/notification/").concat(event.id, "\">").concat(event.title, "</a>\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"card-image\" style=\"background-image: url(").concat(gatewayUrl).concat(event.imageUrl, ");\"></div>\n                        <div class=\"card-content\">\n                            <div id=\"notification-date\" class=\"card-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(event.eventDateTime), "</div>                        \n                            <div id=\"notification-message\">").concat(event.description, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+      }
+      return eventHTML;
+    }
+  }, {
+    key: "HideButtonsSubcribeToEvent",
+    value: function HideButtonsSubcribeToEvent(IsCurrentUserSubscribed) {
+      if (IsCurrentUserSubscribed) {
+        document.querySelector('.btn[data-action="subscribe-to-event"]').classList.add('d-none');
+        document.querySelector('.btn[data-action="unsubscribe-to-event"]').classList.remove('d-none');
+      } else {
+        document.querySelector('.btn[data-action="unsubscribe-to-event"]').classList.add('d-none');
+        document.querySelector('.btn[data-action="subscribe-to-event"]').classList.remove('d-none');
+      }
+    }
+  }, {
+    key: "SubscribeUnsubscribeActions",
+    value: function SubscribeUnsubscribeActions(eventClient, eventId, IsCurrentUserSubscribed) {
+      var _this3 = this;
+      this.HideButtonsSubcribeToEvent(IsCurrentUserSubscribed);
+      if (document.querySelector('.btn[data-action="subscribe-to-event"]') != null) {
+        document.querySelector('.btn[data-action="subscribe-to-event"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+          var subscribe;
+          return _regenerator().w(function (_context4) {
+            while (1) switch (_context4.n) {
+              case 0:
+                _context4.n = 1;
+                return eventClient.SubscribeToEvent(eventId);
+              case 1:
+                subscribe = _context4.v;
+                if (subscribe) {
+                  _this3.HideButtonsSubcribeToEvent(subscribe);
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Подписка на событие прошла успешно!', 'green');
+                }
+              case 2:
+                return _context4.a(2);
+            }
+          }, _callee4);
+        })));
+      }
+      if (document.querySelector('.btn[data-action="unsubscribe-to-event"]') != null) {
+        document.querySelector('.btn[data-action="unsubscribe-to-event"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+          var unsubscribe;
+          return _regenerator().w(function (_context5) {
+            while (1) switch (_context5.n) {
+              case 0:
+                _context5.n = 1;
+                return eventClient.UnsubscribeFromEvent(eventId);
+              case 1:
+                unsubscribe = _context5.v;
+                if (unsubscribe) {
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Подписка на событие прошла успешно!', 'green');
+                  _this3.HideButtonsSubcribeToEvent(!unsubscribe);
+                }
+              case 2:
+                return _context5.a(2);
+            }
+          }, _callee5);
+        })));
+      }
+    }
+  }]);
+}();
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, eventProfile, eventClient, eventByUser, EventsListByUserId, eventId, isUserParticipant, _event2, IsCurrentUserSubscribed;
+  return _regenerator().w(function (_context7) {
+    while (1) switch (_context7.n) {
+      case 0:
+        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        Regex = new window.RegularExtension();
+        UrlParts = Regex.getUrlPathParts(window.location.href);
+        if (!(isAuthenticated && userData)) {
+          _context7.n = 11;
+          break;
+        }
+        userId = window.authManager.userData.userId;
+        eventProfile = new EventProfileManager();
+        eventClient = new _EventClient_js__WEBPACK_IMPORTED_MODULE_2__.EventClient();
+        console.log('Аутентификация пройдена');
+        if (!window.location.pathname.includes('/event/create')) {
+          _context7.n = 2;
+          break;
+        }
+        _context7.n = 1;
+        return eventProfile.InsertDataToCreateEvent();
+      case 1:
+        document.querySelector('[data-action="save-event-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+          var eventData, eventCreate;
+          return _regenerator().w(function (_context6) {
+            while (1) switch (_context6.n) {
+              case 0:
+                _context6.n = 1;
+                return eventProfile.CollectEventDataToCreate();
+              case 1:
+                eventData = _context6.v;
+                console.log('Данные для сохранения:', eventData);
+
+                //Отправляем данные на сервер
+                _context6.n = 2;
+                return eventClient.CreateEvent(eventData);
+              case 2:
+                eventCreate = _context6.v;
+                if (eventCreate) {
+                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Событие создано успешно!', 'green');
+                }
+              case 3:
+                return _context6.a(2);
+            }
+          }, _callee6);
+        })));
+      case 2:
+        if (!(window.location.pathname == '/')) {
+          _context7.n = 4;
+          break;
+        }
+        _context7.n = 3;
+        return eventClient.GetUserEvents(userId);
+      case 3:
+        eventByUser = _context7.v;
+        console.log("\u0441\u043E\u0431\u044B\u0442\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
+        console.log(eventByUser);
+        eventProfile.InsertDataToMainPage(eventByUser);
+      case 4:
+        if (!UrlParts.includes("event")) {
+          _context7.n = 11;
+          break;
+        }
+        if (!(UrlParts.includes('by-user') && UrlParts.includes(userId))) {
+          _context7.n = 6;
+          break;
+        }
+        _context7.n = 5;
+        return eventClient.GetUserEvents();
+      case 5:
+        EventsListByUserId = _context7.v;
+        console.log('все события пользователя:');
+        console.log(EventsListByUserId);
+        eventProfile.EventsListByUserId(EventsListByUserId, eventClient.gatewayUrl);
+        _context7.n = 11;
+        break;
+      case 6:
+        if (isNaN(Number(UrlParts[1]))) {
+          _context7.n = 11;
+          break;
+        }
+        eventId = UrlParts[1];
+        _context7.n = 7;
+        return eventClient.isUserParticipant(userId, eventId);
+      case 7:
+        isUserParticipant = _context7.v;
+        if (!isUserParticipant) {
+          _context7.n = 10;
+          break;
+        }
+        _context7.n = 8;
+        return eventClient.GetEventById(eventId);
+      case 8:
+        _event2 = _context7.v;
+        eventProfile.EventDetails(_event2, eventClient.gatewayUrl);
+        _context7.n = 9;
+        return eventClient.IsCurrentUserSubscribed(eventId);
+      case 9:
+        IsCurrentUserSubscribed = _context7.v;
+        eventProfile.SubscribeUnsubscribeActions(eventClient, eventId, IsCurrentUserSubscribed);
+        _context7.n = 11;
+        break;
+      case 10:
+        document.getElementById('event-profile').innerHTML = 'Страница недоступна';
+      case 11:
+        return _context7.a(2);
+    }
+  }, _callee7);
+})));
 
 /***/ }),
 
@@ -4468,7 +5334,6 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 var NotificationClient = /*#__PURE__*/function () {
   function NotificationClient() {
     _classCallCheck(this, NotificationClient);
-    // ИЗМЕНЕНИЕ 1: Используем Gateway вместо прямого адреса микросервиса
     this.gatewayUrl = 'http://localhost:55699'; // Gateway
     this.apiPath = '/api/notifications'; // lowercase по соглашению Gateway
   }
@@ -5418,7 +6283,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
     value: function NotificationMainPageTemplate(notification) {
       var notificationHTML;
       if (notification) {
-        notificationHTML = "\n                <a class=\"notification-item\" href=\"/notification/".concat(notification.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>\n                    <div class=\"font-weight-600\">").concat(notification.title, "</div>\n                </a>\n            ");
+        notificationHTML = "\n                <a class=\"card-item card-item_notification\" href=\"/notification/".concat(notification.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>\n                    <div class=\"font-weight-600\">").concat(notification.title, "</div>\n                </a>\n            ");
       }
       return notificationHTML;
     }
@@ -5489,7 +6354,7 @@ var NotificationProfileManager = /*#__PURE__*/function () {
         // Формируем класс и span для даты прочтения
         var readClass = isReadByCurrentUser ? 'readed' : '';
         var readAtSpan = isReadByCurrentUser ? "<span class=\"read-at\">\u041F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(readAt), "</span>") : '';
-        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\" style=\"background-image: url(").concat(gatewayUrl).concat(notification.imageUrl, ");\"></div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
+        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-notification-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"card-image\" style=\"background-image: url(").concat(gatewayUrl).concat(notification.imageUrl, ");\"></div>\n                        <div class=\"card-content\">\n                            <div id=\"notification-date\" class=\"card-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
       }
       return notificationHTML;
     }
@@ -5523,9 +6388,6 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           return _regenerator().w(function (_context6) {
             while (1) switch (_context6.n) {
               case 0:
-                console.log('Клик по кнопке сохранения уведомления');
-
-                // Собираем данные уведомления
                 _context6.n = 1;
                 return notificationProfile.CollectNotificationDataToCreate();
               case 1:
@@ -7093,6 +7955,8 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/js/HouseValidator.js");
 /******/ 	__webpack_require__("./wwwroot/js/FileStorageClient.js");
 /******/ 	__webpack_require__("./wwwroot/js/FileHandler.js");
+/******/ 	__webpack_require__("./wwwroot/js/EventProfileManager.js");
+/******/ 	__webpack_require__("./wwwroot/js/EventClient.js");
 /******/ 	__webpack_require__("./wwwroot/js/DateFormat.js");
 /******/ 	__webpack_require__("./wwwroot/js/AuthManager.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentStatuses.js");
@@ -7109,6 +7973,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/css/grid.css");
 /******/ 	__webpack_require__("./wwwroot/css/fonts-colors-and-backgrounds.css");
 /******/ 	__webpack_require__("./wwwroot/css/file-manager.css");
+/******/ 	__webpack_require__("./wwwroot/css/event.css");
 /******/ 	__webpack_require__("./wwwroot/css/card.css");
 /******/ 	var __webpack_exports__ = __webpack_require__("./wwwroot/css/btn.css");
 /******/ 	

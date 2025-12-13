@@ -54,7 +54,7 @@
         transition: var(--standard-transition);
     }
 
-    input[type="text"] + label,  input[type="number"] + label, textarea + label {
+    input[type="text"] + label, input[type="datetime-local"] + label,  input[type="number"] + label, textarea + label {
         position: absolute;
         top: 0;
         left: 5px;
@@ -71,7 +71,7 @@
         font-size: var(--label-focus-size);
     }
 
-    input[type="text"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label, textarea:not(:placeholder-shown) + label {
+    input[type="text"]:not(:placeholder-shown) + label, input[type="datetime-local"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label, textarea:not(:placeholder-shown) + label {
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }

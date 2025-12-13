@@ -197,7 +197,12 @@ services:
       - RabbitMQ__Username=${RABBITMQ_USER}
       - RabbitMQ__Password=${RABBITMQ_PASS}
       - Services__ApartmentService__BaseUrl=http://hpm-system.apartmentservice:8080
+      - Services__NotificationService__BaseUrl=http://hpm-system.notificationservice:8080
       - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      - Services__FileStorageService__BaseUrl=http://hpm-system.filestorageservice:8080
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
     networks: [hpm-network]
 
   hpm-system.telegrambotservice:

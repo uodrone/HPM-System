@@ -47,36 +47,3 @@
         transform: translateX(-50%) translateY(-20px);
     }
 }
-
-
-.notification-item {
-    text-decoration: none;
-    cursor: pointer;
-    color: #000;
-    background: linear-gradient(135deg, #c1ffcc 0%, #7dff93 100%);
-    border-radius: 8px;
-    padding: 1rem;
-    border-left: 4px solid #099105;
-    display: block;
-
-    &:hover {
-        color: #000;
-    }
-}
-
-.notification-image {
-    max-width: 200px;
-    aspect-ratio: 1/1;
-    width: 100%;
-    background-position: 50% 50%;    
-    background-size: cover;
-
-    @media (max-width: 767px) {
-        max-width: 100%;
-    }
-}
-
-.notification-date {
-    color: var(--gray-any);
-    font-size: 14px;
-}

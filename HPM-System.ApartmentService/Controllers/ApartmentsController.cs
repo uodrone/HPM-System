@@ -209,6 +209,67 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
+        /// Получить идентификаторы всех владельцев квартир в доме
+        /// </summary>
+        [HttpGet("house/{houseId}/owner-ids")]
+        public async Task<ActionResult<List<Guid>>> GetHouseOwnerIds(long houseId)
+        {
+            try
+            {
+                var apartments = await _apartmentRepository.GetApartmentsByHouseIdWithUsersAndStatusesAsync(houseId);
+
+                var ownerIds = new HashSet<Guid>(); // HashSet — чтобы избежать дубликатов
+
+                foreach (var apartment in apartments)
+                {
+                    foreach (var apartmentUser in apartment.Users)
+                    {
+                        if (apartmentUser.Statuses.Any(s => s.Status.Name == "Владелец"))
+                        {
+                            ownerIds.Add(apartmentUser.UserId);
+                        }
+                    }
+                }
+
+                return Ok(ownerIds.ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении owner IDs для дома {HouseId}", houseId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
+        /// Получить идентификаторы всех пользователей квартир в доме
+        /// </summary>
+        [HttpGet("house/{houseId}/user-ids")]
+        public async Task<ActionResult<List<Guid>>> GetHouseUserIds(long houseId)
+        {
+            try
+            {
+                var apartments = await _apartmentRepository.GetApartmentsByHouseIdWithUsersAndStatusesAsync(houseId);
+
+                var userIds = new HashSet<Guid>(); // HashSet — чтобы избежать дубликатов
+
+                foreach (var apartment in apartments)
+                {
+                    foreach (var apartmentUser in apartment.Users)
+                    {
+                        userIds.Add(apartmentUser.UserId);
+                    }
+                }
+
+                return Ok(userIds.ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении owner IDs для дома {HouseId}", houseId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
         /// Создать новую квартиру
         /// </summary>
         [HttpPost]
