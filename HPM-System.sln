@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.EventService", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.TelegramBotService", "HPM-System.TelegramBotService\HPM-System.TelegramBotService.csproj", "{25EFE03D-1F6F-4F89-BE5B-CE74FBC8BCCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPM-System.VotingService", "HPM-System.VotingService\HPM-System.VotingService.csproj", "{60FB3E71-102B-BADE-9C17-1843E3F1FE74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{25EFE03D-1F6F-4F89-BE5B-CE74FBC8BCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25EFE03D-1F6F-4F89-BE5B-CE74FBC8BCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25EFE03D-1F6F-4F89-BE5B-CE74FBC8BCCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60FB3E71-102B-BADE-9C17-1843E3F1FE74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60FB3E71-102B-BADE-9C17-1843E3F1FE74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60FB3E71-102B-BADE-9C17-1843E3F1FE74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60FB3E71-102B-BADE-9C17-1843E3F1FE74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
