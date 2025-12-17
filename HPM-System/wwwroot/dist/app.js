@@ -183,6 +183,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./wwwroot/css/voting.css":
+/*!********************************!*\
+  !*** ./wwwroot/css/voting.css ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./wwwroot/js/ApartmentHouses.js":
 /*!***************************************!*\
   !*** ./wwwroot/js/ApartmentHouses.js ***!
@@ -7883,6 +7896,1175 @@ var UserValidator = /*#__PURE__*/function () {
   }]);
 }();
 
+/***/ }),
+
+/***/ "./wwwroot/js/VotingClient.js":
+/*!************************************!*\
+  !*** ./wwwroot/js/VotingClient.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   VotingClient: () => (/* binding */ VotingClient)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var VotingClient = /*#__PURE__*/function () {
+  function VotingClient() {
+    _classCallCheck(this, VotingClient);
+    this.gatewayUrl = 'http://localhost:55699'; // Gateway
+    this.apiPath = '/api/votings'; // lowercase — по соглашению Gateway
+  }
+
+  /**
+   * Получить полный URL для эндпоинта (через Gateway)
+   * @param {string} endpoint 
+   * @returns {string}
+   */
+  return _createClass(VotingClient, [{
+    key: "_getUrl",
+    value: function _getUrl(endpoint) {
+      return "".concat(this.gatewayUrl).concat(this.apiPath).concat(endpoint);
+    }
+
+    /**
+     * Получить все голосования
+     * @returns {Promise<Array>}
+     */
+  }, {
+    key: "GetAllVotings",
+    value: (function () {
+      var _GetAllVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+        var response, errorText, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return window.apiCall(this._getUrl(''), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context.v;
+              if (response.ok) {
+                _context.n = 3;
+                break;
+              }
+              _context.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439: ".concat(errorText));
+            case 3:
+              _context.n = 4;
+              return response.json();
+            case 4:
+              return _context.a(2, _context.v);
+            case 5:
+              _context.p = 5;
+              _t = _context.v;
+              console.error('Ошибка при получении голосований:', _t);
+              throw _t;
+            case 6:
+              return _context.a(2);
+          }
+        }, _callee, this, [[0, 5]]);
+      }));
+      function GetAllVotings() {
+        return _GetAllVotings.apply(this, arguments);
+      }
+      return GetAllVotings;
+    }()
+    /**
+     * Создать новое голосование
+     * @param {Object} votingData
+     * @param {string} votingData.questionPut - Вопрос для голосования
+     * @param {Array<string>} votingData.responseOptions - Варианты ответа (минимум 2)
+     * @param {Array<number>} votingData.houseIds - ID домов для голосования
+     * @param {number} votingData.durationInHours - Длительность в часах (по умолчанию 168 = 7 дней)
+     * @returns {Promise<Object>} - созданное голосование
+     */
+    )
+  }, {
+    key: "CreateVoting",
+    value: (function () {
+      var _CreateVoting = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(votingData) {
+        var payload, response, errorText, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              if (votingData.questionPut) {
+                _context2.n = 1;
+                break;
+              }
+              throw new Error('Поле questionPut обязательно');
+            case 1:
+              if (!(!votingData.responseOptions || votingData.responseOptions.length < 2)) {
+                _context2.n = 2;
+                break;
+              }
+              throw new Error('Необходимо указать минимум 2 варианта ответа');
+            case 2:
+              if (!(!votingData.houseIds || votingData.houseIds.length === 0)) {
+                _context2.n = 3;
+                break;
+              }
+              throw new Error('Необходимо указать хотя бы один дом');
+            case 3:
+              payload = {
+                questionPut: votingData.questionPut,
+                responseOptions: votingData.responseOptions,
+                houseIds: votingData.houseIds,
+                durationInHours: votingData.durationInHours || 168 // 7 дней по умолчанию
+              };
+              _context2.p = 4;
+              _context2.n = 5;
+              return window.apiCall(this._getUrl(''), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+              });
+            case 5:
+              response = _context2.v;
+              if (response.ok) {
+                _context2.n = 7;
+                break;
+              }
+              _context2.n = 6;
+              return response.text();
+            case 6:
+              errorText = _context2.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F: ".concat(errorText));
+            case 7:
+              _context2.n = 8;
+              return response.json();
+            case 8:
+              return _context2.a(2, _context2.v);
+            case 9:
+              _context2.p = 9;
+              _t2 = _context2.v;
+              console.error('Ошибка при создании голосования:', _t2);
+              throw _t2;
+            case 10:
+              return _context2.a(2);
+          }
+        }, _callee2, this, [[4, 9]]);
+      }));
+      function CreateVoting(_x) {
+        return _CreateVoting.apply(this, arguments);
+      }
+      return CreateVoting;
+    }()
+    /**
+     * Проголосовать в голосовании
+     * @param {string} votingId - GUID голосования
+     * @param {Object} voteData
+     * @param {string} voteData.userId - GUID пользователя
+     * @param {number} voteData.apartmentId - ID квартиры
+     * @param {string} voteData.response - Выбранный вариант ответа
+     * @returns {Promise<string>} - сообщение о результате
+     */
+    )
+  }, {
+    key: "SubmitVote",
+    value: (function () {
+      var _SubmitVote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(votingId, voteData) {
+        var payload, response, errorText, _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              if (voteData.userId) {
+                _context3.n = 1;
+                break;
+              }
+              throw new Error('Поле userId обязательно');
+            case 1:
+              if (voteData.apartmentId) {
+                _context3.n = 2;
+                break;
+              }
+              throw new Error('Поле apartmentId обязательно');
+            case 2:
+              if (voteData.response) {
+                _context3.n = 3;
+                break;
+              }
+              throw new Error('Поле response обязательно');
+            case 3:
+              payload = {
+                userId: voteData.userId,
+                apartmentId: voteData.apartmentId,
+                response: voteData.response
+              };
+              _context3.p = 4;
+              _context3.n = 5;
+              return window.apiCall(this._getUrl("/".concat(votingId, "/vote")), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+              });
+            case 5:
+              response = _context3.v;
+              if (response.ok) {
+                _context3.n = 7;
+                break;
+              }
+              _context3.n = 6;
+              return response.text();
+            case 6:
+              errorText = _context3.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0438: ".concat(errorText));
+            case 7:
+              _context3.n = 8;
+              return response.text();
+            case 8:
+              return _context3.a(2, _context3.v);
+            case 9:
+              _context3.p = 9;
+              _t3 = _context3.v;
+              console.error('Ошибка при отправке голоса:', _t3);
+              throw _t3;
+            case 10:
+              return _context3.a(2);
+          }
+        }, _callee3, this, [[4, 9]]);
+      }));
+      function SubmitVote(_x2, _x3) {
+        return _SubmitVote.apply(this, arguments);
+      }
+      return SubmitVote;
+    }()
+    /**
+     * Получить результаты голосования
+     * @param {string} votingId - GUID голосования
+     * @returns {Promise<Object>} - результаты голосования
+     */
+    )
+  }, {
+    key: "GetVotingResults",
+    value: (function () {
+      var _GetVotingResults = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(votingId) {
+        var response, errorText, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _context4.p = 0;
+              _context4.n = 1;
+              return window.apiCall(this._getUrl("/".concat(votingId, "/results")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context4.v;
+              if (response.ok) {
+                _context4.n = 4;
+                break;
+              }
+              if (!(response.status === 404)) {
+                _context4.n = 2;
+                break;
+              }
+              throw new Error('Голосование не найдено');
+            case 2:
+              _context4.n = 3;
+              return response.text();
+            case 3:
+              errorText = _context4.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u043E\u0432: ".concat(errorText));
+            case 4:
+              _context4.n = 5;
+              return response.json();
+            case 5:
+              return _context4.a(2, _context4.v);
+            case 6:
+              _context4.p = 6;
+              _t4 = _context4.v;
+              console.error('Ошибка при получении результатов голосования:', _t4);
+              throw _t4;
+            case 7:
+              return _context4.a(2);
+          }
+        }, _callee4, this, [[0, 6]]);
+      }));
+      function GetVotingResults(_x4) {
+        return _GetVotingResults.apply(this, arguments);
+      }
+      return GetVotingResults;
+    }()
+    /**
+     * Установить решение комиссии по голосованию
+     * @param {string} votingId - GUID голосования
+     * @param {string} decision - Текст решения
+     * @returns {Promise<string>} - сообщение о результате
+     */
+    )
+  }, {
+    key: "SetVotingDecision",
+    value: (function () {
+      var _SetVotingDecision = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(votingId, decision) {
+        var response, errorText, _t5;
+        return _regenerator().w(function (_context5) {
+          while (1) switch (_context5.p = _context5.n) {
+            case 0:
+              if (!(!decision || decision.trim() === '')) {
+                _context5.n = 1;
+                break;
+              }
+              throw new Error('Решение не может быть пустым');
+            case 1:
+              _context5.p = 1;
+              _context5.n = 2;
+              return window.apiCall(this._getUrl("/".concat(votingId, "/decision")), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(decision)
+              });
+            case 2:
+              response = _context5.v;
+              if (response.ok) {
+                _context5.n = 4;
+                break;
+              }
+              _context5.n = 3;
+              return response.text();
+            case 3:
+              errorText = _context5.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0432\u044B\u043D\u0435\u0441\u0435\u043D\u0438\u0438 \u0440\u0435\u0448\u0435\u043D\u0438\u044F: ".concat(errorText));
+            case 4:
+              _context5.n = 5;
+              return response.text();
+            case 5:
+              return _context5.a(2, _context5.v);
+            case 6:
+              _context5.p = 6;
+              _t5 = _context5.v;
+              console.error('Ошибка при установке решения:', _t5);
+              throw _t5;
+            case 7:
+              return _context5.a(2);
+          }
+        }, _callee5, this, [[1, 6]]);
+      }));
+      function SetVotingDecision(_x5, _x6) {
+        return _SetVotingDecision.apply(this, arguments);
+      }
+      return SetVotingDecision;
+    }()
+    /**
+     * Удалить голосование
+     * @param {string} votingId - GUID голосования
+     * @returns {Promise<boolean>}
+     */
+    )
+  }, {
+    key: "DeleteVoting",
+    value: (function () {
+      var _DeleteVoting = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(votingId) {
+        var response, errorText, _t6;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              _context6.n = 1;
+              return window.apiCall(this._getUrl("/".concat(votingId)), {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context6.v;
+              if (response.ok) {
+                _context6.n = 3;
+                break;
+              }
+              _context6.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context6.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F: ".concat(errorText));
+            case 3:
+              console.log('Голосование успешно удалено');
+              return _context6.a(2, true);
+            case 4:
+              _context6.p = 4;
+              _t6 = _context6.v;
+              console.error('Ошибка при удалении голосования:', _t6);
+              throw _t6;
+            case 5:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 4]]);
+      }));
+      function DeleteVoting(_x7) {
+        return _DeleteVoting.apply(this, arguments);
+      }
+      return DeleteVoting;
+    }()
+    /**
+     * Получить активные голосования пользователя (где он ещё не проголосовал)
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>}
+     */
+    )
+  }, {
+    key: "GetUserActiveVotings",
+    value: (function () {
+      var _GetUserActiveVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(userId) {
+        var response, errorText, _t7;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              _context7.p = 0;
+              _context7.n = 1;
+              return window.apiCall(this._getUrl("/user/".concat(userId, "/active")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context7.v;
+              if (response.ok) {
+                _context7.n = 3;
+                break;
+              }
+              _context7.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context7.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u0445 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439: ".concat(errorText));
+            case 3:
+              _context7.n = 4;
+              return response.json();
+            case 4:
+              return _context7.a(2, _context7.v);
+            case 5:
+              _context7.p = 5;
+              _t7 = _context7.v;
+              console.error('Ошибка при получении активных голосований пользователя:', _t7);
+              throw _t7;
+            case 6:
+              return _context7.a(2);
+          }
+        }, _callee7, this, [[0, 5]]);
+      }));
+      function GetUserActiveVotings(_x8) {
+        return _GetUserActiveVotings.apply(this, arguments);
+      }
+      return GetUserActiveVotings;
+    }()
+    /**
+     * Получить завершённые голосования пользователя (где он уже проголосовал)
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>}
+     */
+    )
+  }, {
+    key: "GetUserCompletedVotings",
+    value: (function () {
+      var _GetUserCompletedVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(userId) {
+        var response, errorText, _t8;
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
+            case 0:
+              _context8.p = 0;
+              _context8.n = 1;
+              return window.apiCall(this._getUrl("/user/".concat(userId, "/completed")), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context8.v;
+              if (response.ok) {
+                _context8.n = 3;
+                break;
+              }
+              _context8.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context8.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043D\u043D\u044B\u0445 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439: ".concat(errorText));
+            case 3:
+              _context8.n = 4;
+              return response.json();
+            case 4:
+              return _context8.a(2, _context8.v);
+            case 5:
+              _context8.p = 5;
+              _t8 = _context8.v;
+              console.error('Ошибка при получении завершённых голосований пользователя:', _t8);
+              throw _t8;
+            case 6:
+              return _context8.a(2);
+          }
+        }, _callee8, this, [[0, 5]]);
+      }));
+      function GetUserCompletedVotings(_x9) {
+        return _GetUserCompletedVotings.apply(this, arguments);
+      }
+      return GetUserCompletedVotings;
+    }()
+    /**
+     * Получить завершённые голосования без решения комиссии
+     * @returns {Promise<Array>}
+     */
+    )
+  }, {
+    key: "GetUnresolvedVotings",
+    value: (function () {
+      var _GetUnresolvedVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9() {
+        var response, errorText, _t9;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
+            case 0:
+              _context9.p = 0;
+              _context9.n = 1;
+              return window.apiCall(this._getUrl('/completed-without-decision'), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context9.v;
+              if (response.ok) {
+                _context9.n = 3;
+                break;
+              }
+              _context9.n = 2;
+              return response.text();
+            case 2:
+              errorText = _context9.v;
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043D\u0435\u0440\u0435\u0448\u0451\u043D\u043D\u044B\u0445 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439: ".concat(errorText));
+            case 3:
+              _context9.n = 4;
+              return response.json();
+            case 4:
+              return _context9.a(2, _context9.v);
+            case 5:
+              _context9.p = 5;
+              _t9 = _context9.v;
+              console.error('Ошибка при получении нерешённых голосований:', _t9);
+              throw _t9;
+            case 6:
+              return _context9.a(2);
+          }
+        }, _callee9, this, [[0, 5]]);
+      }));
+      function GetUnresolvedVotings() {
+        return _GetUnresolvedVotings.apply(this, arguments);
+      }
+      return GetUnresolvedVotings;
+    }()
+    /**
+     * Установить базовый URL Gateway (для продакшена)
+     * @param {string} newBaseUrl
+     */
+    )
+  }, {
+    key: "SetBaseUrl",
+    value: function SetBaseUrl(newBaseUrl) {
+      this.gatewayUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
+    }
+
+    /**
+     * Получить текущий базовый URL
+     * @returns {string}
+     */
+  }, {
+    key: "GetBaseUrl",
+    value: function GetBaseUrl() {
+      return this.gatewayUrl;
+    }
+  }]);
+}();
+
+/***/ }),
+
+/***/ "./wwwroot/js/VotingProfileManager.js":
+/*!********************************************!*\
+  !*** ./wwwroot/js/VotingProfileManager.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   VotingProfileManager: () => (/* binding */ VotingProfileManager)
+/* harmony export */ });
+/* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
+/* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
+/* harmony import */ var _VotingClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./VotingClient.js */ "./wwwroot/js/VotingClient.js");
+/* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
+/* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+
+
+
+var VotingProfileManager = /*#__PURE__*/function () {
+  function VotingProfileManager() {
+    _classCallCheck(this, VotingProfileManager);
+    this.houseProfile = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
+    this.userId = window.authManager.userData.userId;
+    this.votingClient = new _VotingClient_js__WEBPACK_IMPORTED_MODULE_2__.VotingClient(); // Добавляем клиент для работы с API
+  }
+  return _createClass(VotingProfileManager, [{
+    key: "InsertDataToCreateVote",
+    value: function () {
+      var _InsertDataToCreateVote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+        var _this = this;
+        var houseSelector, eventGroup, houses, houseChecks, results, eligibleHouses;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
+            case 0:
+              houseSelector = document.getElementById('houseId');
+              eventGroup = document.querySelector('.profile-group[data-group="vote"]'); // Очистим селектор перед заполнением
+              houseSelector.innerHTML = '';
+              _context2.n = 1;
+              return this.houseProfile.GetHousesByUserId(this.userId);
+            case 1:
+              houses = _context2.v;
+              _context2.n = 2;
+              return Promise.all(
+              // Массив промисов для параллельного выполнения
+              houses.map(/*#__PURE__*/function () {
+                var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
+                  var houseHead;
+                  return _regenerator().w(function (_context) {
+                    while (1) switch (_context.n) {
+                      case 0:
+                        _context.n = 1;
+                        return _this.houseProfile.GetHead(house.id);
+                      case 1:
+                        houseHead = _context.v;
+                        if (!(houseHead == null)) {
+                          _context.n = 2;
+                          break;
+                        }
+                        return _context.a(2, null);
+                      case 2:
+                        return _context.a(2, {
+                          house: house,
+                          isHead: houseHead.id === _this.userId
+                        });
+                    }
+                  }, _callee);
+                }));
+                return function (_x) {
+                  return _ref.apply(this, arguments);
+                };
+              }()));
+            case 2:
+              houseChecks = _context2.v;
+              // Фильтруем только ненулевые значения, т.е. там где есть старший по дому
+              results = houseChecks.filter(function (item) {
+                return item !== null;
+              }); // Фильтруем дома, где пользователь — глава
+              eligibleHouses = results.filter(function (_ref2) {
+                var isHead = _ref2.isHead;
+                return isHead;
+              }).map(function (_ref3) {
+                var house = _ref3.house;
+                return house;
+              });
+              if (eligibleHouses.length) {
+                // Пользователь — глава хотя бы в одном доме => показываем селект
+                eligibleHouses.forEach(function (house) {
+                  var option = document.createElement('option');
+                  option.value = house.id;
+                  option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, ", ").concat(house.number);
+                  houseSelector.appendChild(option);
+                });
+              } else {
+                // Ни в одном доме не глава => событие недоступно
+                if (eventGroup) {
+                  eventGroup.innerHTML = "\u0421\u043E\u0437\u0434\u0430\u043D\u0438\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E";
+                }
+              }
+            case 3:
+              return _context2.a(2);
+          }
+        }, _callee2, this);
+      }));
+      function InsertDataToCreateVote() {
+        return _InsertDataToCreateVote.apply(this, arguments);
+      }
+      return InsertDataToCreateVote;
+    }()
+  }, {
+    key: "AddAnswerOption",
+    value: function AddAnswerOption() {
+      var listContainer = document.querySelector('[data-list="AnswerOptions"]');
+      if (!listContainer) return;
+      var inputs = listContainer.querySelectorAll('input[id^="answerOption-"]');
+      if (inputs.length >= 10) return;
+      var newIndex = inputs.length + 1;
+      var newId = "answerOption-".concat(newIndex);
+      var newGroup = document.createElement('div');
+      newGroup.className = 'form-group';
+      newGroup.innerHTML = "\n            <input type=\"text\" placeholder=\"\" name=\"".concat(newId, "\" id=\"").concat(newId, "\" value=\"\">\n            <label for=\"").concat(newId, "\">\u0412\u0430\u0440\u0438\u0430\u043D\u0442 \u043E\u0442\u0432\u0435\u0442\u0430</label>\n            <div class=\"error invisible\" data-error=\"").concat(newId, "\">\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 \u0432\u0430\u0440\u0438\u0430\u043D\u0442 \u043E\u0442\u0432\u0435\u0442\u0430</div>\n        ");
+      var buttonsWrapper = listContainer.querySelector('.d-flex.gap-3');
+      if (buttonsWrapper) {
+        listContainer.insertBefore(newGroup, buttonsWrapper);
+      }
+      var btnRemove = listContainer.querySelector('[data-action="remove-answer-option"]');
+      if (btnRemove && newIndex > 2) {
+        btnRemove.classList.remove('d-none');
+      }
+    }
+  }, {
+    key: "RemoveAnswerOption",
+    value: function RemoveAnswerOption() {
+      var listContainer = document.querySelector('[data-list="AnswerOptions"]');
+      if (!listContainer) return;
+      var inputs = listContainer.querySelectorAll('input[id^="answerOption-"]');
+      if (inputs.length <= 2) return;
+      var lastGroup = inputs[inputs.length - 1].closest('.form-group');
+      if (lastGroup) lastGroup.remove();
+      var updatedInputs = listContainer.querySelectorAll('input[id^="answerOption-"]');
+      var btnRemove = listContainer.querySelector('[data-action="remove-answer-option"]');
+      if (btnRemove && updatedInputs.length <= 2) {
+        btnRemove.classList.add('d-none');
+      }
+    }
+  }, {
+    key: "ValidateAnswerOptions",
+    value: function ValidateAnswerOptions(options) {
+      var fieldErrors = {};
+      var errorsToShow = {};
+      var punctuationRegex = /^(?:[\0-\/:-@\[-`\{-\xA9\xAB-\xB1\xB4\xB6-\xB8\xBB\xBF\xD7\xF7\u02C2-\u02C5\u02D2-\u02DF\u02E5-\u02EB\u02ED\u02EF-\u036F\u0375\u0378\u0379\u037E\u0380-\u0385\u0387\u038B\u038D\u03A2\u03F6\u0482-\u0489\u0530\u0557\u0558\u055A-\u055F\u0589-\u05CF\u05EB-\u05EE\u05F3-\u061F\u064B-\u065F\u066A-\u066D\u0670\u06D4\u06D6-\u06E4\u06E7-\u06ED\u06FD\u06FE\u0700-\u070F\u0711\u0730-\u074C\u07A6-\u07B0\u07B2-\u07BF\u07EB-\u07F3\u07F6-\u07F9\u07FB-\u07FF\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u083F\u0859-\u085F\u086B-\u086F\u0888\u088F-\u089F\u08CA-\u0903\u093A-\u093C\u093E-\u094F\u0951-\u0957\u0962-\u0965\u0970\u0981-\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA-\u09BC\u09BE-\u09CD\u09CF-\u09DB\u09DE\u09E2-\u09E5\u09F2\u09F3\u09FA\u09FB\u09FD-\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A-\u0A58\u0A5D\u0A5F-\u0A65\u0A70\u0A71\u0A75-\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA-\u0ABC\u0ABE-\u0ACF\u0AD1-\u0ADF\u0AE2-\u0AE5\u0AF0-\u0AF8\u0AFA-\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A-\u0B3C\u0B3E-\u0B5B\u0B5E\u0B62-\u0B65\u0B70\u0B78-\u0B82\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BCF\u0BD1-\u0BE5\u0BF3-\u0C04\u0C0D\u0C11\u0C29\u0C3A-\u0C3C\u0C3E-\u0C57\u0C5B\u0C5C\u0C5E\u0C5F\u0C62-\u0C65\u0C70-\u0C77\u0C7F\u0C81-\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA-\u0CBC\u0CBE-\u0CDC\u0CDF\u0CE2-\u0CE5\u0CF0\u0CF3-\u0D03\u0D0D\u0D11\u0D3B\u0D3C\u0D3E-\u0D4D\u0D4F-\u0D53\u0D57\u0D62-\u0D65\u0D79\u0D80-\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DE5\u0DF0-\u0E00\u0E31\u0E34-\u0E3F\u0E47-\u0E4F\u0E5A-\u0E80\u0E83\u0E85\u0E8B\u0EA4\u0EA6\u0EB1\u0EB4-\u0EBC\u0EBE\u0EBF\u0EC5\u0EC7-\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F01-\u0F1F\u0F34-\u0F3F\u0F48\u0F6D-\u0F87\u0F8D-\u0FFF\u102B-\u103E\u104A-\u104F\u1056-\u1059\u105E-\u1060\u1062-\u1064\u1067-\u106D\u1071-\u1074\u1082-\u108D\u108F\u109A-\u109F\u10C6\u10C8-\u10CC\u10CE\u10CF\u10FB\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B-\u1368\u137D-\u137F\u1390-\u139F\u13F6\u13F7\u13FE-\u1400\u166D\u166E\u1680\u169B-\u169F\u16EB-\u16ED\u16F9-\u16FF\u1712-\u171E\u1732-\u173F\u1752-\u175F\u176D\u1771-\u177F\u17B4-\u17D6\u17D8-\u17DB\u17DD-\u17DF\u17EA-\u17EF\u17FA-\u180F\u181A-\u181F\u1879-\u187F\u1885\u1886\u18A9\u18AB-\u18AF\u18F6-\u18FF\u191F-\u1945\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19FF\u1A17-\u1A1F\u1A55-\u1A7F\u1A8A-\u1A8F\u1A9A-\u1AA6\u1AA8-\u1B04\u1B34-\u1B44\u1B4D-\u1B4F\u1B5A-\u1B82\u1BA1-\u1BAD\u1BE6-\u1BFF\u1C24-\u1C3F\u1C4A-\u1C4C\u1C7E\u1C7F\u1C8B-\u1C8F\u1CBB\u1CBC\u1CC0-\u1CE8\u1CED\u1CF4\u1CF7-\u1CF9\u1CFB-\u1CFF\u1DC0-\u1DFF\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FBD\u1FBF-\u1FC1\u1FC5\u1FCD-\u1FCF\u1FD4\u1FD5\u1FDC-\u1FDF\u1FED-\u1FF1\u1FF5\u1FFD-\u206F\u2072\u2073\u207A-\u207E\u208A-\u208F\u209D-\u2101\u2103-\u2106\u2108\u2109\u2114\u2116-\u2118\u211E-\u2123\u2125\u2127\u2129\u212E\u213A\u213B\u2140-\u2144\u214A-\u214D\u214F\u218A-\u245F\u249C-\u24E9\u2500-\u2775\u2794-\u2BFF\u2CE5-\u2CEA\u2CEF-\u2CF1\u2CF4-\u2CFC\u2CFE\u2CFF\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D70-\u2D7F\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF-\u2E2E\u2E30-\u3004\u3008-\u3020\u302A-\u3030\u3036\u3037\u303D-\u3040\u3097-\u309C\u30A0\u30FB\u3100-\u3104\u3130\u318F-\u3191\u3196-\u319F\u31C0-\u31EF\u3200-\u321F\u322A-\u3247\u3250\u3260-\u327F\u328A-\u32B0\u32C0-\u33FF\u4DC0-\u4DFF\uA48D-\uA4CF\uA4FE\uA4FF\uA60D-\uA60F\uA62C-\uA63F\uA66F-\uA67E\uA69E\uA69F\uA6F0-\uA716\uA720\uA721\uA789\uA78A\uA7CE\uA7CF\uA7D2\uA7D4\uA7DD-\uA7F1\uA802\uA806\uA80B\uA823-\uA82F\uA836-\uA83F\uA874-\uA881\uA8B4-\uA8CF\uA8DA-\uA8F1\uA8F8-\uA8FA\uA8FC\uA8FF\uA926-\uA92F\uA947-\uA95F\uA97D-\uA983\uA9B3-\uA9CE\uA9DA-\uA9DF\uA9E5\uA9FF\uAA29-\uAA3F\uAA43\uAA4C-\uAA4F\uAA5A-\uAA5F\uAA77-\uAA79\uAA7B-\uAA7D\uAAB0\uAAB2-\uAAB4\uAAB7\uAAB8\uAABE\uAABF\uAAC1\uAAC3-\uAADA\uAADE\uAADF\uAAEB-\uAAF1\uAAF5-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F\uAB5B\uAB6A-\uAB6F\uABE3-\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uD7FF\uE000-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB1E\uFB29\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBB2-\uFBD2\uFD3E-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFC-\uFE6F\uFE75\uFEFD-\uFF0F\uFF1A-\uFF20\uFF3B-\uFF40\uFF5B-\uFF65\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFFF]|\uD800[\uDC0C\uDC27\uDC3B\uDC3E\uDC4E\uDC4F\uDC5E-\uDC7F\uDCFB-\uDD06\uDD34-\uDD3F\uDD79-\uDD89\uDD8C-\uDE7F\uDE9D-\uDE9F\uDED1-\uDEE0\uDEFC-\uDEFF\uDF24-\uDF2C\uDF4B-\uDF4F\uDF76-\uDF7F\uDF9E\uDF9F\uDFC4-\uDFC7\uDFD0\uDFD6-\uDFFF]|\uD801[\uDC9E\uDC9F\uDCAA-\uDCAF\uDCD4-\uDCD7\uDCFC-\uDCFF\uDD28-\uDD2F\uDD64-\uDD6F\uDD7B\uDD8B\uDD93\uDD96\uDDA2\uDDB2\uDDBA\uDDBD-\uDDBF\uDDF4-\uDDFF\uDF37-\uDF3F\uDF56-\uDF5F\uDF68-\uDF7F\uDF86\uDFB1\uDFBB-\uDFFF]|\uD802[\uDC06\uDC07\uDC09\uDC36\uDC39-\uDC3B\uDC3D\uDC3E\uDC56\uDC57\uDC77\uDC78\uDC9F-\uDCA6\uDCB0-\uDCDF\uDCF3\uDCF6-\uDCFA\uDD1C-\uDD1F\uDD3A-\uDD7F\uDDB8-\uDDBB\uDDD0\uDDD1\uDE01-\uDE0F\uDE14\uDE18\uDE36-\uDE3F\uDE49-\uDE5F\uDE7F\uDEA0-\uDEBF\uDEC8\uDEE5-\uDEEA\uDEF0-\uDEFF\uDF36-\uDF3F\uDF56\uDF57\uDF73-\uDF77\uDF92-\uDFA8\uDFB0-\uDFFF]|\uD803[\uDC49-\uDC7F\uDCB3-\uDCBF\uDCF3-\uDCF9\uDD24-\uDD2F\uDD3A-\uDD3F\uDD66-\uDD6E\uDD86-\uDE5F\uDE7F\uDEAA-\uDEAF\uDEB2-\uDEC1\uDEC5-\uDEFF\uDF28-\uDF2F\uDF46-\uDF50\uDF55-\uDF6F\uDF82-\uDFAF\uDFCC-\uDFDF\uDFF7-\uDFFF]|\uD804[\uDC00-\uDC02\uDC38-\uDC51\uDC70\uDC73\uDC74\uDC76-\uDC82\uDCB0-\uDCCF\uDCE9-\uDCEF\uDCFA-\uDD02\uDD27-\uDD35\uDD40-\uDD43\uDD45\uDD46\uDD48-\uDD4F\uDD73-\uDD75\uDD77-\uDD82\uDDB3-\uDDC0\uDDC5-\uDDCF\uDDDB\uDDDD-\uDDE0\uDDF5-\uDDFF\uDE12\uDE2C-\uDE3E\uDE41-\uDE7F\uDE87\uDE89\uDE8E\uDE9E\uDEA9-\uDEAF\uDEDF-\uDEEF\uDEFA-\uDF04\uDF0D\uDF0E\uDF11\uDF12\uDF29\uDF31\uDF34\uDF3A-\uDF3C\uDF3E-\uDF4F\uDF51-\uDF5C\uDF62-\uDF7F\uDF8A\uDF8C\uDF8D\uDF8F\uDFB6\uDFB8-\uDFD0\uDFD2\uDFD4-\uDFFF]|\uD805[\uDC35-\uDC46\uDC4B-\uDC4F\uDC5A-\uDC5E\uDC62-\uDC7F\uDCB0-\uDCC3\uDCC6\uDCC8-\uDCCF\uDCDA-\uDD7F\uDDAF-\uDDD7\uDDDC-\uDDFF\uDE30-\uDE43\uDE45-\uDE4F\uDE5A-\uDE7F\uDEAB-\uDEB7\uDEB9-\uDEBF\uDECA-\uDECF\uDEE4-\uDEFF\uDF1B-\uDF2F\uDF3C-\uDF3F\uDF47-\uDFFF]|\uD806[\uDC2C-\uDC9F\uDCF3-\uDCFE\uDD07\uDD08\uDD0A\uDD0B\uDD14\uDD17\uDD30-\uDD3E\uDD40\uDD42-\uDD4F\uDD5A-\uDD9F\uDDA8\uDDA9\uDDD1-\uDDE0\uDDE2\uDDE4-\uDDFF\uDE01-\uDE0A\uDE33-\uDE39\uDE3B-\uDE4F\uDE51-\uDE5B\uDE8A-\uDE9C\uDE9E-\uDEAF\uDEF9-\uDFBF\uDFE1-\uDFEF\uDFFA-\uDFFF]|\uD807[\uDC09\uDC2F-\uDC3F\uDC41-\uDC4F\uDC6D-\uDC71\uDC90-\uDCFF\uDD07\uDD0A\uDD31-\uDD45\uDD47-\uDD4F\uDD5A-\uDD5F\uDD66\uDD69\uDD8A-\uDD97\uDD99-\uDD9F\uDDAA-\uDEDF\uDEF3-\uDF01\uDF03\uDF11\uDF34-\uDF4F\uDF5A-\uDFAF\uDFB1-\uDFBF\uDFD5-\uDFFF]|\uD808[\uDF9A-\uDFFF]|\uD809[\uDC6F-\uDC7F\uDD44-\uDFFF]|[\uD80A\uD812-\uD817\uD819\uD824-\uD82A\uD82D\uD82E\uD830-\uD832\uD836\uD83D\uD83F\uD87C\uD87D\uD87F\uD889-\uDBFF][\uDC00-\uDFFF]|\uD80B[\uDC00-\uDF8F\uDFF1-\uDFFF]|\uD80D[\uDC30-\uDC40\uDC47-\uDC5F]|\uD810[\uDFFB-\uDFFF]|\uD811[\uDE47-\uDFFF]|\uD818[\uDC00-\uDCFF\uDD1E-\uDD2F\uDD3A-\uDFFF]|\uD81A[\uDE39-\uDE3F\uDE5F\uDE6A-\uDE6F\uDEBF\uDECA-\uDECF\uDEEE-\uDEFF\uDF30-\uDF3F\uDF44-\uDF4F\uDF5A\uDF62\uDF78-\uDF7C\uDF90-\uDFFF]|\uD81B[\uDC00-\uDD3F\uDD6D-\uDD6F\uDD7A-\uDE3F\uDE97-\uDEFF\uDF4B-\uDF4F\uDF51-\uDF92\uDFA0-\uDFDF\uDFE2\uDFE4-\uDFFF]|\uD821[\uDFF8-\uDFFF]|\uD823[\uDCD6-\uDCFE\uDD09-\uDFFF]|\uD82B[\uDC00-\uDFEF\uDFF4\uDFFC\uDFFF]|\uD82C[\uDD23-\uDD31\uDD33-\uDD4F\uDD53\uDD54\uDD56-\uDD63\uDD68-\uDD6F\uDEFC-\uDFFF]|\uD82F[\uDC6B-\uDC6F\uDC7D-\uDC7F\uDC89-\uDC8F\uDC9A-\uDFFF]|\uD833[\uDC00-\uDCEF\uDCFA-\uDFFF]|\uD834[\uDC00-\uDEBF\uDED4-\uDEDF\uDEF4-\uDF5F\uDF79-\uDFFF]|\uD835[\uDC55\uDC9D\uDCA0\uDCA1\uDCA3\uDCA4\uDCA7\uDCA8\uDCAD\uDCBA\uDCBC\uDCC4\uDD06\uDD0B\uDD0C\uDD15\uDD1D\uDD3A\uDD3F\uDD45\uDD47-\uDD49\uDD51\uDEA6\uDEA7\uDEC1\uDEDB\uDEFB\uDF15\uDF35\uDF4F\uDF6F\uDF89\uDFA9\uDFC3\uDFCC\uDFCD]|\uD837[\uDC00-\uDEFF\uDF1F-\uDF24\uDF2B-\uDFFF]|\uD838[\uDC00-\uDC2F\uDC6E-\uDCFF\uDD2D-\uDD36\uDD3E\uDD3F\uDD4A-\uDD4D\uDD4F-\uDE8F\uDEAE-\uDEBF\uDEEC-\uDEEF\uDEFA-\uDFFF]|\uD839[\uDC00-\uDCCF\uDCEC-\uDCEF\uDCFA-\uDDCF\uDDEE\uDDEF\uDDFB-\uDFDF\uDFE7\uDFEC\uDFEF\uDFFF]|\uD83A[\uDCC5\uDCC6\uDCD0-\uDCFF\uDD44-\uDD4A\uDD4C-\uDD4F\uDD5A-\uDFFF]|\uD83B[\uDC00-\uDC70\uDCAC\uDCB0\uDCB5-\uDD00\uDD2E\uDD3E-\uDDFF\uDE04\uDE20\uDE23\uDE25\uDE26\uDE28\uDE33\uDE38\uDE3A\uDE3C-\uDE41\uDE43-\uDE46\uDE48\uDE4A\uDE4C\uDE50\uDE53\uDE55\uDE56\uDE58\uDE5A\uDE5C\uDE5E\uDE60\uDE63\uDE65\uDE66\uDE6B\uDE73\uDE78\uDE7D\uDE7F\uDE8A\uDE9C-\uDEA0\uDEA4\uDEAA\uDEBC-\uDFFF]|\uD83C[\uDC00-\uDCFF\uDD0D-\uDFFF]|\uD83E[\uDC00-\uDFEF\uDFFA-\uDFFF]|\uD869[\uDEE0-\uDEFF]|\uD86D[\uDF3A-\uDF3F]|\uD86E[\uDC1E\uDC1F]|\uD873[\uDEA2-\uDEAF]|\uD87A[\uDFE1-\uDFEF]|\uD87B[\uDE5E-\uDFFF]|\uD87E[\uDE1E-\uDFFF]|\uD884[\uDF4B-\uDF4F]|\uD888[\uDFB0-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+$/; // только пунктуация/пробелы, без букв/цифр
+
+      // Проверка каждого варианта
+      var trimmedOptions = [];
+      for (var i = 0; i < options.length; i++) {
+        var raw = options[i];
+        var trimmed = raw.trim();
+        var inputId = "answerOption-".concat(i + 1);
+        var error = null;
+        if (!trimmed) {
+          error = 'Вариант ответа не может быть пустым или содержать только пробелы.';
+        } else if (punctuationRegex.test(trimmed)) {
+          error = 'Вариант ответа не может состоять только из знаков препинания.';
+        }
+        if (error) {
+          fieldErrors[inputId] = error;
+          errorsToShow[inputId] = error;
+        }
+        trimmedOptions.push(trimmed);
+      }
+
+      // Проверка дубликатов (case-insensitive, с trim)
+      var seen = new Set();
+      for (var _i = 0; _i < trimmedOptions.length; _i++) {
+        var opt = trimmedOptions[_i].toLowerCase();
+        var _inputId = "answerOption-".concat(_i + 1);
+        if (opt && seen.has(opt)) {
+          var _error = 'Такой вариант ответа уже существует.';
+          fieldErrors[_inputId] = _error;
+          errorsToShow[_inputId] = _error;
+        }
+        if (opt) seen.add(opt);
+      }
+
+      // Обновляем DOM: показываем/скрываем ошибки
+      var inputs = document.querySelectorAll('input[id^="answerOption-"]');
+      inputs.forEach(function (_, idx) {
+        var inputId = "answerOption-".concat(idx + 1);
+        var errorEl = document.querySelector("[data-error=\"".concat(inputId, "\"]"));
+        if (errorEl) {
+          var hasError = !!errorsToShow[inputId];
+          errorEl.textContent = errorsToShow[inputId] || '';
+          errorEl.classList.toggle('invisible', !hasError);
+        }
+      });
+      var isValid = Object.keys(fieldErrors).length === 0 && options.length >= 2;
+      return {
+        isValid: isValid,
+        fieldErrors: fieldErrors,
+        trimmedOptions: trimmedOptions
+      };
+    }
+
+    /**
+     * Собрать варианты ответов с валидацией
+     * @returns {Array<string>|null} - массив валидных вариантов или null если невалидно
+     */
+  }, {
+    key: "CollectAnswerOptions",
+    value: function CollectAnswerOptions() {
+      var inputs = document.querySelectorAll('input[id^="answerOption-"]');
+      var options = Array.from(inputs).map(function (input) {
+        return input.value;
+      });
+      console.log('Опции голосования:', options);
+      var validation = this.ValidateAnswerOptions(options);
+      if (!validation.isValid) {
+        console.error('Ошибки валидации вариантов ответа:', validation.fieldErrors);
+        return null;
+      }
+
+      // Возвращаем trimmed варианты
+      return validation.trimmedOptions.filter(function (opt) {
+        return opt.length > 0;
+      });
+    }
+
+    /**
+     * Валидация даты и времени завершения голосования
+     * @param {string} dateTimeValue - значение из input datetime-local
+     * @returns {Object} - {isValid, error, hoursFromNow}
+     */
+  }, {
+    key: "ValidateVotingDateTime",
+    value: function ValidateVotingDateTime(dateTimeValue) {
+      var errorEl = document.querySelector('[data-error="votingDateTime"]');
+      if (!dateTimeValue) {
+        if (errorEl) {
+          errorEl.textContent = 'Необходимо указать дату и время завершения голосования';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Необходимо указать дату и время'
+        };
+      }
+      var endDate = new Date(dateTimeValue);
+      var now = new Date();
+      if (isNaN(endDate.getTime())) {
+        if (errorEl) {
+          errorEl.textContent = 'Неверный формат даты и времени';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Неверный формат даты'
+        };
+      }
+      if (endDate <= now) {
+        if (errorEl) {
+          errorEl.textContent = 'Дата завершения должна быть в будущем';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Дата должна быть в будущем'
+        };
+      }
+
+      // Рассчитываем количество часов до завершения
+      var diffMs = endDate.getTime() - now.getTime();
+      var hoursFromNow = Math.ceil(diffMs / (1000 * 60 * 60));
+      if (hoursFromNow < 1) {
+        if (errorEl) {
+          errorEl.textContent = 'Минимальная длительность голосования - 1 час';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Минимальная длительность - 1 час'
+        };
+      }
+      if (hoursFromNow > 8760) {
+        // 365 дней
+        if (errorEl) {
+          errorEl.textContent = 'Максимальная длительность голосования - 1 год (8760 часов)';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Максимальная длительность - 1 год'
+        };
+      }
+
+      // Скрываем ошибку, если валидация прошла
+      if (errorEl) {
+        errorEl.classList.add('invisible');
+      }
+      return {
+        isValid: true,
+        hoursFromNow: hoursFromNow
+      };
+    }
+
+    /**
+     * Валидация вопроса для голосования
+     * @param {string} question
+     * @returns {Object} - {isValid, error}
+     */
+  }, {
+    key: "ValidateQuestionPut",
+    value: function ValidateQuestionPut(question) {
+      var errorEl = document.querySelector('[data-error="questionPut"]');
+      var trimmed = question.trim();
+      if (!trimmed) {
+        if (errorEl) {
+          errorEl.textContent = 'Вопрос для голосования обязателен';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Вопрос обязателен'
+        };
+      }
+      if (trimmed.length < 10) {
+        if (errorEl) {
+          errorEl.textContent = 'Вопрос должен содержать минимум 10 символов';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Минимум 10 символов'
+        };
+      }
+      if (trimmed.length > 500) {
+        if (errorEl) {
+          errorEl.textContent = 'Вопрос не должен превышать 500 символов';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Максимум 500 символов'
+        };
+      }
+
+      // Скрываем ошибку
+      if (errorEl) {
+        errorEl.classList.add('invisible');
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Собрать все данные для создания голосования
+     * @returns {Object|null} - объект с данными или null если есть ошибки
+     */
+  }, {
+    key: "CollectVotingData",
+    value: function CollectVotingData() {
+      // Собираем значения полей
+      var votingDateTimeInput = document.getElementById('votingDateTime');
+      var questionPutInput = document.getElementById('questionPut');
+      var houseIdSelect = document.getElementById('houseId');
+      if (!votingDateTimeInput || !questionPutInput || !houseIdSelect) {
+        console.error('Не найдены обязательные поля формы');
+        return null;
+      }
+      var votingDateTime = votingDateTimeInput.value;
+      var questionPut = questionPutInput.value;
+      var houseId = parseInt(houseIdSelect.value);
+
+      // Валидация даты и времени
+      var dateValidation = this.ValidateVotingDateTime(votingDateTime);
+      if (!dateValidation.isValid) {
+        return null;
+      }
+
+      // Валидация вопроса
+      var questionValidation = this.ValidateQuestionPut(questionPut);
+      if (!questionValidation.isValid) {
+        return null;
+      }
+
+      // Валидация и сбор вариантов ответа
+      var responseOptions = this.CollectAnswerOptions();
+      if (!responseOptions) {
+        return null;
+      }
+
+      // Валидация выбранного дома
+      if (isNaN(houseId) || houseId <= 0) {
+        console.error('Не выбран дом для голосования');
+        return null;
+      }
+
+      // Формируем объект данных
+      var votingData = {
+        questionPut: questionPut.trim(),
+        responseOptions: responseOptions,
+        houseIds: [houseId],
+        // API принимает массив домов
+        durationInHours: dateValidation.hoursFromNow
+      };
+      console.log('Собранные данные для создания голосования:', votingData);
+      return votingData;
+    }
+
+    /**
+     * Создать голосование (вызывается при клике на кнопку сохранения)
+     */
+  }, {
+    key: "CreateVoting",
+    value: (function () {
+      var _CreateVoting = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var votingData, result, _t;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              _context3.p = 0;
+              // Собираем данные
+              votingData = this.CollectVotingData();
+              if (votingData) {
+                _context3.n = 1;
+                break;
+              }
+              console.error('Данные формы невалидны');
+              return _context3.a(2, false);
+            case 1:
+              _context3.n = 2;
+              return this.votingClient.CreateVoting(votingData);
+            case 2:
+              result = _context3.v;
+              console.log('Голосование успешно создано:', result);
+
+              // Можно показать уведомление об успехе
+              // this.showSuccessNotification('Голосование создано успешно');
+
+              // Очистить форму
+              this.ClearForm();
+              return _context3.a(2, true);
+            case 3:
+              _context3.p = 3;
+              _t = _context3.v;
+              console.error('Ошибка при создании голосования:', _t);
+              // Можно показать уведомление об ошибке
+              // this.showErrorNotification(error.message);
+              return _context3.a(2, false);
+          }
+        }, _callee3, this, [[0, 3]]);
+      }));
+      function CreateVoting() {
+        return _CreateVoting.apply(this, arguments);
+      }
+      return CreateVoting;
+    }()
+    /**
+     * Очистить форму после успешного создания
+     */
+    )
+  }, {
+    key: "ClearForm",
+    value: function ClearForm() {
+      document.getElementById('votingDateTime').value = '';
+      document.getElementById('questionPut').value = '';
+
+      // Очистить варианты ответов
+      var inputs = document.querySelectorAll('input[id^="answerOption-"]');
+      inputs.forEach(function (input) {
+        return input.value = '';
+      });
+
+      // Скрыть все ошибки
+      var errors = document.querySelectorAll('.error');
+      errors.forEach(function (error) {
+        return error.classList.add('invisible');
+      });
+    }
+
+    /**
+     * Инициализация обработчиков событий
+     */
+  }, {
+    key: "InitializeEventHandlers",
+    value: function InitializeEventHandlers() {
+      var _this2 = this;
+      // Кнопка добавления варианта ответа
+      var btnAdd = document.querySelector('[data-action="add-answer-option"]');
+      if (btnAdd) {
+        btnAdd.addEventListener('click', function () {
+          return _this2.AddAnswerOption();
+        });
+      }
+
+      // Кнопка удаления варианта ответа
+      var btnRemove = document.querySelector('[data-action="remove-answer-option"]');
+      if (btnRemove) {
+        btnRemove.addEventListener('click', function () {
+          return _this2.RemoveAnswerOption();
+        });
+      }
+
+      // Кнопка сохранения
+      var btnSave = document.querySelector('[data-action="save-event-data"]');
+      if (btnSave) {
+        btnSave.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+          return _regenerator().w(function (_context4) {
+            while (1) switch (_context4.n) {
+              case 0:
+                _context4.n = 1;
+                return _this2.CreateVoting();
+              case 1:
+                return _context4.a(2);
+            }
+          }, _callee4);
+        })));
+      }
+    }
+  }]);
+}();
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, votingProfile, votingClient;
+  return _regenerator().w(function (_context5) {
+    while (1) switch (_context5.n) {
+      case 0:
+        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
+        Regex = new window.RegularExtension();
+        UrlParts = Regex.getUrlPathParts(window.location.href);
+        if (isAuthenticated && userData) {
+          userId = window.authManager.userData.userId;
+          votingProfile = new VotingProfileManager();
+          votingClient = new _VotingClient_js__WEBPACK_IMPORTED_MODULE_2__.VotingClient();
+          console.log('Аутентификация пройдена');
+          if (window.location.pathname.includes('/vote/create')) {
+            votingProfile.InsertDataToCreateVote();
+          }
+          if (window.location.pathname == '/') {}
+          if (UrlParts.includes("vote")) {
+            if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {} else if (!isNaN(Number(UrlParts[1]))) {}
+          }
+        }
+      case 1:
+        return _context5.a(2);
+    }
+  }, _callee5);
+})));
+
 /***/ })
 
 /******/ 	});
@@ -7944,7 +9126,9 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
+/******/ 	__webpack_require__("./wwwroot/js/VotingProfileManager.js");
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	__webpack_require__("./wwwroot/js/VotingClient.js");
 /******/ 	__webpack_require__("./wwwroot/js/UserValidator.js");
 /******/ 	__webpack_require__("./wwwroot/js/UserProfile.js");
 /******/ 	__webpack_require__("./wwwroot/js/Regex.js");
@@ -7962,6 +9146,7 @@ var UserValidator = /*#__PURE__*/function () {
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentStatuses.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentProfile.js");
 /******/ 	__webpack_require__("./wwwroot/js/ApartmentHouses.js");
+/******/ 	__webpack_require__("./wwwroot/css/voting.css");
 /******/ 	__webpack_require__("./wwwroot/css/variables.css");
 /******/ 	__webpack_require__("./wwwroot/css/profile-group.css");
 /******/ 	__webpack_require__("./wwwroot/css/notification.css");

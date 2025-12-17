@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using VotingService.Data;
+﻿using VotingService.Repositories;
 
 namespace VotingService.Services;
 
@@ -18,7 +17,6 @@ public class VotingExpirationService : BackgroundService
     {
         _logger.LogInformation("Служба завершения голосований запущена.");
 
-        // Проверяем раз в 1 минуту
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
 
         while (!stoppingToken.IsCancellationRequested)
@@ -41,12 +39,9 @@ public class VotingExpirationService : BackgroundService
     private async Task CheckAndExpireVotings(CancellationToken ct)
     {
         using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var repository = scope.ServiceProvider.GetRequiredService<IVotingRepository>();
 
-        // Найти голосования, которые должны были завершиться, но не завершены
-        var expiredVotings = await context.Votings
-            .Where(v => !v.IsCompleted && v.EndTime < DateTime.UtcNow)
-            .ToListAsync(ct);
+        var expiredVotings = await repository.GetExpiredVotingsAsync();
 
         if (expiredVotings.Any())
         {
@@ -56,7 +51,7 @@ public class VotingExpirationService : BackgroundService
                 _logger.LogInformation("Голосование {VotingId} завершено по времени.", voting.Id);
             }
 
-            await context.SaveChangesAsync(ct);
+            await repository.SaveChangesAsync();
         }
     }
 }

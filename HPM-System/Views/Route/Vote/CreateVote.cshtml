@@ -1,5 +1,53 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div id="voting-profile">
+	<div class="container py-5">
+		<div class="d-flex flex-wrap flex-lg-nowrap gap-4">
+
+			<div class="profile-group dashboard-card my-4" data-group="vote">
+
+				<h3 class="card-header card-header_vote w-100">Создать голосование</h3>
+
+				<div class="d-flex flex-wrap flex-lg-nowrap gap-3 w-100">
+					<div class="w-100 d-flex flex-column gap-3">
+						<div class="form-group">
+							<input type="datetime-local" name="votingDateTime" id="votingDateTime" value="" />
+							<label for="votingDateTime">Дата и время завершения голосования</label>
+							<div class="error invisible" data-error="votingDateTime">Неверная дата и время</div>
+						</div>
+
+						<div class="form-group">
+							<input type="text" placeholder="" name="questionPut" id="questionPut" value="">
+							<label for="questionPut">Вопрос для голосования</label>
+							<div class="error invisible" data-error="questionPut">Неверный вопрос на голосование</div>
+						</div>
+
+						<div class="d-flex flex-column gap-2" data-list="AnswerOptions">
+							<div class="form-group">
+								<input type="text" placeholder="" name="answerOption-1" id="answerOption-1" value="">
+								<label for="answerOption-1">Вариант ответа</label>
+								<div class="error invisible" data-error="answerOption-1">Неверный вариант ответа</div>
+							</div>
+							<div class="form-group">
+								<input type="text" placeholder="" name="answerOption-2" id="answerOption-2" value="">
+								<label for="answerOption-2">Вариант ответа</label>
+								<div class="error invisible" data-error="answerOption-2">Неверный вариант ответа</div>
+							</div>
+							<div class="d-flex gap-3">
+								<div class="btn btn_secondary mx-0" data-action="add-answer-option">Добавить вариант ответа</div>
+								<div class="btn btn_secondary mx-0 d-none" data-action="remove-answer-option">Удалить вариант ответа</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<select id="houseId"></select>
+					<label for="houseId">Дом</label>
+				</div>
+
+				<div class="text-center">
+					<div class="btn btn_primary" data-action="save-event-data">Сохранить</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,6 +1,6 @@
-
 using Microsoft.EntityFrameworkCore;
 using VotingService.Data;
+using VotingService.Repositories;
 using VotingService.Services;
 
 namespace VotingService
@@ -11,11 +11,7 @@ namespace VotingService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-
-
 
             // Регистрация HTTP-клиента для ApartmentService
             var apartmentServiceUrl = builder.Configuration["Services:ApartmentService:BaseUrl"]
@@ -26,11 +22,16 @@ namespace VotingService
                 client.BaseAddress = new Uri(apartmentServiceUrl);
             });
 
-            // Регистрация mock-клиента (В ДАЛЬНЕЙШЕМ УДАЛИТЬ!)
-            builder.Services.AddScoped<IApartmentServiceClient, MockApartmentServiceClient>();
+            // Для локальной разработки можно использовать Mock
+            // builder.Services.AddScoped<IApartmentServiceClient, MockApartmentServiceClient>();
 
+            // Регистрация DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Регистрация Repository и Service
+            builder.Services.AddScoped<IVotingRepository, VotingRepository>();
+            builder.Services.AddScoped<IVotingService, Services.VotingService>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -38,7 +39,6 @@ namespace VotingService
 
             var app = builder.Build();
 
-            // Свагер и автомиграции
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -49,8 +49,6 @@ namespace VotingService
             }
 
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
