@@ -1,7 +1,7 @@
 export class VotingClient {
     constructor() {
         this.gatewayUrl = 'http://localhost:55699'; // Gateway
-        this.apiPath = '/api/votings'; // lowercase — по соглашению Gateway
+        this.apiPath = '/api/Votings'; // lowercase — по соглашению Gateway
     }
 
     /**

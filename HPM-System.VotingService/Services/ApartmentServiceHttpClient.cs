@@ -18,18 +18,35 @@ public class ApartmentServiceHttpClient : IApartmentServiceClient
     {
         try
         {
-            var response = await _httpClient.GetAsync($"/api/house/{houseId}");
+            // ИСПРАВЛЕНО: правильный путь к эндпоинту
+            var response = await _httpClient.GetAsync($"/api/apartment/house/{houseId}");
             response.EnsureSuccessStatusCode();
+
             var json = await response.Content.ReadAsStringAsync();
+
+            // Для отладки
+            _logger.LogInformation("Получен ответ от ApartmentService для houseId {HouseId}: {Json}", houseId, json);
+
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var apartments = JsonSerializer.Deserialize<List<ApartmentResponseDto>>(json, options)
                               ?? new List<ApartmentResponseDto>();
+
             return apartments;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Ошибка HTTP при вызове ApartmentService для houseId {HouseId}", houseId);
+            throw;
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Ошибка десериализации ответа от ApartmentService для houseId {HouseId}", houseId);
+            throw;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при вызове ApartmentService для houseId {HouseId}", houseId);
-            throw; // ошибка будет обработана в контроллере
+            _logger.LogError(ex, "Неожиданная ошибка при вызове ApartmentService для houseId {HouseId}", houseId);
+            throw;
         }
     }
 }

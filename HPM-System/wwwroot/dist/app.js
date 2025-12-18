@@ -7923,7 +7923,7 @@ var VotingClient = /*#__PURE__*/function () {
   function VotingClient() {
     _classCallCheck(this, VotingClient);
     this.gatewayUrl = 'http://localhost:55699'; // Gateway
-    this.apiPath = '/api/votings'; // lowercase — по соглашению Gateway
+    this.apiPath = '/api/Votings'; // lowercase — по соглашению Gateway
   }
 
   /**
@@ -8958,6 +8958,7 @@ var VotingProfileManager = /*#__PURE__*/function () {
 
               // Очистить форму
               this.ClearForm();
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Создание голосования прошло успешно успешно!', 'green');
               return _context3.a(2, true);
             case 3:
               _context3.p = 3;
@@ -9001,8 +9002,8 @@ var VotingProfileManager = /*#__PURE__*/function () {
      * Инициализация обработчиков событий
      */
   }, {
-    key: "InitializeEventHandlers",
-    value: function InitializeEventHandlers() {
+    key: "InitializeEventHandlersForCreateVoting",
+    value: function InitializeEventHandlersForCreateVoting() {
       var _this2 = this;
       // Кнопка добавления варианта ответа
       var btnAdd = document.querySelector('[data-action="add-answer-option"]');
@@ -9053,6 +9054,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           console.log('Аутентификация пройдена');
           if (window.location.pathname.includes('/vote/create')) {
             votingProfile.InsertDataToCreateVote();
+            votingProfile.InitializeEventHandlersForCreateVoting();
           }
           if (window.location.pathname == '/') {}
           if (UrlParts.includes("vote")) {

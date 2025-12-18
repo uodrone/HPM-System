@@ -360,6 +360,7 @@ export class VotingProfileManager {
             
             // Очистить форму
             this.ClearForm();
+            Modal.ShowNotification('Создание голосования прошло успешно успешно!', 'green');
             
             return true;
         } catch (error) {
@@ -389,7 +390,7 @@ export class VotingProfileManager {
     /**
      * Инициализация обработчиков событий
      */
-    InitializeEventHandlers() {
+    InitializeEventHandlersForCreateVoting() {
         // Кнопка добавления варианта ответа
         const btnAdd = document.querySelector('[data-action="add-answer-option"]');
         if (btnAdd) {
@@ -426,6 +427,7 @@ document.addEventListener('authStateChanged', async () => {
 
         if (window.location.pathname.includes('/vote/create')) {
             votingProfile.InsertDataToCreateVote();
+            votingProfile.InitializeEventHandlersForCreateVoting();
         }
 
         if (window.location.pathname == '/') {            
