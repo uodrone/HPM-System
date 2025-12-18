@@ -167,6 +167,34 @@ public class VotingService : IVotingService
         await _repository.DeleteVotingAsync(voting);
     }
 
+    /// <summary>
+    /// Получить все голосования пользователя (активные и завершенные)
+    /// </summary>
+    public async Task<List<UserVotingDto>> GetVotingsByUserIdAsync(Guid userId)
+    {
+        // Получаем все голосования, где пользователь есть в списке владельцев
+        var allVotings = await _repository.GetAllVotingsAsync();
+
+        var userVotings = allVotings
+            .Where(v => v.OwnersList.Any(o => o.UserId == userId))
+            .Select(v =>
+            {
+                var owner = v.OwnersList.First(o => o.UserId == userId);
+                return new UserVotingDto
+                {
+                    VotingId = v.Id,
+                    QuestionPut = v.QuestionPut,
+                    EndTime = v.EndTime,
+                    IsCompleted = v.IsCompleted,
+                    Response = string.IsNullOrEmpty(owner.Response) ? null : owner.Response
+                };
+            })
+            .OrderByDescending(v => v.EndTime) // Сортируем по дате окончания (новые сверху)
+            .ToList();
+
+        return userVotings;
+    }
+
     public async Task<List<UserVotingDto>> GetUnvotedVotingsByUserAsync(Guid userId)
     {
         var votings = await _repository.GetUnvotedVotingsByUserAsync(userId);

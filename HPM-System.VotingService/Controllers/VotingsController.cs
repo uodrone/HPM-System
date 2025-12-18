@@ -150,6 +150,24 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Получить все голосования пользователя (активные и завершенные)
+    /// </summary>
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<List<UserVotingDto>>> GetVotingsByUserId(Guid userId)
+    {
+        try
+        {
+            var votings = await _votingService.GetVotingsByUserIdAsync(userId);
+            return Ok(votings);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при получении голосований пользователя {UserId}", userId);
+            return StatusCode(500, "Внутренняя ошибка сервера");
+        }
+    }
+
     [HttpGet("user/{userId}/active")]
     public async Task<ActionResult<List<UserVotingDto>>> GetUnvotedVotingsByUser(Guid userId)
     {

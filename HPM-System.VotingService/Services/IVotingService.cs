@@ -11,6 +11,7 @@ public interface IVotingService
     Task<VotingResultDto> GetVotingResultsAsync(Guid id);
     Task SetVotingDecisionAsync(Guid id, string decision);
     Task DeleteVotingAsync(Guid id);
+    Task<List<UserVotingDto>> GetVotingsByUserIdAsync(Guid userId);
     Task<List<UserVotingDto>> GetUnvotedVotingsByUserAsync(Guid userId);
     Task<List<UserVotingDto>> GetVotedVotingsByUserAsync(Guid userId);
     Task<List<UnresolvedVotingDto>> GetCompletedVotingsWithoutDecisionAsync();

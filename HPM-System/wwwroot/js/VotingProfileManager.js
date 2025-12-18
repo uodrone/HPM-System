@@ -411,6 +411,32 @@ export class VotingProfileManager {
             });
         }
     }
+
+    InsertDataToMainPage (data) {
+        const voteContainer = document.querySelector('.vote-list');        
+        if (data.length) {
+            data.forEach((vote) => {
+                const voteMainPageTemplate = this.VoteMainPageTemplate(vote);
+                voteContainer.insertAdjacentHTML('beforeend', voteMainPageTemplate);
+            });
+        } else {
+            voteContainer.innerHTML = `Нет новых голосований`;
+        }
+    }
+
+    VoteMainPageTemplate (vote) {
+        let voteHTML;
+        if (vote) {
+            voteHTML = `
+                <a class="card-item card-item_vote" href="/vote/${vote.id}">
+                    <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(vote.endTime)}</div>
+                    <div class="font-weight-600">${vote.questionPut}</div>
+                </a>
+            `;            
+        }
+
+        return voteHTML;
+    }
 }
 
 document.addEventListener('authStateChanged', async () => {
@@ -430,8 +456,11 @@ document.addEventListener('authStateChanged', async () => {
             votingProfile.InitializeEventHandlersForCreateVoting();
         }
 
-        if (window.location.pathname == '/') {            
-            
+        if (window.location.pathname == '/') {
+            const votingsByUser = await votingClient.GetUserActiveVotings(userId);
+            console.log(`голосования для пользователя`);
+            console.log(votingsByUser);
+            votingProfile.InsertDataToMainPage(votingsByUser);
         }
 
         if (UrlParts.includes(`vote`)) {

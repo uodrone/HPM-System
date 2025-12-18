@@ -211,6 +211,30 @@ export class VotingClient {
     }
 
     /**
+     * Получить все голосования пользователя (активные и завершенные)
+     * @param {string} userId - GUID пользователя
+     * @returns {Promise<Array>}
+     */
+    async GetVotingsByUserId(userId) {
+        try {
+            const response = await window.apiCall(this._getUrl(`/user/${userId}`), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Ошибка получения голосований пользователя: ${errorText}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Ошибка при получении всех голосований пользователя:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Получить активные голосования пользователя (где он ещё не проголосовал)
      * @param {string} userId - GUID пользователя
      * @returns {Promise<Array>}

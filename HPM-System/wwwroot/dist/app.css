@@ -812,6 +812,15 @@ footer {
             color: #000;
         }
     }
+
+    &.card-item_vote {
+        background: linear-gradient(135deg, #ffdfc9 0%, #ffb381 100%);
+        border-color: #e94744;
+
+        &:hover {
+            color: #000;
+        }
+    }
 }
 
 .card-image {
