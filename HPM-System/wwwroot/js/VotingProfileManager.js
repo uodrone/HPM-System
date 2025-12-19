@@ -428,10 +428,52 @@ export class VotingProfileManager {
         let voteHTML;
         if (vote) {
             voteHTML = `
-                <a class="card-item card-item_vote" href="/vote/${vote.id}">
+                <a class="card-item card-item_vote" href="/vote/${vote.votingId}">
                     <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(vote.endTime)}</div>
                     <div class="font-weight-600">${vote.questionPut}</div>
                 </a>
+            `;            
+        }
+
+        return voteHTML;
+    }
+
+    VotingsListByUserId (votings) {
+        const votingsContainer = document.querySelector('.votings-by-user-list');        
+        if (votings.length) {
+            for (const vote of votings) {
+                console.log(`голосование`);
+                console.log(vote);
+                const voteToListByUserId = this.VoteTemplateByUserId(vote);
+                votingsContainer.insertAdjacentHTML('beforeend', voteToListByUserId);
+            }
+        } else {
+            votingsContainer.innerHTML = `Нет новых голосований`;
+        }
+    }
+
+    VoteTemplateByUserId(vote) {
+        let voteHTML;
+        if (vote) {
+            const decision = vote.hasDecision ? '<div><b>Решение вынесено</b></div>' : '<div><b>Решение еще не вынесено</b></div>';
+            const isVoteComplete = vote.isCompleted 
+                ? `<span style="font-size: 14px;">Завершено: ${DateFormat.DateFormatToRuString(endTime)}</span>`
+                : `<span style="font-size: 14px;">Завершится: ${DateFormat.DateFormatToRuString(vote.endTime)}</span>`;
+
+            voteHTML = `
+                <div class="profile-group dashboard-card my-4" data-group="vote" data-vote-id="${vote.votingId}">
+                    <h3 class="card-header card-header_event w-100 d-flex justify-content-between align-items-center">
+                        <a href="/vote/${vote.votingId}">${vote.questionPut}</a> ${isVoteComplete}
+                    </h3>
+                    <div class="card-content w-100">
+                        <div class="d-flex flex-wrap gap-4 w-100 justify-content-between">
+                            <div>Всего участников: <b>${vote.totalParticipants}</b></div>
+                            <div>Всего проголосовало: <b>${vote.votedCount}</b></div>                            
+                            ${decision}                            
+                        </div>
+                        <div class="text-center mt-4"><a href="/vote/${vote.votingId}">Подробнее</a></div>
+                    </div>
+                </div>
             `;            
         }
 
@@ -449,8 +491,6 @@ document.addEventListener('authStateChanged', async () => {
         const votingProfile = new VotingProfileManager();
         const votingClient = new VotingClient();
 
-        console.log('Аутентификация пройдена');
-
         if (window.location.pathname.includes('/vote/create')) {
             votingProfile.InsertDataToCreateVote();
             votingProfile.InitializeEventHandlersForCreateVoting();
@@ -465,7 +505,10 @@ document.addEventListener('authStateChanged', async () => {
 
         if (UrlParts.includes(`vote`)) {
             if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {
-                
+                const votingsByUser = await votingClient.GetVotingsByUserId(userId);
+                console.log(`Все голосования пользователя:`);
+                console.log(votingsByUser);
+                votingProfile.VotingsListByUserId(votingsByUser);
             } else if (!isNaN(Number(UrlParts[1]))) {     
                 
             }

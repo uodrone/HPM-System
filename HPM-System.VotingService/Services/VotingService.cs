@@ -168,11 +168,10 @@ public class VotingService : IVotingService
     }
 
     /// <summary>
-    /// Получить все голосования пользователя (активные и завершенные)
+    /// Получить все голосования пользователя с расширенной информацией
     /// </summary>
     public async Task<List<UserVotingDto>> GetVotingsByUserIdAsync(Guid userId)
     {
-        // Получаем все голосования, где пользователь есть в списке владельцев
         var allVotings = await _repository.GetAllVotingsAsync();
 
         var userVotings = allVotings
@@ -180,61 +179,109 @@ public class VotingService : IVotingService
             .Select(v =>
             {
                 var owner = v.OwnersList.First(o => o.UserId == userId);
+                var totalParticipants = v.OwnersList.Count;
+                var votedCount = v.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
+
                 return new UserVotingDto
                 {
                     VotingId = v.Id,
                     QuestionPut = v.QuestionPut,
                     EndTime = v.EndTime,
                     IsCompleted = v.IsCompleted,
-                    Response = string.IsNullOrEmpty(owner.Response) ? null : owner.Response
+                    Response = string.IsNullOrEmpty(owner.Response) ? null : owner.Response,
+                    TotalParticipants = totalParticipants,
+                    VotedCount = votedCount,
+                    HasDecision = !string.IsNullOrEmpty(v.Decision)
                 };
             })
-            .OrderByDescending(v => v.EndTime) // Сортируем по дате окончания (новые сверху)
+            .OrderByDescending(v => v.EndTime)
             .ToList();
 
         return userVotings;
     }
 
+    /// <summary>
+    /// Получить активные голосования пользователя с расширенной информацией
+    /// </summary>
     public async Task<List<UserVotingDto>> GetUnvotedVotingsByUserAsync(Guid userId)
     {
         var votings = await _repository.GetUnvotedVotingsByUserAsync(userId);
 
-        return votings.Select(v => new UserVotingDto
+        return votings.Select(v =>
         {
-            VotingId = v.Id,
-            QuestionPut = v.QuestionPut,
-            EndTime = v.EndTime,
-            IsCompleted = v.IsCompleted,
-            Response = null
-        }).ToList();
+            var totalParticipants = v.OwnersList.Count;
+            var votedCount = v.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
+
+            return new UserVotingDto
+            {
+                VotingId = v.Id,
+                QuestionPut = v.QuestionPut,
+                EndTime = v.EndTime,
+                IsCompleted = v.IsCompleted,
+                Response = null,
+                TotalParticipants = totalParticipants,
+                VotedCount = votedCount,
+                HasDecision = !string.IsNullOrEmpty(v.Decision)
+            };
+        })
+        .OrderBy(v => v.EndTime)
+        .ToList();
     }
 
+    /// <summary>
+    /// Получить завершенные голосования пользователя с расширенной информацией
+    /// </summary>
     public async Task<List<UserVotingDto>> GetVotedVotingsByUserAsync(Guid userId)
     {
         var votings = await _repository.GetVotedVotingsByUserAsync(userId);
 
-        return votings.Select(v => new UserVotingDto
+        return votings.Select(v =>
         {
-            VotingId = v.Id,
-            QuestionPut = v.QuestionPut,
-            EndTime = v.EndTime,
-            IsCompleted = v.IsCompleted,
-            Response = v.OwnersList.First(o => o.UserId == userId && !string.IsNullOrEmpty(o.Response)).Response
-        }).ToList();
+            var owner = v.OwnersList.First(o => o.UserId == userId && !string.IsNullOrEmpty(o.Response));
+            var totalParticipants = v.OwnersList.Count;
+            var votedCount = v.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
+
+            return new UserVotingDto
+            {
+                VotingId = v.Id,
+                QuestionPut = v.QuestionPut,
+                EndTime = v.EndTime,
+                IsCompleted = v.IsCompleted,
+                Response = owner.Response,
+                TotalParticipants = totalParticipants,
+                VotedCount = votedCount,
+                HasDecision = !string.IsNullOrEmpty(v.Decision)
+            };
+        })
+        .OrderByDescending(v => v.EndTime)
+        .ToList();
     }
 
+    /// <summary>
+    /// Получить завершенные голосования без решения с расширенной информацией
+    /// </summary>
     public async Task<List<UnresolvedVotingDto>> GetCompletedVotingsWithoutDecisionAsync()
     {
         var votings = await _repository.GetCompletedVotingsWithoutDecisionAsync();
 
-        return votings.Select(v => new UnresolvedVotingDto
+        return votings.Select(v =>
         {
-            VotingId = v.Id,
-            QuestionPut = v.QuestionPut,
-            StartTime = v.StartTime,
-            EndTime = v.EndTime,
-            IsCompleted = v.IsCompleted
-        }).ToList();
+            var totalParticipants = v.OwnersList.Count;
+            var votedCount = v.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
+
+            return new UnresolvedVotingDto
+            {
+                VotingId = v.Id,
+                QuestionPut = v.QuestionPut,
+                StartTime = v.StartTime,
+                EndTime = v.EndTime,
+                IsCompleted = v.IsCompleted,
+                TotalParticipants = totalParticipants,
+                VotedCount = votedCount
+            };
+        })
+        .OrderBy(v => v.EndTime)
+        .ToList();
     }
 
     private async Task CheckAndSetVotingCompletedAsync(Voting voting)

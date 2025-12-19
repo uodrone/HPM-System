@@ -4208,7 +4208,6 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         userId = window.authManager.userData.userId;
         eventProfile = new EventProfileManager();
         eventClient = new _EventClient_js__WEBPACK_IMPORTED_MODULE_2__.EventClient();
-        console.log('Аутентификация пройдена');
         if (!window.location.pathname.includes('/event/create')) {
           _context7.n = 2;
           break;
@@ -8575,6 +8574,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
 /* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -9109,14 +9111,49 @@ var VotingProfileManager = /*#__PURE__*/function () {
     value: function VoteMainPageTemplate(vote) {
       var voteHTML;
       if (vote) {
-        voteHTML = "\n                <a class=\"card-item card-item_vote\" href=\"/vote/".concat(vote.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(vote.endTime), "</div>\n                    <div class=\"font-weight-600\">").concat(vote.questionPut, "</div>\n                </a>\n            ");
+        voteHTML = "\n                <a class=\"card-item card-item_vote\" href=\"/vote/".concat(vote.votingId, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(vote.endTime), "</div>\n                    <div class=\"font-weight-600\">").concat(vote.questionPut, "</div>\n                </a>\n            ");
+      }
+      return voteHTML;
+    }
+  }, {
+    key: "VotingsListByUserId",
+    value: function VotingsListByUserId(votings) {
+      var votingsContainer = document.querySelector('.votings-by-user-list');
+      if (votings.length) {
+        var _iterator = _createForOfIteratorHelper(votings),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var vote = _step.value;
+            console.log("\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0435");
+            console.log(vote);
+            var voteToListByUserId = this.VoteTemplateByUserId(vote);
+            votingsContainer.insertAdjacentHTML('beforeend', voteToListByUserId);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      } else {
+        votingsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439";
+      }
+    }
+  }, {
+    key: "VoteTemplateByUserId",
+    value: function VoteTemplateByUserId(vote) {
+      var voteHTML;
+      if (vote) {
+        var decision = vote.hasDecision ? '<div><b>Решение вынесено</b></div>' : '<div><b>Решение еще не вынесено</b></div>';
+        var isVoteComplete = vote.isCompleted ? "<span style=\"font-size: 14px;\">\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(endTime), "</span>") : "<span style=\"font-size: 14px;\">\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u0441\u044F: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(vote.endTime), "</span>");
+        voteHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"vote\" data-vote-id=\"".concat(vote.votingId, "\">\n                    <h3 class=\"card-header card-header_event w-100 d-flex justify-content-between align-items-center\">\n                        <a href=\"/vote/").concat(vote.votingId, "\">").concat(vote.questionPut, "</a> ").concat(isVoteComplete, "\n                    </h3>\n                    <div class=\"card-content w-100\">\n                        <div class=\"d-flex flex-wrap gap-4 w-100 justify-content-between\">\n                            <div>\u0412\u0441\u0435\u0433\u043E \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432: <b>").concat(vote.totalParticipants, "</b></div>\n                            <div>\u0412\u0441\u0435\u0433\u043E \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u043E: <b>").concat(vote.votedCount, "</b></div>                            \n                            ").concat(decision, "                            \n                        </div>\n                        <div class=\"text-center mt-4\"><a href=\"/vote/").concat(vote.votingId, "\">\u041F\u043E\u0434\u0440\u043E\u0431\u043D\u0435\u0435</a></div>\n                    </div>\n                </div>\n            ");
       }
       return voteHTML;
     }
   }]);
 }();
 document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, votingProfile, votingClient, votingsByUser;
+  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, votingProfile, votingClient, votingsByUser, _votingsByUser;
   return _regenerator().w(function (_context5) {
     while (1) switch (_context5.n) {
       case 0:
@@ -9124,13 +9161,12 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context5.n = 3;
+          _context5.n = 5;
           break;
         }
         userId = window.authManager.userData.userId;
         votingProfile = new VotingProfileManager();
         votingClient = new _VotingClient_js__WEBPACK_IMPORTED_MODULE_2__.VotingClient();
-        console.log('Аутентификация пройдена');
         if (window.location.pathname.includes('/vote/create')) {
           votingProfile.InsertDataToCreateVote();
           votingProfile.InitializeEventHandlersForCreateVoting();
@@ -9147,10 +9183,26 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
         console.log(votingsByUser);
         votingProfile.InsertDataToMainPage(votingsByUser);
       case 2:
-        if (UrlParts.includes("vote")) {
-          if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {} else if (!isNaN(Number(UrlParts[1]))) {}
+        if (!UrlParts.includes("vote")) {
+          _context5.n = 5;
+          break;
         }
+        if (!(UrlParts.includes('by-user') && UrlParts.includes(userId))) {
+          _context5.n = 4;
+          break;
+        }
+        _context5.n = 3;
+        return votingClient.GetVotingsByUserId(userId);
       case 3:
+        _votingsByUser = _context5.v;
+        console.log("\u0412\u0441\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");
+        console.log(_votingsByUser);
+        votingProfile.VotingsListByUserId(_votingsByUser);
+        _context5.n = 5;
+        break;
+      case 4:
+        if (!isNaN(Number(UrlParts[1]))) {}
+      case 5:
         return _context5.a(2);
     }
   }, _callee5);

@@ -210,8 +210,6 @@ document.addEventListener('authStateChanged', async () => {
         const eventProfile = new EventProfileManager();
         const eventClient = new EventClient();
 
-        console.log('Аутентификация пройдена');
-
         if (window.location.pathname.includes('/event/create')) {
             await eventProfile.InsertDataToCreateEvent();
 

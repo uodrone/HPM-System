@@ -7,4 +7,8 @@ public class UnresolvedVotingDto
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public bool IsCompleted { get; set; }
+
+    // Новые поля
+    public int TotalParticipants { get; set; }  // Общее количество участников
+    public int VotedCount { get; set; }         // Количество проголосовавших
 }

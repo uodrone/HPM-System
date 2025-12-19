@@ -73,6 +73,7 @@ public class VotingRepository : IVotingRepository
     public async Task<List<Voting>> GetCompletedVotingsWithoutDecisionAsync()
     {
         return await _context.Votings
+            .Include(v => v.OwnersList) // Добавьте Include
             .Where(v => v.IsCompleted && string.IsNullOrEmpty(v.Decision))
             .ToListAsync();
     }
