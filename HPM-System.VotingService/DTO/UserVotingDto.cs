@@ -14,4 +14,7 @@ public class UserVotingDto
     public int TotalParticipants { get; set; }  // Общее количество участников
     public int VotedCount { get; set; }         // Количество проголосовавших
     public bool HasDecision { get; set; }       // Вынесено ли решение
+
+    // Статус голосования пользователя
+    public bool HasVoted { get; set; }
 }

@@ -181,6 +181,7 @@ public class VotingService : IVotingService
                 var owner = v.OwnersList.First(o => o.UserId == userId);
                 var totalParticipants = v.OwnersList.Count;
                 var votedCount = v.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
+                var hasVoted = !string.IsNullOrEmpty(owner.Response);
 
                 return new UserVotingDto
                 {
@@ -188,10 +189,11 @@ public class VotingService : IVotingService
                     QuestionPut = v.QuestionPut,
                     EndTime = v.EndTime,
                     IsCompleted = v.IsCompleted,
-                    Response = string.IsNullOrEmpty(owner.Response) ? null : owner.Response,
+                    Response = hasVoted ? owner.Response : null,
                     TotalParticipants = totalParticipants,
                     VotedCount = votedCount,
-                    HasDecision = !string.IsNullOrEmpty(v.Decision)
+                    HasDecision = !string.IsNullOrEmpty(v.Decision),
+                    HasVoted = hasVoted
                 };
             })
             .OrderByDescending(v => v.EndTime)
@@ -221,7 +223,8 @@ public class VotingService : IVotingService
                 Response = null,
                 TotalParticipants = totalParticipants,
                 VotedCount = votedCount,
-                HasDecision = !string.IsNullOrEmpty(v.Decision)
+                HasDecision = !string.IsNullOrEmpty(v.Decision),
+                HasVoted = false // Всегда false для активных голосований
             };
         })
         .OrderBy(v => v.EndTime)
@@ -250,7 +253,8 @@ public class VotingService : IVotingService
                 Response = owner.Response,
                 TotalParticipants = totalParticipants,
                 VotedCount = votedCount,
-                HasDecision = !string.IsNullOrEmpty(v.Decision)
+                HasDecision = !string.IsNullOrEmpty(v.Decision),
+                HasVoted = true // Всегда true для завершенных голосований
             };
         })
         .OrderByDescending(v => v.EndTime)

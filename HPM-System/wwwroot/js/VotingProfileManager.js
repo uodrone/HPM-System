@@ -455,6 +455,8 @@ export class VotingProfileManager {
     VoteTemplateByUserId(vote) {
         let voteHTML;
         if (vote) {
+            const votingAction = vote.hasVoted ? `Подробности` : `Проголосовать`;
+            const isVoted = vote.hasVoted ? `Вы уже проголосовали` : ``;
             const decision = vote.hasDecision ? '<div><b>Решение вынесено</b></div>' : '<div><b>Решение еще не вынесено</b></div>';
             const isVoteComplete = vote.isCompleted 
                 ? `<span style="font-size: 14px;">Завершено: ${DateFormat.DateFormatToRuString(endTime)}</span>`
@@ -469,9 +471,10 @@ export class VotingProfileManager {
                         <div class="d-flex flex-wrap gap-4 w-100 justify-content-between">
                             <div>Всего участников: <b>${vote.totalParticipants}</b></div>
                             <div>Всего проголосовало: <b>${vote.votedCount}</b></div>                            
-                            ${decision}                            
+                            ${decision}
+                            ${isVoted}                        
                         </div>
-                        <div class="text-center mt-4"><a href="/vote/${vote.votingId}">Подробнее</a></div>
+                        <div class="text-center mt-4"><a href="/vote/${vote.votingId}">${votingAction}</a></div>
                     </div>
                 </div>
             `;            
