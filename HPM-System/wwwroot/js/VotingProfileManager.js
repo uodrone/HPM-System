@@ -700,7 +700,7 @@ export class VotingProfileManager {
      */
     async UpdateVoteButton(apartmentId) {
         const voteButton = document.querySelector('[data-action="send-vote"]');
-        const decisionButton = document.querySelector('[data-action="determ-decision"]');        
+        const decisionButton = document.querySelector('[data-modal="open"]');        
 
         if (!voteButton) return;
 

@@ -9440,7 +9440,7 @@ var VotingProfileManager = /*#__PURE__*/function () {
           while (1) switch (_context7.n) {
             case 0:
               voteButton = document.querySelector('[data-action="send-vote"]');
-              decisionButton = document.querySelector('[data-action="determ-decision"]');
+              decisionButton = document.querySelector('[data-modal="open"]');
               if (voteButton) {
                 _context7.n = 1;
                 break;
