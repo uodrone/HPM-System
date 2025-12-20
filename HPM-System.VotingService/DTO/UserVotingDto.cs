@@ -10,10 +10,11 @@ public class UserVotingDto
     // Ответ пользователя (может быть null, если не голосовал)
     public string? Response { get; set; }
 
-    // Новые поля
-    public int TotalParticipants { get; set; }  // Общее количество участников
-    public int VotedCount { get; set; }         // Количество проголосовавших
-    public bool HasDecision { get; set; }       // Вынесено ли решение
+    public int TotalParticipants { get; set; }
+    // Количество проголосовавших
+    public int VotedCount { get; set; }
+    // Вынесено ли решение
+    public bool HasDecision { get; set; }
 
     // Статус голосования пользователя
     public bool HasVoted { get; set; }

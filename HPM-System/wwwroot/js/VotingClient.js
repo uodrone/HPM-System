@@ -37,6 +37,33 @@ export class VotingClient {
     }
 
     /**
+     * Получить детальную информацию о голосовании
+     * @param {string} votingId - GUID голосования
+     * @returns {Promise<Object>}
+     */
+    async GetVotingById(votingId) {
+        try {
+            const response = await window.apiCall(this._getUrl(`/${votingId}`), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('Голосование не найдено');
+                }
+                const errorText = await response.text();
+                throw new Error(`Ошибка получения голосования: ${errorText}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Ошибка при получении голосования по ID:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Создать новое голосование
      * @param {Object} votingData
      * @param {string} votingData.questionPut - Вопрос для голосования

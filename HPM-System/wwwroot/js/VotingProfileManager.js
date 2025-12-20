@@ -8,7 +8,9 @@ export class VotingProfileManager {
     constructor() {
         this.houseProfile = new ApartmentHouses();
         this.userId = window.authManager.userData.userId;
-        this.votingClient = new VotingClient(); // Добавляем клиент для работы с API
+        this.votingClient = new VotingClient();
+        this.currentVoting = null;
+        this.fullVotingData = null;
     }
 
     async InsertDataToCreateVote() {
@@ -464,7 +466,7 @@ export class VotingProfileManager {
 
             voteHTML = `
                 <div class="profile-group dashboard-card my-4" data-group="vote" data-vote-id="${vote.votingId}">
-                    <h3 class="card-header card-header_event w-100 d-flex justify-content-between align-items-center">
+                    <h3 class="card-header card-header_vote w-100 d-flex justify-content-between align-items-center">
                         <a href="/vote/${vote.votingId}">${vote.questionPut}</a> ${isVoteComplete}
                     </h3>
                     <div class="card-content w-100">
@@ -481,6 +483,269 @@ export class VotingProfileManager {
         }
 
         return voteHTML;
+    }
+
+    /**
+     * Загрузить и отобразить данные голосования
+     * @param {string} votingId - GUID голосования
+     */
+    async LoadVotingProfile(votingId) {
+        try {
+            // Получаем детальную информацию о голосовании
+            const voting = await this.votingClient.GetVotingById(votingId);
+            console.log(`голосование:`);
+            console.log(voting);
+            
+            if (!voting) {
+                Modal.ShowNotification('Голосование не найдено', 'red');
+                return;
+            }
+
+            if (!voting.isParticipant) {
+                Modal.ShowNotification('Вы не являетесь участником этого голосования', 'red');
+                return;
+            }
+
+            this.currentVoting = voting;
+            
+            this.RenderVotingProfile();
+            this.InitializeVotingProfileHandlers();
+        } catch (error) {
+            console.error('Ошибка при загрузке профиля голосования:', error);
+            Modal.ShowNotification('Ошибка при загрузке голосования', 'red');
+        }
+    }
+
+    /**
+     * Отобразить данные голосования
+     */
+    RenderVotingProfile() {
+        // Заполняем вопрос
+        const questionElement = document.getElementById('question-put');
+        if (questionElement) {
+            questionElement.textContent = this.currentVoting.questionPut;
+        }
+
+        // Заполняем статус и время
+        const votingEndDiv = document.getElementById('voting-end');
+        const votingEndTimeSpan = document.getElementById('voting-end-time');
+        
+        if (votingEndDiv && votingEndTimeSpan) {
+            const formattedDate = DateFormat.DateFormatToRuString(this.currentVoting.endTime);
+
+            votingEndDiv.innerHTML = this.currentVoting.isCompleted 
+                ? '<strong>Голосование завершено:</strong> '
+                : '<strong>Голосование завершится:</strong> ';
+            
+            votingEndTimeSpan.textContent = formattedDate;
+        }
+
+        // Статистика
+        this.RenderVotingStats();
+
+        // Варианты или результаты
+        if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
+            this.RenderVotingResults();
+        } else {
+            this.RenderVotingOptions();
+        }
+
+        // Кнопка
+        this.UpdateVoteButton();
+    }
+
+    /**
+     * Отобразить статистику
+     */
+    RenderVotingStats() {
+        const votingEndDiv = document.getElementById('voting-end');
+        if (!votingEndDiv) return;
+
+        const progressPercent = this.currentVoting.totalParticipants > 0 
+            ? Math.round((this.currentVoting.votedCount / this.currentVoting.totalParticipants) * 100) 
+            : 0;
+        
+        let progressClass = 'bg-danger';
+        if (progressPercent >= 75) progressClass = 'bg-success';
+        else if (progressPercent >= 50) progressClass = 'bg-info';
+        else if (progressPercent >= 25) progressClass = 'bg-warning';
+
+        const statsHtml = `
+            <div class="voting-stats mt-3 p-3 bg-light rounded">
+                <p class="mb-2">
+                    <strong>Проголосовало:</strong> 
+                    ${this.currentVoting.votedCount} из ${this.currentVoting.totalParticipants} участников
+                </p>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar ${progressClass}" style="width: ${progressPercent}%">
+                        ${progressPercent}%
+                    </div>
+                </div>
+                ${this.currentVoting.hasVoted ? 
+                    `<p class="mt-2 mb-0 text-success"><strong>✓ Вы уже проголосовали: ${this.currentVoting.userResponse}</strong></p>` : 
+                    `<p class="mt-2 mb-0 text-warning"><strong>⚠ Вы ещё не проголосовали</strong></p>`
+                }
+                ${this.currentVoting.isCompleted && this.currentVoting.hasDecision ? 
+                    '<p class="mt-2 mb-0 text-info"><strong>ℹ Решение по голосованию вынесено</strong></p>' : ''
+                }
+            </div>
+        `;
+
+        votingEndDiv.insertAdjacentHTML('afterend', statsHtml);
+    }
+
+    /**
+     * Отобразить варианты ответа
+     */
+    RenderVotingOptions() {
+        const optionsContainer = document.querySelector('[data-group="voting-options"]');
+        if (!optionsContainer) return;
+
+        optionsContainer.innerHTML = '';
+
+        this.currentVoting.responseOptions.forEach((option, index) => {
+            const optionId = `voting-option-${index}`;
+            const optionHtml = `
+                <div class="form-check my-3 d-flex align-items-center">
+                    <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        name="votingOption" 
+                        id="${optionId}" 
+                        value="${option}"
+                        style="width: 20px; height: 20px; margin-right: 10px;"
+                    >
+                    <label class="form-check-label fs-5" for="${optionId}" style="cursor: pointer;">
+                        ${option}
+                    </label>
+                </div>
+            `;
+            optionsContainer.insertAdjacentHTML('beforeend', optionHtml);
+        });
+    }
+
+    /**
+     * Отобразить результаты
+     */
+    async RenderVotingResults() {
+        const optionsContainer = document.querySelector('[data-group="voting-options"]');
+        if (!optionsContainer) return;
+
+        if (!this.currentVoting.isCompleted && this.currentVoting.hasVoted) {
+            optionsContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <p><strong>Вы проголосовали: ${this.currentVoting.userResponse}</strong></p>
+                    <p>Результаты будут доступны после завершения голосования.</p>
+                </div>
+            `;
+            return;
+        }
+
+        try {
+            const results = await this.votingClient.GetVotingResults(this.currentVoting.id);
+            optionsContainer.innerHTML = '<h4 class="mt-4 mb-3">Результаты голосования:</h4>';
+
+            Object.entries(results.responses).sort(([, a], [, b]) => b - a).forEach(([option, percent]) => {
+                const isUserChoice = this.currentVoting.userResponse === option;
+                optionsContainer.insertAdjacentHTML('beforeend', `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong>${option} ${isUserChoice ? '(ваш выбор)' : ''}</strong>
+                            <span class="badge bg-secondary">${percent}%</span>
+                        </div>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar ${isUserChoice ? 'bg-primary' : 'bg-secondary'}" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            if (results.decision && results.decision !== 'Решение не опубликовано') {
+                optionsContainer.insertAdjacentHTML('beforeend', `
+                    <div class="alert alert-success mt-4">
+                        <h5>Решение комиссии:</h5>
+                        <p class="mb-0">${results.decision}</p>
+                    </div>
+                `);
+            }
+        } catch (error) {
+            console.error('Ошибка при загрузке результатов:', error);
+        }
+    }
+
+    /**
+     * Управление кнопкой
+     */
+    UpdateVoteButton() {
+        const voteButton = document.querySelector('[data-action="send-vote"]');
+        if (!voteButton) return;
+
+        voteButton.style.display = (this.currentVoting.hasVoted || this.currentVoting.isCompleted) ? 'none' : 'inline-block';
+    }
+
+    /**
+     * Собрать данные голоса
+     */
+    CollectVoteData() {
+        const selectedOption = document.querySelector('input[name="votingOption"]:checked');
+        
+        if (!selectedOption) {
+            Modal.ShowNotification('Пожалуйста, выберите вариант ответа', 'orange');
+            return null;
+        }
+
+        return {
+            userId: this.userId,
+            apartmentId: this.currentVoting.userApartmentId,
+            response: selectedOption.value
+        };
+    }
+
+    /**
+     * Отправить голос
+     */
+    async SubmitVote() {
+        try {
+            if (this.currentVoting.isCompleted || this.currentVoting.hasVoted) {
+                Modal.ShowNotification('Вы уже проголосовали или голосование завершено', 'orange');
+                return;
+            }
+
+            const voteData = this.CollectVoteData();
+            if (!voteData) return;
+
+            const voteButton = document.querySelector('[data-action="send-vote"]');
+            if (voteButton) {
+                voteButton.textContent = 'Отправка...';
+                voteButton.style.pointerEvents = 'none';
+            }
+
+            await this.votingClient.SubmitVote(this.currentVoting.id, voteData);
+            Modal.ShowNotification('Ваш голос успешно принят!', 'green');
+
+            setTimeout(() => this.LoadVotingProfile(this.currentVoting.id), 1500);
+        } catch (error) {
+            console.error('Ошибка:', error);
+            Modal.ShowNotification(`Ошибка: ${error.message}`, 'red');
+            
+            const voteButton = document.querySelector('[data-action="send-vote"]');
+            if (voteButton) {
+                voteButton.textContent = 'Проголосовать';
+                voteButton.style.pointerEvents = 'auto';
+            }
+        }
+    }
+
+    /**
+     * Инициализация обработчиков
+     */
+    InitializeVotingProfileHandlers() {
+        const voteButton = document.querySelector('[data-action="send-vote"]');
+        if (voteButton) {
+            const newButton = voteButton.cloneNode(true);
+            voteButton.parentNode.replaceChild(newButton, voteButton);
+            newButton.addEventListener('click', () => this.SubmitVote());
+        }
     }
 }
 
@@ -512,8 +777,10 @@ document.addEventListener('authStateChanged', async () => {
                 console.log(`Все голосования пользователя:`);
                 console.log(votingsByUser);
                 votingProfile.VotingsListByUserId(votingsByUser);
-            } else if (!isNaN(Number(UrlParts[1]))) {     
-                
+            } else if (Regex.isGuid(UrlParts[1])) {     
+                const votingId = UrlParts[1];
+                console.log(`Загрузка профиля голосования: ${votingId}`);
+                await votingProfile.LoadVotingProfile(votingId);
             }
         }
     }

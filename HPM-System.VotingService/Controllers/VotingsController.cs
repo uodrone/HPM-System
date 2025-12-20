@@ -1,5 +1,7 @@
 ﻿using DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VotingService.Extensions;
 using VotingService.Models;
 using VotingService.Services;
 
@@ -7,6 +9,7 @@ namespace VotingService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class VotingsController : ControllerBase
 {
     private readonly IVotingService _votingService;
@@ -29,6 +32,37 @@ public class VotingsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при получении списка голосований");
+            return StatusCode(500, "Внутренняя ошибка сервера");
+        }
+    }
+
+    /// <summary>
+    /// Получить детальную информацию о голосовании
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<VotingDetailDto>> GetVotingById(Guid id)
+    {
+        try
+        {
+            var userId = User.GetUserId(); // Хелпер извлечет userId из claims
+
+            var voting = await _votingService.GetVotingDetailByIdAsync(id, userId);
+
+            if (voting == null)
+            {
+                return NotFound("Голосование не найдено");
+            }
+
+            return Ok(voting);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogWarning(ex, "Попытка доступа без авторизации");
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при получении голосования {Id}", id);
             return StatusCode(500, "Внутренняя ошибка сервера");
         }
     }

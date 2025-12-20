@@ -25,6 +25,11 @@ public class VotingService : IVotingService
         return await _repository.GetAllVotingsAsync();
     }
 
+    public async Task<Voting?> GetVotingByIdAsync(Guid id)
+    {
+        return await _repository.GetVotingByIdAsync(id);
+    }
+
     public async Task<Voting> CreateVotingAsync(CreateVotingRequestDto request)
     {
         var voting = new Voting
@@ -200,6 +205,43 @@ public class VotingService : IVotingService
             .ToList();
 
         return userVotings;
+    }
+
+    /// <summary>
+    /// Получить детальную информацию о голосовании для конкретного пользователя
+    /// </summary>
+    public async Task<VotingDetailDto?> GetVotingDetailByIdAsync(Guid id, Guid userId)
+    {
+        var voting = await _repository.GetVotingByIdAsync(id);
+
+        if (voting == null)
+            return null;
+
+        var totalParticipants = voting.OwnersList.Count;
+        var votedCount = voting.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
+
+        // Ищем текущего пользователя среди участников
+        var userOwner = voting.OwnersList.FirstOrDefault(o => o.UserId == userId);
+        var isParticipant = userOwner != null;
+        var hasVoted = isParticipant && !string.IsNullOrEmpty(userOwner.Response);
+
+        return new VotingDetailDto
+        {
+            Id = voting.Id,
+            QuestionPut = voting.QuestionPut,
+            ResponseOptions = voting.ResponseOptions,
+            StartTime = voting.StartTime,
+            EndTime = voting.EndTime,
+            IsCompleted = voting.IsCompleted,
+            Decision = voting.Decision,
+            TotalParticipants = totalParticipants,
+            VotedCount = votedCount,
+            HasDecision = !string.IsNullOrEmpty(voting.Decision),
+            IsParticipant = isParticipant,
+            HasVoted = hasVoted,
+            UserResponse = hasVoted ? userOwner.Response : null,
+            UserApartmentId = isParticipant ? userOwner.ApartmentId : null
+        };
     }
 
     /// <summary>
