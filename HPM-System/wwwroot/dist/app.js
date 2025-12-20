@@ -7921,15 +7921,9 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 var VotingClient = /*#__PURE__*/function () {
   function VotingClient() {
     _classCallCheck(this, VotingClient);
-    this.gatewayUrl = 'http://localhost:55699'; // Gateway
-    this.apiPath = '/api/Votings'; // lowercase — по соглашению Gateway
+    this.gatewayUrl = 'http://localhost:55699';
+    this.apiPath = '/api/votings';
   }
-
-  /**
-   * Получить полный URL для эндпоинта (через Gateway)
-   * @param {string} endpoint 
-   * @returns {string}
-   */
   return _createClass(VotingClient, [{
     key: "_getUrl",
     value: function _getUrl(endpoint) {
@@ -7937,8 +7931,7 @@ var VotingClient = /*#__PURE__*/function () {
     }
 
     /**
-     * Получить все голосования
-     * @returns {Promise<Array>}
+     * Получить все голосования (для админа)
      */
   }, {
     key: "GetAllVotings",
@@ -7989,8 +7982,6 @@ var VotingClient = /*#__PURE__*/function () {
     }()
     /**
      * Получить детальную информацию о голосовании
-     * @param {string} votingId - GUID голосования
-     * @returns {Promise<Object>}
      */
     )
   }, {
@@ -8048,12 +8039,6 @@ var VotingClient = /*#__PURE__*/function () {
     }()
     /**
      * Создать новое голосование
-     * @param {Object} votingData
-     * @param {string} votingData.questionPut - Вопрос для голосования
-     * @param {Array<string>} votingData.responseOptions - Варианты ответа (минимум 2)
-     * @param {Array<number>} votingData.houseIds - ID домов для голосования
-     * @param {number} votingData.durationInHours - Длительность в часах (по умолчанию 168 = 7 дней)
-     * @returns {Promise<Object>} - созданное голосование
      */
     )
   }, {
@@ -8086,7 +8071,7 @@ var VotingClient = /*#__PURE__*/function () {
                 questionPut: votingData.questionPut,
                 responseOptions: votingData.responseOptions,
                 houseIds: votingData.houseIds,
-                durationInHours: votingData.durationInHours || 168 // 7 дней по умолчанию
+                durationInHours: votingData.durationInHours || 168
               };
               _context3.p = 4;
               _context3.n = 5;
@@ -8129,13 +8114,7 @@ var VotingClient = /*#__PURE__*/function () {
       return CreateVoting;
     }()
     /**
-     * Проголосовать в голосовании
-     * @param {string} votingId - GUID голосования
-     * @param {Object} voteData
-     * @param {string} voteData.userId - GUID пользователя
-     * @param {number} voteData.apartmentId - ID квартиры
-     * @param {string} voteData.response - Выбранный вариант ответа
-     * @returns {Promise<string>} - сообщение о результате
+     * Проголосовать (userId берется из JWT автоматически)
      */
     )
   }, {
@@ -8211,8 +8190,6 @@ var VotingClient = /*#__PURE__*/function () {
     }()
     /**
      * Получить результаты голосования
-     * @param {string} votingId - GUID голосования
-     * @returns {Promise<Object>} - результаты голосования
      */
     )
   }, {
@@ -8269,10 +8246,7 @@ var VotingClient = /*#__PURE__*/function () {
       return GetVotingResults;
     }()
     /**
-     * Установить решение комиссии по голосованию
-     * @param {string} votingId - GUID голосования
-     * @param {string} decision - Текст решения
-     * @returns {Promise<string>} - сообщение о результате
+     * Установить решение комиссии
      */
     )
   }, {
@@ -8331,8 +8305,6 @@ var VotingClient = /*#__PURE__*/function () {
     }()
     /**
      * Удалить голосование
-     * @param {string} votingId - GUID голосования
-     * @returns {Promise<boolean>}
      */
     )
   }, {
@@ -8381,22 +8353,20 @@ var VotingClient = /*#__PURE__*/function () {
       return DeleteVoting;
     }()
     /**
-     * Получить все голосования пользователя (активные и завершенные)
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>}
+     * Получить все голосования текущего пользователя
      */
     )
   }, {
-    key: "GetVotingsByUserId",
+    key: "GetMyVotings",
     value: (function () {
-      var _GetVotingsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(userId) {
+      var _GetMyVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
         var response, errorText, _t8;
         return _regenerator().w(function (_context8) {
           while (1) switch (_context8.p = _context8.n) {
             case 0:
               _context8.p = 0;
               _context8.n = 1;
-              return window.apiCall(this._getUrl("/user/".concat(userId)), {
+              return window.apiCall(this._getUrl('/my'), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -8412,7 +8382,7 @@ var VotingClient = /*#__PURE__*/function () {
               return response.text();
             case 2:
               errorText = _context8.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F: ".concat(errorText));
+              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u0439: ".concat(errorText));
             case 3:
               _context8.n = 4;
               return response.json();
@@ -8421,35 +8391,33 @@ var VotingClient = /*#__PURE__*/function () {
             case 5:
               _context8.p = 5;
               _t8 = _context8.v;
-              console.error('Ошибка при получении всех голосований пользователя:', _t8);
+              console.error('Ошибка при получении голосований пользователя:', _t8);
               throw _t8;
             case 6:
               return _context8.a(2);
           }
         }, _callee8, this, [[0, 5]]);
       }));
-      function GetVotingsByUserId(_x9) {
-        return _GetVotingsByUserId.apply(this, arguments);
+      function GetMyVotings() {
+        return _GetMyVotings.apply(this, arguments);
       }
-      return GetVotingsByUserId;
+      return GetMyVotings;
     }()
     /**
-     * Получить активные голосования пользователя (где он ещё не проголосовал)
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>}
+     * Получить активные голосования текущего пользователя
      */
     )
   }, {
-    key: "GetUserActiveVotings",
+    key: "GetMyActiveVotings",
     value: (function () {
-      var _GetUserActiveVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(userId) {
+      var _GetMyActiveVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9() {
         var response, errorText, _t9;
         return _regenerator().w(function (_context9) {
           while (1) switch (_context9.p = _context9.n) {
             case 0:
               _context9.p = 0;
               _context9.n = 1;
-              return window.apiCall(this._getUrl("/user/".concat(userId, "/active")), {
+              return window.apiCall(this._getUrl('/my/active'), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -8474,35 +8442,33 @@ var VotingClient = /*#__PURE__*/function () {
             case 5:
               _context9.p = 5;
               _t9 = _context9.v;
-              console.error('Ошибка при получении активных голосований пользователя:', _t9);
+              console.error('Ошибка при получении активных голосований:', _t9);
               throw _t9;
             case 6:
               return _context9.a(2);
           }
         }, _callee9, this, [[0, 5]]);
       }));
-      function GetUserActiveVotings(_x0) {
-        return _GetUserActiveVotings.apply(this, arguments);
+      function GetMyActiveVotings() {
+        return _GetMyActiveVotings.apply(this, arguments);
       }
-      return GetUserActiveVotings;
+      return GetMyActiveVotings;
     }()
     /**
-     * Получить завершённые голосования пользователя (где он уже проголосовал)
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>}
+     * Получить завершённые голосования текущего пользователя
      */
     )
   }, {
-    key: "GetUserCompletedVotings",
+    key: "GetMyCompletedVotings",
     value: (function () {
-      var _GetUserCompletedVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0(userId) {
+      var _GetMyCompletedVotings = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0() {
         var response, errorText, _t0;
         return _regenerator().w(function (_context0) {
           while (1) switch (_context0.p = _context0.n) {
             case 0:
               _context0.p = 0;
               _context0.n = 1;
-              return window.apiCall(this._getUrl("/user/".concat(userId, "/completed")), {
+              return window.apiCall(this._getUrl('/my/completed'), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -8527,21 +8493,20 @@ var VotingClient = /*#__PURE__*/function () {
             case 5:
               _context0.p = 5;
               _t0 = _context0.v;
-              console.error('Ошибка при получении завершённых голосований пользователя:', _t0);
+              console.error('Ошибка при получении завершённых голосований:', _t0);
               throw _t0;
             case 6:
               return _context0.a(2);
           }
         }, _callee0, this, [[0, 5]]);
       }));
-      function GetUserCompletedVotings(_x1) {
-        return _GetUserCompletedVotings.apply(this, arguments);
+      function GetMyCompletedVotings() {
+        return _GetMyCompletedVotings.apply(this, arguments);
       }
-      return GetUserCompletedVotings;
+      return GetMyCompletedVotings;
     }()
     /**
-     * Получить завершённые голосования без решения комиссии
-     * @returns {Promise<Array>}
+     * Получить завершённые голосования без решения
      */
     )
   }, {
@@ -8590,22 +8555,12 @@ var VotingClient = /*#__PURE__*/function () {
         return _GetUnresolvedVotings.apply(this, arguments);
       }
       return GetUnresolvedVotings;
-    }()
-    /**
-     * Установить базовый URL Gateway (для продакшена)
-     * @param {string} newBaseUrl
-     */
-    )
+    }())
   }, {
     key: "SetBaseUrl",
     value: function SetBaseUrl(newBaseUrl) {
       this.gatewayUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
-
-    /**
-     * Получить текущий базовый URL
-     * @returns {string}
-     */
   }, {
     key: "GetBaseUrl",
     value: function GetBaseUrl() {
@@ -9536,7 +9491,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           break;
         }
         _context8.n = 1;
-        return votingClient.GetUserActiveVotings(userId);
+        return votingClient.GetMyActiveVotings();
       case 1:
         votingsByUser = _context8.v;
         console.log("\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
@@ -9552,7 +9507,7 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           break;
         }
         _context8.n = 3;
-        return votingClient.GetVotingsByUserId(userId);
+        return votingClient.GetMyVotings();
       case 3:
         _votingsByUser = _context8.v;
         console.log("\u0412\u0441\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");

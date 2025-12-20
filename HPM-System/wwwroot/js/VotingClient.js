@@ -1,21 +1,15 @@
 export class VotingClient {
     constructor() {
-        this.gatewayUrl = 'http://localhost:55699'; // Gateway
-        this.apiPath = '/api/Votings'; // lowercase — по соглашению Gateway
+        this.gatewayUrl = 'http://localhost:55699';
+        this.apiPath = '/api/votings';
     }
 
-    /**
-     * Получить полный URL для эндпоинта (через Gateway)
-     * @param {string} endpoint 
-     * @returns {string}
-     */
     _getUrl(endpoint) {
         return `${this.gatewayUrl}${this.apiPath}${endpoint}`;
     }
 
     /**
-     * Получить все голосования
-     * @returns {Promise<Array>}
+     * Получить все голосования (для админа)
      */
     async GetAllVotings() {
         try {
@@ -38,8 +32,6 @@ export class VotingClient {
 
     /**
      * Получить детальную информацию о голосовании
-     * @param {string} votingId - GUID голосования
-     * @returns {Promise<Object>}
      */
     async GetVotingById(votingId) {
         try {
@@ -65,15 +57,8 @@ export class VotingClient {
 
     /**
      * Создать новое голосование
-     * @param {Object} votingData
-     * @param {string} votingData.questionPut - Вопрос для голосования
-     * @param {Array<string>} votingData.responseOptions - Варианты ответа (минимум 2)
-     * @param {Array<number>} votingData.houseIds - ID домов для голосования
-     * @param {number} votingData.durationInHours - Длительность в часах (по умолчанию 168 = 7 дней)
-     * @returns {Promise<Object>} - созданное голосование
      */
     async CreateVoting(votingData) {
-        // Валидация обязательных полей
         if (!votingData.questionPut) {
             throw new Error('Поле questionPut обязательно');
         }
@@ -88,7 +73,7 @@ export class VotingClient {
             questionPut: votingData.questionPut,
             responseOptions: votingData.responseOptions,
             houseIds: votingData.houseIds,
-            durationInHours: votingData.durationInHours || 168 // 7 дней по умолчанию
+            durationInHours: votingData.durationInHours || 168
         };
 
         try {
@@ -111,13 +96,7 @@ export class VotingClient {
     }
 
     /**
-     * Проголосовать в голосовании
-     * @param {string} votingId - GUID голосования
-     * @param {Object} voteData
-     * @param {string} voteData.userId - GUID пользователя
-     * @param {number} voteData.apartmentId - ID квартиры
-     * @param {string} voteData.response - Выбранный вариант ответа
-     * @returns {Promise<string>} - сообщение о результате
+     * Проголосовать (userId берется из JWT автоматически)
      */
     async SubmitVote(votingId, voteData) {
         if (!voteData.userId) {
@@ -148,7 +127,7 @@ export class VotingClient {
                 throw new Error(`Ошибка при голосовании: ${errorText}`);
             }
 
-            return await response.text(); // Возвращает строку с сообщением
+            return await response.text();
         } catch (error) {
             console.error('Ошибка при отправке голоса:', error);
             throw error;
@@ -157,8 +136,6 @@ export class VotingClient {
 
     /**
      * Получить результаты голосования
-     * @param {string} votingId - GUID голосования
-     * @returns {Promise<Object>} - результаты голосования
      */
     async GetVotingResults(votingId) {
         try {
@@ -183,10 +160,7 @@ export class VotingClient {
     }
 
     /**
-     * Установить решение комиссии по голосованию
-     * @param {string} votingId - GUID голосования
-     * @param {string} decision - Текст решения
-     * @returns {Promise<string>} - сообщение о результате
+     * Установить решение комиссии
      */
     async SetVotingDecision(votingId, decision) {
         if (!decision || decision.trim() === '') {
@@ -205,7 +179,7 @@ export class VotingClient {
                 throw new Error(`Ошибка при вынесении решения: ${errorText}`);
             }
 
-            return await response.text(); // "Решение вынесено"
+            return await response.text();
         } catch (error) {
             console.error('Ошибка при установке решения:', error);
             throw error;
@@ -214,8 +188,6 @@ export class VotingClient {
 
     /**
      * Удалить голосование
-     * @param {string} votingId - GUID голосования
-     * @returns {Promise<boolean>}
      */
     async DeleteVoting(votingId) {
         try {
@@ -238,37 +210,33 @@ export class VotingClient {
     }
 
     /**
-     * Получить все голосования пользователя (активные и завершенные)
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>}
+     * Получить все голосования текущего пользователя
      */
-    async GetVotingsByUserId(userId) {
+    async GetMyVotings() {
         try {
-            const response = await window.apiCall(this._getUrl(`/user/${userId}`), {
+            const response = await window.apiCall(this._getUrl('/my'), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(`Ошибка получения голосований пользователя: ${errorText}`);
+                throw new Error(`Ошибка получения голосований: ${errorText}`);
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Ошибка при получении всех голосований пользователя:', error);
+            console.error('Ошибка при получении голосований пользователя:', error);
             throw error;
         }
     }
 
     /**
-     * Получить активные голосования пользователя (где он ещё не проголосовал)
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>}
+     * Получить активные голосования текущего пользователя
      */
-    async GetUserActiveVotings(userId) {
+    async GetMyActiveVotings() {
         try {
-            const response = await window.apiCall(this._getUrl(`/user/${userId}/active`), {
+            const response = await window.apiCall(this._getUrl('/my/active'), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -280,19 +248,17 @@ export class VotingClient {
 
             return await response.json();
         } catch (error) {
-            console.error('Ошибка при получении активных голосований пользователя:', error);
+            console.error('Ошибка при получении активных голосований:', error);
             throw error;
         }
     }
 
     /**
-     * Получить завершённые голосования пользователя (где он уже проголосовал)
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>}
+     * Получить завершённые голосования текущего пользователя
      */
-    async GetUserCompletedVotings(userId) {
+    async GetMyCompletedVotings() {
         try {
-            const response = await window.apiCall(this._getUrl(`/user/${userId}/completed`), {
+            const response = await window.apiCall(this._getUrl('/my/completed'), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -304,14 +270,13 @@ export class VotingClient {
 
             return await response.json();
         } catch (error) {
-            console.error('Ошибка при получении завершённых голосований пользователя:', error);
+            console.error('Ошибка при получении завершённых голосований:', error);
             throw error;
         }
     }
 
     /**
-     * Получить завершённые голосования без решения комиссии
-     * @returns {Promise<Array>}
+     * Получить завершённые голосования без решения
      */
     async GetUnresolvedVotings() {
         try {
@@ -332,18 +297,10 @@ export class VotingClient {
         }
     }
 
-    /**
-     * Установить базовый URL Gateway (для продакшена)
-     * @param {string} newBaseUrl
-     */
     SetBaseUrl(newBaseUrl) {
         this.gatewayUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
     }
 
-    /**
-     * Получить текущий базовый URL
-     * @returns {string}
-     */
     GetBaseUrl() {
         return this.gatewayUrl;
     }

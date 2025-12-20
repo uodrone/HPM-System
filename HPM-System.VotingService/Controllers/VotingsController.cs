@@ -21,6 +21,9 @@ public class VotingsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Получить все голосования (для админа)
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<List<Voting>>> GetVotings()
     {
@@ -37,15 +40,14 @@ public class VotingsController : ControllerBase
     }
 
     /// <summary>
-    /// Получить детальную информацию о голосовании
+    /// Получить детальную информацию о голосовании для текущего пользователя
     /// </summary>
     [HttpGet("{id}")]
     public async Task<ActionResult<VotingDetailDto>> GetVotingById(Guid id)
     {
         try
         {
-            var userId = User.GetUserId(); // Хелпер извлечет userId из claims
-
+            var userId = User.GetUserId();
             var voting = await _votingService.GetVotingDetailByIdAsync(id, userId);
 
             if (voting == null)
@@ -67,6 +69,9 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Создать новое голосование
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult<Voting>> CreateVoting(CreateVotingRequestDto request)
     {
@@ -76,7 +81,7 @@ public class VotingsController : ControllerBase
         try
         {
             var voting = await _votingService.CreateVotingAsync(request);
-            return CreatedAtAction(nameof(GetVotings), new { id = voting.Id }, voting);
+            return CreatedAtAction(nameof(GetVotingById), new { id = voting.Id }, voting);
         }
         catch (Exception ex)
         {
@@ -85,6 +90,9 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Проголосовать (userId берется из JWT)
+    /// </summary>
     [HttpPost("{id}/vote")]
     public async Task<ActionResult> SubmitVote(Guid id, VoteRequestDto request)
     {
@@ -93,8 +101,13 @@ public class VotingsController : ControllerBase
 
         try
         {
-            var message = await _votingService.SubmitVoteAsync(id, request);
+            var userId = User.GetUserId();
+            var message = await _votingService.SubmitVoteAsync(id, request, userId);
             return Ok(message);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
         }
         catch (KeyNotFoundException ex)
         {
@@ -115,6 +128,9 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Получить результаты голосования
+    /// </summary>
     [HttpGet("{id}/results")]
     public async Task<ActionResult<VotingResultDto>> GetVotingResults(Guid id)
     {
@@ -138,6 +154,9 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Установить решение комиссии
+    /// </summary>
     [HttpPost("{id}/decision")]
     public async Task<ActionResult> SetVotingDecision(Guid id, [FromBody] string decision)
     {
@@ -165,6 +184,9 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Удалить голосование
+    /// </summary>
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteVoting(Guid id)
     {
@@ -185,30 +207,43 @@ public class VotingsController : ControllerBase
     }
 
     /// <summary>
-    /// Получить все голосования пользователя (активные и завершенные)
+    /// Получить все голосования текущего пользователя
     /// </summary>
-    [HttpGet("user/{userId}")]
-    public async Task<ActionResult<List<UserVotingDto>>> GetVotingsByUserId(Guid userId)
+    [HttpGet("my")]
+    public async Task<ActionResult<List<UserVotingDto>>> GetMyVotings()
     {
         try
         {
-            var votings = await _votingService.GetVotingsByUserIdAsync(userId);
+            var userId = User.GetUserId();
+            var votings = await _votingService.GetMyVotingsAsync(userId);
             return Ok(votings);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при получении голосований пользователя {UserId}", userId);
+            _logger.LogError(ex, "Ошибка при получении голосований пользователя");
             return StatusCode(500, "Внутренняя ошибка сервера");
         }
     }
 
-    [HttpGet("user/{userId}/active")]
-    public async Task<ActionResult<List<UserVotingDto>>> GetUnvotedVotingsByUser(Guid userId)
+    /// <summary>
+    /// Получить активные голосования текущего пользователя (где он ещё не проголосовал)
+    /// </summary>
+    [HttpGet("my/active")]
+    public async Task<ActionResult<List<UserVotingDto>>> GetMyActiveVotings()
     {
         try
         {
-            var votings = await _votingService.GetUnvotedVotingsByUserAsync(userId);
+            var userId = User.GetUserId();
+            var votings = await _votingService.GetMyActiveVotingsAsync(userId);
             return Ok(votings);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
         }
         catch (Exception ex)
         {
@@ -217,13 +252,21 @@ public class VotingsController : ControllerBase
         }
     }
 
-    [HttpGet("user/{userId}/completed")]
-    public async Task<ActionResult<List<UserVotingDto>>> GetVotedVotingsByUser(Guid userId)
+    /// <summary>
+    /// Получить завершённые голосования текущего пользователя (где он уже проголосовал)
+    /// </summary>
+    [HttpGet("my/completed")]
+    public async Task<ActionResult<List<UserVotingDto>>> GetMyCompletedVotings()
     {
         try
         {
-            var votings = await _votingService.GetVotedVotingsByUserAsync(userId);
+            var userId = User.GetUserId();
+            var votings = await _votingService.GetMyCompletedVotingsAsync(userId);
             return Ok(votings);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
         }
         catch (Exception ex)
         {
@@ -232,6 +275,9 @@ public class VotingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Получить завершённые голосования без решения комиссии
+    /// </summary>
     [HttpGet("completed-without-decision")]
     public async Task<ActionResult<List<UnresolvedVotingDto>>> GetCompletedVotingsWithoutDecision()
     {

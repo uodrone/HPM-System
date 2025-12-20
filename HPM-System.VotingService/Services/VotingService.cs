@@ -68,7 +68,7 @@ public class VotingService : IVotingService
         return await _repository.CreateVotingAsync(voting);
     }
 
-    public async Task<string> SubmitVoteAsync(Guid votingId, VoteRequestDto request)
+    public async Task<string> SubmitVoteAsync(Guid votingId, VoteRequestDto request, Guid userId)
     {
         var voting = await _repository.GetVotingByIdAsync(votingId);
 
@@ -81,14 +81,18 @@ public class VotingService : IVotingService
         if (!voting.ResponseOptions.Contains(request.Response))
             throw new ArgumentException($"Ответ '{request.Response}' не является допустимым вариантом для этого голосования.");
 
+        // Проверяем, что userId из JWT совпадает с userId в запросе
+        if (request.UserId != userId)
+            throw new UnauthorizedAccessException("Вы можете голосовать только от своего имени");
+
         var owner = voting.OwnersList
-            .FirstOrDefault(o => o.UserId == request.UserId && o.ApartmentId == request.ApartmentId);
+            .FirstOrDefault(o => o.UserId == userId && o.ApartmentId == request.ApartmentId);
 
         if (owner == null)
-            throw new ArgumentException("Указанный пользователь не является владельцем в этой квартире");
+            throw new ArgumentException("Вы не являетесь владельцем в этой квартире");
 
         if (!string.IsNullOrEmpty(owner.Response))
-            throw new InvalidOperationException("Пользователь уже проголосовал");
+            throw new InvalidOperationException("Вы уже проголосовали");
 
         var totalHouseArea = voting.OwnersList
             .Where(o => o.HouseId == owner.HouseId)
@@ -101,7 +105,6 @@ public class VotingService : IVotingService
         owner.Response = request.Response;
 
         await _repository.SaveChangesAsync();
-
         await CheckAndSetVotingCompletedAsync(voting);
 
         return $"Голос принят с весом: {owner.VoteWeight}";
@@ -175,7 +178,7 @@ public class VotingService : IVotingService
     /// <summary>
     /// Получить все голосования пользователя с расширенной информацией
     /// </summary>
-    public async Task<List<UserVotingDto>> GetVotingsByUserIdAsync(Guid userId)
+    public async Task<List<UserVotingDto>> GetMyVotingsAsync(Guid userId)
     {
         var allVotings = await _repository.GetAllVotingsAsync();
 
@@ -186,7 +189,6 @@ public class VotingService : IVotingService
                 var owner = v.OwnersList.First(o => o.UserId == userId);
                 var totalParticipants = v.OwnersList.Count;
                 var votedCount = v.OwnersList.Count(o => !string.IsNullOrEmpty(o.Response));
-                var hasVoted = !string.IsNullOrEmpty(owner.Response);
 
                 return new UserVotingDto
                 {
@@ -194,11 +196,11 @@ public class VotingService : IVotingService
                     QuestionPut = v.QuestionPut,
                     EndTime = v.EndTime,
                     IsCompleted = v.IsCompleted,
-                    Response = hasVoted ? owner.Response : null,
+                    Response = string.IsNullOrEmpty(owner.Response) ? null : owner.Response,
                     TotalParticipants = totalParticipants,
                     VotedCount = votedCount,
                     HasDecision = !string.IsNullOrEmpty(v.Decision),
-                    HasVoted = hasVoted
+                    HasVoted = !string.IsNullOrEmpty(owner.Response)
                 };
             })
             .OrderByDescending(v => v.EndTime)
@@ -247,7 +249,7 @@ public class VotingService : IVotingService
     /// <summary>
     /// Получить активные голосования пользователя с расширенной информацией
     /// </summary>
-    public async Task<List<UserVotingDto>> GetUnvotedVotingsByUserAsync(Guid userId)
+    public async Task<List<UserVotingDto>> GetMyActiveVotingsAsync(Guid userId)
     {
         var votings = await _repository.GetUnvotedVotingsByUserAsync(userId);
 
@@ -266,7 +268,7 @@ public class VotingService : IVotingService
                 TotalParticipants = totalParticipants,
                 VotedCount = votedCount,
                 HasDecision = !string.IsNullOrEmpty(v.Decision),
-                HasVoted = false // Всегда false для активных голосований
+                HasVoted = false
             };
         })
         .OrderBy(v => v.EndTime)
@@ -276,7 +278,7 @@ public class VotingService : IVotingService
     /// <summary>
     /// Получить завершенные голосования пользователя с расширенной информацией
     /// </summary>
-    public async Task<List<UserVotingDto>> GetVotedVotingsByUserAsync(Guid userId)
+    public async Task<List<UserVotingDto>> GetMyCompletedVotingsAsync(Guid userId)
     {
         var votings = await _repository.GetVotedVotingsByUserAsync(userId);
 
@@ -296,7 +298,7 @@ public class VotingService : IVotingService
                 TotalParticipants = totalParticipants,
                 VotedCount = votedCount,
                 HasDecision = !string.IsNullOrEmpty(v.Decision),
-                HasVoted = true // Всегда true для завершенных голосований
+                HasVoted = true
             };
         })
         .OrderByDescending(v => v.EndTime)

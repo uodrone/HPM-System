@@ -765,7 +765,7 @@ document.addEventListener('authStateChanged', async () => {
         }
 
         if (window.location.pathname == '/') {
-            const votingsByUser = await votingClient.GetUserActiveVotings(userId);
+            const votingsByUser = await votingClient.GetMyActiveVotings();
             console.log(`голосования для пользователя`);
             console.log(votingsByUser);
             votingProfile.InsertDataToMainPage(votingsByUser);
@@ -773,7 +773,7 @@ document.addEventListener('authStateChanged', async () => {
 
         if (UrlParts.includes(`vote`)) {
             if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {
-                const votingsByUser = await votingClient.GetVotingsByUserId(userId);
+                const votingsByUser = await votingClient.GetMyVotings();
                 console.log(`Все голосования пользователя:`);
                 console.log(votingsByUser);
                 votingProfile.VotingsListByUserId(votingsByUser);
