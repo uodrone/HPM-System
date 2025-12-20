@@ -976,18 +976,18 @@ var ApartmentHouses = /*#__PURE__*/function () {
         return _GetHead.apply(this, arguments);
       }
       return GetHead;
-    }() // 9. Получить дома по ID пользователя
+    }() // Получить информацию о старшем по дому по id квартиры
   }, {
-    key: "GetHousesByUserId",
+    key: "GetHeadByApartmentId",
     value: function () {
-      var _GetHousesByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(userId) {
-        var response, error, data, _t10;
+      var _GetHeadByApartmentId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(apartmentId) {
+        var response, text, data, isJson, errorMessage, _t10;
         return _regenerator().w(function (_context12) {
           while (1) switch (_context12.p = _context12.n) {
             case 0:
               _context12.p = 0;
               _context12.n = 1;
-              return window.apiCall("".concat(this.gatewayUrl, "/api/house/user/").concat(userId), {
+              return window.apiCall("".concat(this.gatewayUrl, "/api/house/apartment/").concat(apartmentId, "/head"), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -995,48 +995,61 @@ var ApartmentHouses = /*#__PURE__*/function () {
               });
             case 1:
               response = _context12.v;
+              _context12.n = 2;
+              return response.text();
+            case 2:
+              text = _context12.v;
+              isJson = false; // Пытаемся распарсить как JSON
+              try {
+                data = JSON.parse(text);
+                isJson = true;
+              } catch (e) {
+                // Это не JSON — значит, это просто строка
+                data = {
+                  message: text
+                };
+              }
               if (response.ok) {
+                _context12.n = 4;
+                break;
+              }
+              errorMessage = data.message || data.Message || (isJson ? JSON.stringify(data) : text);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 ".concat(response.status, ":"), errorMessage);
+              if (!(response.status === 404)) {
                 _context12.n = 3;
                 break;
               }
-              _context12.n = 2;
-              return response.json();
-            case 2:
-              error = _context12.v;
-              throw new Error(error.message || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u043E\u0432 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId));
+              console.log(errorMessage);
+              return _context12.a(2, null);
             case 3:
-              _context12.n = 4;
-              return response.json();
+              throw new Error(errorMessage);
             case 4:
-              data = _context12.v;
-              console.log("\u0414\u043E\u043C\u0430 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
+              console.log("\u0421\u0442\u0430\u0440\u0448\u0438\u0439 \u043F\u043E \u0434\u043E\u043C\u0443:", data);
               return _context12.a(2, data);
             case 5:
               _context12.p = 5;
               _t10 = _context12.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u043E\u0432 \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t10);
-              throw _t10;
-            case 6:
-              return _context12.a(2);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0441\u0442\u0430\u0440\u0448\u0435\u0433\u043E \u043F\u043E \u0434\u043E\u043C\u0443:", _t10.message);
+              return _context12.a(2, null);
           }
         }, _callee12, this, [[0, 5]]);
       }));
-      function GetHousesByUserId(_x13) {
-        return _GetHousesByUserId.apply(this, arguments);
+      function GetHeadByApartmentId(_x13) {
+        return _GetHeadByApartmentId.apply(this, arguments);
       }
-      return GetHousesByUserId;
-    }() // 10. Получить все квартиры по ID дома
+      return GetHeadByApartmentId;
+    }() // 9. Получить дома по ID пользователя
   }, {
-    key: "GetApartmentsByHouseId",
+    key: "GetHousesByUserId",
     value: function () {
-      var _GetApartmentsByHouseId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(houseId) {
+      var _GetHousesByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(userId) {
         var response, error, data, _t11;
         return _regenerator().w(function (_context13) {
           while (1) switch (_context13.p = _context13.n) {
             case 0:
               _context13.p = 0;
               _context13.n = 1;
-              return window.apiCall("".concat(this.gatewayUrl, "/api/apartment/house/").concat(houseId), {
+              return window.apiCall("".concat(this.gatewayUrl, "/api/house/user/").concat(userId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -1052,40 +1065,40 @@ var ApartmentHouses = /*#__PURE__*/function () {
               return response.json();
             case 2:
               error = _context13.v;
-              throw new Error((error === null || error === void 0 ? void 0 : error.message) || 'Ошибка при загрузке квартир');
+              throw new Error(error.message || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u043E\u0432 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId));
             case 3:
               _context13.n = 4;
               return response.json();
             case 4:
               data = _context13.v;
-              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              console.log("\u0414\u043E\u043C\u0430 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), data);
               return _context13.a(2, data);
             case 5:
               _context13.p = 5;
               _t11 = _context13.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t11);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0434\u043E\u043C\u043E\u0432 \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F ".concat(userId, ":"), _t11);
               throw _t11;
             case 6:
               return _context13.a(2);
           }
         }, _callee13, this, [[0, 5]]);
       }));
-      function GetApartmentsByHouseId(_x14) {
-        return _GetApartmentsByHouseId.apply(this, arguments);
+      function GetHousesByUserId(_x14) {
+        return _GetHousesByUserId.apply(this, arguments);
       }
-      return GetApartmentsByHouseId;
-    }() // 11. Получить владельцев квартир в доме с их номерами (массивами)
+      return GetHousesByUserId;
+    }() // 10. Получить все квартиры по ID дома
   }, {
-    key: "GetHouseOwnersWithApartments",
+    key: "GetApartmentsByHouseId",
     value: function () {
-      var _GetHouseOwnersWithApartments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee14(houseId) {
+      var _GetApartmentsByHouseId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee14(houseId) {
         var response, error, data, _t12;
         return _regenerator().w(function (_context14) {
           while (1) switch (_context14.p = _context14.n) {
             case 0:
               _context14.p = 0;
               _context14.n = 1;
-              return window.apiCall("".concat(this.gatewayUrl, "/api/house/").concat(houseId, "/owners"), {
+              return window.apiCall("".concat(this.gatewayUrl, "/api/apartment/house/").concat(houseId), {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json'
@@ -1101,68 +1114,117 @@ var ApartmentHouses = /*#__PURE__*/function () {
               return response.json();
             case 2:
               error = _context14.v;
-              throw new Error((error === null || error === void 0 ? void 0 : error.message) || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0435 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0434\u043E\u043C\u0430 ".concat(houseId));
+              throw new Error((error === null || error === void 0 ? void 0 : error.message) || 'Ошибка при загрузке квартир');
             case 3:
               _context14.n = 4;
               return response.json();
             case 4:
               data = _context14.v;
-              console.log("\u0412\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u044B \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
               return _context14.a(2, data);
             case 5:
               _context14.p = 5;
               _t12 = _context14.v;
-              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t12);
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t12);
               throw _t12;
             case 6:
               return _context14.a(2);
           }
         }, _callee14, this, [[0, 5]]);
       }));
-      function GetHouseOwnersWithApartments(_x15) {
+      function GetApartmentsByHouseId(_x15) {
+        return _GetApartmentsByHouseId.apply(this, arguments);
+      }
+      return GetApartmentsByHouseId;
+    }() // 11. Получить владельцев квартир в доме с их номерами (массивами)
+  }, {
+    key: "GetHouseOwnersWithApartments",
+    value: function () {
+      var _GetHouseOwnersWithApartments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee15(houseId) {
+        var response, error, data, _t13;
+        return _regenerator().w(function (_context15) {
+          while (1) switch (_context15.p = _context15.n) {
+            case 0:
+              _context15.p = 0;
+              _context15.n = 1;
+              return window.apiCall("".concat(this.gatewayUrl, "/api/house/").concat(houseId, "/owners"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 1:
+              response = _context15.v;
+              if (response.ok) {
+                _context15.n = 3;
+                break;
+              }
+              _context15.n = 2;
+              return response.json();
+            case 2:
+              error = _context15.v;
+              throw new Error((error === null || error === void 0 ? void 0 : error.message) || "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0435 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0434\u043E\u043C\u0430 ".concat(houseId));
+            case 3:
+              _context15.n = 4;
+              return response.json();
+            case 4:
+              data = _context15.v;
+              console.log("\u0412\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u044B \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0432 \u0434\u043E\u043C\u0435 ".concat(houseId, ":"), data);
+              return _context15.a(2, data);
+            case 5:
+              _context15.p = 5;
+              _t13 = _context15.v;
+              console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0441 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430\u043C\u0438 \u0434\u043B\u044F \u0434\u043E\u043C\u0430 ".concat(houseId, ":"), _t13);
+              throw _t13;
+            case 6:
+              return _context15.a(2);
+          }
+        }, _callee15, this, [[0, 5]]);
+      }));
+      function GetHouseOwnersWithApartments(_x16) {
         return _GetHouseOwnersWithApartments.apply(this, arguments);
       }
       return GetHouseOwnersWithApartments;
     }()
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee15() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee16() {
   var Regex, _event$detail, isAuthenticated, userData, houseProfile, userId, houseId;
-  return _regenerator().w(function (_context15) {
-    while (1) switch (_context15.n) {
+  return _regenerator().w(function (_context16) {
+    while (1) switch (_context16.n) {
       case 0:
         Regex = new window.RegularExtension();
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         if (!(isAuthenticated && userData)) {
-          _context15.n = 5;
+          _context16.n = 5;
           break;
         }
         houseProfile = new ApartmentHouses();
         userId = window.authManager.userData.userId;
         if (!(window.location.pathname == '/')) {
-          _context15.n = 1;
+          _context16.n = 1;
           break;
         }
-        _context15.n = 1;
+        _context16.n = 1;
         return houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.MainPageHouseTemplate);
       case 1:
         if (!window.location.pathname.includes("/house/by-user/".concat(userId))) {
-          _context15.n = 2;
+          _context16.n = 2;
           break;
         }
-        _context15.n = 2;
+        _context16.n = 2;
         return houseProfile.InsertHouseDataByUserId(userId, '.houses-list', houseProfile.HousesListHouseTemplate);
       case 2:
         if (!(Regex.isValidEntityUrl(window.location.href).valid && Regex.getUrlPathParts(window.location.href).includes('house'))) {
-          _context15.n = 4;
+          _context16.n = 4;
           break;
         }
         houseId = Regex.isValidEntityUrl(window.location.href).id;
         localStorage.setItem('house', houseId);
-        _context15.n = 3;
+        _context16.n = 3;
         return houseProfile.InsertHouseDataById(houseId);
       case 3:
-        _context15.n = 4;
+        _context16.n = 4;
         return houseProfile.InsertApartmentsInHouseDetails(houseId);
       case 4:
         //где-то тут и на бэке надо бы сделать проверку на суперадминистратора :)
@@ -1173,9 +1235,9 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           });
         }
       case 5:
-        return _context15.a(2);
+        return _context16.a(2);
     }
-  }, _callee15);
+  }, _callee16);
 })));
 
 /***/ }),
@@ -8588,10 +8650,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
 /* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
@@ -9257,7 +9315,7 @@ var VotingProfileManager = /*#__PURE__*/function () {
       }
 
       // Кнопка
-      this.UpdateVoteButton();
+      this.UpdateVoteButton(this.currentVoting.userApartmentId);
     }
 
     /**
@@ -9293,14 +9351,14 @@ var VotingProfileManager = /*#__PURE__*/function () {
     }
 
     /**
-     * Отобразить результаты
+     * Отобразить результаты голосования
      */
   }, {
     key: "RenderVotingResults",
     value: (function () {
       var _RenderVotingResults = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
         var _this4 = this;
-        var optionsContainer, results, _t3;
+        var optionsContainer, results, allOptions, _t3;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
@@ -9324,19 +9382,28 @@ var VotingProfileManager = /*#__PURE__*/function () {
             case 3:
               results = _context6.v;
               optionsContainer.innerHTML = '<h4 class="mt-4 mb-3">Результаты голосования:</h4>';
-              Object.entries(results.responses).sort(function (_ref5, _ref6) {
-                var _ref7 = _slicedToArray(_ref5, 2),
-                  a = _ref7[1];
-                var _ref8 = _slicedToArray(_ref6, 2),
-                  b = _ref8[1];
-                return b - a;
-              }).forEach(function (_ref9) {
-                var _ref0 = _slicedToArray(_ref9, 2),
-                  option = _ref0[0],
-                  percent = _ref0[1];
-                var isUserChoice = _this4.currentVoting.userResponse === option;
-                optionsContainer.insertAdjacentHTML('beforeend', "\n                    <div class=\"mb-3\">\n                        <div class=\"d-flex justify-content-between align-items-center mb-1\">\n                            <strong>".concat(option, " ").concat(isUserChoice ? '(ваш выбор)' : '', "</strong>\n                            <span class=\"badge bg-secondary\">").concat(percent, "%</span>\n                        </div>\n                        <div class=\"progress\" style=\"height: 25px;\">\n                            <div class=\"progress-bar ").concat(isUserChoice ? 'bg-primary' : 'bg-secondary', "\" style=\"width: ").concat(percent, "%\"></div>\n                        </div>\n                    </div>\n                "));
+
+              // Создаем Map всех вариантов с результатами (0% для тех, за которые не голосовали)
+              allOptions = this.currentVoting.responseOptions.map(function (option) {
+                return {
+                  option: option,
+                  percent: results.responses[option] || 0
+                };
+              }); // Сортируем по проценту (от большего к меньшему)
+              allOptions.sort(function (a, b) {
+                return b.percent - a.percent;
               });
+
+              // Отображаем все варианты
+              allOptions.forEach(function (_ref5) {
+                var option = _ref5.option,
+                  percent = _ref5.percent;
+                var isUserChoice = _this4.currentVoting.userResponse === option;
+                var resultHtml = "\n                    <div class=\"mb-3\">\n                        <div class=\"d-flex justify-content-between align-items-center mb-1\">\n                            <strong>".concat(option, " ").concat(isUserChoice ? '(ваш выбор)' : '', "</strong>\n                            <span class=\"badge bg-secondary\">").concat(percent, "%</span>\n                        </div>\n                        <div class=\"progress\" style=\"height: 25px;\">\n                            <div class=\"progress-bar ").concat(isUserChoice ? 'bg-primary' : 'bg-secondary', "\" \n                                style=\"width: ").concat(percent, "%\">\n                            </div>\n                        </div>\n                    </div>\n                ");
+                optionsContainer.insertAdjacentHTML('beforeend', resultHtml);
+              });
+
+              // Показываем решение, если оно есть
               if (results.decision && results.decision !== 'Решение не опубликовано') {
                 optionsContainer.insertAdjacentHTML('beforeend', "\n                    <div class=\"alert alert-success mt-4\">\n                        <h5>\u0420\u0435\u0448\u0435\u043D\u0438\u0435 \u043A\u043E\u043C\u0438\u0441\u0441\u0438\u0438:</h5>\n                        <p class=\"mb-0\">".concat(results.decision, "</p>\n                    </div>\n                "));
               }
@@ -9349,6 +9416,7 @@ var VotingProfileManager = /*#__PURE__*/function () {
               _context6.p = 4;
               _t3 = _context6.v;
               console.error('Ошибка при загрузке результатов:', _t3);
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Ошибка при загрузке результатов', 'red');
             case 5:
               return _context6.a(2);
           }
@@ -9365,15 +9433,46 @@ var VotingProfileManager = /*#__PURE__*/function () {
     )
   }, {
     key: "UpdateVoteButton",
-    value: function UpdateVoteButton() {
-      var voteButton = document.querySelector('[data-action="send-vote"]');
-      if (!voteButton) return;
-      voteButton.style.display = this.currentVoting.hasVoted || this.currentVoting.isCompleted ? 'none' : 'inline-block';
-    }
-
+    value: (function () {
+      var _UpdateVoteButton = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(apartmentId) {
+        var voteButton, decisionButton, houseHead;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.n) {
+            case 0:
+              voteButton = document.querySelector('[data-action="send-vote"]');
+              decisionButton = document.querySelector('[data-action="determ-decision"]');
+              if (voteButton) {
+                _context7.n = 1;
+                break;
+              }
+              return _context7.a(2);
+            case 1:
+              if (!(this.currentVoting.hasVoted || this.currentVoting.isCompleted)) {
+                _context7.n = 3;
+                break;
+              }
+              voteButton.classList.add('d-none');
+              _context7.n = 2;
+              return this.houseProfile.GetHeadByApartmentId(apartmentId);
+            case 2:
+              houseHead = _context7.v;
+              if (houseHead.id == this.userId) {
+                decisionButton.classList.remove('d-none');
+              }
+            case 3:
+              return _context7.a(2);
+          }
+        }, _callee7, this);
+      }));
+      function UpdateVoteButton(_x3) {
+        return _UpdateVoteButton.apply(this, arguments);
+      }
+      return UpdateVoteButton;
+    }()
     /**
      * Собрать данные голоса
      */
+    )
   }, {
     key: "CollectVoteData",
     value: function CollectVoteData() {
@@ -9395,44 +9494,44 @@ var VotingProfileManager = /*#__PURE__*/function () {
   }, {
     key: "SubmitVote",
     value: (function () {
-      var _SubmitVote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+      var _SubmitVote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
         var _this5 = this;
         var voteData, voteButton, _voteButton, _t4;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.p = _context7.n) {
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.p = _context8.n) {
             case 0:
-              _context7.p = 0;
+              _context8.p = 0;
               if (!(this.currentVoting.isCompleted || this.currentVoting.hasVoted)) {
-                _context7.n = 1;
+                _context8.n = 1;
                 break;
               }
               _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Вы уже проголосовали или голосование завершено', 'orange');
-              return _context7.a(2);
+              return _context8.a(2);
             case 1:
               voteData = this.CollectVoteData();
               if (voteData) {
-                _context7.n = 2;
+                _context8.n = 2;
                 break;
               }
-              return _context7.a(2);
+              return _context8.a(2);
             case 2:
               voteButton = document.querySelector('[data-action="send-vote"]');
               if (voteButton) {
                 voteButton.textContent = 'Отправка...';
                 voteButton.style.pointerEvents = 'none';
               }
-              _context7.n = 3;
+              _context8.n = 3;
               return this.votingClient.SubmitVote(this.currentVoting.id, voteData);
             case 3:
               _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Ваш голос успешно принят!', 'green');
               setTimeout(function () {
                 return _this5.LoadVotingProfile(_this5.currentVoting.id);
               }, 1500);
-              _context7.n = 5;
+              _context8.n = 5;
               break;
             case 4:
-              _context7.p = 4;
-              _t4 = _context7.v;
+              _context8.p = 4;
+              _t4 = _context8.v;
               console.error('Ошибка:', _t4);
               _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification("\u041E\u0448\u0438\u0431\u043A\u0430: ".concat(_t4.message), 'red');
               _voteButton = document.querySelector('[data-action="send-vote"]');
@@ -9441,9 +9540,9 @@ var VotingProfileManager = /*#__PURE__*/function () {
                 _voteButton.style.pointerEvents = 'auto';
               }
             case 5:
-              return _context7.a(2);
+              return _context8.a(2);
           }
-        }, _callee7, this, [[0, 4]]);
+        }, _callee8, this, [[0, 4]]);
       }));
       function SubmitVote() {
         return _SubmitVote.apply(this, arguments);
@@ -9469,16 +9568,16 @@ var VotingProfileManager = /*#__PURE__*/function () {
     }
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9() {
   var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, votingProfile, votingClient, votingsByUser, _votingsByUser, votingId;
-  return _regenerator().w(function (_context8) {
-    while (1) switch (_context8.n) {
+  return _regenerator().w(function (_context9) {
+    while (1) switch (_context9.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
         if (!(isAuthenticated && userData)) {
-          _context8.n = 5;
+          _context9.n = 5;
           break;
         }
         userId = window.authManager.userData.userId;
@@ -9489,47 +9588,47 @@ document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#
           votingProfile.InitializeEventHandlersForCreateVoting();
         }
         if (!(window.location.pathname == '/')) {
-          _context8.n = 2;
+          _context9.n = 2;
           break;
         }
-        _context8.n = 1;
+        _context9.n = 1;
         return votingClient.GetMyActiveVotings();
       case 1:
-        votingsByUser = _context8.v;
+        votingsByUser = _context9.v;
         console.log("\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
         console.log(votingsByUser);
         votingProfile.InsertDataToMainPage(votingsByUser);
       case 2:
         if (!UrlParts.includes("vote")) {
-          _context8.n = 5;
+          _context9.n = 5;
           break;
         }
         if (!(UrlParts.includes('by-user') && UrlParts.includes(userId))) {
-          _context8.n = 4;
+          _context9.n = 4;
           break;
         }
-        _context8.n = 3;
+        _context9.n = 3;
         return votingClient.GetMyVotings();
       case 3:
-        _votingsByUser = _context8.v;
+        _votingsByUser = _context9.v;
         console.log("\u0412\u0441\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");
         console.log(_votingsByUser);
         votingProfile.VotingsListByUserId(_votingsByUser);
-        _context8.n = 5;
+        _context9.n = 5;
         break;
       case 4:
         if (!Regex.isGuid(UrlParts[1])) {
-          _context8.n = 5;
+          _context9.n = 5;
           break;
         }
         votingId = UrlParts[1];
         console.log("\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u043F\u0440\u043E\u0444\u0438\u043B\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F: ".concat(votingId));
-        _context8.n = 5;
+        _context9.n = 5;
         return votingProfile.LoadVotingProfile(votingId);
       case 5:
-        return _context8.a(2);
+        return _context9.a(2);
     }
-  }, _callee8);
+  }, _callee9);
 })));
 
 /***/ })

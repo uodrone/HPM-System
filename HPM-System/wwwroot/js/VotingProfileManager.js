@@ -551,7 +551,7 @@ export class VotingProfileManager {
         }
 
         // Кнопка
-        this.UpdateVoteButton();
+        this.UpdateVoteButton(this.currentVoting.userApartmentId);
     }
 
     /**
@@ -627,7 +627,7 @@ export class VotingProfileManager {
     }
 
     /**
-     * Отобразить результаты
+     * Отобразить результаты голосования
      */
     async RenderVotingResults() {
         const optionsContainer = document.querySelector('[data-group="voting-options"]');
@@ -647,21 +647,37 @@ export class VotingProfileManager {
             const results = await this.votingClient.GetVotingResults(this.currentVoting.id);
             optionsContainer.innerHTML = '<h4 class="mt-4 mb-3">Результаты голосования:</h4>';
 
-            Object.entries(results.responses).sort(([, a], [, b]) => b - a).forEach(([option, percent]) => {
+            // Создаем Map всех вариантов с результатами (0% для тех, за которые не голосовали)
+            const allOptions = this.currentVoting.responseOptions.map(option => {
+                return {
+                    option: option,
+                    percent: results.responses[option] || 0
+                };
+            });
+
+            // Сортируем по проценту (от большего к меньшему)
+            allOptions.sort((a, b) => b.percent - a.percent);
+
+            // Отображаем все варианты
+            allOptions.forEach(({ option, percent }) => {
                 const isUserChoice = this.currentVoting.userResponse === option;
-                optionsContainer.insertAdjacentHTML('beforeend', `
+                const resultHtml = `
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <strong>${option} ${isUserChoice ? '(ваш выбор)' : ''}</strong>
                             <span class="badge bg-secondary">${percent}%</span>
                         </div>
                         <div class="progress" style="height: 25px;">
-                            <div class="progress-bar ${isUserChoice ? 'bg-primary' : 'bg-secondary'}" style="width: ${percent}%"></div>
+                            <div class="progress-bar ${isUserChoice ? 'bg-primary' : 'bg-secondary'}" 
+                                style="width: ${percent}%">
+                            </div>
                         </div>
                     </div>
-                `);
+                `;
+                optionsContainer.insertAdjacentHTML('beforeend', resultHtml);
             });
 
+            // Показываем решение, если оно есть
             if (results.decision && results.decision !== 'Решение не опубликовано') {
                 optionsContainer.insertAdjacentHTML('beforeend', `
                     <div class="alert alert-success mt-4">
@@ -675,17 +691,28 @@ export class VotingProfileManager {
             this.RenderVotingStats();
         } catch (error) {
             console.error('Ошибка при загрузке результатов:', error);
+            Modal.ShowNotification('Ошибка при загрузке результатов', 'red');
         }
     }
 
     /**
      * Управление кнопкой
      */
-    UpdateVoteButton() {
+    async UpdateVoteButton(apartmentId) {
         const voteButton = document.querySelector('[data-action="send-vote"]');
+        const decisionButton = document.querySelector('[data-action="determ-decision"]');        
+
         if (!voteButton) return;
 
-        voteButton.style.display = (this.currentVoting.hasVoted || this.currentVoting.isCompleted) ? 'none' : 'inline-block';
+        if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
+            voteButton.classList.add('d-none');
+
+            const houseHead = await this.houseProfile.GetHeadByApartmentId(apartmentId);
+
+            if (houseHead.id == this.userId) {
+                decisionButton.classList.remove('d-none');
+            }
+        }
     }
 
     /**

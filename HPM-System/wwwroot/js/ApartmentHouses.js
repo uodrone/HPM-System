@@ -558,6 +558,48 @@ export class ApartmentHouses {
         }
     }
 
+    // Получить информацию о старшем по дому по id квартиры
+    async GetHeadByApartmentId(apartmentId) {
+        try {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/apartment/${apartmentId}/head`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // Читаем тело ОДИН раз как текст
+            const text = await response.text();
+
+            let data;
+            let isJson = false;
+
+            // Пытаемся распарсить как JSON
+            try {
+                data = JSON.parse(text);
+                isJson = true;
+            } catch (e) {
+                // Это не JSON — значит, это просто строка
+                data = { message: text };
+            }
+
+            if (!response.ok) {
+                const errorMessage = data.message || data.Message || (isJson ? JSON.stringify(data) : text);
+                console.error(`Ошибка ${response.status}:`, errorMessage);
+
+                if (response.status === 404) {
+                    console.log(errorMessage);
+                    return null; // Старшего нет
+                }
+                throw new Error(errorMessage);
+            }
+
+            console.log(`Старший по дому:`, data);
+            return data;
+        } catch (error) {
+            console.error(`Ошибка получения старшего по дому:`, error.message);
+            return null;
+        }
+    }
+
     // 9. Получить дома по ID пользователя
     async GetHousesByUserId(userId) {
         try {

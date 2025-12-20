@@ -335,6 +335,62 @@ namespace HPM_System.ApartmentService.Controllers
         }
 
         /// <summary>
+        /// Получить информацию о старшем по дому по ID квартиры
+        /// </summary>
+        [HttpGet("apartment/{apartmentId}/head")]
+        public async Task<ActionResult<HouseHeadDto>> GetHeadByApartmentId(long apartmentId)
+        {
+            try
+            {
+                // Получаем квартиру, чтобы узнать, к какому дому она относится
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
+                if (apartment == null)
+                    return NotFound($"Квартира с ID {apartmentId} не найдена");
+
+                // Получаем дом по HouseId из квартиры
+                var house = await _houseRepository.GetHouseByIdAsync(apartment.HouseId);
+                if (house == null)
+                    return NotFound($"Дом с ID {apartment.HouseId}, к которому относится квартира {apartmentId}, не найден");
+
+                if (house.HeadId == null)
+                    return NotFound($"В доме {house.Id} не назначен старший");
+
+                // Получаем данные пользователя из UserService
+                var headUser = await _userServiceClient.GetUserByIdAsync(house.HeadId.Value);
+                if (headUser == null)
+                    return NotFound($"Пользователь-старший с ID {house.HeadId.Value} не найден в системе пользователей");
+
+                // Маппинг UserDto -> HouseHeadDto
+                var headDto = new HouseHeadDto
+                {
+                    Id = headUser.Id,
+                    FirstName = headUser.FirstName,
+                    Patronymic = headUser.Patronymic,
+                    PhoneNumber = headUser.PhoneNumber
+                };
+
+                return Ok(headDto);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Ошибка связи с UserService при получении данных старшего по квартире {ApartmentId}", apartmentId);
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    new { Message = "В данный момент невозможно получить данные старшего. Сервис пользователей недоступен.", Details = ex.Message });
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Таймаут при связи с UserService при получении данных старшего по квартире {ApartmentId}", apartmentId);
+                return StatusCode(StatusCodes.Status504GatewayTimeout,
+                    new { Message = "Превышено время ожидания ответа от сервиса пользователей.", Details = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении старшего по квартире {ApartmentId}", apartmentId);
+                return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        /// <summary>
         /// Получить всех владельцев квартир в доме с номерами их квартир
         /// </summary>
         [HttpGet("{houseId}/owners")]
