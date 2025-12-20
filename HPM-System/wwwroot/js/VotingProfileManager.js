@@ -509,7 +509,7 @@ export class VotingProfileManager {
             this.currentVoting = voting;
             
             this.RenderVotingProfile();
-            this.InitializeVotingProfileHandlers();
+            this.InitializeVotingProfileHandlers();            
         } catch (error) {
             console.error('Ошибка при загрузке профиля голосования:', error);
             Modal.ShowNotification('Ошибка при загрузке голосования', 'red');
@@ -532,6 +532,7 @@ export class VotingProfileManager {
         
         if (votingEndDiv && votingEndTimeSpan) {
             const formattedDate = DateFormat.DateFormatToRuString(this.currentVoting.endTime);
+            console.log(`формат даты: ${formattedDate}`);
 
             votingEndDiv.innerHTML = this.currentVoting.isCompleted 
                 ? '<strong>Голосование завершено:</strong> '
@@ -540,8 +541,7 @@ export class VotingProfileManager {
             votingEndTimeSpan.textContent = formattedDate;
         }
 
-        // Статистика
-        this.RenderVotingStats();
+        
 
         // Варианты или результаты
         if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
@@ -558,8 +558,10 @@ export class VotingProfileManager {
      * Отобразить статистику
      */
     RenderVotingStats() {
-        const votingEndDiv = document.getElementById('voting-end');
-        if (!votingEndDiv) return;
+        const votingStatsContainer = document.querySelector(`[data-group="voting-stats"]`);
+        if (!votingStatsContainer) return;
+
+        votingStatsContainer.innerHTML = '';
 
         const progressPercent = this.currentVoting.totalParticipants > 0 
             ? Math.round((this.currentVoting.votedCount / this.currentVoting.totalParticipants) * 100) 
@@ -591,7 +593,7 @@ export class VotingProfileManager {
             </div>
         `;
 
-        votingEndDiv.insertAdjacentHTML('afterend', statsHtml);
+        votingStatsContainer.insertAdjacentHTML('afterend', statsHtml);
     }
 
     /**
@@ -668,6 +670,9 @@ export class VotingProfileManager {
                     </div>
                 `);
             }
+
+            // Статистика
+            this.RenderVotingStats();
         } catch (error) {
             console.error('Ошибка при загрузке результатов:', error);
         }

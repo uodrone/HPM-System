@@ -9244,12 +9244,10 @@ var VotingProfileManager = /*#__PURE__*/function () {
       var votingEndTimeSpan = document.getElementById('voting-end-time');
       if (votingEndDiv && votingEndTimeSpan) {
         var formattedDate = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(this.currentVoting.endTime);
+        console.log("\u0444\u043E\u0440\u043C\u0430\u0442 \u0434\u0430\u0442\u044B: ".concat(formattedDate));
         votingEndDiv.innerHTML = this.currentVoting.isCompleted ? '<strong>Голосование завершено:</strong> ' : '<strong>Голосование завершится:</strong> ';
         votingEndTimeSpan.textContent = formattedDate;
       }
-
-      // Статистика
-      this.RenderVotingStats();
 
       // Варианты или результаты
       if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
@@ -9268,13 +9266,14 @@ var VotingProfileManager = /*#__PURE__*/function () {
   }, {
     key: "RenderVotingStats",
     value: function RenderVotingStats() {
-      var votingEndDiv = document.getElementById('voting-end');
-      if (!votingEndDiv) return;
+      var votingStatsContainer = document.querySelector("[data-group=\"voting-stats\"]");
+      if (!votingStatsContainer) return;
+      votingStatsContainer.innerHTML = '';
       var progressPercent = this.currentVoting.totalParticipants > 0 ? Math.round(this.currentVoting.votedCount / this.currentVoting.totalParticipants * 100) : 0;
       var progressClass = 'bg-danger';
       if (progressPercent >= 75) progressClass = 'bg-success';else if (progressPercent >= 50) progressClass = 'bg-info';else if (progressPercent >= 25) progressClass = 'bg-warning';
       var statsHtml = "\n            <div class=\"voting-stats mt-3 p-3 bg-light rounded\">\n                <p class=\"mb-2\">\n                    <strong>\u041F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u043E:</strong> \n                    ".concat(this.currentVoting.votedCount, " \u0438\u0437 ").concat(this.currentVoting.totalParticipants, " \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432\n                </p>\n                <div class=\"progress\" style=\"height: 25px;\">\n                    <div class=\"progress-bar ").concat(progressClass, "\" style=\"width: ").concat(progressPercent, "%\">\n                        ").concat(progressPercent, "%\n                    </div>\n                </div>\n                ").concat(this.currentVoting.hasVoted ? "<p class=\"mt-2 mb-0 text-success\"><strong>\u2713 \u0412\u044B \u0443\u0436\u0435 \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u0438: ".concat(this.currentVoting.userResponse, "</strong></p>") : "<p class=\"mt-2 mb-0 text-warning\"><strong>\u26A0 \u0412\u044B \u0435\u0449\u0451 \u043D\u0435 \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u0438</strong></p>", "\n                ").concat(this.currentVoting.isCompleted && this.currentVoting.hasDecision ? '<p class="mt-2 mb-0 text-info"><strong>ℹ Решение по голосованию вынесено</strong></p>' : '', "\n            </div>\n        ");
-      votingEndDiv.insertAdjacentHTML('afterend', statsHtml);
+      votingStatsContainer.insertAdjacentHTML('afterend', statsHtml);
     }
 
     /**
@@ -9341,6 +9340,9 @@ var VotingProfileManager = /*#__PURE__*/function () {
               if (results.decision && results.decision !== 'Решение не опубликовано') {
                 optionsContainer.insertAdjacentHTML('beforeend', "\n                    <div class=\"alert alert-success mt-4\">\n                        <h5>\u0420\u0435\u0448\u0435\u043D\u0438\u0435 \u043A\u043E\u043C\u0438\u0441\u0441\u0438\u0438:</h5>\n                        <p class=\"mb-0\">".concat(results.decision, "</p>\n                    </div>\n                "));
               }
+
+              // Статистика
+              this.RenderVotingStats();
               _context6.n = 5;
               break;
             case 4:
