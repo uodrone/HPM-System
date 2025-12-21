@@ -58,7 +58,8 @@ public class VotingRepository : IVotingRepository
     {
         return await _context.Votings
             .Include(v => v.OwnersList)
-            .Where(v => v.OwnersList.Any(o => o.UserId == userId && string.IsNullOrEmpty(o.Response)))
+            .Where(v => v.OwnersList.Any(o => o.UserId == userId && string.IsNullOrEmpty(o.Response))
+                     && !v.IsCompleted)
             .ToListAsync();
     }
 

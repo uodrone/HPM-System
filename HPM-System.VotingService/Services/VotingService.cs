@@ -203,10 +203,21 @@ public class VotingService : IVotingService
                     HasVoted = !string.IsNullOrEmpty(owner.Response)
                 };
             })
-            .OrderByDescending(v => v.EndTime)
             .ToList();
 
-        return userVotings;
+        // Разделяем на активные и завершённые
+        var activeVotings = userVotings
+            .Where(v => !v.IsCompleted)
+            .OrderBy(v => v.EndTime) // Сначала самые срочные
+            .ToList();
+
+        var completedVotings = userVotings
+            .Where(v => v.IsCompleted)
+            .OrderByDescending(v => v.EndTime) // Сначала самые свежие
+            .ToList();
+
+        // Объединяем: сначала активные, потом завершённые
+        return activeVotings.Concat(completedVotings).ToList();
     }
 
     /// <summary>

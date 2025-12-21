@@ -461,7 +461,7 @@ export class VotingProfileManager {
             const isVoted = vote.hasVoted ? `Вы уже проголосовали` : ``;
             const decision = vote.hasDecision ? '<div><b>Решение вынесено</b></div>' : '<div><b>Решение еще не вынесено</b></div>';
             const isVoteComplete = vote.isCompleted 
-                ? `<span style="font-size: 14px;">Завершено: ${DateFormat.DateFormatToRuString(endTime)}</span>`
+                ? `<span style="font-size: 14px;">Завершено: ${DateFormat.DateFormatToRuString(vote.endTime)}</span>`
                 : `<span style="font-size: 14px;">Завершится: ${DateFormat.DateFormatToRuString(vote.endTime)}</span>`;
 
             voteHTML = `
@@ -532,7 +532,6 @@ export class VotingProfileManager {
         
         if (votingEndDiv && votingEndTimeSpan) {
             const formattedDate = DateFormat.DateFormatToRuString(this.currentVoting.endTime);
-            console.log(`формат даты: ${formattedDate}`);
 
             votingEndDiv.innerHTML = this.currentVoting.isCompleted 
                 ? '<strong>Голосование завершено:</strong> '
@@ -541,7 +540,8 @@ export class VotingProfileManager {
             votingEndTimeSpan.textContent = formattedDate;
         }
 
-        
+        // Отображаем решение, если оно вынесено
+        this.RenderDecision();
 
         // Варианты или результаты
         if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
@@ -552,6 +552,164 @@ export class VotingProfileManager {
 
         // Кнопка
         this.UpdateVoteButton(this.currentVoting.userApartmentId);
+    }
+
+    /**
+     * Отобразить решениепо голосованию, если оно есть
+     */
+    RenderDecision() {
+        const decisionContainer = document.getElementById('decision-container');
+        const decisionResult = document.getElementById('decision-result');
+
+        if (!decisionContainer || !decisionResult) return;
+
+        if (this.currentVoting.hasDecision && this.currentVoting.decision) {
+            decisionResult.textContent = this.currentVoting.decision;
+            decisionContainer.classList.remove('d-none');
+        } else {
+            decisionContainer.classList.add('d-none');
+        }
+    }
+
+    /**
+     * Валидация решения
+     * @param {string} decision - текст решения
+     * @returns {Object} - {isValid, error}
+     */
+    ValidateDecision(decision) {
+        const errorEl = document.querySelector('[data-error="decision"]');
+        const trimmed = decision.trim();
+
+        if (!trimmed) {
+            if (errorEl) {
+                errorEl.textContent = 'Решение не может быть пустым';
+                errorEl.classList.remove('invisible');
+            }
+            return { isValid: false, error: 'Решение не может быть пустым' };
+        }
+
+        if (trimmed.length < 5) {
+            if (errorEl) {
+                errorEl.textContent = 'Решение должно содержать минимум 5 символов';
+                errorEl.classList.remove('invisible');
+            }
+            return { isValid: false, error: 'Минимум 5 символов' };
+        }
+
+        if (trimmed.length > 1000) {
+            if (errorEl) {
+                errorEl.textContent = 'Решение не должно превышать 1000 символов';
+                errorEl.classList.remove('invisible');
+            }
+            return { isValid: false, error: 'Максимум 1000 символов' };
+        }
+
+        // Скрываем ошибку
+        if (errorEl) {
+            errorEl.classList.add('invisible');
+        }
+
+        return { isValid: true };
+    }
+
+    /**
+     * Валидация решения
+     * @param {string} decision - текст решения
+     * @returns {Object} - {isValid, error}
+     */
+    ValidateDecision(decision) {
+        const errorEl = document.querySelector('[data-error="decision"]');
+        const trimmed = decision.trim();
+
+        if (!trimmed) {
+            if (errorEl) {
+                errorEl.textContent = 'Решение не может быть пустым';
+                errorEl.classList.remove('invisible');
+            }
+            return { isValid: false, error: 'Решение не может быть пустым' };
+        }
+
+        if (trimmed.length < 5) {
+            if (errorEl) {
+                errorEl.textContent = 'Решение должно содержать минимум 5 символов';
+                errorEl.classList.remove('invisible');
+            }
+            return { isValid: false, error: 'Минимум 5 символов' };
+        }
+
+        if (trimmed.length > 1000) {
+            if (errorEl) {
+                errorEl.textContent = 'Решение не должно превышать 1000 символов';
+                errorEl.classList.remove('invisible');
+            }
+            return { isValid: false, error: 'Максимум 1000 символов' };
+        }
+
+        // Скрываем ошибку
+        if (errorEl) {
+            errorEl.classList.add('invisible');
+        }
+
+        return { isValid: true };
+    }
+
+    /**
+     * Вынести решение по голосованию
+     */
+    async SubmitDecision() {
+        try {
+            const decisionTextarea = document.getElementById('decision');
+            if (!decisionTextarea) return;
+
+            const decision = decisionTextarea.value;
+
+            // Валидация
+            const validation = this.ValidateDecision(decision);
+            if (!validation.isValid) {
+                return;
+            }
+
+            // Проверяем, что голосование завершено
+            if (!this.currentVoting.isCompleted) {
+                Modal.ShowNotification('Решение можно вынести только после завершения голосования', 'orange');
+                return;
+            }
+
+            // Проверяем, что решение еще не вынесено
+            if (this.currentVoting.hasDecision) {
+                Modal.ShowNotification('Решение уже вынесено', 'orange');
+                return;
+            }
+
+            // Отправляем решение на сервер
+            await this.votingClient.SetVotingDecision(this.currentVoting.id, decision.trim());
+
+            // Показываем уведомление об успехе
+            Modal.ShowNotification('Решение успешно вынесено!', 'green');
+
+            // Закрываем модалку
+            Modal.CloseModalImmediately();
+
+            // Очищаем textarea
+            decisionTextarea.value = '';
+
+            // Обновляем данные голосования
+            this.currentVoting.hasDecision = true;
+            this.currentVoting.decision = decision.trim();
+
+            // Обновляем отображение решения на странице
+            this.RenderDecision();
+
+            // Скрываем кнопку "Вынести решение"
+            const decisionButton = document.querySelector('[data-modal="open"]');
+            if (decisionButton) {
+                decisionButton.classList.add('d-none');
+            }
+
+        } catch (error) {
+            console.error('Ошибка при вынесении решения:', error);
+            Modal.ShowNotification(`Ошибка: ${error.message}`, 'red');
+        }
     }
 
     /**
@@ -647,51 +805,32 @@ export class VotingProfileManager {
             const results = await this.votingClient.GetVotingResults(this.currentVoting.id);
             optionsContainer.innerHTML = '<h4 class="mt-4 mb-3">Результаты голосования:</h4>';
 
-            // Создаем Map всех вариантов с результатами (0% для тех, за которые не голосовали)
-            const allOptions = this.currentVoting.responseOptions.map(option => {
-                return {
-                    option: option,
-                    percent: results.responses[option] || 0
-                };
-            });
+            const allOptions = this.currentVoting.responseOptions.map(option => ({
+                option: option,
+                percent: results.responses[option] || 0
+            }));
 
-            // Сортируем по проценту (от большего к меньшему)
             allOptions.sort((a, b) => b.percent - a.percent);
 
-            // Отображаем все варианты
             allOptions.forEach(({ option, percent }) => {
                 const isUserChoice = this.currentVoting.userResponse === option;
-                const resultHtml = `
+                optionsContainer.insertAdjacentHTML('beforeend', `
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <strong>${option} ${isUserChoice ? '(ваш выбор)' : ''}</strong>
                             <span class="badge bg-secondary">${percent}%</span>
                         </div>
                         <div class="progress" style="height: 25px;">
-                            <div class="progress-bar ${isUserChoice ? 'bg-primary' : 'bg-secondary'}" 
-                                style="width: ${percent}%">
-                            </div>
+                            <div class="progress-bar ${isUserChoice ? 'bg-primary' : 'bg-secondary'}" style="width: ${percent}%"></div>
                         </div>
                     </div>
-                `;
-                optionsContainer.insertAdjacentHTML('beforeend', resultHtml);
+                `);
             });
 
-            // Показываем решение, если оно есть
-            if (results.decision && results.decision !== 'Решение не опубликовано') {
-                optionsContainer.insertAdjacentHTML('beforeend', `
-                    <div class="alert alert-success mt-4">
-                        <h5>Решение комиссии:</h5>
-                        <p class="mb-0">${results.decision}</p>
-                    </div>
-                `);
-            }
-
-            // Статистика
+            // Выводим статистику
             this.RenderVotingStats();
         } catch (error) {
             console.error('Ошибка при загрузке результатов:', error);
-            Modal.ShowNotification('Ошибка при загрузке результатов', 'red');
         }
     }
 
@@ -700,17 +839,23 @@ export class VotingProfileManager {
      */
     async UpdateVoteButton(apartmentId) {
         const voteButton = document.querySelector('[data-action="send-vote"]');
-        const decisionButton = document.querySelector('[data-modal="open"]');        
+        const decisionButton = document.querySelector('[data-modal="open"]');
 
         if (!voteButton) return;
 
         if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
             voteButton.classList.add('d-none');
 
-            const houseHead = await this.houseProfile.GetHeadByApartmentId(apartmentId);
+            // Показываем кнопку "Вынести решение" только если:
+            // 1. Голосование завершено
+            // 2. Решение еще не вынесено
+            // 3. Текущий пользователь - старший по дому
+            if (this.currentVoting.isCompleted && !this.currentVoting.hasDecision && apartmentId) {
+                const houseHead = await this.houseProfile.GetHeadByApartmentId(apartmentId);
 
-            if (houseHead.id == this.userId) {
-                decisionButton.classList.remove('d-none');
+                if (houseHead && houseHead.id == this.userId) {
+                    decisionButton.classList.remove('d-none');
+                }
             }
         }
     }
@@ -772,11 +917,31 @@ export class VotingProfileManager {
      * Инициализация обработчиков
      */
     InitializeVotingProfileHandlers() {
+        // Обработчик кнопки голосования
         const voteButton = document.querySelector('[data-action="send-vote"]');
         if (voteButton) {
             const newButton = voteButton.cloneNode(true);
             voteButton.parentNode.replaceChild(newButton, voteButton);
             newButton.addEventListener('click', () => this.SubmitVote());
+        }
+
+        // Обработчик кнопки вынесения решения в модалке
+        const decisionButton = document.querySelector('.modal-overview [data-action="determ-decision"]');
+        if (decisionButton) {
+            const newDecisionButton = decisionButton.cloneNode(true);
+            decisionButton.parentNode.replaceChild(newDecisionButton, decisionButton);
+            newDecisionButton.addEventListener('click', () => this.SubmitDecision());
+        }
+
+        // Скрываем ошибку при вводе в textarea
+        const decisionTextarea = document.getElementById('decision');
+        if (decisionTextarea) {
+            decisionTextarea.addEventListener('input', () => {
+                const errorEl = document.querySelector('[data-error="decision"]');
+                if (errorEl) {
+                    errorEl.classList.add('invisible');
+                }
+            });
         }
     }
 }
@@ -786,34 +951,64 @@ document.addEventListener('authStateChanged', async () => {
     const Regex = new window.RegularExtension();
     const UrlParts = Regex.getUrlPathParts(window.location.href);
 
+    console.log('=== DEBUG ===');
+    console.log('URL:', window.location.href);
+    console.log('pathname:', window.location.pathname);
+    console.log('UrlParts:', UrlParts);
+    console.log('userId:', window.authManager.userData.userId);
+
     if (isAuthenticated && userData) {
         const userId = window.authManager.userData.userId;
         const votingProfile = new VotingProfileManager();
         const votingClient = new VotingClient();
 
+        // Страница создания голосования
         if (window.location.pathname.includes('/vote/create')) {
+            console.log('➡️ Ветка: создание голосования');
             votingProfile.InsertDataToCreateVote();
             votingProfile.InitializeEventHandlersForCreateVoting();
+            return;
         }
 
-        if (window.location.pathname == '/') {
+        // Главная страница - активные голосования
+        if (window.location.pathname === '/') {
+            console.log('➡️ Ветка: главная страница (активные)');
             const votingsByUser = await votingClient.GetMyActiveVotings();
-            console.log(`голосования для пользователя`);
-            console.log(votingsByUser);
+            console.log('Активные голосования:', votingsByUser);
             votingProfile.InsertDataToMainPage(votingsByUser);
+            return;
         }
 
-        if (UrlParts.includes(`vote`)) {
-            if (UrlParts.includes('by-user') && UrlParts.includes(userId)) {
-                const votingsByUser = await votingClient.GetMyVotings();
-                console.log(`Все голосования пользователя:`);
-                console.log(votingsByUser);
-                votingProfile.VotingsListByUserId(votingsByUser);
-            } else if (Regex.isGuid(UrlParts[1])) {     
+        // Страницы связанные с голосованиями
+        if (UrlParts.includes('vote')) {
+            console.log('➡️ Ветка: страницы голосований');
+            
+            // Список всех голосований пользователя
+            if (UrlParts.includes('by-user')) {
+                console.log('➡️ Подветка: список всех голосований');
+                console.log('Проверка userId в URL:', UrlParts.includes(userId));
+                
+                if (UrlParts.includes(userId)) {
+                    const votingsByUser = await votingClient.GetMyVotings();
+                    console.log('Все голосования пользователя:', votingsByUser);
+                    votingProfile.VotingsListByUserId(votingsByUser);
+                    return;
+                }
+            }
+            
+            // Конкретное голосование по GUID
+            console.log('Проверка UrlParts[1]:', UrlParts[1]);
+            console.log('Это GUID?', UrlParts[1] ? Regex.isGuid(UrlParts[1]) : false);
+            
+            if (UrlParts[1] && Regex.isGuid(UrlParts[1])) {
+                console.log('➡️ Подветка: конкретное голосование');
                 const votingId = UrlParts[1];
-                console.log(`Загрузка профиля голосования: ${votingId}`);
+                console.log('Загрузка профиля голосования:', votingId);
                 await votingProfile.LoadVotingProfile(votingId);
+                return;
             }
         }
+
+        console.log('⚠️ Ни одна ветка не сработала');
     }
 });

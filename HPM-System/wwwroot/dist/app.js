@@ -9225,7 +9225,7 @@ var VotingProfileManager = /*#__PURE__*/function () {
         var votingAction = vote.hasVoted ? "\u041F\u043E\u0434\u0440\u043E\u0431\u043D\u043E\u0441\u0442\u0438" : "\u041F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u0442\u044C";
         var isVoted = vote.hasVoted ? "\u0412\u044B \u0443\u0436\u0435 \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u0438" : "";
         var decision = vote.hasDecision ? '<div><b>Решение вынесено</b></div>' : '<div><b>Решение еще не вынесено</b></div>';
-        var isVoteComplete = vote.isCompleted ? "<span style=\"font-size: 14px;\">\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(endTime), "</span>") : "<span style=\"font-size: 14px;\">\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u0441\u044F: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(vote.endTime), "</span>");
+        var isVoteComplete = vote.isCompleted ? "<span style=\"font-size: 14px;\">\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(vote.endTime), "</span>") : "<span style=\"font-size: 14px;\">\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u0441\u044F: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(vote.endTime), "</span>");
         voteHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"vote\" data-vote-id=\"".concat(vote.votingId, "\">\n                    <h3 class=\"card-header card-header_vote w-100 d-flex justify-content-between align-items-center\">\n                        <a href=\"/vote/").concat(vote.votingId, "\">").concat(vote.questionPut, "</a> ").concat(isVoteComplete, "\n                    </h3>\n                    <div class=\"card-content w-100\">\n                        <div class=\"d-flex flex-wrap gap-4 w-100 justify-content-between\">\n                            <div>\u0412\u0441\u0435\u0433\u043E \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432: <b>").concat(vote.totalParticipants, "</b></div>\n                            <div>\u0412\u0441\u0435\u0433\u043E \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u043E: <b>").concat(vote.votedCount, "</b></div>                            \n                            ").concat(decision, "\n                            ").concat(isVoted, "                        \n                        </div>\n                        <div class=\"text-center mt-4\"><a href=\"/vote/").concat(vote.votingId, "\">").concat(votingAction, "</a></div>\n                    </div>\n                </div>\n            ");
       }
       return voteHTML;
@@ -9302,10 +9302,12 @@ var VotingProfileManager = /*#__PURE__*/function () {
       var votingEndTimeSpan = document.getElementById('voting-end-time');
       if (votingEndDiv && votingEndTimeSpan) {
         var formattedDate = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(this.currentVoting.endTime);
-        console.log("\u0444\u043E\u0440\u043C\u0430\u0442 \u0434\u0430\u0442\u044B: ".concat(formattedDate));
         votingEndDiv.innerHTML = this.currentVoting.isCompleted ? '<strong>Голосование завершено:</strong> ' : '<strong>Голосование завершится:</strong> ';
         votingEndTimeSpan.textContent = formattedDate;
       }
+
+      // Отображаем решение, если оно вынесено
+      this.RenderDecision();
 
       // Варианты или результаты
       if (this.currentVoting.hasVoted || this.currentVoting.isCompleted) {
@@ -9319,8 +9321,164 @@ var VotingProfileManager = /*#__PURE__*/function () {
     }
 
     /**
+     * Отобразить решениепо голосованию, если оно есть
+     */
+  }, {
+    key: "RenderDecision",
+    value: function RenderDecision() {
+      var decisionContainer = document.getElementById('decision-container');
+      var decisionResult = document.getElementById('decision-result');
+      if (!decisionContainer || !decisionResult) return;
+      if (this.currentVoting.hasDecision && this.currentVoting.decision) {
+        decisionResult.textContent = this.currentVoting.decision;
+        decisionContainer.classList.remove('d-none');
+      } else {
+        decisionContainer.classList.add('d-none');
+      }
+    }
+
+    /**
+     * Валидация решения
+     * @param {string} decision - текст решения
+     * @returns {Object} - {isValid, error}
+     */
+  }, {
+    key: "ValidateDecision",
+    value:
+    /**
+     * Валидация решения
+     * @param {string} decision - текст решения
+     * @returns {Object} - {isValid, error}
+     */
+    function ValidateDecision(decision) {
+      var errorEl = document.querySelector('[data-error="decision"]');
+      var trimmed = decision.trim();
+      if (!trimmed) {
+        if (errorEl) {
+          errorEl.textContent = 'Решение не может быть пустым';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Решение не может быть пустым'
+        };
+      }
+      if (trimmed.length < 5) {
+        if (errorEl) {
+          errorEl.textContent = 'Решение должно содержать минимум 5 символов';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Минимум 5 символов'
+        };
+      }
+      if (trimmed.length > 1000) {
+        if (errorEl) {
+          errorEl.textContent = 'Решение не должно превышать 1000 символов';
+          errorEl.classList.remove('invisible');
+        }
+        return {
+          isValid: false,
+          error: 'Максимум 1000 символов'
+        };
+      }
+
+      // Скрываем ошибку
+      if (errorEl) {
+        errorEl.classList.add('invisible');
+      }
+      return {
+        isValid: true
+      };
+    }
+
+    /**
+     * Вынести решение по голосованию
+     */
+  }, {
+    key: "SubmitDecision",
+    value: (function () {
+      var _SubmitDecision = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+        var decisionTextarea, decision, validation, decisionButton, _t3;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              decisionTextarea = document.getElementById('decision');
+              if (decisionTextarea) {
+                _context6.n = 1;
+                break;
+              }
+              return _context6.a(2);
+            case 1:
+              decision = decisionTextarea.value; // Валидация
+              validation = this.ValidateDecision(decision);
+              if (validation.isValid) {
+                _context6.n = 2;
+                break;
+              }
+              return _context6.a(2);
+            case 2:
+              if (this.currentVoting.isCompleted) {
+                _context6.n = 3;
+                break;
+              }
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Решение можно вынести только после завершения голосования', 'orange');
+              return _context6.a(2);
+            case 3:
+              if (!this.currentVoting.hasDecision) {
+                _context6.n = 4;
+                break;
+              }
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Решение уже вынесено', 'orange');
+              return _context6.a(2);
+            case 4:
+              _context6.n = 5;
+              return this.votingClient.SetVotingDecision(this.currentVoting.id, decision.trim());
+            case 5:
+              // Показываем уведомление об успехе
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Решение успешно вынесено!', 'green');
+
+              // Закрываем модалку
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.CloseModalImmediately();
+
+              // Очищаем textarea
+              decisionTextarea.value = '';
+
+              // Обновляем данные голосования
+              this.currentVoting.hasDecision = true;
+              this.currentVoting.decision = decision.trim();
+
+              // Обновляем отображение решения на странице
+              this.RenderDecision();
+
+              // Скрываем кнопку "Вынести решение"
+              decisionButton = document.querySelector('[data-modal="open"]');
+              if (decisionButton) {
+                decisionButton.classList.add('d-none');
+              }
+              _context6.n = 7;
+              break;
+            case 6:
+              _context6.p = 6;
+              _t3 = _context6.v;
+              console.error('Ошибка при вынесении решения:', _t3);
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification("\u041E\u0448\u0438\u0431\u043A\u0430: ".concat(_t3.message), 'red');
+            case 7:
+              return _context6.a(2);
+          }
+        }, _callee6, this, [[0, 6]]);
+      }));
+      function SubmitDecision() {
+        return _SubmitDecision.apply(this, arguments);
+      }
+      return SubmitDecision;
+    }()
+    /**
      * Отобразить статистику
      */
+    )
   }, {
     key: "RenderVotingStats",
     value: function RenderVotingStats() {
@@ -9356,71 +9514,60 @@ var VotingProfileManager = /*#__PURE__*/function () {
   }, {
     key: "RenderVotingResults",
     value: (function () {
-      var _RenderVotingResults = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+      var _RenderVotingResults = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
         var _this4 = this;
-        var optionsContainer, results, allOptions, _t3;
-        return _regenerator().w(function (_context6) {
-          while (1) switch (_context6.p = _context6.n) {
+        var optionsContainer, results, allOptions, _t4;
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
             case 0:
               optionsContainer = document.querySelector('[data-group="voting-options"]');
               if (optionsContainer) {
-                _context6.n = 1;
+                _context7.n = 1;
                 break;
               }
-              return _context6.a(2);
+              return _context7.a(2);
             case 1:
               if (!(!this.currentVoting.isCompleted && this.currentVoting.hasVoted)) {
-                _context6.n = 2;
+                _context7.n = 2;
                 break;
               }
               optionsContainer.innerHTML = "\n                <div class=\"alert alert-info\">\n                    <p><strong>\u0412\u044B \u043F\u0440\u043E\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043B\u0438: ".concat(this.currentVoting.userResponse, "</strong></p>\n                    <p>\u0420\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0431\u0443\u0434\u0443\u0442 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B \u043F\u043E\u0441\u043B\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F.</p>\n                </div>\n            ");
-              return _context6.a(2);
+              return _context7.a(2);
             case 2:
-              _context6.p = 2;
-              _context6.n = 3;
+              _context7.p = 2;
+              _context7.n = 3;
               return this.votingClient.GetVotingResults(this.currentVoting.id);
             case 3:
-              results = _context6.v;
+              results = _context7.v;
               optionsContainer.innerHTML = '<h4 class="mt-4 mb-3">Результаты голосования:</h4>';
-
-              // Создаем Map всех вариантов с результатами (0% для тех, за которые не голосовали)
               allOptions = this.currentVoting.responseOptions.map(function (option) {
                 return {
                   option: option,
                   percent: results.responses[option] || 0
                 };
-              }); // Сортируем по проценту (от большего к меньшему)
+              });
               allOptions.sort(function (a, b) {
                 return b.percent - a.percent;
               });
-
-              // Отображаем все варианты
               allOptions.forEach(function (_ref5) {
                 var option = _ref5.option,
                   percent = _ref5.percent;
                 var isUserChoice = _this4.currentVoting.userResponse === option;
-                var resultHtml = "\n                    <div class=\"mb-3\">\n                        <div class=\"d-flex justify-content-between align-items-center mb-1\">\n                            <strong>".concat(option, " ").concat(isUserChoice ? '(ваш выбор)' : '', "</strong>\n                            <span class=\"badge bg-secondary\">").concat(percent, "%</span>\n                        </div>\n                        <div class=\"progress\" style=\"height: 25px;\">\n                            <div class=\"progress-bar ").concat(isUserChoice ? 'bg-primary' : 'bg-secondary', "\" \n                                style=\"width: ").concat(percent, "%\">\n                            </div>\n                        </div>\n                    </div>\n                ");
-                optionsContainer.insertAdjacentHTML('beforeend', resultHtml);
+                optionsContainer.insertAdjacentHTML('beforeend', "\n                    <div class=\"mb-3\">\n                        <div class=\"d-flex justify-content-between align-items-center mb-1\">\n                            <strong>".concat(option, " ").concat(isUserChoice ? '(ваш выбор)' : '', "</strong>\n                            <span class=\"badge bg-secondary\">").concat(percent, "%</span>\n                        </div>\n                        <div class=\"progress\" style=\"height: 25px;\">\n                            <div class=\"progress-bar ").concat(isUserChoice ? 'bg-primary' : 'bg-secondary', "\" style=\"width: ").concat(percent, "%\"></div>\n                        </div>\n                    </div>\n                "));
               });
 
-              // Показываем решение, если оно есть
-              if (results.decision && results.decision !== 'Решение не опубликовано') {
-                optionsContainer.insertAdjacentHTML('beforeend', "\n                    <div class=\"alert alert-success mt-4\">\n                        <h5>\u0420\u0435\u0448\u0435\u043D\u0438\u0435 \u043A\u043E\u043C\u0438\u0441\u0441\u0438\u0438:</h5>\n                        <p class=\"mb-0\">".concat(results.decision, "</p>\n                    </div>\n                "));
-              }
-
-              // Статистика
+              // Выводим статистику
               this.RenderVotingStats();
-              _context6.n = 5;
+              _context7.n = 5;
               break;
             case 4:
-              _context6.p = 4;
-              _t3 = _context6.v;
-              console.error('Ошибка при загрузке результатов:', _t3);
-              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Ошибка при загрузке результатов', 'red');
+              _context7.p = 4;
+              _t4 = _context7.v;
+              console.error('Ошибка при загрузке результатов:', _t4);
             case 5:
-              return _context6.a(2);
+              return _context7.a(2);
           }
-        }, _callee6, this, [[2, 4]]);
+        }, _callee7, this, [[2, 4]]);
       }));
       function RenderVotingResults() {
         return _RenderVotingResults.apply(this, arguments);
@@ -9434,35 +9581,44 @@ var VotingProfileManager = /*#__PURE__*/function () {
   }, {
     key: "UpdateVoteButton",
     value: (function () {
-      var _UpdateVoteButton = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(apartmentId) {
+      var _UpdateVoteButton = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(apartmentId) {
         var voteButton, decisionButton, houseHead;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.n) {
+        return _regenerator().w(function (_context8) {
+          while (1) switch (_context8.n) {
             case 0:
               voteButton = document.querySelector('[data-action="send-vote"]');
               decisionButton = document.querySelector('[data-modal="open"]');
               if (voteButton) {
-                _context7.n = 1;
+                _context8.n = 1;
                 break;
               }
-              return _context7.a(2);
+              return _context8.a(2);
             case 1:
               if (!(this.currentVoting.hasVoted || this.currentVoting.isCompleted)) {
-                _context7.n = 3;
+                _context8.n = 3;
                 break;
               }
               voteButton.classList.add('d-none');
-              _context7.n = 2;
+
+              // Показываем кнопку "Вынести решение" только если:
+              // 1. Голосование завершено
+              // 2. Решение еще не вынесено
+              // 3. Текущий пользователь - старший по дому
+              if (!(this.currentVoting.isCompleted && !this.currentVoting.hasDecision && apartmentId)) {
+                _context8.n = 3;
+                break;
+              }
+              _context8.n = 2;
               return this.houseProfile.GetHeadByApartmentId(apartmentId);
             case 2:
-              houseHead = _context7.v;
-              if (houseHead.id == this.userId) {
+              houseHead = _context8.v;
+              if (houseHead && houseHead.id == this.userId) {
                 decisionButton.classList.remove('d-none');
               }
             case 3:
-              return _context7.a(2);
+              return _context8.a(2);
           }
-        }, _callee7, this);
+        }, _callee8, this);
       }));
       function UpdateVoteButton(_x3) {
         return _UpdateVoteButton.apply(this, arguments);
@@ -9494,55 +9650,55 @@ var VotingProfileManager = /*#__PURE__*/function () {
   }, {
     key: "SubmitVote",
     value: (function () {
-      var _SubmitVote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+      var _SubmitVote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9() {
         var _this5 = this;
-        var voteData, voteButton, _voteButton, _t4;
-        return _regenerator().w(function (_context8) {
-          while (1) switch (_context8.p = _context8.n) {
+        var voteData, voteButton, _voteButton, _t5;
+        return _regenerator().w(function (_context9) {
+          while (1) switch (_context9.p = _context9.n) {
             case 0:
-              _context8.p = 0;
+              _context9.p = 0;
               if (!(this.currentVoting.isCompleted || this.currentVoting.hasVoted)) {
-                _context8.n = 1;
+                _context9.n = 1;
                 break;
               }
               _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Вы уже проголосовали или голосование завершено', 'orange');
-              return _context8.a(2);
+              return _context9.a(2);
             case 1:
               voteData = this.CollectVoteData();
               if (voteData) {
-                _context8.n = 2;
+                _context9.n = 2;
                 break;
               }
-              return _context8.a(2);
+              return _context9.a(2);
             case 2:
               voteButton = document.querySelector('[data-action="send-vote"]');
               if (voteButton) {
                 voteButton.textContent = 'Отправка...';
                 voteButton.style.pointerEvents = 'none';
               }
-              _context8.n = 3;
+              _context9.n = 3;
               return this.votingClient.SubmitVote(this.currentVoting.id, voteData);
             case 3:
               _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Ваш голос успешно принят!', 'green');
               setTimeout(function () {
                 return _this5.LoadVotingProfile(_this5.currentVoting.id);
               }, 1500);
-              _context8.n = 5;
+              _context9.n = 5;
               break;
             case 4:
-              _context8.p = 4;
-              _t4 = _context8.v;
-              console.error('Ошибка:', _t4);
-              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification("\u041E\u0448\u0438\u0431\u043A\u0430: ".concat(_t4.message), 'red');
+              _context9.p = 4;
+              _t5 = _context9.v;
+              console.error('Ошибка:', _t5);
+              _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification("\u041E\u0448\u0438\u0431\u043A\u0430: ".concat(_t5.message), 'red');
               _voteButton = document.querySelector('[data-action="send-vote"]');
               if (_voteButton) {
                 _voteButton.textContent = 'Проголосовать';
                 _voteButton.style.pointerEvents = 'auto';
               }
             case 5:
-              return _context8.a(2);
+              return _context9.a(2);
           }
-        }, _callee8, this, [[0, 4]]);
+        }, _callee9, this, [[0, 4]]);
       }));
       function SubmitVote() {
         return _SubmitVote.apply(this, arguments);
@@ -9557,6 +9713,7 @@ var VotingProfileManager = /*#__PURE__*/function () {
     key: "InitializeVotingProfileHandlers",
     value: function InitializeVotingProfileHandlers() {
       var _this6 = this;
+      // Обработчик кнопки голосования
       var voteButton = document.querySelector('[data-action="send-vote"]');
       if (voteButton) {
         var newButton = voteButton.cloneNode(true);
@@ -9565,70 +9722,117 @@ var VotingProfileManager = /*#__PURE__*/function () {
           return _this6.SubmitVote();
         });
       }
+
+      // Обработчик кнопки вынесения решения в модалке
+      var decisionButton = document.querySelector('.modal-overview [data-action="determ-decision"]');
+      if (decisionButton) {
+        var newDecisionButton = decisionButton.cloneNode(true);
+        decisionButton.parentNode.replaceChild(newDecisionButton, decisionButton);
+        newDecisionButton.addEventListener('click', function () {
+          return _this6.SubmitDecision();
+        });
+      }
+
+      // Скрываем ошибку при вводе в textarea
+      var decisionTextarea = document.getElementById('decision');
+      if (decisionTextarea) {
+        decisionTextarea.addEventListener('input', function () {
+          var errorEl = document.querySelector('[data-error="decision"]');
+          if (errorEl) {
+            errorEl.classList.add('invisible');
+          }
+        });
+      }
     }
   }]);
 }();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9() {
+document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0() {
   var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, votingProfile, votingClient, votingsByUser, _votingsByUser, votingId;
-  return _regenerator().w(function (_context9) {
-    while (1) switch (_context9.n) {
+  return _regenerator().w(function (_context0) {
+    while (1) switch (_context0.n) {
       case 0:
         _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
         Regex = new window.RegularExtension();
         UrlParts = Regex.getUrlPathParts(window.location.href);
+        console.log('=== DEBUG ===');
+        console.log('URL:', window.location.href);
+        console.log('pathname:', window.location.pathname);
+        console.log('UrlParts:', UrlParts);
+        console.log('userId:', window.authManager.userData.userId);
         if (!(isAuthenticated && userData)) {
-          _context9.n = 5;
+          _context0.n = 8;
           break;
         }
         userId = window.authManager.userData.userId;
         votingProfile = new VotingProfileManager();
-        votingClient = new _VotingClient_js__WEBPACK_IMPORTED_MODULE_2__.VotingClient();
-        if (window.location.pathname.includes('/vote/create')) {
-          votingProfile.InsertDataToCreateVote();
-          votingProfile.InitializeEventHandlersForCreateVoting();
-        }
-        if (!(window.location.pathname == '/')) {
-          _context9.n = 2;
+        votingClient = new _VotingClient_js__WEBPACK_IMPORTED_MODULE_2__.VotingClient(); // Страница создания голосования
+        if (!window.location.pathname.includes('/vote/create')) {
+          _context0.n = 1;
           break;
         }
-        _context9.n = 1;
-        return votingClient.GetMyActiveVotings();
+        console.log('➡️ Ветка: создание голосования');
+        votingProfile.InsertDataToCreateVote();
+        votingProfile.InitializeEventHandlersForCreateVoting();
+        return _context0.a(2);
       case 1:
-        votingsByUser = _context9.v;
-        console.log("\u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
-        console.log(votingsByUser);
-        votingProfile.InsertDataToMainPage(votingsByUser);
+        if (!(window.location.pathname === '/')) {
+          _context0.n = 3;
+          break;
+        }
+        console.log('➡️ Ветка: главная страница (активные)');
+        _context0.n = 2;
+        return votingClient.GetMyActiveVotings();
       case 2:
-        if (!UrlParts.includes("vote")) {
-          _context9.n = 5;
-          break;
-        }
-        if (!(UrlParts.includes('by-user') && UrlParts.includes(userId))) {
-          _context9.n = 4;
-          break;
-        }
-        _context9.n = 3;
-        return votingClient.GetMyVotings();
+        votingsByUser = _context0.v;
+        console.log('Активные голосования:', votingsByUser);
+        votingProfile.InsertDataToMainPage(votingsByUser);
+        return _context0.a(2);
       case 3:
-        _votingsByUser = _context9.v;
-        console.log("\u0412\u0441\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F:");
-        console.log(_votingsByUser);
-        votingProfile.VotingsListByUserId(_votingsByUser);
-        _context9.n = 5;
-        break;
-      case 4:
-        if (!Regex.isGuid(UrlParts[1])) {
-          _context9.n = 5;
+        if (!UrlParts.includes('vote')) {
+          _context0.n = 7;
           break;
         }
-        votingId = UrlParts[1];
-        console.log("\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u043F\u0440\u043E\u0444\u0438\u043B\u044F \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u0430\u043D\u0438\u044F: ".concat(votingId));
-        _context9.n = 5;
-        return votingProfile.LoadVotingProfile(votingId);
+        console.log('➡️ Ветка: страницы голосований');
+
+        // Список всех голосований пользователя
+        if (!UrlParts.includes('by-user')) {
+          _context0.n = 5;
+          break;
+        }
+        console.log('➡️ Подветка: список всех голосований');
+        console.log('Проверка userId в URL:', UrlParts.includes(userId));
+        if (!UrlParts.includes(userId)) {
+          _context0.n = 5;
+          break;
+        }
+        _context0.n = 4;
+        return votingClient.GetMyVotings();
+      case 4:
+        _votingsByUser = _context0.v;
+        console.log('Все голосования пользователя:', _votingsByUser);
+        votingProfile.VotingsListByUserId(_votingsByUser);
+        return _context0.a(2);
       case 5:
-        return _context9.a(2);
+        // Конкретное голосование по GUID
+        console.log('Проверка UrlParts[1]:', UrlParts[1]);
+        console.log('Это GUID?', UrlParts[1] ? Regex.isGuid(UrlParts[1]) : false);
+        if (!(UrlParts[1] && Regex.isGuid(UrlParts[1]))) {
+          _context0.n = 7;
+          break;
+        }
+        console.log('➡️ Подветка: конкретное голосование');
+        votingId = UrlParts[1];
+        console.log('Загрузка профиля голосования:', votingId);
+        _context0.n = 6;
+        return votingProfile.LoadVotingProfile(votingId);
+      case 6:
+        return _context0.a(2);
+      case 7:
+        console.log('⚠️ Ни одна ветка не сработала');
+      case 8:
+        return _context0.a(2);
     }
-  }, _callee9);
+  }, _callee0);
 })));
 
 /***/ })
