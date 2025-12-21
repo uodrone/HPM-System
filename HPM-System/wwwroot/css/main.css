@@ -94,6 +94,10 @@ h3 {
   }
 }
 
+.body-container {
+  min-height: calc(100vh - 59px - 135px);
+}
+
 footer {
   padding: 30px 0;
   background-color: #fff;

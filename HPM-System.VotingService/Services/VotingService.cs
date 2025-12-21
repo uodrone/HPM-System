@@ -1,6 +1,7 @@
 ﻿using DTO;
 using VotingService.Models;
 using VotingService.Repositories;
+using HPM_System.VotingService.CustomExceptions;
 
 namespace VotingService.Services;
 
@@ -8,15 +9,18 @@ public class VotingService : IVotingService
 {
     private readonly IVotingRepository _repository;
     private readonly IApartmentServiceClient _apartmentServiceClient;
+    private readonly IVotingEventPublisher _eventPublisher;
     private readonly ILogger<VotingService> _logger;
 
     public VotingService(
-        IVotingRepository repository,
-        IApartmentServiceClient apartmentServiceClient,
-        ILogger<VotingService> logger)
+    IVotingRepository repository,
+    IApartmentServiceClient apartmentServiceClient,
+    IVotingEventPublisher eventPublisher,
+    ILogger<VotingService> logger)
     {
         _repository = repository;
         _apartmentServiceClient = apartmentServiceClient;
+        _eventPublisher = eventPublisher;
         _logger = logger;
     }
 
@@ -42,6 +46,8 @@ public class VotingService : IVotingService
             IsCompleted = false
         };
 
+        var participants = new List<(Guid UserId, long ApartmentId)>();
+
         foreach (var houseId in request.HouseIds)
         {
             var apartments = await _apartmentServiceClient.GetApartmentsByHouseIdAsync(houseId);
@@ -61,11 +67,30 @@ public class VotingService : IVotingService
                         Response = string.Empty
                     };
                     voting.OwnersList.Add(owner);
+                    participants.Add((user.UserId, apartment.Id));
                 }
             }
         }
 
-        return await _repository.CreateVotingAsync(voting);
+        var createdVoting = await _repository.CreateVotingAsync(voting);
+
+        // Публикуем событие для Telegram
+        try
+        {
+            await _eventPublisher.PublishVotingCreatedAsync(
+                createdVoting.Id,
+                createdVoting.QuestionPut,
+                createdVoting.ResponseOptions,
+                createdVoting.EndTime,
+                participants);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Не удалось опубликовать событие создания голосования {VotingId}", createdVoting.Id);
+            // Не бросаем исключение, так как голосование уже создано
+        }
+
+        return createdVoting;
     }
 
     public async Task<string> SubmitVoteAsync(Guid votingId, VoteRequestDto request, Guid userId)
@@ -108,6 +133,74 @@ public class VotingService : IVotingService
         await CheckAndSetVotingCompletedAsync(voting);
 
         return $"Голос принят с весом: {owner.VoteWeight}";
+    }
+
+    public async Task<string> SubmitVoteFromTelegramAsync(Guid votingId, Guid userId, string response)
+    {
+        var voting = await _repository.GetVotingByIdAsync(votingId);
+
+        if (voting == null)
+            throw new KeyNotFoundException("Голосование не найдено");
+
+        if (voting.IsCompleted)
+            throw new InvalidOperationException("Голосование уже завершено");
+
+        if (!voting.ResponseOptions.Contains(response))
+            throw new ArgumentException($"Ответ '{response}' не является допустимым вариантом для этого голосования.");
+
+        // Получаем все квартиры пользователя в этом голосовании
+        var userOwners = voting.OwnersList
+            .Where(o => o.UserId == userId)
+            .ToList();
+
+        if (!userOwners.Any())
+            throw new ArgumentException("Вы не являетесь участником этого голосования");
+
+        // Проверяем, не голосовал ли пользователь уже
+        var alreadyVotedOwners = userOwners.Where(o => !string.IsNullOrEmpty(o.Response)).ToList();
+        if (alreadyVotedOwners.Any())
+        {
+            // Создаем специальное исключение с информацией о предыдущем голосовании
+            var previousResponse = alreadyVotedOwners.First().Response;
+            throw new AlreadyVotedException(
+                $"Вы уже проголосовали. Ваш выбор: {previousResponse}",
+                previousResponse);
+        }
+
+        // Группируем по домам
+        var ownersByHouse = userOwners.GroupBy(o => o.HouseId);
+
+        decimal totalWeight = 0;
+
+        foreach (var houseGroup in ownersByHouse)
+        {
+            var houseId = houseGroup.Key;
+
+            // Считаем общую площадь дома
+            var totalHouseArea = voting.OwnersList
+                .Where(o => o.HouseId == houseId)
+                .Sum(o => o.ApartmentArea);
+
+            if (totalHouseArea == 0)
+            {
+                _logger.LogWarning("Общая площадь дома {HouseId} равна нулю", houseId);
+                continue;
+            }
+
+            // Устанавливаем вес и ответ для каждой квартиры пользователя в этом доме
+            foreach (var owner in houseGroup)
+            {
+                owner.VoteWeight = (owner.ApartmentArea * owner.Share) / totalHouseArea;
+                owner.Response = response;
+                totalWeight += owner.VoteWeight;
+            }
+        }
+
+        await _repository.SaveChangesAsync();
+        await CheckAndSetVotingCompletedAsync(voting);
+
+        return $"Голос принят с суммарным весом: {Math.Round(totalWeight, 4)} " +
+               $"(квартир: {userOwners.Count})";
     }
 
     public async Task<VotingResultDto> GetVotingResultsAsync(Guid id)

@@ -12,8 +12,10 @@ public interface IVotingService
     Task SetVotingDecisionAsync(Guid id, string decision);
     Task DeleteVotingAsync(Guid id);
     Task<VotingDetailDto?> GetVotingDetailByIdAsync(Guid id, Guid userId);
-    Task<List<UserVotingDto>> GetMyVotingsAsync(Guid userId); // Переименовали
-    Task<List<UserVotingDto>> GetMyActiveVotingsAsync(Guid userId); // Переименовали
-    Task<List<UserVotingDto>> GetMyCompletedVotingsAsync(Guid userId); // Переименовали
+    Task<List<UserVotingDto>> GetMyVotingsAsync(Guid userId);
+    Task<List<UserVotingDto>> GetMyActiveVotingsAsync(Guid userId);
+    Task<List<UserVotingDto>> GetMyCompletedVotingsAsync(Guid userId);
     Task<List<UnresolvedVotingDto>> GetCompletedVotingsWithoutDecisionAsync();
+    Task<Voting?> GetVotingByIdAsync(Guid id);
+    Task<string> SubmitVoteFromTelegramAsync(Guid votingId, Guid userId, string response);
 }

@@ -35,6 +35,7 @@ namespace VotingService
             // Регистрация Repository и Service
             builder.Services.AddScoped<IVotingRepository, VotingRepository>();
             builder.Services.AddScoped<IVotingService, Services.VotingService>();
+            builder.Services.AddSingleton<IVotingEventPublisher, RabbitMqVotingEventPublisher>();
 
             // JWT будет читаться из переменных окружения в env, переданных через docker-compose
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");

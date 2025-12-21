@@ -214,6 +214,9 @@ services:
         - postgres
         - rabbitmq
         - hpm-system.apartmentservice
+      ports:
+        - "${VOTINGSERVICE_HTTP}:8080"
+        - "${VOTINGSERVICE_HTTPS}:8081"
       environment:
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - ASPNETCORE_URLS=http://+:8080
@@ -243,6 +246,7 @@ services:
         condition: service_healthy
     environment:
       - Services__UserService__BaseUrl=http://hpm-system.userservice:8080
+      - Services__VotingService__BaseUrl=${VOTINGSERVICE_BASEURL} 
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TelegramBotService;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - RabbitMQ__Host=${RABBITMQ_HOSTNAME}
