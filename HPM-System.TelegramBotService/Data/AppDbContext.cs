@@ -24,8 +24,7 @@ namespace HPM_System.TelegramBotService.Data
             modelBuilder.Entity<TelegramPoll>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.VotingId);
-                entity.HasIndex(e => e.PollId).IsUnique();
+                entity.HasIndex(e => e.VotingId);                
                 entity.HasIndex(e => new { e.VotingId, e.UserId, e.ApartmentId }).IsUnique();
             });
         }

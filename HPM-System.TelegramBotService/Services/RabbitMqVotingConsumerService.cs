@@ -154,6 +154,9 @@ public class RabbitMqVotingConsumerService : BackgroundService
                     closeDate: votingEvent.EndTime,
                     cancellationToken: ct);
 
+                _logger.LogInformation("Poll создан с ID: {PollId}, MessageId: {MessageId}",
+                    pollMessage.Poll?.Id ?? "null", pollMessage.MessageId);
+
                 // Сохраняем информацию о poll для каждой квартиры пользователя
                 foreach (var apartmentId in user.Apartments)
                 {
@@ -162,7 +165,7 @@ public class RabbitMqVotingConsumerService : BackgroundService
                         VotingId = votingEvent.VotingId,
                         UserId = user.UserId,
                         ApartmentId = apartmentId,
-                        PollId = pollMessage.Poll!.Id,
+                        PollId = pollMessage.Poll?.Id ?? string.Empty, // Может быть пустым
                         ChatId = telegramUser.TelegramChatId,
                         MessageId = pollMessage.MessageId,
                         IsAnswered = false

@@ -98,64 +98,111 @@ public class TelegramBotHostedService : BackgroundService
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var votingClient = scope.ServiceProvider.GetRequiredService<VotingServiceClient>();
 
+            // Получаем Telegram UserId из ответа
+            var telegramUserId = pollAnswer.User.Id;
             var pollId = pollAnswer.PollId;
 
-            // Находим poll в базе
+            _logger.LogInformation("Получен PollAnswer от Telegram User {TelegramUserId}, PollId: '{PollId}'",
+                telegramUserId, pollId);
+
+            // Ищем TelegramUser по Telegram ChatId
+            var telegramUser = await context.TelegramUsers
+                .FirstOrDefaultAsync(u => u.TelegramChatId == telegramUserId, cancellationToken);
+
+            if (telegramUser == null)
+            {
+                _logger.LogWarning("TelegramUser не найден для Telegram UserId {TelegramUserId}", telegramUserId);
+                return;
+            }
+
+            _logger.LogInformation("Найден TelegramUser: UserId={UserId}, ищем poll с PollId='{PollId}'",
+                telegramUser.UserId, pollId);
+
+            // Сначала пытаемся найти по PollId
             var telegramPoll = await context.TelegramPolls
-                .FirstOrDefaultAsync(p => p.PollId == pollId, cancellationToken);
+                .Where(p => p.UserId == telegramUser.UserId && !p.IsAnswered)
+                .ToListAsync(cancellationToken);
 
-            if (telegramPoll == null)
+            _logger.LogInformation("Найдено неотвеченных polls для пользователя {UserId}: {Count}",
+                telegramUser.UserId, telegramPoll.Count);
+
+            if (telegramPoll.Any())
             {
-                _logger.LogWarning("Poll {PollId} не найден в базе данных", pollId);
+                foreach (var p in telegramPoll)
+                {
+                    _logger.LogInformation("  Poll: VotingId={VotingId}, PollId='{PollId}', ApartmentId={ApartmentId}",
+                        p.VotingId, p.PollId, p.ApartmentId);
+                }
+            }
+
+            // Ищем конкретный poll по PollId
+            var matchingPoll = telegramPoll.FirstOrDefault(p => p.PollId == pollId);
+
+            if (matchingPoll == null)
+            {
+                _logger.LogWarning("TelegramPoll с PollId '{PollId}' не найден для пользователя {UserId}",
+                    pollId, telegramUser.UserId);
+
+                // Проверяем, есть ли уже отвеченный poll с таким PollId
+                var answeredPoll = await context.TelegramPolls
+                    .Where(p => p.UserId == telegramUser.UserId && p.IsAnswered && p.PollId == pollId)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (answeredPoll != null)
+                {
+                    await _botClient.SendMessage(
+                        chatId: telegramUserId,
+                        text: $"ℹ️ Вы уже проголосовали в этом голосовании.\n\n" +
+                              $"Ваш выбор: <b>{answeredPoll.SelectedOption}</b>",
+                        parseMode: ParseMode.Html,
+                        cancellationToken: cancellationToken);
+                }
+                else
+                {
+                    _logger.LogError("Poll не найден ни среди активных, ни среди отвеченных. PollId: '{PollId}'", pollId);
+                }
                 return;
             }
 
-            // Проверяем, не отмечен ли poll уже как отвеченный
-            if (telegramPoll.IsAnswered)
-            {
-                _logger.LogInformation("Poll {PollId} уже отмечен как отвеченный", pollId);
-
-                await _botClient.SendMessage(
-                    chatId: telegramPoll.ChatId,
-                    text: $"ℹ️ Вы уже проголосовали ранее.\n\n" +
-                          $"Ваш выбор: <b>{telegramPoll.SelectedOption}</b>",
-                    parseMode: ParseMode.Html,
-                    cancellationToken: cancellationToken);
-                return;
-            }
+            _logger.LogInformation("Найден TelegramPoll: VotingId={VotingId}, UserId={UserId}, PollId='{PollId}'",
+                matchingPoll.VotingId, matchingPoll.UserId, matchingPoll.PollId);
 
             // Получаем выбранный вариант
             if (pollAnswer.OptionIds.Length == 0)
             {
-                _logger.LogWarning("Пользователь не выбрал ни один вариант в poll {PollId}", pollId);
+                _logger.LogWarning("Пользователь не выбрал ни один вариант в poll");
                 return;
             }
 
             var optionIndex = pollAnswer.OptionIds[0];
 
             // Получаем текст варианта ответа из VotingService
-            var voting = await votingClient.GetVotingByIdAsync(telegramPoll.VotingId, cancellationToken);
+            var voting = await votingClient.GetVotingByIdAsync(matchingPoll.VotingId, cancellationToken);
 
             if (voting == null || optionIndex >= voting.ResponseOptions.Count)
             {
-                _logger.LogError("Не удалось получить вариант ответа для poll {PollId}", pollId);
+                _logger.LogError("Не удалось получить вариант ответа для голосования {VotingId}, optionIndex: {OptionIndex}",
+                    matchingPoll.VotingId, optionIndex);
                 return;
             }
 
             var selectedOption = voting.ResponseOptions[optionIndex];
 
+            _logger.LogInformation("Пользователь {UserId} выбрал вариант: {SelectedOption} для голосования {VotingId}",
+                matchingPoll.UserId, selectedOption, matchingPoll.VotingId);
+
             // Отправляем голос в VotingService (за ВСЕ квартиры пользователя)
             var result = await votingClient.SubmitVoteAsync(
-                telegramPoll.VotingId,
-                telegramPoll.UserId,
+                matchingPoll.VotingId,
+                matchingPoll.UserId,
                 selectedOption,
                 cancellationToken);
 
             if (result.Success)
             {
-                // Отмечаем ВСЕ polls этого пользователя в этом голосовании как отвеченные
+                // Отмечаем ВСЕ polls этого пользователя в ЭТОМ КОНКРЕТНОМ голосовании как отвеченные
                 var allUserPolls = await context.TelegramPolls
-                    .Where(p => p.VotingId == telegramPoll.VotingId && p.UserId == telegramPoll.UserId)
+                    .Where(p => p.VotingId == matchingPoll.VotingId && p.UserId == matchingPoll.UserId)
                     .ToListAsync(cancellationToken);
 
                 foreach (var p in allUserPolls)
@@ -172,19 +219,19 @@ public class TelegramBotHostedService : BackgroundService
                     : $"✅ Ваш голос принят: <b>{selectedOption}</b>";
 
                 await _botClient.SendMessage(
-                    chatId: telegramPoll.ChatId,
+                    chatId: telegramUserId,
                     text: message,
                     parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken);
 
                 _logger.LogInformation("Голос пользователя {UserId} по голосованию {VotingId} успешно отправлен (квартир: {Count})",
-                    telegramPoll.UserId, telegramPoll.VotingId, allUserPolls.Count);
+                    matchingPoll.UserId, matchingPoll.VotingId, allUserPolls.Count);
             }
             else if (result.AlreadyVoted)
             {
                 // Пользователь уже проголосовал через веб-интерфейс
                 var allUserPolls = await context.TelegramPolls
-                    .Where(p => p.VotingId == telegramPoll.VotingId && p.UserId == telegramPoll.UserId)
+                    .Where(p => p.VotingId == matchingPoll.VotingId && p.UserId == matchingPoll.UserId)
                     .ToListAsync(cancellationToken);
 
                 foreach (var p in allUserPolls)
@@ -196,7 +243,7 @@ public class TelegramBotHostedService : BackgroundService
                 await context.SaveChangesAsync(cancellationToken);
 
                 await _botClient.SendMessage(
-                    chatId: telegramPoll.ChatId,
+                    chatId: telegramUserId,
                     text: $"ℹ️ Вы уже проголосовали ранее через веб-интерфейс.\n\n" +
                           $"Ваш выбор: <b>{result.PreviousResponse}</b>\n\n" +
                           $"Изменить голос нельзя.",
@@ -204,12 +251,12 @@ public class TelegramBotHostedService : BackgroundService
                     cancellationToken: cancellationToken);
 
                 _logger.LogInformation("Пользователь {UserId} попытался проголосовать повторно в голосовании {VotingId}",
-                    telegramPoll.UserId, telegramPoll.VotingId);
+                    matchingPoll.UserId, matchingPoll.VotingId);
             }
             else
             {
                 await _botClient.SendMessage(
-                    chatId: telegramPoll.ChatId,
+                    chatId: telegramUserId,
                     text: $"❌ Ошибка при отправке голоса: {result.Message}\n\n" +
                           "Попробуйте проголосовать через веб-интерфейс.",
                     cancellationToken: cancellationToken);
