@@ -6,3 +6,4 @@ CREATE DATABASE "NotificationService";
 CREATE DATABASE "FileStorageService";
 CREATE DATABASE "EventService";
 CREATE DATABASE "TelegramBotService";
+CREATE DATABASE "VotingService";

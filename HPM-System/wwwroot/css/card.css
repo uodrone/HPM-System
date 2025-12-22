@@ -66,6 +66,15 @@
             color: #000;
         }
     }
+
+    &.card-item_vote {
+        background: linear-gradient(135deg, #ffdfc9 0%, #ffb381 100%);
+        border-color: #e94744;
+
+        &:hover {
+            color: #000;
+        }
+    }
 }
 
 .card-image {
@@ -134,10 +143,10 @@
 
     &.card-header_apartment {
         background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
-        color: white;
-        border-radius: 8px;
-        padding: 1rem;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    &.card-header_vote {
+        background: linear-gradient(135deg, #ffa569 0%, #e84343 100%);
     }
 
     a {
