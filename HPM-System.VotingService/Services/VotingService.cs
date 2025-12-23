@@ -1,7 +1,8 @@
 ﻿using DTO;
+using HPM_System.VotingService.CustomExceptions;
 using VotingService.Models;
 using VotingService.Repositories;
-using HPM_System.VotingService.CustomExceptions;
+using VotingService.Validation;
 
 namespace VotingService.Services;
 
@@ -11,16 +12,19 @@ public class VotingService : IVotingService
     private readonly IApartmentServiceClient _apartmentServiceClient;
     private readonly IVotingEventPublisher _eventPublisher;
     private readonly ILogger<VotingService> _logger;
+    private readonly VoteValidatorFactory _validatorFactory; // Добавили
 
     public VotingService(
-    IVotingRepository repository,
-    IApartmentServiceClient apartmentServiceClient,
-    IVotingEventPublisher eventPublisher,
-    ILogger<VotingService> logger)
+        IVotingRepository repository,
+        IApartmentServiceClient apartmentServiceClient,
+        IVotingEventPublisher eventPublisher,
+        VoteValidatorFactory validatorFactory, // Добавили
+        ILogger<VotingService> logger)
     {
         _repository = repository;
         _apartmentServiceClient = apartmentServiceClient;
         _eventPublisher = eventPublisher;
+        _validatorFactory = validatorFactory; // Добавили
         _logger = logger;
     }
 
@@ -95,29 +99,40 @@ public class VotingService : IVotingService
 
     public async Task<string> SubmitVoteAsync(Guid votingId, VoteRequestDto request, Guid userId)
     {
-        var voting = await _repository.GetVotingByIdAsync(votingId);
-
-        if (voting == null)
-            throw new KeyNotFoundException("Голосование не найдено");
-
-        if (voting.IsCompleted)
-            throw new InvalidOperationException("Голосование уже завершено");
-
-        if (!voting.ResponseOptions.Contains(request.Response))
-            throw new ArgumentException($"Ответ '{request.Response}' не является допустимым вариантом для этого голосования.");
-
-        // Проверяем, что userId из JWT совпадает с userId в запросе
+        // Проверка, что userId совпадает
         if (request.UserId != userId)
             throw new UnauthorizedAccessException("Вы можете голосовать только от своего имени");
 
+        // Валидация через цепочку (для веб с конкретной квартирой)
+        var context = new VoteContext
+        {
+            VotingId = votingId,
+            UserId = userId,
+            Response = request.Response,
+            IsFromTelegram = false,
+            SpecificApartmentId = request.ApartmentId
+        };
+
+        // Используем веб-цепочку с проверкой конкретной квартиры
+        var validatorChain = _validatorFactory.CreateWebValidatorChain(request.ApartmentId);
+        var validationResult = await validatorChain.ValidateAsync(context);
+
+        if (!validationResult.IsValid)
+        {
+            throw validationResult.ErrorType switch
+            {
+                ValidationErrorType.NotFound => new KeyNotFoundException(validationResult.ErrorMessage),
+                ValidationErrorType.Authorization => new UnauthorizedAccessException(validationResult.ErrorMessage),
+                ValidationErrorType.InvalidInput => new ArgumentException(validationResult.ErrorMessage),
+                ValidationErrorType.BusinessRule => new InvalidOperationException(validationResult.ErrorMessage),
+                _ => new InvalidOperationException(validationResult.ErrorMessage)
+            };
+        }
+
+        // Голосование за конкретную квартиру, т.к. вес голоса зависит от доли владения в каждой квартире дома
+        var voting = context.Voting!;
         var owner = voting.OwnersList
-            .FirstOrDefault(o => o.UserId == userId && o.ApartmentId == request.ApartmentId);
-
-        if (owner == null)
-            throw new ArgumentException("Вы не являетесь владельцем в этой квартире");
-
-        if (!string.IsNullOrEmpty(owner.Response))
-            throw new InvalidOperationException("Вы уже проголосовали");
+            .First(o => o.UserId == userId && o.ApartmentId == request.ApartmentId);
 
         var totalHouseArea = voting.OwnersList
             .Where(o => o.HouseId == owner.HouseId)
@@ -132,42 +147,60 @@ public class VotingService : IVotingService
         await _repository.SaveChangesAsync();
         await CheckAndSetVotingCompletedAsync(voting);
 
+        _logger.LogInformation(
+            "Веб-голосование принято. UserId={UserId}, ApartmentId={ApartmentId}, Weight={Weight}",
+            userId, request.ApartmentId, owner.VoteWeight);
+
         return $"Голос принят с весом: {owner.VoteWeight}";
     }
 
-    public async Task<string> SubmitVoteFromTelegramAsync(Guid votingId, Guid userId, string response)
+    public async Task<string> SubmitVoteFromTelegramAsync(
+        Guid votingId,
+        Guid userId,
+        string response)
     {
-        var voting = await _repository.GetVotingByIdAsync(votingId);
-
-        if (voting == null)
-            throw new KeyNotFoundException("Голосование не найдено");
-
-        if (voting.IsCompleted)
-            throw new InvalidOperationException("Голосование уже завершено");
-
-        if (!voting.ResponseOptions.Contains(response))
-            throw new ArgumentException($"Ответ '{response}' не является допустимым вариантом для этого голосования.");
-
-        // Получаем все квартиры пользователя в этом голосовании
-        var userOwners = voting.OwnersList
-            .Where(o => o.UserId == userId)
-            .ToList();
-
-        if (!userOwners.Any())
-            throw new ArgumentException("Вы не являетесь участником этого голосования");
-
-        // Проверяем, не голосовал ли пользователь уже
-        var alreadyVotedOwners = userOwners.Where(o => !string.IsNullOrEmpty(o.Response)).ToList();
-        if (alreadyVotedOwners.Any())
+        // Шаг нумбер 1: валидация через цепочку валидаторов для Telegram
+        // Создаем контекст для валидации
+        var context = new VoteContext
         {
-            // Создаем специальное исключение с информацией о предыдущем голосовании
-            var previousResponse = alreadyVotedOwners.First().Response;
-            throw new AlreadyVotedException(
-                $"Вы уже проголосовали. Ваш выбор: {previousResponse}",
-                previousResponse);
+            VotingId = votingId,
+            UserId = userId,
+            Response = response,
+            IsFromTelegram = true
+        };
+
+        // Получаем цепочку валидаторов для Telegram из фабрики
+        var validatorChain = _validatorFactory.CreateTelegramValidatorChain();
+
+        // Запускаем валидацию через цепочку
+        var validationResult = await validatorChain.ValidateAsync(context);
+
+        // Если валидация не прошла, выбрасываем соответствующее исключение
+        if (!validationResult.IsValid)
+        {
+            throw validationResult.ErrorType switch
+            {
+                ValidationErrorType.NotFound => new KeyNotFoundException(validationResult.ErrorMessage),
+                ValidationErrorType.Authorization => new UnauthorizedAccessException(validationResult.ErrorMessage),
+                ValidationErrorType.InvalidInput => new ArgumentException(validationResult.ErrorMessage),
+                ValidationErrorType.BusinessRule => new InvalidOperationException(validationResult.ErrorMessage),
+                _ => new InvalidOperationException(validationResult.ErrorMessage)
+            };
         }
 
-        // Группируем по домам
+        // Шаг нумбер 2: выполнение голосования
+        // К этому моменту все проверки пройдены, context содержит:
+        // - context.Voting - загруженное голосование
+        // - context.UserOwners - список владельцев
+
+        var voting = context.Voting!;
+        var userOwners = context.UserOwners!;
+
+        _logger.LogInformation(
+            "Валидация пройдена. Пользователь {UserId} голосует в голосовании {VotingId} за вариант '{Response}'. Квартир: {Count}",
+            userId, votingId, response, userOwners.Count);
+
+        // Группируем по домам для расчета веса
         var ownersByHouse = userOwners.GroupBy(o => o.HouseId);
 
         decimal totalWeight = 0;
@@ -193,14 +226,24 @@ public class VotingService : IVotingService
                 owner.VoteWeight = (owner.ApartmentArea * owner.Share) / totalHouseArea;
                 owner.Response = response;
                 totalWeight += owner.VoteWeight;
+
+                _logger.LogDebug(
+                    "Квартира {ApartmentId}: площадь={Area}, доля={Share}, вес={Weight}",
+                    owner.ApartmentId, owner.ApartmentArea, owner.Share, owner.VoteWeight);
             }
         }
 
+        // Сохраняем изменения
         await _repository.SaveChangesAsync();
+
+        // Проверяем, не завершилось ли голосование
         await CheckAndSetVotingCompletedAsync(voting);
 
-        return $"Голос принят с суммарным весом: {Math.Round(totalWeight, 4)} " +
-               $"(квартир: {userOwners.Count})";
+        _logger.LogInformation(
+            "Голосование завершено успешно. UserId={UserId}, VotingId={VotingId}, TotalWeight={Weight}",
+            userId, votingId, totalWeight);
+
+        return $"Голос принят с суммарным весом: {Math.Round(totalWeight, 4)} (квартир: {userOwners.Count})";
     }
 
     public async Task<VotingResultDto> GetVotingResultsAsync(Guid id)
@@ -444,6 +487,10 @@ public class VotingService : IVotingService
         {
             voting.IsCompleted = true;
             await _repository.UpdateVotingAsync(voting);
+
+            _logger.LogInformation(
+                "Голосование {VotingId} автоматически завершено - все проголосовали",
+                voting.Id);
         }
     }
 }
