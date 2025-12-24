@@ -3,20 +3,11 @@ using VotingService.Services;
 
 namespace VotingService.Validation.Validators;
 
-/// <summary>
-/// Валидатор проверяет, что пользователь еще не голосовал
-/// Только для Telegram (для веб используется SpecificApartmentValidator)
-/// </summary>
+// Валидатор проверяет, что пользователь еще не голосовал (ни за одну из своих квартир)
 public class UserNotVotedValidator : BaseVoteValidator
 {
     protected override Task<ValidationResult> ValidateCore(VoteContext context)
     {
-        // Для веб-интерфейса проверка конкретной квартиры делается в SpecificApartmentValidator
-        if (!context.IsFromTelegram)
-        {
-            return Task.FromResult(ValidationResult.Success());
-        }
-
         // Проверяем, есть ли хотя бы один Owner с уже заполненным Response
         var alreadyVotedOwners = context.UserOwners!
             .Where(o => !string.IsNullOrEmpty(o.Response))
@@ -26,10 +17,18 @@ public class UserNotVotedValidator : BaseVoteValidator
         {
             var previousResponse = alreadyVotedOwners.First().Response;
 
-            // Выбрасываем специальное исключение для Telegram
-            throw new AlreadyVotedException(
+            // Если запрос из Telegram, выбрасываем специальное исключение
+            if (context.IsFromTelegram)
+            {
+                throw new AlreadyVotedException(
+                    $"Вы уже проголосовали. Ваш выбор: {previousResponse}",
+                    previousResponse);
+            }
+
+            // Для веб-интерфейса тоже возвращаем ошибку
+            return Task.FromResult(ValidationResult.Fail(
                 $"Вы уже проголосовали. Ваш выбор: {previousResponse}",
-                previousResponse);
+                ValidationErrorType.BusinessRule));
         }
 
         return Task.FromResult(ValidationResult.Success());

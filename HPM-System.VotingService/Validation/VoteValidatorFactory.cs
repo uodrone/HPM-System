@@ -16,10 +16,10 @@ public class VoteValidatorFactory
     }
 
     /// <summary>
-    /// Создать цепочку валидаторов для голосования через Telegram
-    /// (голосует за все квартиры сразу)
+    /// Создать цепочку валидаторов для голосования
+    /// Используется и для веб, и для Telegram (голосование за все квартиры пользователя)
     /// </summary>
-    public IVoteValidator CreateTelegramValidatorChain()
+    public IVoteValidator CreateVotingValidatorChain()
     {
         var existsValidator = new VotingExistsValidator(_repository);
         var notCompletedValidator = new VotingNotCompletedValidator();
@@ -37,23 +37,11 @@ public class VoteValidatorFactory
     }
 
     /// <summary>
-    /// Создать цепочку валидаторов для голосования через веб
-    /// (голосует за конкретную квартиру)
+    /// Создать цепочку валидаторов только для проверки существования
+    /// (например, для просмотра результатов)
     /// </summary>
-    public IVoteValidator CreateWebValidatorChain(long apartmentId)
+    public IVoteValidator CreateLightValidatorChain()
     {
-        var existsValidator = new VotingExistsValidator(_repository);
-        var notCompletedValidator = new VotingNotCompletedValidator();
-        var responseValidator = new ResponseOptionValidator();
-        var participantValidator = new UserIsParticipantValidator();
-        var apartmentValidator = new SpecificApartmentValidator(apartmentId);
-
-        existsValidator
-            .SetNext(notCompletedValidator)
-            .SetNext(responseValidator)
-            .SetNext(participantValidator)
-            .SetNext(apartmentValidator); // Проверка конкретной квартиры
-
-        return existsValidator;
+        return new VotingExistsValidator(_repository);
     }
 }

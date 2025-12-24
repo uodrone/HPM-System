@@ -103,18 +103,17 @@ public class VotingService : IVotingService
         if (request.UserId != userId)
             throw new UnauthorizedAccessException("Вы можете голосовать только от своего имени");
 
-        // Валидация через цепочку (для веб с конкретной квартирой)
+        // Валидация через цепочку валидаторов
         var context = new VoteContext
         {
             VotingId = votingId,
             UserId = userId,
             Response = request.Response,
-            IsFromTelegram = false,
-            SpecificApartmentId = request.ApartmentId
+            IsFromTelegram = false
         };
 
-        // Используем веб-цепочку с проверкой конкретной квартиры
-        var validatorChain = _validatorFactory.CreateWebValidatorChain(request.ApartmentId);
+        // Используем единую цепочку валидаторов
+        var validatorChain = _validatorFactory.CreateVotingValidatorChain();
         var validationResult = await validatorChain.ValidateAsync(context);
 
         if (!validationResult.IsValid)
@@ -129,29 +128,67 @@ public class VotingService : IVotingService
             };
         }
 
-        // Голосование за конкретную квартиру, т.к. вес голоса зависит от доли владения в каждой квартире дома
+        // Голосование за все квартиры пользователя
         var voting = context.Voting!;
-        var owner = voting.OwnersList
-            .First(o => o.UserId == userId && o.ApartmentId == request.ApartmentId);
+        var userOwners = context.UserOwners!;
 
-        var totalHouseArea = voting.OwnersList
-            .Where(o => o.HouseId == owner.HouseId)
-            .Sum(o => o.ApartmentArea);
+        _logger.LogInformation(
+            "Веб-голосование начато. Пользователь {UserId} голосует в голосовании {VotingId} за вариант '{Response}'. Квартир: {Count}",
+            userId, votingId, request.Response, userOwners.Count);
 
-        if (totalHouseArea == 0)
-            throw new InvalidOperationException("Общая площадь дома не может быть нулевой");
+        // Группируем по домам для расчета веса
+        var ownersByHouse = userOwners.GroupBy(o => o.HouseId);
 
-        owner.VoteWeight = (owner.ApartmentArea * owner.Share) / totalHouseArea;
-        owner.Response = request.Response;
+        decimal totalWeight = 0;
+        var apartmentDetails = new List<string>();
+
+        foreach (var houseGroup in ownersByHouse)
+        {
+            var houseId = houseGroup.Key;
+
+            // Считаем общую площадь дома
+            var totalHouseArea = voting.OwnersList
+                .Where(o => o.HouseId == houseId)
+                .Sum(o => o.ApartmentArea);
+
+            if (totalHouseArea == 0)
+            {
+                _logger.LogWarning("Общая площадь дома {HouseId} равна нулю", houseId);
+                continue;
+            }
+
+            // Устанавливаем вес и ответ для каждой квартиры пользователя в этом доме
+            foreach (var owner in houseGroup)
+            {
+                owner.VoteWeight = (owner.ApartmentArea * owner.Share) / totalHouseArea;
+                owner.Response = request.Response;
+                totalWeight += owner.VoteWeight;
+
+                apartmentDetails.Add($"Кв. {owner.ApartmentId}: вес {Math.Round(owner.VoteWeight, 4)}");
+
+                _logger.LogDebug(
+                    "Квартира {ApartmentId}: площадь={Area}, доля={Share}, вес={Weight}",
+                    owner.ApartmentId, owner.ApartmentArea, owner.Share, owner.VoteWeight);
+            }
+        }
 
         await _repository.SaveChangesAsync();
         await CheckAndSetVotingCompletedAsync(voting);
 
         _logger.LogInformation(
-            "Веб-голосование принято. UserId={UserId}, ApartmentId={ApartmentId}, Weight={Weight}",
-            userId, request.ApartmentId, owner.VoteWeight);
+            "Веб-голосование завершено успешно. UserId={UserId}, VotingId={VotingId}, TotalWeight={Weight}",
+            userId, votingId, totalWeight);
 
-        return $"Голос принят с весом: {owner.VoteWeight}";
+        // Формируем подробное сообщение
+        if (userOwners.Count > 1)
+        {
+            return $"Голос принят с суммарным весом: {Math.Round(totalWeight, 4)}\n" +
+                   $"Учтены все ваши квартиры ({userOwners.Count} шт.): {string.Join(", ", apartmentDetails)}";
+        }
+        else
+        {
+            return $"Голос принят с весом: {Math.Round(totalWeight, 4)}";
+        }
     }
 
     public async Task<string> SubmitVoteFromTelegramAsync(
@@ -159,7 +196,7 @@ public class VotingService : IVotingService
         Guid userId,
         string response)
     {
-        // Шаг нумбер 1: валидация через цепочку валидаторов для Telegram
+        // Шаг нумер 1: Валидация через цепочку валидаторов
         // Создаем контекст для валидации
         var context = new VoteContext
         {
@@ -169,8 +206,8 @@ public class VotingService : IVotingService
             IsFromTelegram = true
         };
 
-        // Получаем цепочку валидаторов для Telegram из фабрики
-        var validatorChain = _validatorFactory.CreateTelegramValidatorChain();
+        // Получаем цепочку валидаторов из фабрики
+        var validatorChain = _validatorFactory.CreateVotingValidatorChain();
 
         // Запускаем валидацию через цепочку
         var validationResult = await validatorChain.ValidateAsync(context);
@@ -188,10 +225,10 @@ public class VotingService : IVotingService
             };
         }
 
-        // Шаг нумбер 2: выполнение голосования
+        // Шаг нумер 2: собственно выполнение голосования
         // К этому моменту все проверки пройдены, context содержит:
         // - context.Voting - загруженное голосование
-        // - context.UserOwners - список владельцев
+        // - context.UserOwners - список записей пользователя
 
         var voting = context.Voting!;
         var userOwners = context.UserOwners!;
