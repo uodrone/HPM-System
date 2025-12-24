@@ -272,7 +272,6 @@ public class TelegramBotHostedService : BackgroundService
     {
         try
         {
-            // Создаём кнопку для отправки контакта
             var requestContact = new ReplyKeyboardMarkup(new[]
             {
                 new KeyboardButton("📱 Поделиться контактом") { RequestContact = true }
@@ -303,10 +302,8 @@ public class TelegramBotHostedService : BackgroundService
             var phoneNumber = contact.PhoneNumber;
             _logger.LogInformation("Получен контакт с номером {Phone} от chatId {ChatId}", phoneNumber, chatId);
 
-            // Убираем клавиатуру
             var removeKeyboard = new ReplyKeyboardRemove();
 
-            // Получаем userId из UserService
             using var scope = _serviceProvider.CreateScope();
             var userServiceClient = scope.ServiceProvider.GetRequiredService<UserServiceClient>();
             var userId = await userServiceClient.GetUserIdByPhoneNumberAsync(phoneNumber, cancellationToken);
@@ -322,7 +319,6 @@ public class TelegramBotHostedService : BackgroundService
                 return;
             }
 
-            // Сохраняем связь userId и chatId в базе
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             var existingUser = await context.TelegramUsers

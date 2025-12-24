@@ -53,9 +53,6 @@ export class NotificationClient {
                 const errorText = await response.text();
                 throw new Error(`Ошибка получения уведомления: ${errorText}`);
             }
-                const error = await response.text();
-                throw new Error(`Ошибка получения уведомления: ${error}`);
-            }
 
             return await response.json();
         } catch (error) {
@@ -153,9 +150,6 @@ export class NotificationClient {
                 const errorText = await response.text();
                 throw new Error(`Ошибка отметки уведомления как прочитанного: ${errorText}`);
             }
-                const error = await response.text();
-                throw new Error(`Ошибка отметки уведомления как прочитанного: ${error}`);
-            }
 
             return true;
         } catch (error) {
@@ -181,9 +175,6 @@ export class NotificationClient {
                 if (response.status === 404) return false;
                 const errorText = await response.text();
                 throw new Error(`Ошибка отметки уведомления как прочитанного: ${errorText}`);
-            }
-                const error = await response.text();
-                throw new Error(`Ошибка отметки уведомления как прочитанного: ${error}`);
             }
 
             return true;
@@ -239,7 +230,6 @@ export class NotificationClient {
             throw new Error('Поле userIdList должно быть непустым массивом');
         }
 
-        // Подготовка данных с дефолтными значениями
         const payload = {
             title: notificationData.title,
             message: notificationData.message,
@@ -261,8 +251,6 @@ export class NotificationClient {
                 const errorText = await response.text();
                 console.error('Ошибка создания уведомления:', errorText);
                 return false;
-            } else {
-                return true;
             }
 
             return true;
@@ -281,7 +269,6 @@ export class NotificationClient {
 
     /**
      * Получить текущий базовый URL
-     * @returns {string}
      */
     GetBaseUrl() {
         return this.gatewayUrl;
@@ -291,42 +278,8 @@ export class NotificationClient {
 // Инициализация при авторизации
 document.addEventListener('authStateChanged', () => {
     const { isAuthenticated, userData } = event.detail;
-
     if (isAuthenticated && userData) {
         // Экземпляр можно создать по месту использования
         // window.notificationClient = new NotificationClient(); // опционально
     }
-
-// 9. Автоматическое обновление каждые 30 секунд
-setInterval(() => {
-    const currentUserId = getCurrentUserId(); // ваша функция получения ID текущего пользователя
-    updateNotificationUI(currentUserId);
-}, 30000);
-
-// 10. Отправка уведомления всем пользователям квартиры
-async function notifyApartmentUsers(apartmentUserIds, title, message) {
-    try {
-        const notification = await notificationClient.createNotification({
-            title: title,
-            message: message,
-            type: 'info',
-            createdBy: getCurrentUserId(),
-            userIdList: apartmentUserIds
 });
-        console.log('Уведомление отправлено:', notification.id);
-        return notification;
-    } catch (error) {
-        console.error('Ошибка отправки уведомления:', error);
-        throw error;
-    }
-}
-
-// 11. Фильтрация уведомлений по типу
-async function getNotificationsByType(userId, type) {
-    const notifications = await notificationClient.getNotificationsByUserId(userId);
-    return notifications.filter(n => n.type === type);
-}
-
-// Примеры типов: 'info', 'warning', 'error', 'success'
-const warningNotifications = await getNotificationsByType(userId, 'warning');
-*/

@@ -1528,8 +1528,6 @@ var ApartmentProfile = /*#__PURE__*/function () {
       }).join('');
       return "\n            <div class=\"d-flex flex-wrap flex-lg-nowrap gap-4 mt-4 w-100\" data-apartment-user-id=\"".concat(apartmentUser.userId, "\">\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"fullName\" id=\"fullName-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.firstName, " ").concat(apartmentUser.userDetails.lastName, " ").concat(apartmentUser.userDetails.patronymic, "\">\n                    <label for=\"fullName-").concat(apartmentUser.userId, "\">\u0424\u0418\u041E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"text\" disabled placeholder=\"\" name=\"phoneNumber\" id=\"phoneNumber-").concat(apartmentUser.userId, "\" value=\"").concat(apartmentUser.userDetails.phoneNumber, "\">\n                    <label for=\"phoneNumber-").concat(apartmentUser.userId, "\">\u0422\u0435\u043B\u0435\u0444\u043E\u043D \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group multiselect\">\n                    <select id=\"statuses-").concat(apartmentUser.userId, "\" multiple>\n                        ").concat(statusOptions, "\n                    </select>\n                    <label for=\"statuses-").concat(apartmentUser.userId, "\">\u0421\u0442\u0430\u0442\u0443\u0441 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</label>\n                </div>\n                <div class=\"form-group\">\n                    <input type=\"number\" placeholder=\"\" name=\"share\" min=\"0\" step=\"0.1\" id=\"share-").concat(apartmentUser.userId, "\" value=\"").concat(share, "\">\n                    <label for=\"share-").concat(apartmentUser.userId, "\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F</label>\n                    <div class=\"error invisible\" data-error=\"share\">\u0414\u043E\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043D\u0438\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u0434\u043B\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432</div>\n                </div>\n                <div class=\"save-icon icon-action\" data-status=\"save\" title=\"\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u0441\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#128190;</div>\n                <div class=\"remove-icon icon-action\" data-status=\"remove\" title=\"\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\">&#10060;</div>\n            </div>\n        ");
     }
-
-    //Получение домов для создания квартиры и привязки к ним
   }, {
     key: "SetHouseIdToCreateApartment",
     value: function () {
@@ -1611,11 +1609,11 @@ var ApartmentProfile = /*#__PURE__*/function () {
         return _SetHouseIdToCreateApartment.apply(this, arguments);
       }
       return SetHouseIdToCreateApartment;
-    }() // Коллекционирование данных квартир для сохранения и создания
+    }()
   }, {
     key: "CollectApartmentDataAndSaveToCreate",
     value: function () {
-      var _CollectApartmentDataAndSaveToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+      var _CollectApartmentDataAndSaveToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
         var _document$getElementB, _document$getElementB2, _document$getElementB3, _document$getElementB4, _document$getElementB5, _document$getElementB6, _document$getElementB7;
         var fields, apartment, showError, validateApartmentForm, result;
         return _regenerator().w(function (_context6) {
@@ -1695,10 +1693,10 @@ var ApartmentProfile = /*#__PURE__*/function () {
               apartment = _objectSpread({}, fields);
               console.log("\u0421\u043E\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0435:", apartment);
               if (!validateApartmentForm()) {
-                _context7.n = 2;
+                _context6.n = 2;
                 break;
               }
-              _context7.n = 1;
+              _context6.n = 1;
               return this.CreateApartment(apartment);
             case 1:
               result = _context6.v;
@@ -1709,15 +1707,15 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 _Modal_js__WEBPACK_IMPORTED_MODULE_4__.Modal.ShowNotification('Ошибка создания квартиры', 'error');
               }
             case 2:
-              return _context7.a(2);
+              return _context6.a(2);
           }
-        }, _callee6, this);
+        }, _callee5, this);
       }));
       function CollectApartmentDataAndSaveToCreate() {
         return _CollectApartmentDataAndSaveToCreate.apply(this, arguments);
       }
       return CollectApartmentDataAndSaveToCreate;
-    }() // Удаление пользователя из квартиры
+    }()
   }, {
     key: "RemoveUserFromApartmentAndSave",
     value: function RemoveUserFromApartmentAndSave(apartmentId) {
@@ -1769,8 +1767,6 @@ var ApartmentProfile = /*#__PURE__*/function () {
         };
       }());
     }
-
-    // Добавление пользователя к квартире
   }, {
     key: "AddNewUserToApartment",
     value: function AddNewUserToApartment(apartmentId) {
@@ -1851,7 +1847,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 1:
               response = _context9.v;
               if (response.ok) {
-                _context0.n = 3;
+                _context9.n = 3;
                 break;
               }
               _context9.n = 2;
@@ -1900,7 +1896,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 1:
               response = _context0.v;
               if (response.ok) {
-                _context1.n = 3;
+                _context0.n = 3;
                 break;
               }
               _context0.n = 2;
@@ -1949,7 +1945,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 1:
               response = _context1.v;
               if (response.ok) {
-                _context10.n = 3;
+                _context1.n = 3;
                 break;
               }
               _context1.n = 2;
@@ -2050,9 +2046,9 @@ var ApartmentProfile = /*#__PURE__*/function () {
                 }
               });
             case 1:
-              response = _context12.v;
+              response = _context11.v;
               if (response.ok) {
-                _context12.n = 3;
+                _context11.n = 3;
                 break;
               }
               _context11.n = 2;
@@ -2069,9 +2065,9 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error("\u041E\u0448\u0438\u0431\u043A\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u0438\u044F \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B ".concat(id, ":"), _t1);
               throw _t1;
             case 5:
-              return _context12.a(2);
+              return _context11.a(2);
           }
-        }, _callee11, this, [[0, 4]]);
+        }, _callee10, this, [[0, 4]]);
       }));
       function DeleteApartment(_x0) {
         return _DeleteApartment.apply(this, arguments);
@@ -2111,7 +2107,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error('Ошибка добавления пользователя:', error);
               return _context12.a(2, false);
             case 4:
-              _context13.n = 6;
+              _context12.n = 6;
               break;
             case 5:
               _context12.p = 5;
@@ -2119,9 +2115,9 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error('Ошибка добавления пользователя к квартире:', _t10);
               return _context12.a(2, false);
             case 6:
-              return _context13.a(2);
+              return _context12.a(2);
           }
-        }, _callee12, this, [[0, 5]]);
+        }, _callee11, this, [[0, 5]]);
       }));
       function AddUserToApartment(_x1, _x10) {
         return _AddUserToApartment.apply(this, arguments);
@@ -2160,7 +2156,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error('Ошибка удаления пользователя:', error);
               return _context13.a(2, false);
             case 4:
-              _context14.n = 6;
+              _context13.n = 6;
               break;
             case 5:
               _context13.p = 5;
@@ -2168,9 +2164,9 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error('Ошибка удаления пользователя из квартиры:', _t11);
               return _context13.a(2, false);
             case 6:
-              return _context14.a(2);
+              return _context13.a(2);
           }
-        }, _callee13, this, [[0, 5]]);
+        }, _callee12, this, [[0, 5]]);
       }));
       function RemoveUserFromApartment(_x11, _x12) {
         return _RemoveUserFromApartment.apply(this, arguments);
@@ -2211,7 +2207,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error('Ошибка обновления доли:', error);
               return _context14.a(2, false);
             case 4:
-              _context15.n = 6;
+              _context14.n = 6;
               break;
             case 5:
               _context14.p = 5;
@@ -2219,9 +2215,9 @@ var ApartmentProfile = /*#__PURE__*/function () {
               console.error('Ошибка обновления доли:', _t12);
               return _context14.a(2, false);
             case 6:
-              return _context15.a(2);
+              return _context14.a(2);
           }
-        }, _callee14, this, [[0, 5]]);
+        }, _callee13, this, [[0, 5]]);
       }));
       function UpdateUserShare(_x13, _x14, _x15) {
         return _UpdateUserShare.apply(this, arguments);
@@ -2247,7 +2243,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 1:
               response = _context15.v;
               if (response.ok) {
-                _context16.n = 3;
+                _context15.n = 3;
                 break;
               }
               _context15.n = 2;
@@ -2296,7 +2292,7 @@ var ApartmentProfile = /*#__PURE__*/function () {
             case 1:
               response = _context16.v;
               if (response.ok) {
-                _context17.n = 3;
+                _context16.n = 3;
                 break;
               }
               _context16.n = 2;
@@ -4517,31 +4513,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-    // Опционально: метод для отображения ошибок в UI
-  }, {
-    key: "displayErrors",
-    value: function displayErrors(errors) {
-      // Скрываем все ошибки
-      document.querySelectorAll('[data-error]').forEach(function (el) {
-        el.classList.add('invisible');
-        el.textContent = '';
-      });
-
-      // Показываем ошибки по ключам
-      for (var _i5 = 0, _Object$entries = Object.entries(errors); _i5 < _Object$entries.length; _i5++) {
-        var _Object$entries$_i = _slicedToArray(_Object$entries[_i5], 2),
-          field = _Object$entries$_i[0],
-          message = _Object$entries$_i[1];
-        var errorEl = document.querySelector("[data-error=\"".concat(field, "\"]"));
-        if (errorEl) {
-          errorEl.textContent = message;
-          errorEl.classList.remove('invisible');
-        }
-      }
-    }
-  }]);
-}();
-
 /***/ }),
 
 /***/ "./wwwroot/js/FileStorageClient.js":
@@ -5286,1552 +5257,6 @@ var Modal = /*#__PURE__*/function () {
 document.addEventListener('DOMContentLoaded', function () {
   new Modal();
 });
-
-/***/ }),
-
-/***/ "./wwwroot/js/Multiselect.js":
-/*!***********************************!*\
-  !*** ./wwwroot/js/Multiselect.js ***!
-  \***********************************/
-/***/ (() => {
-
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var Multiselect = /*#__PURE__*/function () {
-  function Multiselect() {
-    _classCallCheck(this, Multiselect);
-    this.instances = new Map();
-  }
-
-  /**
-   * Инициализирует Tom Select с чекбоксами на <select multiple>
-   * @param {string} elementId — ID элемента <select>
-   * @param {Object} [customOptions] — дополнительные опции Tom Select
-   * @returns {TomSelect | null}
-   */
-  return _createClass(Multiselect, [{
-    key: "init",
-    value: function init(elementId) {
-      var customOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var selectElement = document.getElementById(elementId);
-      if (!selectElement) {
-        console.warn("Multiselect: \u044D\u043B\u0435\u043C\u0435\u043D\u0442 \u0441 id=\"".concat(elementId, "\" \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D."));
-        return null;
-      }
-
-      // Защита от повторной инициализации
-      if (this.instances.has(elementId)) {
-        console.warn("Multiselect: \u0443\u0436\u0435 \u0438\u043D\u0438\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D \u043D\u0430 \"".concat(elementId, "\"."));
-        return this.instances.get(elementId);
-      }
-
-      // Базовые настройки: мультиселект + чекбоксы
-      var defaultOptions = {
-        plugins: {
-          checkbox_options: {} // ← чекбоксы в выпадающем списке
-        },
-        maxItems: null,
-        // разрешить множественный выбор
-        hidePlaceholder: true,
-        closeAfterSelect: false,
-        // не закрывать после выбора (удобно при мультивыборе)
-        dropdownParent: 'body' // чтобы не обрезалось в модалках и т.п.
-      };
-      var finalOptions = _objectSpread(_objectSpread({}, defaultOptions), customOptions);
-
-      // Создаём экземпляр Tom Select
-      var tomSelectInstance = new TomSelect("#".concat(elementId), finalOptions);
-
-      // Сохраняем для последующего доступа
-      this.instances.set(elementId, tomSelectInstance);
-      selectElement._tomSelect = tomSelectInstance;
-      return tomSelectInstance;
-    }
-
-    /**
-     * Получить экземпляр Tom Select по ID
-     * @param {string} elementId
-     * @returns {TomSelect | undefined}
-     */
-  }, {
-    key: "getInstance",
-    value: function getInstance(elementId) {
-      return this.instances.get(elementId);
-    }
-
-    /**
-     * Уничтожить инстанс (например, при удалении из DOM)
-     * @param {string} elementId
-     */
-  }, {
-    key: "destroy",
-    value: function destroy(elementId) {
-      var instance = this.instances.get(elementId);
-      if (instance) {
-        instance.destroy();
-        this.instances["delete"](elementId);
-        var el = document.getElementById(elementId);
-        if (el) delete el._tomSelect;
-      }
-    }
-
-    /**
-     * Получить выбранные значения (массив строк)
-     * @param {string} elementId
-     * @returns {string[]}
-     */
-  }, {
-    key: "getValues",
-    value: function getValues(elementId) {
-      var instance = this.getInstance(elementId);
-      return instance ? instance.getValue() : [];
-    }
-
-    /**
-     * Установить значения программно
-     * @param {string} elementId
-     * @param {string[]} values
-     */
-  }, {
-    key: "setValues",
-    value: function setValues(elementId, values) {
-      var instance = this.getInstance(elementId);
-      if (instance) {
-        instance.setValue(values, false); // false = не вызывать onChange
-      }
-    }
-  }]);
-}();
-window.Multiselect = Multiselect;
-
-/***/ }),
-
-/***/ "./wwwroot/js/NotificationClient.js":
-/*!******************************************!*\
-  !*** ./wwwroot/js/NotificationClient.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   NotificationClient: () => (/* binding */ NotificationClient)
-/* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var NotificationClient = /*#__PURE__*/function () {
-  function NotificationClient() {
-    _classCallCheck(this, NotificationClient);
-    this.baseUrl = 'https://localhost:55691';
-    this.apiPath = '/api/Notifications';
-  }
-
-  /**
-   * Получить полный URL для эндпоинта
-   * @param {string} endpoint 
-   * @returns {string}
-   */
-  return _createClass(NotificationClient, [{
-    key: "_GetUrl",
-    value: function _GetUrl(endpoint) {
-      return "".concat(this.baseUrl).concat(this.apiPath).concat(endpoint);
-    }
-
-    /**
-     * Получить все уведомления
-     * @returns {Promise<Array>} Массив всех уведомлений
-     * @example
-     * const notifications = await client.getAllNotifications();
-     * console.log('Всего уведомлений:', notifications.length);
-     */
-  }, {
-    key: "GetAllNotifications",
-    value: (function () {
-      var _GetAllNotifications = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        var response, error, _t;
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.p = _context.n) {
-            case 0:
-              _context.p = 0;
-              _context.n = 1;
-              return fetch(this._GetUrl(''), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context.v;
-              if (response.ok) {
-                _context.n = 3;
-                break;
-              }
-              _context.n = 2;
-              return response.text();
-            case 2:
-              error = _context.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439: ".concat(error));
-            case 3:
-              _context.n = 4;
-              return response.json();
-            case 4:
-              return _context.a(2, _context.v);
-            case 5:
-              _context.p = 5;
-              _t = _context.v;
-              console.error('Ошибка при получении всех уведомлений:', _t);
-              throw _t;
-            case 6:
-              return _context.a(2);
-          }
-        }, _callee, this, [[0, 5]]);
-      }));
-      function GetAllNotifications() {
-        return _GetAllNotifications.apply(this, arguments);
-      }
-      return GetAllNotifications;
-    }()
-    /**
-     * Получить уведомление по ID
-     * @param {string} id - GUID уведомления
-     * @returns {Promise<Object|null>} Уведомление или null
-     * @example
-     * const notification = await client.getNotificationById('123e4567-e89b-12d3-a456-426614174000');
-     * if (notification) {
-     *     console.log('Заголовок:', notification.title);
-     * }
-     */
-    )
-  }, {
-    key: "GetNotificationById",
-    value: (function () {
-      var _GetNotificationById = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(id) {
-        var response, error, _t2;
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.p = _context2.n) {
-            case 0:
-              _context2.p = 0;
-              _context2.n = 1;
-              return fetch(this._GetUrl("/".concat(id)), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context2.v;
-              if (response.ok) {
-                _context2.n = 4;
-                break;
-              }
-              if (!(response.status === 404)) {
-                _context2.n = 2;
-                break;
-              }
-              return _context2.a(2, null);
-            case 2:
-              _context2.n = 3;
-              return response.text();
-            case 3:
-              error = _context2.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F: ".concat(error));
-            case 4:
-              _context2.n = 5;
-              return response.json();
-            case 5:
-              return _context2.a(2, _context2.v);
-            case 6:
-              _context2.p = 6;
-              _t2 = _context2.v;
-              console.error('Ошибка при получении уведомления по ID:', _t2);
-              throw _t2;
-            case 7:
-              return _context2.a(2);
-          }
-        }, _callee2, this, [[0, 6]]);
-      }));
-      function GetNotificationById(_x) {
-        return _GetNotificationById.apply(this, arguments);
-      }
-      return GetNotificationById;
-    }()
-    /**
-     * Получить уведомления для конкретного пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>} Массив уведомлений пользователя
-     * @example
-     * const userNotifications = await client.getNotificationsByUserId('123e4567-e89b-12d3-a456-426614174000');
-     * console.log('Уведомлений для пользователя:', userNotifications.length);
-     */
-    )
-  }, {
-    key: "GetNotificationsByUserId",
-    value: (function () {
-      var _GetNotificationsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId) {
-        var response, error, _t3;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.p = _context3.n) {
-            case 0:
-              _context3.p = 0;
-              _context3.n = 1;
-              return fetch(this._GetUrl("/user/".concat(userId)), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context3.v;
-              if (response.ok) {
-                _context3.n = 3;
-                break;
-              }
-              _context3.n = 2;
-              return response.text();
-            case 2:
-              error = _context3.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F: ".concat(error));
-            case 3:
-              _context3.n = 4;
-              return response.json();
-            case 4:
-              return _context3.a(2, _context3.v);
-            case 5:
-              _context3.p = 5;
-              _t3 = _context3.v;
-              console.error('Ошибка при получении уведомлений пользователя:', _t3);
-              throw _t3;
-            case 6:
-              return _context3.a(2);
-          }
-        }, _callee3, this, [[0, 5]]);
-      }));
-      function GetNotificationsByUserId(_x2) {
-        return _GetNotificationsByUserId.apply(this, arguments);
-      }
-      return GetNotificationsByUserId;
-    }()
-    /**
-     * Получить непрочитанные уведомления для конкретного пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<Array>} Массив непрочитанных уведомлений
-     * @example
-     * const unread = await client.getUnreadNotificationsByUserId('123e4567-e89b-12d3-a456-426614174000');
-     * console.log('Непрочитанных:', unread.length);
-     */
-    )
-  }, {
-    key: "GetUnreadNotificationsByUserId",
-    value: (function () {
-      var _GetUnreadNotificationsByUserId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(userId) {
-        var response, error, _t4;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.p = _context4.n) {
-            case 0:
-              _context4.p = 0;
-              _context4.n = 1;
-              return fetch(this._GetUrl("/user/".concat(userId, "/unread")), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context4.v;
-              if (response.ok) {
-                _context4.n = 3;
-                break;
-              }
-              _context4.n = 2;
-              return response.text();
-            case 2:
-              error = _context4.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043D\u0435\u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439: ".concat(error));
-            case 3:
-              _context4.n = 4;
-              return response.json();
-            case 4:
-              return _context4.a(2, _context4.v);
-            case 5:
-              _context4.p = 5;
-              _t4 = _context4.v;
-              console.error('Ошибка при получении непрочитанных уведомлений пользователя:', _t4);
-              throw _t4;
-            case 6:
-              return _context4.a(2);
-          }
-        }, _callee4, this, [[0, 5]]);
-      }));
-      function GetUnreadNotificationsByUserId(_x3) {
-        return _GetUnreadNotificationsByUserId.apply(this, arguments);
-      }
-      return GetUnreadNotificationsByUserId;
-    }()
-    /**
-     * Получить количество непрочитанных уведомлений для пользователя
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<number>} Количество непрочитанных уведомлений
-     * @example
-     * const count = await client.getUnreadCount('123e4567-e89b-12d3-a456-426614174000');
-     * document.getElementById('badge').textContent = count;
-     */
-    )
-  }, {
-    key: "GetUnreadCount",
-    value: (function () {
-      var _GetUnreadCount = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(userId) {
-        var response, error, _t5;
-        return _regenerator().w(function (_context5) {
-          while (1) switch (_context5.p = _context5.n) {
-            case 0:
-              _context5.p = 0;
-              _context5.n = 1;
-              return fetch(this._GetUrl("/user/".concat(userId, "/unread/count")), {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context5.v;
-              if (response.ok) {
-                _context5.n = 3;
-                break;
-              }
-              _context5.n = 2;
-              return response.text();
-            case 2:
-              error = _context5.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u043D\u0435\u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445: ".concat(error));
-            case 3:
-              _context5.n = 4;
-              return response.json();
-            case 4:
-              return _context5.a(2, _context5.v);
-            case 5:
-              _context5.p = 5;
-              _t5 = _context5.v;
-              console.error('Ошибка при получении количества непрочитанных уведомлений:', _t5);
-              throw _t5;
-            case 6:
-              return _context5.a(2);
-          }
-        }, _callee5, this, [[0, 5]]);
-      }));
-      function GetUnreadCount(_x4) {
-        return _GetUnreadCount.apply(this, arguments);
-      }
-      return GetUnreadCount;
-    }()
-    /**
-     * Отметить уведомление как прочитанное (по ID получателя)
-     * @param {string} recipientId - GUID записи NotificationUsers
-     * @returns {Promise<boolean>} true, если успешно, иначе false
-     * @example
-     * const result = await client.markAsReadByRecipientId('123e4567-e89b-12d3-a456-426614174000');
-     * if (result) console.log('Уведомление отмечено как прочитанное');
-     */
-    )
-  }, {
-    key: "MarkAsReadByRecipientId",
-    value: (function () {
-      var _MarkAsReadByRecipientId = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(recipientId) {
-        var response, error, _t6;
-        return _regenerator().w(function (_context6) {
-          while (1) switch (_context6.p = _context6.n) {
-            case 0:
-              _context6.p = 0;
-              _context6.n = 1;
-              return fetch(this._GetUrl("/recipient/".concat(recipientId, "/mark-read")), {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context6.v;
-              if (response.ok) {
-                _context6.n = 4;
-                break;
-              }
-              if (!(response.status === 404)) {
-                _context6.n = 2;
-                break;
-              }
-              return _context6.a(2, false);
-            case 2:
-              _context6.n = 3;
-              return response.text();
-            case 3:
-              error = _context6.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043C\u0435\u0442\u043A\u0438 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043A\u0430\u043A \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u043E\u0433\u043E: ".concat(error));
-            case 4:
-              return _context6.a(2, true);
-            case 5:
-              _context6.p = 5;
-              _t6 = _context6.v;
-              console.error('Ошибка при отметке уведомления как прочитанного:', _t6);
-              throw _t6;
-            case 6:
-              return _context6.a(2);
-          }
-        }, _callee6, this, [[0, 5]]);
-      }));
-      function MarkAsReadByRecipientId(_x5) {
-        return _MarkAsReadByRecipientId.apply(this, arguments);
-      }
-      return MarkAsReadByRecipientId;
-    }()
-    /**
-     * Отметить уведомление как прочитанное (по ID уведомления и ID пользователя)
-     * @param {string} notificationId - GUID уведомления
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<boolean>} true, если успешно, иначе false
-     * @example
-     * const result = await client.markAsReadByIds('123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001');
-     * if (result) console.log('Уведомление отмечено как прочитанное');
-     */
-    )
-  }, {
-    key: "MarkAsReadByIds",
-    value: (function () {
-      var _MarkAsReadByIds = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(notificationId, userId) {
-        var response, error, _t7;
-        return _regenerator().w(function (_context7) {
-          while (1) switch (_context7.p = _context7.n) {
-            case 0:
-              _context7.p = 0;
-              _context7.n = 1;
-              return fetch(this._GetUrl("/notification/".concat(notificationId, "/user/").concat(userId, "/mark-read")), {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context7.v;
-              if (response.ok) {
-                _context7.n = 4;
-                break;
-              }
-              if (!(response.status === 404)) {
-                _context7.n = 2;
-                break;
-              }
-              return _context7.a(2, false);
-            case 2:
-              _context7.n = 3;
-              return response.text();
-            case 3:
-              error = _context7.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043C\u0435\u0442\u043A\u0438 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043A\u0430\u043A \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u043E\u0433\u043E: ".concat(error));
-            case 4:
-              return _context7.a(2, true);
-            case 5:
-              _context7.p = 5;
-              _t7 = _context7.v;
-              console.error('Ошибка при отметке уведомления как прочитанного (по ID):', _t7);
-              throw _t7;
-            case 6:
-              return _context7.a(2);
-          }
-        }, _callee7, this, [[0, 5]]);
-      }));
-      function MarkAsReadByIds(_x6, _x7) {
-        return _MarkAsReadByIds.apply(this, arguments);
-      }
-      return MarkAsReadByIds;
-    }()
-    /**
-     * Отметить все уведомления пользователя как прочитанные
-     * @param {string} userId - GUID пользователя
-     * @returns {Promise<number>} Количество отмеченных уведомлений
-     * @example
-     * const count = await client.markAllAsRead('123e4567-e89b-12d3-a456-426614174000');
-     * console.log(`Отмечено: ${count} уведомлений`);
-     */
-    )
-  }, {
-    key: "MarkAllAsRead",
-    value: (function () {
-      var _MarkAllAsRead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(userId) {
-        var response, error, result, _t8;
-        return _regenerator().w(function (_context8) {
-          while (1) switch (_context8.p = _context8.n) {
-            case 0:
-              _context8.p = 0;
-              _context8.n = 1;
-              return fetch(this._GetUrl("/user/".concat(userId, "/mark-all-read")), {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-            case 1:
-              response = _context8.v;
-              if (response.ok) {
-                _context8.n = 3;
-                break;
-              }
-              _context8.n = 2;
-              return response.text();
-            case 2:
-              error = _context8.v;
-              throw new Error("\u041E\u0448\u0438\u0431\u043A\u0430 \u043E\u0442\u043C\u0435\u0442\u043A\u0438 \u0432\u0441\u0435\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439 \u043A\u0430\u043A \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0445: ".concat(error));
-            case 3:
-              _context8.n = 4;
-              return response.json();
-            case 4:
-              result = _context8.v;
-              return _context8.a(2, result.message ? parseInt(result.message.match(/\d+/)[0]) : 0);
-            case 5:
-              _context8.p = 5;
-              _t8 = _context8.v;
-              console.error('Ошибка при отметке всех уведомлений как прочитанных:', _t8);
-              throw _t8;
-            case 6:
-              return _context8.a(2);
-          }
-        }, _callee8, this, [[0, 5]]);
-      }));
-      function MarkAllAsRead(_x8) {
-        return _MarkAllAsRead.apply(this, arguments);
-      }
-      return MarkAllAsRead;
-    }()
-    /**
-     * Создать новое уведомление
-     * @param {Object} notificationData - Данные для создания уведомления
-     * @param {string} notificationData.title - Заголовок уведомления
-     * @param {string} notificationData.message - Текст уведомления
-     * @param {string} notificationData.type - Тип уведомления
-     * @param {string} notificationData.createdBy - GUID создателя уведомления
-     * @param {string} [notificationData.imageUrl] - URL изображения (опционально)
-     * @param {string[]} notificationData.userIdList - Массив GUID получателей
-     * @returns {Promise<boolean>} true, если успешно создано, иначе false
-     * @example
-     * const success = await client.createNotification({
-     *     title: 'Новое сообщение',
-     *     message: 'У вас новое сообщение от администратора',
-     *     type: 'info',
-     *     createdBy: '123e4567-e89b-12d3-a456-426614174000',
-     *     userIdList: [
-     *         '223e4567-e89b-12d3-a456-426614174001',
-     *         '323e4567-e89b-12d3-a456-426614174002'
-     *     ]
-     * });
-     */
-    )
-  }, {
-    key: "CreateNotification",
-    value: (function () {
-      var _CreateNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(notificationData) {
-        var payload, response, error, _t9;
-        return _regenerator().w(function (_context9) {
-          while (1) switch (_context9.p = _context9.n) {
-            case 0:
-              if (notificationData.title) {
-                _context9.n = 1;
-                break;
-              }
-              throw new Error('Поле title обязательно');
-            case 1:
-              if (notificationData.message) {
-                _context9.n = 2;
-                break;
-              }
-              throw new Error('Поле message обязательно');
-            case 2:
-              if (notificationData.createdBy) {
-                _context9.n = 3;
-                break;
-              }
-              throw new Error('Поле createdBy обязательно');
-            case 3:
-              if (!(!Array.isArray(notificationData.userIdList) || notificationData.userIdList.length === 0)) {
-                _context9.n = 4;
-                break;
-              }
-              throw new Error('Поле userIdList должно быть непустым массивом');
-            case 4:
-              // Подготовка данных с дефолтными значениями
-              payload = {
-                title: notificationData.title,
-                message: notificationData.message,
-                imageUrl: notificationData.imageUrl || null,
-                createdBy: notificationData.createdBy,
-                type: notificationData.type === 0 ? 0 : 1,
-                // 0 = User, иначе 1 = System
-                isReadable: notificationData.isReadable === false ? false : true,
-                // false или true (по умолчанию)
-                userIdList: notificationData.userIdList
-              };
-              _context9.p = 5;
-              _context9.n = 6;
-              return fetch(this._GetUrl(''), {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-              });
-            case 6:
-              response = _context9.v;
-              if (response.ok) {
-                _context9.n = 8;
-                break;
-              }
-              _context9.n = 7;
-              return response.text();
-            case 7:
-              error = _context9.v;
-              console.error(error);
-              return _context9.a(2, false);
-            case 8:
-              return _context9.a(2, true);
-            case 9:
-              _context9.n = 11;
-              break;
-            case 10:
-              _context9.p = 10;
-              _t9 = _context9.v;
-              console.error('Ошибка при создании уведомления:', _t9);
-              throw _t9;
-            case 11:
-              return _context9.a(2);
-          }
-        }, _callee9, this, [[5, 10]]);
-      }));
-      function CreateNotification(_x9) {
-        return _CreateNotification.apply(this, arguments);
-      }
-      return CreateNotification;
-    }()
-    /**
-     * Установить базовый URL
-     * @param {string} newBaseUrl 
-     */
-    )
-  }, {
-    key: "SetBaseUrl",
-    value: function SetBaseUrl(newBaseUrl) {
-      this.baseUrl = newBaseUrl.endsWith('/') ? newBaseUrl.slice(0, -1) : newBaseUrl;
-    }
-
-    /**
-     * Получить текущий базовый URL
-     * @returns {string}
-     */
-  }, {
-    key: "GetBaseUrl",
-    value: function GetBaseUrl() {
-      return this.baseUrl;
-    }
-  }]);
-}();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee0() {
-  var _event$detail, isAuthenticated, userData, Notification;
-  return _regenerator().w(function (_context0) {
-    while (1) switch (_context0.n) {
-      case 0:
-        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
-        if (isAuthenticated && userData) {
-          Notification = new NotificationClient();
-        }
-      case 1:
-        return _context0.a(2);
-    }
-  }, _callee0);
-})));
-
-// ============================================
-// Примеры использования
-// ============================================
-
-/*
-// 1. Создание клиента
-const notificationClient = new NotificationClient();
-
-// 2. Получение всех уведомлений
-const allNotifications = await notificationClient.getAllNotifications();
-console.log('Всего уведомлений:', allNotifications.length);
-
-// 3. Получение уведомлений конкретного пользователя
-const userId = '123e4567-e89b-12d3-a456-426614174000';
-const userNotifications = await notificationClient.getNotificationsByUserId(userId);
-console.log('Уведомлений пользователя:', userNotifications.length);
-
-// 4. Получение непрочитанных уведомлений
-const unreadNotifications = await notificationClient.getUnreadNotifications(userId);
-console.log('Непрочитанных:', unreadNotifications.length);
-
-// 5. Получение количества непрочитанных (для бейджа)
-const unreadCount = await notificationClient.getUnreadCount(userId);
-document.getElementById('notification-badge').textContent = unreadCount;
-document.getElementById('notification-badge').style.display = unreadCount > 0 ? 'block' : 'none';
-
-// 6. Создание нового уведомления
-const newNotification = await notificationClient.createNotification({
-    title: 'Новое сообщение',
-    message: 'Вам пришло новое сообщение от администратора',
-    type: 'info', // или 'warning', 'error', 'success'
-    createdBy: 'admin-user-guid',
-    imageUrl: 'https://example.com/notification-icon.png',
-    userIdList: [
-        '123e4567-e89b-12d3-a456-426614174000',
-        '223e4567-e89b-12d3-a456-426614174001'
-    ]
-});
-console.log('Создано уведомление с ID:', newNotification.id);
-
-// 7. Получение конкретного уведомления по ID
-const notification = await notificationClient.getNotificationById(newNotification.id);
-console.log('Уведомление:', notification.title, notification.message);
-
-// 8. Пример интеграции в UI
-async function updateNotificationUI(userId) {
-    try {
-        // Получаем количество непрочитанных
-        const count = await notificationClient.getUnreadCount(userId);
-        
-        // Обновляем бейдж
-        const badge = document.getElementById('notification-badge');
-        badge.textContent = count;
-        badge.style.display = count > 0 ? 'inline-block' : 'none';
-        
-        // Получаем последние уведомления
-        const notifications = await notificationClient.getNotificationsByUserId(userId);
-        
-        // Отображаем в выпадающем списке
-        const list = document.getElementById('notification-list');
-        list.innerHTML = notifications.slice(0, 5).map(n => `
-            <div class="notification-item ${n.recipients.some(r => r.userId === userId && !r.readAt) ? 'unread' : ''}">
-                <h4>${n.title}</h4>
-                <p>${n.message}</p>
-                <small>${new Date(n.createdAt).toLocaleString()}</small>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Ошибка обновления UI:', error);
-    }
-}
-
-// 9. Автоматическое обновление каждые 30 секунд
-setInterval(() => {
-    const currentUserId = getCurrentUserId(); // ваша функция получения ID текущего пользователя
-    updateNotificationUI(currentUserId);
-}, 30000);
-
-// 10. Отправка уведомления всем пользователям квартиры
-async function notifyApartmentUsers(apartmentUserIds, title, message) {
-    try {
-        const notification = await notificationClient.createNotification({
-            title: title,
-            message: message,
-            type: 'info',
-            createdBy: getCurrentUserId(),
-            userIdList: apartmentUserIds
-        });
-        console.log('Уведомление отправлено:', notification.id);
-        return notification;
-    } catch (error) {
-        console.error('Ошибка отправки уведомления:', error);
-        throw error;
-    }
-}
-
-// 11. Фильтрация уведомлений по типу
-async function getNotificationsByType(userId, type) {
-    const notifications = await notificationClient.getNotificationsByUserId(userId);
-    return notifications.filter(n => n.type === type);
-}
-
-// Примеры типов: 'info', 'warning', 'error', 'success'
-const warningNotifications = await getNotificationsByType(userId, 'warning');
-*/
-
-/***/ }),
-
-/***/ "./wwwroot/js/NotificationProfileManager.js":
-/*!**************************************************!*\
-  !*** ./wwwroot/js/NotificationProfileManager.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   NotificationProfileManager: () => (/* binding */ NotificationProfileManager)
-/* harmony export */ });
-/* harmony import */ var _Modal_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Modal.js */ "./wwwroot/js/Modal.js");
-/* harmony import */ var _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApartmentHouses.js */ "./wwwroot/js/ApartmentHouses.js");
-/* harmony import */ var _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NotificationClient.js */ "./wwwroot/js/NotificationClient.js");
-/* harmony import */ var _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FileStorageClient.js */ "./wwwroot/js/FileStorageClient.js");
-/* harmony import */ var _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DateFormat.js */ "./wwwroot/js/DateFormat.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-
-
-
-
-
-var NotificationProfileManager = /*#__PURE__*/function () {
-  function NotificationProfileManager() {
-    _classCallCheck(this, NotificationProfileManager);
-    this.currentApartments = []; // Храним текущие квартиры
-    this.houseProfile = new _ApartmentHouses_js__WEBPACK_IMPORTED_MODULE_1__.ApartmentHouses();
-    this.userId = null;
-  }
-  return _createClass(NotificationProfileManager, [{
-    key: "InsertDataToCreateNotification",
-    value: function () {
-      var _InsertDataToCreateNotification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-        var _this = this;
-        var houseSelector, apartmentSelector, notificationGroup, houses, houseChecks, results, eligibleHouses;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.n) {
-            case 0:
-              this.userId = window.authManager.userData.userId;
-              houseSelector = document.getElementById('houseId');
-              apartmentSelector = document.getElementById('apartments');
-              notificationGroup = document.querySelector('.profile-group[data-group="notification"]'); // Очистим селектор перед заполнением
-              houseSelector.innerHTML = '';
-              _context3.n = 1;
-              return this.houseProfile.GetHousesByUserId(this.userId);
-            case 1:
-              houses = _context3.v;
-              // Массив промисов для параллельного выполнения
-              houseChecks = houses.map(/*#__PURE__*/function () {
-                var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(house) {
-                  var houseHead;
-                  return _regenerator().w(function (_context) {
-                    while (1) switch (_context.n) {
-                      case 0:
-                        _context.n = 1;
-                        return _this.houseProfile.GetHead(house.id);
-                      case 1:
-                        houseHead = _context.v;
-                        return _context.a(2, {
-                          house: house,
-                          isHead: houseHead.id === _this.userId
-                        });
-                    }
-                  }, _callee);
-                }));
-                return function (_x) {
-                  return _ref.apply(this, arguments);
-                };
-              }()); // Дожидаемся всех проверок
-              _context3.n = 2;
-              return Promise.all(houseChecks);
-            case 2:
-              results = _context3.v;
-              // Фильтруем дома, где пользователь — глава
-              eligibleHouses = results.filter(function (_ref2) {
-                var isHead = _ref2.isHead;
-                return isHead;
-              }).map(function (_ref3) {
-                var house = _ref3.house;
-                return house;
-              });
-              if (!eligibleHouses.length) {
-                _context3.n = 4;
-                break;
-              }
-              // Пользователь — глава хотя бы в одном доме => показываем селект
-              eligibleHouses.forEach(function (house) {
-                var option = document.createElement('option');
-                option.value = house.id;
-                option.textContent = "".concat(house.city, ", \u0443\u043B. ").concat(house.street, ", ").concat(house.number);
-                houseSelector.appendChild(option);
-              });
-              _context3.n = 3;
-              return this.LoadApartmentsForSelect(houseSelector.value);
-            case 3:
-              _context3.n = 5;
-              break;
-            case 4:
-              // Ни в одном доме не глава => уведомление недоступно
-              if (notificationGroup) {
-                notificationGroup.innerHTML = "\u0421\u043E\u0437\u0434\u0430\u043D\u0438\u0435 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E";
-              }
-            case 5:
-              houseSelector.addEventListener('change', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-                return _regenerator().w(function (_context2) {
-                  while (1) switch (_context2.n) {
-                    case 0:
-                      _context2.n = 1;
-                      return _this.LoadApartmentsForSelect(houseSelector.value);
-                    case 1:
-                      return _context2.a(2);
-                  }
-                }, _callee2);
-              })));
-            case 6:
-              return _context3.a(2);
-          }
-        }, _callee3, this);
-      }));
-      function InsertDataToCreateNotification() {
-        return _InsertDataToCreateNotification.apply(this, arguments);
-      }
-      return InsertDataToCreateNotification;
-    }()
-  }, {
-    key: "LoadApartmentsForSelect",
-    value: function () {
-      var _LoadApartmentsForSelect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(houseId) {
-        var _this2 = this;
-        var apartmentSelector, clearOption, allOption, _iterator, _step, apartment, option, tomSelectInstance;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.n) {
-            case 0:
-              apartmentSelector = document.getElementById('apartments'); // Получаем квартиры и сохраняем их
-              _context4.n = 1;
-              return this.houseProfile.GetApartmentsByHouseId(houseId);
-            case 1:
-              this.currentApartments = _context4.v;
-              // Очищаем селектор перед заполнением
-              apartmentSelector.innerHTML = '';
-
-              // Добавляем опцию "Очистить все"
-              clearOption = document.createElement('option');
-              clearOption.value = 'clear';
-              clearOption.textContent = 'Очистить все выбранные квартиры';
-              apartmentSelector.appendChild(clearOption);
-
-              // Добавляем опцию "Все квартиры дома"
-              allOption = document.createElement('option');
-              allOption.value = 'all';
-              allOption.textContent = 'Все квартиры дома';
-              apartmentSelector.appendChild(allOption);
-
-              // Добавляем квартиры
-              _iterator = _createForOfIteratorHelper(this.currentApartments);
-              try {
-                for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                  apartment = _step.value;
-                  option = document.createElement('option');
-                  option.value = apartment.id;
-                  option.textContent = "\u043A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(apartment.number);
-                  apartmentSelector.appendChild(option);
-                }
-
-                // Уничтожаем предыдущий экземпляр Tom Select, если он существует
-              } catch (err) {
-                _iterator.e(err);
-              } finally {
-                _iterator.f();
-              }
-              if (apartmentSelector.tomselect) {
-                apartmentSelector.tomselect.destroy();
-              }
-
-              // Инициализируем Tom Select
-              tomSelectInstance = new TomSelect('#apartments', {
-                plugins: ['remove_button'],
-                maxItems: null,
-                onChange: function onChange(values) {
-                  // Если выбрана опция "Очистить все"
-                  if (values.includes('clear')) {
-                    tomSelectInstance.clear();
-                    return;
-                  }
-
-                  // Если выбрана опция "Все квартиры"
-                  if (values.includes('all')) {
-                    var allApartmentIds = _this2.currentApartments.map(function (apt) {
-                      return apt.id.toString();
-                    });
-                    if (values[values.length - 1] === 'all') {
-                      tomSelectInstance.setValue(['all'].concat(_toConsumableArray(allApartmentIds)), true);
-                    }
-                  } else {
-                    var _allApartmentIds = _this2.currentApartments.map(function (apt) {
-                      return apt.id.toString();
-                    });
-                    var hasAll = _allApartmentIds.every(function (id) {
-                      return values.includes(id);
-                    });
-                    if (!hasAll && values.includes('all')) {
-                      tomSelectInstance.removeItem('all', true);
-                    }
-                  }
-                }
-              }); // Сохраняем экземпляр
-              apartmentSelector.tomselect = tomSelectInstance;
-
-              // Программно выбираем все квартиры при инициализации
-              setTimeout(function () {
-                var allApartmentIds = _this2.currentApartments.map(function (apt) {
-                  return apt.id.toString();
-                });
-                tomSelectInstance.setValue(['all'].concat(_toConsumableArray(allApartmentIds)));
-              }, 0);
-            case 2:
-              return _context4.a(2);
-          }
-        }, _callee4, this);
-      }));
-      function LoadApartmentsForSelect(_x2) {
-        return _LoadApartmentsForSelect.apply(this, arguments);
-      }
-      return LoadApartmentsForSelect;
-    }()
-  }, {
-    key: "CollectNotificationDataToCreate",
-    value: function () {
-      var _CollectNotificationDataToCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-        var _this3 = this;
-        var apartmentSelector, tomSelectInstance, selectedValues, apartmentIds, toOwnersRadio, isOwnersOnly, allUserIds, uniqueUserIds, fileInput, file, fileManager, isFileUpload, title, message;
-        return _regenerator().w(function (_context5) {
-          while (1) switch (_context5.n) {
-            case 0:
-              apartmentSelector = document.getElementById('apartments');
-              tomSelectInstance = apartmentSelector.tomselect;
-              if (tomSelectInstance) {
-                _context5.n = 1;
-                break;
-              }
-              console.error('Tom Select не инициализирован');
-              return _context5.a(2, {
-                apartmentIds: [],
-                userIds: []
-              });
-            case 1:
-              // Получаем массив выбранных значений
-              selectedValues = tomSelectInstance.getValue(); // Фильтруем 'all' и 'clear', получаем только ID квартир
-              apartmentIds = selectedValues.filter(function (value) {
-                return value !== 'all' && value !== 'clear';
-              });
-              console.log('Выбранные квартиры:', apartmentIds);
-
-              // Проверяем, какой radio button выбран
-              toOwnersRadio = document.getElementById('toOwners');
-              isOwnersOnly = toOwnersRadio ? toOwnersRadio.checked : false;
-              console.log('Radio toOwners checked:', isOwnersOnly);
-
-              // Собираем пользователей из выбранных квартир
-              allUserIds = [];
-              apartmentIds.forEach(function (apartmentId) {
-                // Находим квартиру по ID из сохранённых данных
-                var apartment = _this3.currentApartments.find(function (apt) {
-                  return apt.id.toString() === apartmentId;
-                });
-                if (apartment && apartment.users && Array.isArray(apartment.users)) {
-                  console.log("\u041A\u0432\u0430\u0440\u0442\u0438\u0440\u0430 ".concat(apartment.number, ", \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439:"), apartment.users.length);
-                  apartment.users.forEach(function (user) {
-                    console.log("\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C ".concat(user.userId, ", \u0441\u0442\u0430\u0442\u0443\u0441\u044B:"), user.statuses);
-                    if (isOwnersOnly) {
-                      // Фильтруем только владельцев
-                      var isOwner = user.statuses && user.statuses.some(function (status) {
-                        return status.name === 'Владелец';
-                      });
-                      console.log("  \u042F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u043C: ".concat(isOwner));
-                      if (isOwner) {
-                        allUserIds.push(user.userId);
-                      }
-                    } else {
-                      // Все пользователи
-                      console.log("  \u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C \u0432\u0441\u0435\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439");
-                      allUserIds.push(user.userId);
-                    }
-                  });
-                }
-              });
-
-              // Получаем уникальных пользователей
-              uniqueUserIds = _toConsumableArray(new Set(allUserIds));
-              console.log('Все пользователи:', allUserIds);
-              console.log('Уникальные пользователи:', uniqueUserIds);
-              console.log('Только собственники:', isOwnersOnly);
-
-              //собираем картинку
-              fileInput = document.getElementById('fileInput');
-              file = fileInput.files[0];
-              fileManager = new _FileStorageClient_js__WEBPACK_IMPORTED_MODULE_3__.FileStorageClient();
-              _context5.n = 2;
-              return fileManager.UploadFile(file);
-            case 2:
-              isFileUpload = _context5.v;
-              console.log("\u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0438");
-              console.log(isFileUpload);
-              title = document.getElementById('title').value;
-              message = document.getElementById('message').value;
-              return _context5.a(2, {
-                title: title,
-                message: message,
-                type: 0,
-                createdBy: window.authManager.userData.userId,
-                imageUrl: isFileUpload.fileUrl,
-                userIdList: uniqueUserIds
-              });
-          }
-        }, _callee5);
-      }));
-      function CollectNotificationDataToCreate() {
-        return _CollectNotificationDataToCreate.apply(this, arguments);
-      }
-      return CollectNotificationDataToCreate;
-    }()
-  }, {
-    key: "InsertDataToMainPage",
-    value: function InsertDataToMainPage(data) {
-      var _this4 = this;
-      var notificationsContainer = document.querySelector('.notificatiions-list');
-      if (data.length) {
-        data.forEach(function (notification) {
-          var notificationMainPageTemplate = _this4.NotificationMainPageTemplate(notification);
-          notificationsContainer.insertAdjacentHTML('beforeend', notificationMainPageTemplate);
-        });
-      } else {
-        notificationsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
-      }
-    }
-  }, {
-    key: "NotificationMainPageTemplate",
-    value: function NotificationMainPageTemplate(notification) {
-      var notificationHTML;
-      if (notification) {
-        notificationHTML = "\n                <a class=\"notification-item\" href=\"/notification/".concat(notification.id, "\">\n                    <div class=\"font-size-12 color-gray\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>\n                    <div class=\"font-weight-600\">").concat(notification.title, "</div>\n                </a>\n            ");
-      }
-      return notificationHTML;
-    }
-  }, {
-    key: "NotificationDetails",
-    value: function NotificationDetails(notification) {
-      var recipients = [];
-      notification.recipients.forEach(function (recipient) {
-        recipients.push(recipient.userId);
-      });
-      if (notification != null && recipients.includes(window.authManager.userData.userId)) {
-        var notificationDate = document.getElementById('notification-date');
-        notificationDate.innerHTML = _DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt);
-        var notificationImage = document.getElementById('notification-image');
-        notificationImage.setAttribute('src', notification.imageUrl);
-        var notificationTitle = document.getElementById('notification-title');
-        notificationTitle.innerHTML = notification.title;
-        var notificationMessage = document.getElementById('notification-message');
-        notificationMessage.innerHTML = notification.message;
-
-        /*if (notification.createdBy == window.authManager.userData.userId) {
-            document.querySelector(`[data-action="remove-notification"]`).classList.remove('d-none');
-        } else {
-            document.querySelector(`[data-action="remove-notification"]`).remove();
-        }*/
-      } else {
-        document.getElementById('notification-profile').innerHTML = 'Страница недоступна';
-      }
-    }
-  }, {
-    key: "NotificationListByUserId",
-    value: function NotificationListByUserId(notifications) {
-      var notificationsContainer = document.querySelector('.notifications-by-user-list');
-      if (notifications.length) {
-        var _iterator2 = _createForOfIteratorHelper(notifications),
-          _step2;
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var notification = _step2.value;
-            console.log("\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0435");
-            console.log(notification);
-            var notificationToListByUserId = this.NotificationTemplateByUserId(notification);
-            notificationsContainer.insertAdjacentHTML('beforeend', notificationToListByUserId);
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-      } else {
-        notificationsContainer.innerHTML = "\u041D\u0435\u0442 \u043D\u043E\u0432\u044B\u0445 \u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u0439";
-      }
-    }
-  }, {
-    key: "NotificationTemplateByUserId",
-    value: function NotificationTemplateByUserId(notification) {
-      var notificationHTML;
-      if (notification) {
-        var _window$authManager, _window$authManager2, _notification$recipie;
-        // Проверяем, есть ли текущий пользователь в recipients и прочитал ли он уведомление
-        var currentUser = ((_window$authManager = window.authManager) === null || _window$authManager === void 0 || (_window$authManager = _window$authManager.userData) === null || _window$authManager === void 0 ? void 0 : _window$authManager.userId) || ((_window$authManager2 = window.authManager) === null || _window$authManager2 === void 0 || (_window$authManager2 = _window$authManager2.userData) === null || _window$authManager2 === void 0 ? void 0 : _window$authManager2.id); // в зависимости от структуры
-        var currentUserRecipient = (_notification$recipie = notification.recipients) === null || _notification$recipie === void 0 ? void 0 : _notification$recipie.find(function (recipient) {
-          return recipient.userId === currentUser;
-        });
-        var isReadByCurrentUser = currentUserRecipient && currentUserRecipient.readAt !== null;
-        var readAt = isReadByCurrentUser ? currentUserRecipient.readAt : null;
-
-        // Формируем класс и span для даты прочтения
-        var readClass = isReadByCurrentUser ? 'readed' : '';
-        var readAtSpan = isReadByCurrentUser ? "<span class=\"read-at\">\u041F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043E: ".concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(readAt), "</span>") : '';
-        notificationHTML = "\n                <div class=\"profile-group dashboard-card my-4\" data-group=\"notification\" data-apartment-id=\"".concat(notification.id, "\">\n                    <h3 class=\"card-header card-header_notification w-100 ").concat(readClass, "\">\n                        <a href=\"/notification/").concat(notification.id, "\">").concat(notification.title, "</a>\n                        ").concat(readAtSpan, "\n                    </h3>\n\n                    <div class=\"d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100\">\n                        <div class=\"notification-image\">\n                            <img id=\"notification-image\" src=\"").concat(notification.imageUrl, "\" alt=\"Alternate Text\" />\n                        </div>\n                        <div class=\"notification-content\">\n                            <div id=\"notification-date\" class=\"notification-date mb-3\">").concat(_DateFormat_js__WEBPACK_IMPORTED_MODULE_4__.DateFormat.DateFormatToRuString(notification.createdAt), "</div>                        \n                            <div id=\"notification-message\">").concat(notification.message, "</div>\n                        </div>\n                    </div>\n                </div>\n            ");
-      }
-      return notificationHTML;
-    }
-  }]);
-}();
-document.addEventListener('authStateChanged', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
-  var _event$detail, isAuthenticated, userData, Regex, UrlParts, userId, notificationProfile, notificationClient, readTimeoutId, notificationsByUser, notificationId, notification, _notificationsByUser;
-  return _regenerator().w(function (_context8) {
-    while (1) switch (_context8.n) {
-      case 0:
-        _event$detail = event.detail, isAuthenticated = _event$detail.isAuthenticated, userData = _event$detail.userData;
-        Regex = new window.RegularExtension();
-        UrlParts = Regex.getUrlPathParts(window.location.href);
-        if (!(isAuthenticated && userData)) {
-          _context8.n = 8;
-          break;
-        }
-        userId = window.authManager.userData.userId;
-        notificationProfile = new NotificationProfileManager();
-        notificationClient = new _NotificationClient_js__WEBPACK_IMPORTED_MODULE_2__.NotificationClient();
-        console.log('Аутентификация пройдена');
-        if (!window.location.pathname.includes('/notification/create')) {
-          _context8.n = 2;
-          break;
-        }
-        _context8.n = 1;
-        return notificationProfile.InsertDataToCreateNotification();
-      case 1:
-        document.querySelector('[data-action="save-notification-data"]').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-          var notificationData, notificationCreate;
-          return _regenerator().w(function (_context6) {
-            while (1) switch (_context6.n) {
-              case 0:
-                console.log('Клик по кнопке сохранения уведомления');
-
-                // Собираем данные уведомления
-                _context6.n = 1;
-                return notificationProfile.CollectNotificationDataToCreate();
-              case 1:
-                notificationData = _context6.v;
-                console.log('Данные для сохранения:', notificationData);
-
-                //Отправляем данные на сервер
-                notificationCreate = notificationClient.CreateNotification(notificationData);
-                if (notificationCreate) {
-                  _Modal_js__WEBPACK_IMPORTED_MODULE_0__.Modal.ShowNotification('Уведомление создано успешно!', 'green');
-                }
-              case 2:
-                return _context6.a(2);
-            }
-          }, _callee6);
-        })));
-      case 2:
-        readTimeoutId = null;
-        if (!(window.location.pathname == '/')) {
-          _context8.n = 4;
-          break;
-        }
-        _context8.n = 3;
-        return notificationClient.GetUnreadNotificationsByUserId(userId);
-      case 3:
-        notificationsByUser = _context8.v;
-        console.log("\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u0434\u043B\u044F \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F");
-        console.log(notificationsByUser);
-        notificationProfile.InsertDataToMainPage(notificationsByUser);
-      case 4:
-        if (!(Regex.isValidEntityUrl(window.location.href).valid && UrlParts.includes('notification'))) {
-          _context8.n = 6;
-          break;
-        }
-        notificationId = Regex.isValidEntityUrl(window.location.href).id;
-        _context8.n = 5;
-        return notificationClient.GetNotificationById(notificationId);
-      case 5:
-        notification = _context8.v;
-        notificationProfile.NotificationDetails(notification);
-        if (readTimeoutId) {
-          clearTimeout(readTimeoutId);
-        }
-
-        // Отсечка в 10 секунд для фиксации прочитанности сообщения
-        readTimeoutId = setTimeout(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
-          var result, _t;
-          return _regenerator().w(function (_context7) {
-            while (1) switch (_context7.p = _context7.n) {
-              case 0:
-                _context7.p = 0;
-                _context7.n = 1;
-                return notificationClient.MarkAsReadByIds(notificationId, userId);
-              case 1:
-                result = _context7.v;
-                if (result) {
-                  console.log('Уведомление отмечено как прочитанное');
-                } else {
-                  console.warn('Не удалось отметить уведомление как прочитанное');
-                }
-                _context7.n = 3;
-                break;
-              case 2:
-                _context7.p = 2;
-                _t = _context7.v;
-                console.error('Ошибка при отметке уведомления как прочитанного:', _t);
-              case 3:
-                return _context7.a(2);
-            }
-          }, _callee7, null, [[0, 2]]);
-        })), 10000);
-
-        // Отмена таймера при уходе со страницы, если ушел раньше 15 секунд, то сообщение не считается прочитанным
-        window.addEventListener('beforeunload', function () {
-          if (readTimeoutId) {
-            clearTimeout(readTimeoutId);
-            console.log('Таймер отменен при уходе со страницы');
-          }
-        });
-      case 6:
-        if (!(UrlParts.includes("notification") && UrlParts.includes('by-user') && UrlParts.includes(userId))) {
-          _context8.n = 8;
-          break;
-        }
-        _context8.n = 7;
-        return notificationClient.GetNotificationsByUserId(userId);
-      case 7:
-        _notificationsByUser = _context8.v;
-        notificationProfile.NotificationListByUserId(_notificationsByUser);
-      case 8:
-        return _context8.a(2);
-    }
-  }, _callee8);
-})));
-
-/***/ }),
-
-/***/ "./wwwroot/js/Regex.js":
-/*!*****************************!*\
-  !*** ./wwwroot/js/Regex.js ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   RegularExtension: () => (/* binding */ RegularExtension)
-/* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var RegularExtension = /*#__PURE__*/function () {
-  function RegularExtension() {
-    _classCallCheck(this, RegularExtension);
-  }
-  return _createClass(RegularExtension, [{
-    key: "getUrlPathParts",
-    value: function getUrlPathParts(url) {
-      try {
-        var urlObj = new URL(url);
-        var path = urlObj.pathname;
-        return path.split('/').filter(function (part) {
-          return part !== '';
-        });
-      } catch (e) {
-        // Если URL некорректен — возвращаем пустой массив
-        return [];
-      }
-    }
-  }, {
-    key: "isValidEntityUrl",
-    value: function isValidEntityUrl(url) {
-      try {
-        var normalizedUrl = url.replace(/\/$/, '');
-        var urlObj = new URL(normalizedUrl);
-        var path = urlObj.pathname;
-        var parts = path.split('/').filter(function (part) {
-          return part !== '';
-        });
-
-        // Случай 1: [type, id] — house или apartment с числовым ID
-        if (parts.length === 2) {
-          var _parts = _slicedToArray(parts, 2),
-            type = _parts[0],
-            idStr = _parts[1];
-          if ((type === 'house' || type === 'apartment') && /^\d+$/.test(idStr)) {
-            return {
-              valid: true,
-              id: parseInt(idStr, 10),
-              type: type
-            };
-          }
-        }
-
-        // Случай 2: [context, guid] — notification или user с GUID
-        if (parts.length === 2) {
-          var _parts2 = _slicedToArray(parts, 2),
-            _type = _parts2[0],
-            guid = _parts2[1];
-          if ((_type === 'notification' || _type === 'user') && this.isGuid(guid)) {
-            return {
-              valid: true,
-              id: guid,
-              // GUID остаётся строкой
-              type: _type
-            };
-          }
-        }
-        return {
-          valid: false,
-          id: null,
-          type: null
-        };
-      } catch (e) {
-        return {
-          valid: false,
-          id: null,
-          type: null
-        };
-      }
-    }
-
-    // Вспомогательный метод для проверки GUID v4
-  }, {
-    key: "isGuid",
-    value: function isGuid(str) {
-      var guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      return guidRegex.test(str);
-    }
-  }]);
-}();
-window.RegularExtension = RegularExtension;
 
 /***/ }),
 

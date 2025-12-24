@@ -251,33 +251,6 @@
         transform: translateX(-50%) translateY(-20px);
     }
 }
-
-
-.notification-item {
-    text-decoration: none;
-    cursor: pointer;
-    color: #000;
-    background: linear-gradient(135deg, #c1ffcc 0%, #7dff93 100%);
-    border-radius: 8px;
-    padding: 1rem;
-    border-left: 4px solid #099105;
-    display: block;
-
-    &:hover {
-        color: #000;
-    }
-}
-
-.notification-image {
-    img {
-        max-height: 400px;
-    }
-}
-
-.notification-date {
-    color: var(--gray-any);
-    font-size: 14px;
-}
 /*!*******************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/multiselect.css ***!
   \*******************************************************************************/
@@ -924,11 +897,6 @@ footer {
 
     &.card-header_vote {
         background: linear-gradient(135deg, #ffa569 0%, #e84343 100%);
-    }
-
-    a {
-        text-decoration: none;
-        color: #fff;
     }
 
     a {

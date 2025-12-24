@@ -18,13 +18,6 @@ export class FileStorageClient {
      * Загрузить файл на сервер
      * @param {File} file - Файл для загрузки
      * @returns {Promise<Object>} Метаданные загруженного файла с URL
-     * @property {number} id - ID файла
-     * @property {string} fileUrl - URL для просмотра файла
-     * @property {string} downloadUrl - URL для скачивания файла
-     * @example
-     * const result = await client.uploadFile(file);
-     * console.log('Файл доступен по:', result.fileUrl);
-     * document.getElementById('preview').src = result.fileUrl;
      */
     async UploadFile(file) {
         if (!(file instanceof File)) {
@@ -115,7 +108,6 @@ export class FileStorageClient {
 
             const blob = await response.blob();
 
-            // Получаем имя файла из заголовка или используем переданное
             let fileName = saveAs;
             if (!fileName) {
                 const contentDisposition = response.headers.get('Content-Disposition');
@@ -128,7 +120,6 @@ export class FileStorageClient {
             }
             fileName = fileName || `file-${id}`;
 
-            // Создаем ссылку для скачивания
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
@@ -137,7 +128,6 @@ export class FileStorageClient {
             document.body.appendChild(a);
             a.click();
 
-            // Очищаем
             URL.revokeObjectURL(url);
             document.body.removeChild(a);
         } catch (error) {
@@ -150,10 +140,6 @@ export class FileStorageClient {
      * Получить Blob файла
      * @param {number} id - ID файла
      * @returns {Promise<Blob>}
-     * @example
-     * const blob = await client.getFileBlob(123);
-     * const url = URL.createObjectURL(blob);
-     * document.getElementById('preview').src = url;
      */
     async GetFileBlob(id) {
         try {
@@ -187,9 +173,6 @@ export class FileStorageClient {
      * Удалить файл по ID
      * @param {number} id - ID файла
      * @returns {Promise<boolean>}
-     * @example
-     * await client.deleteFile(123);
-     * console.log('Файл удален');
      */
     async DeleteFile(id) {
         try {
@@ -216,7 +199,6 @@ export class FileStorageClient {
      */
     async UploadMultipleFiles(files) {
         const results = [];
-
         for (const file of files) {
             try {
                 const result = await this.UploadFile(file);
@@ -225,7 +207,6 @@ export class FileStorageClient {
                 results.push({ success: false, fileName: file.name, error: error.message });
             }
         }
-
         return results;
     }
 
@@ -267,22 +248,8 @@ export class FileStorageClient {
 // Инициализация при авторизации (остаётся без изменений)
 document.addEventListener('authStateChanged', () => {
     const { isAuthenticated, userData } = event.detail;
-
     if (isAuthenticated && userData) {
         // Экземпляр можно создать, но он не хранится глобально — лучше создавать по месту использования
         // window.fileStorageClient = new FileStorageClient(); // опционально
     }
-
-// 9. Работа с Blob для встраивания
-async function embedFile(fileId, targetElement) {
-    const blob = await fileClient.getFileBlob(fileId);
-    const url = URL.createObjectURL(blob);
-    
-    targetElement.src = url;
-    
-    // Очистка после использования
-    targetElement.addEventListener('load', () => {
-        URL.revokeObjectURL(url);
 });
-}
-*/

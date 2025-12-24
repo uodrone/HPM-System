@@ -306,49 +306,6 @@ export class ApartmentHouses {
         }
     }
 
-    async CollectHouseDataAndCreate () {
-        let house = {};
-
-        document.querySelectorAll('[data-group="house"] input').forEach(input => {
-            const key = input.id;
-
-            let value;
-            if (input.type === 'checkbox') {
-                value = input.checked;
-            } else if (input.type === 'number') {
-                // Пустое поле → 0
-                value = input.value === '' ? 0 : Number(input.value);                
-            } else if (input.tagName === 'SELECT') {
-                value = input.value === '' ? null : el.value;
-            } else {               
-                value = input.value || null;
-            }
-
-            house[key] = value;
-        });
-
-        // Валидация
-        const validation = HouseValidator.validate(house);
-        if (!validation.isValid) {
-            HouseValidator.displayErrors(validation.errors);
-            Modal.ShowNotification('Исправьте ошибки в форме', 'red');
-            return;
-        }
-
-        // Убираем ошибки перед попыткой отправки
-        HouseValidator.displayErrors({});
-
-        let isCreateHouseSuccessfull = await this.CreateHouse(house);
-
-        if (isCreateHouseSuccessfull) {
-            Modal.ShowNotification('Данные о доме успешно сохранены', 'green');
-            console.log(`собранные данные о доме`);
-            console.log(house);
-        } else {
-            Modal.ShowNotification('Ошибка сохранения данных', 'red');
-        }
-    }
-
     async CollectHouseDataAndUpdateProfile () {
         let house = {};
         const Regex = new RegularExtension();

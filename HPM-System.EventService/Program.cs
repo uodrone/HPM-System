@@ -1,4 +1,3 @@
-
 using HPM_System.EventService.DataContext;
 using HPM_System.EventService.Interfaces;
 using HPM_System.EventService.Repositories;
@@ -15,8 +14,6 @@ namespace HPM_System.EventService
 {
     public class Program
     {
-        private static readonly string _connectionName = "DefaultConnection";
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);

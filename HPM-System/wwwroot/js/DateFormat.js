@@ -11,8 +11,6 @@ export class DateFormat {
         const year = date.getFullYear();
         const hours = date.getHours();
         const minutes = date.getMinutes();
-        const day = date.getUTCDate(); // без ведущего нуля
-        const year = date.getUTCFullYear();
 
         const months = [
             'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',

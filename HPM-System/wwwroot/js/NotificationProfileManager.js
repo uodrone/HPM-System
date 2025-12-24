@@ -337,8 +337,6 @@ document.addEventListener('authStateChanged', async () => {
             await notificationProfile.InsertDataToCreateNotification();
 
             document.querySelector('[data-action="save-notification-data"]').addEventListener('click', async () => {                
-                console.log('Клик по кнопке сохранения уведомления');
-                
                 // Собираем данные уведомления
                 const notificationData = await notificationProfile.CollectNotificationDataToCreate();
                 console.log('Данные для сохранения:', notificationData);
