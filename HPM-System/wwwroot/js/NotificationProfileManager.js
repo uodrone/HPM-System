@@ -22,14 +22,17 @@ export class NotificationProfileManager {
 
         const houses = await this.houseProfile.GetHousesByUserId(this.userId);
 
-        // Массив промисов для параллельного выполнения
-        const houseChecks = houses.map(async (house) => {
-            const houseHead = await this.houseProfile.GetHead(house.id);
-            return { house, isHead: houseHead.id === this.userId };
-        });
+        const houseChecks = await Promise.all(
+            // Массив промисов для параллельного выполнения
+            houses.map(async (house) => {
+                const houseHead = await this.houseProfile.GetHead(house.id);
+                if (houseHead == null) return null;
+                return { house, isHead: houseHead.id === this.userId };
+            })
+        );
 
-        // Дожидаемся всех проверок
-        const results = await Promise.all(houseChecks);
+        // Фильтруем только ненулевые значения, т.е. там где есть старший по дому
+        const results = houseChecks.filter(item => item !== null);
 
         // Фильтруем дома, где пользователь — глава
         const eligibleHouses = results
@@ -227,7 +230,7 @@ export class NotificationProfileManager {
         let notificationHTML;
         if (notification) {
             notificationHTML = `
-                <a class="notification-item" href="/notification/${notification.id}">
+                <a class="card-item card-item_notification" href="/notification/${notification.id}">
                     <div class="font-size-12 color-gray">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>
                     <div class="font-weight-600">${notification.title}</div>
                 </a>
@@ -237,7 +240,7 @@ export class NotificationProfileManager {
         return notificationHTML;
     }
 
-    NotificationDetails (notification) {
+    NotificationDetails (notification, gatewayUrl) {
         let recipients = [];
         notification.recipients.forEach(recipient => {
             recipients.push(recipient.userId);
@@ -248,7 +251,7 @@ export class NotificationProfileManager {
             notificationDate.innerHTML = DateFormat.DateFormatToRuString(notification.createdAt);
 
             const notificationImage = document.getElementById('notification-image');
-            notificationImage.setAttribute('src', notification.imageUrl);
+            notificationImage.setAttribute('src', `${gatewayUrl}${notification.imageUrl}`);
 
             const notificationTitle = document.getElementById('notification-title');
             notificationTitle.innerHTML = notification.title;
@@ -266,13 +269,13 @@ export class NotificationProfileManager {
         }        
     }
 
-    NotificationListByUserId (notifications) {
+    NotificationListByUserId (notifications, gatewayUrl) {
         const notificationsContainer = document.querySelector('.notifications-by-user-list');        
         if (notifications.length) {
             for (const notification of notifications) {
                 console.log(`уведомление`);
                 console.log(notification);
-                const notificationToListByUserId = this.NotificationTemplateByUserId(notification);
+                const notificationToListByUserId = this.NotificationTemplateByUserId(notification, gatewayUrl);
                 notificationsContainer.insertAdjacentHTML('beforeend', notificationToListByUserId);
             }
         } else {
@@ -280,7 +283,7 @@ export class NotificationProfileManager {
         }
     }
 
-    NotificationTemplateByUserId(notification) {
+    NotificationTemplateByUserId(notification, gatewayUrl) {
         let notificationHTML;
         if (notification) {
             // Проверяем, есть ли текущий пользователь в recipients и прочитал ли он уведомление
@@ -297,18 +300,16 @@ export class NotificationProfileManager {
                 : '';
 
             notificationHTML = `
-                <div class="profile-group dashboard-card my-4" data-group="notification" data-apartment-id="${notification.id}">
+                <div class="profile-group dashboard-card my-4" data-group="notification" data-notification-id="${notification.id}">
                     <h3 class="card-header card-header_notification w-100 ${readClass}">
                         <a href="/notification/${notification.id}">${notification.title}</a>
                         ${readAtSpan}
                     </h3>
 
                     <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-4 w-100">
-                        <div class="notification-image">
-                            <img id="notification-image" src="${notification.imageUrl}" alt="Alternate Text" />
-                        </div>
-                        <div class="notification-content">
-                            <div id="notification-date" class="notification-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
+                        <div class="card-image" style="background-image: url(${gatewayUrl}${notification.imageUrl});"></div>
+                        <div class="card-content">
+                            <div id="notification-date" class="card-date mb-3">${DateFormat.DateFormatToRuString(notification.createdAt)}</div>                        
                             <div id="notification-message">${notification.message}</div>
                         </div>
                     </div>
@@ -335,7 +336,7 @@ document.addEventListener('authStateChanged', async () => {
         if (window.location.pathname.includes('/notification/create')) {
             await notificationProfile.InsertDataToCreateNotification();
 
-            document.querySelector('[data-action="save-notification-data"]').addEventListener('click', async () => {
+            document.querySelector('[data-action="save-notification-data"]').addEventListener('click', async () => {                
                 console.log('Клик по кнопке сохранения уведомления');
                 
                 // Собираем данные уведомления
@@ -346,7 +347,7 @@ document.addEventListener('authStateChanged', async () => {
                 const notificationCreate = notificationClient.CreateNotification(notificationData);
 
                 if (notificationCreate) {                        
-                    Modal.ShowNotification('Уведомление создано успешно!', 'green');                        
+                    Modal.ShowNotification('Уведомление создано успешно!', 'green');
                 }
             });
         }
@@ -363,7 +364,7 @@ document.addEventListener('authStateChanged', async () => {
         if (Regex.isValidEntityUrl(window.location.href).valid && UrlParts.includes('notification')) {
             const notificationId = Regex.isValidEntityUrl(window.location.href).id;            
             const notification = await notificationClient.GetNotificationById(notificationId);
-            notificationProfile.NotificationDetails(notification);
+            notificationProfile.NotificationDetails(notification, notificationClient.gatewayUrl);
 
             if (readTimeoutId) {
                 clearTimeout(readTimeoutId);
@@ -394,7 +395,7 @@ document.addEventListener('authStateChanged', async () => {
 
         if (UrlParts.includes(`notification`) && UrlParts.includes('by-user') && UrlParts.includes(userId)) {
             const notificationsByUser = await notificationClient.GetNotificationsByUserId(userId);            
-            notificationProfile.NotificationListByUserId(notificationsByUser);
+            notificationProfile.NotificationListByUserId(notificationsByUser, notificationClient.gatewayUrl);
         }
     }
 });

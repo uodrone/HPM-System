@@ -40,6 +40,60 @@
     }
 }
 
+.card-item {
+    text-decoration: none;
+    cursor: pointer;
+    color: #000;
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid;
+    display: block;
+
+    &:hover {
+        color: #000;
+    }
+
+    &.card-item_notification {
+        background: linear-gradient(135deg, #c1ffcc 0%, #7dff93 100%);
+        border-color: #099105;
+    }
+
+    &.card-item_event {
+        background: linear-gradient(135deg, #ffe0ec 0%, #ffaed5 100%);
+        border-color: #f769a2;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    &.card-item_vote {
+        background: linear-gradient(135deg, #ffdfc9 0%, #ffb381 100%);
+        border-color: #e94744;
+
+        &:hover {
+            color: #000;
+        }
+    }
+}
+
+.card-image {
+    max-width: 200px;
+    aspect-ratio: 1/1;
+    width: 100%;
+    background-position: 50% 50%;    
+    background-size: cover;
+
+    @media (max-width: 767px) {
+        max-width: 100%;
+    }
+}
+
+.card-date {
+    color: var(--gray-any);
+    font-size: 14px;
+}
+
 .card-items-list {
     display: flex;
     flex-direction: column;
@@ -89,10 +143,15 @@
 
     &.card-header_apartment {
         background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
-        color: white;
-        border-radius: 8px;
-        padding: 1rem;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    &.card-header_vote {
+        background: linear-gradient(135deg, #ffa569 0%, #e84343 100%);
+    }
+
+    a {
+        text-decoration: none;
+        color: #fff;
     }
 
     a {

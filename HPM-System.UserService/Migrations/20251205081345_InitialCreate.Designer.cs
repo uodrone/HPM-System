@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HPM_System.UserService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250810161240_InitialCreate")]
+    [Migration("20251205081345_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -70,8 +70,8 @@ namespace HPM_System.UserService.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -79,6 +79,9 @@ namespace HPM_System.UserService.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsSystemAdmin")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");

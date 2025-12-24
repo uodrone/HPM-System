@@ -1,0 +1,21 @@
+﻿namespace DTO;
+
+public class UserVotingDto
+{
+    public Guid VotingId { get; set; }
+    public string QuestionPut { get; set; } = string.Empty;
+    public DateTime EndTime { get; set; }
+    public bool IsCompleted { get; set; }
+
+    // Ответ пользователя (может быть null, если не голосовал)
+    public string? Response { get; set; }
+
+    public int TotalParticipants { get; set; }
+    // Количество проголосовавших
+    public int VotedCount { get; set; }
+    // Вынесено ли решение
+    public bool HasDecision { get; set; }
+
+    // Статус голосования пользователя
+    public bool HasVoted { get; set; }
+}

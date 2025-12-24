@@ -19,15 +19,6 @@ namespace HPM_System.IdentityServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Явно настраиваем Kestrel для работы по HTTP и HTTPS
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.ListenAnyIP(8080); // HTTP для внутренних запросов между контейнерами
-                options.ListenAnyIP(8081, listenOptions =>
-                {
-                    listenOptions.UseHttps(); // HTTPS для внешних запросов
-                });
-            });
 
             // Регистрируем бизнес-сервисы
             builder.Services.AddScoped<IAccountService, AccountService>();

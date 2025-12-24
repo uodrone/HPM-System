@@ -1,3 +1,7 @@
+/*!**************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/voting.css ***!
+  \**************************************************************************/
+
 /*!*****************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/variables.css ***!
   \*****************************************************************************/
@@ -100,7 +104,7 @@
         transition: var(--standard-transition);
     }
 
-    input[type="text"] + label,  input[type="number"] + label, textarea + label {
+    input[type="text"] + label, input[type="datetime-local"] + label,  input[type="number"] + label, textarea + label {
         position: absolute;
         top: 0;
         left: 5px;
@@ -117,7 +121,7 @@
         font-size: var(--label-focus-size);
     }
 
-    input[type="text"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label, textarea:not(:placeholder-shown) + label {
+    input[type="text"]:not(:placeholder-shown) + label, input[type="datetime-local"]:not(:placeholder-shown) + label, input[type="number"]:not(:placeholder-shown) + label, textarea:not(:placeholder-shown) + label {
         top: var(--label-focus-top);
         font-size: var(--label-focus-size);
     }
@@ -216,6 +220,12 @@
     min-width: 150px;
     max-width: 300px;
     word-wrap: break-word;
+}
+
+#notification-profile {
+    img {
+        max-height: 400px;
+    }
 }
 
 /* Анимация появления */
@@ -468,6 +478,10 @@ h3 {
       width: 900px;
     }
   }
+}
+
+.body-container {
+  min-height: calc(100vh - 59px - 135px);
 }
 
 footer {
@@ -756,6 +770,10 @@ footer {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/*!*************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/event.css ***!
+  \*************************************************************************/
+
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./wwwroot/css/card.css ***!
   \************************************************************************/
@@ -797,6 +815,60 @@ footer {
         padding: 1rem;
         border-left: 4px solid var(--burgundy);
     }
+}
+
+.card-item {
+    text-decoration: none;
+    cursor: pointer;
+    color: #000;
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid;
+    display: block;
+
+    &:hover {
+        color: #000;
+    }
+
+    &.card-item_notification {
+        background: linear-gradient(135deg, #c1ffcc 0%, #7dff93 100%);
+        border-color: #099105;
+    }
+
+    &.card-item_event {
+        background: linear-gradient(135deg, #ffe0ec 0%, #ffaed5 100%);
+        border-color: #f769a2;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    &.card-item_vote {
+        background: linear-gradient(135deg, #ffdfc9 0%, #ffb381 100%);
+        border-color: #e94744;
+
+        &:hover {
+            color: #000;
+        }
+    }
+}
+
+.card-image {
+    max-width: 200px;
+    aspect-ratio: 1/1;
+    width: 100%;
+    background-position: 50% 50%;    
+    background-size: cover;
+
+    @media (max-width: 767px) {
+        max-width: 100%;
+    }
+}
+
+.card-date {
+    color: var(--gray-any);
+    font-size: 14px;
 }
 
 .card-items-list {
@@ -848,10 +920,15 @@ footer {
 
     &.card-header_apartment {
         background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
-        color: white;
-        border-radius: 8px;
-        padding: 1rem;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    &.card-header_vote {
+        background: linear-gradient(135deg, #ffa569 0%, #e84343 100%);
+    }
+
+    a {
+        text-decoration: none;
+        color: #fff;
     }
 
     a {
@@ -1032,6 +1109,10 @@ footer {
         background-color: #DC2626;
         color: white;
     }
+}
+
+.btn_big {
+    max-width: 320px;
 }
 
 

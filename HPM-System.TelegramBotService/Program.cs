@@ -40,6 +40,15 @@ namespace HPM_System.TelegramBotService
             builder.Services.AddHostedService<TelegramBotHostedService>();
             builder.Services.AddHostedService<RabbitMqConsumerService>();
 
+            var votingServiceUrl = builder.Configuration["Services:VotingService:BaseUrl"] ?? "http://hpm-system.votingservice:8080";
+            builder.Services.AddHttpClient<VotingServiceClient>(client =>
+            {
+                client.BaseAddress = new Uri(votingServiceUrl);
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
+            // Фоновая служба для обработки голосований
+            builder.Services.AddHostedService<RabbitMqVotingConsumerService>();
+
             // Логирование
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();

@@ -22,7 +22,8 @@ namespace HPM_System.UserService.Migrations
                     Patronymic = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    Age = table.Column<int>(type: "integer", nullable: true)
+                    Birthday = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsSystemAdmin = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

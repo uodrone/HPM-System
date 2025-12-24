@@ -7,9 +7,9 @@
 <div class="main-content align-content-center">
     <div class="container">
         <!-- Приветствие для авторизованных пользователей -->
-        <section data-auth-required class="auth-required">
+        <section data-auth-required class="auth-required py-5">
 
-            <h1 class="page-title text-center">Личный кабинет</h1>
+            <h1 class="page-title text-center pb-3">Личный кабинет</h1>
 
             <div class="dashboard-grid">
                 <!-- Профиль пользователя -->
@@ -77,13 +77,26 @@
                 <div class="dashboard-card events-card">
                     <h3 class="card-header card-header_event">События</h3>
 
-                    <div class="empty-state">
-                        Нет новых событий
+                    <div class="card-items-list events-list">
                     </div>
 
                     <div class="text-center">
-                        <a data-user-id href="/events/by-user/" class="card-link event-link">
+                        <a data-user-id href="/event/by-user/" class="card-link event-link">
                             Все события
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Голосования -->
+                <div class="dashboard-card vote-card">
+                    <h3 class="card-header card-header_vote">Голосования</h3>
+
+                    <div class="card-items-list vote-list">
+                    </div>
+
+                    <div class="text-center">
+                        <a data-user-id href="/vote/by-user/" class="card-link vote-link">
+                            Все голосования
                         </a>
                     </div>
                 </div>

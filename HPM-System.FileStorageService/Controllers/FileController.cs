@@ -2,6 +2,7 @@
 using HPMFileStorageService.Models;
 using HPMFileStorageService.Services;
 using HPMFileStorageService.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -23,6 +24,7 @@ namespace HPMFileStorageService.Controllers
         }
 
         [HttpGet("view/{bucketName}/{fileName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> ViewFileByName(string bucketName, string fileName)
         {
             try
@@ -75,8 +77,8 @@ namespace HPMFileStorageService.Controllers
             var existingFile = await _context.Files.FirstOrDefaultAsync(f => f.FileHash == fileHash);
             if (existingFile != null)
             {
-                var fileUrl = $"{Request.Scheme}://{Request.Host}/api/files/view/{existingFile.BucketName}/{existingFile.FileName}";
-                var downloadUrl = $"{Request.Scheme}://{Request.Host}/api/files/download/{existingFile.Id}";
+                var fileUrl = $"/api/files/view/{existingFile.BucketName}/{existingFile.FileName}";
+                var downloadUrl = $"/api/files/download/{existingFile.Id}";
 
                 return Ok(new
                 {

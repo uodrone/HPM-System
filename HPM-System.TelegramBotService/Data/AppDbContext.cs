@@ -6,6 +6,7 @@ namespace HPM_System.TelegramBotService.Data
     public class AppDbContext : DbContext
     {
         public DbSet<TelegramUser> TelegramUsers { get; set; }
+        public DbSet<TelegramPoll> TelegramPolls { get; set; } // Добавить
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -18,6 +19,13 @@ namespace HPM_System.TelegramBotService.Data
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.UserId).IsUnique();
                 entity.HasIndex(e => e.TelegramChatId);
+            });
+
+            modelBuilder.Entity<TelegramPoll>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.VotingId);                
+                entity.HasIndex(e => new { e.VotingId, e.UserId, e.ApartmentId }).IsUnique();
             });
         }
     }

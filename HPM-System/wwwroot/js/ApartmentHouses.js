@@ -3,7 +3,8 @@ import { HouseValidator } from './HouseValidator.js';
 
 export class ApartmentHouses {
     constructor () {
-        this.ApartmentAPIAddress = 'https://localhost:55683';
+        // ИЗМЕНЕНИЕ 1: Используем Gateway вместо прямого обращения к сервису
+        this.gatewayUrl = 'http://localhost:55699';
     }
 
     async InsertHouseDataById(id) {
@@ -180,6 +181,10 @@ export class ApartmentHouses {
 
     HousesListHouseTemplate (house, headTemplate, managementCompanyTemplate, headOfHouse) {
         let houseHTML;
+
+        console.log(`дом:`);
+        console.log(house);
+
         if (house) {
              houseHTML = `
                 <div class="card card_house" data-house-id="${house.id}">
@@ -233,10 +238,11 @@ export class ApartmentHouses {
                         </div>
                     </div>
 
-                    ${headOfHouse.id == window.authManager.userData.userId ? 
-                        `<div class="text-center">
-                            <a href="/house/${house.id}">Редактировать дом</a>
-                        </div>` : ``}
+                    ${headOfHouse && headOfHouse.id === window.authManager.userData.userId 
+                    ? `<div class="text-center">
+                        <a href="/house/${house.id}">Редактировать дом</a>
+                    </div>` 
+                    : ''}
 
                     <!-- Старший по дому -->
                     <div class="senior-section">
@@ -255,6 +261,49 @@ export class ApartmentHouses {
         }        
 
         return houseHTML
+    }
+
+    async CollectHouseDataAndCreate () {
+        let house = {};
+
+        document.querySelectorAll('[data-group="house"] input').forEach(input => {
+            const key = input.id;
+
+            let value;
+            if (input.type === 'checkbox') {
+                value = input.checked;
+            } else if (input.type === 'number') {
+                // Пустое поле → 0
+                value = input.value === '' ? 0 : Number(input.value);                
+            } else if (input.tagName === 'SELECT') {
+                value = input.value === '' ? null : el.value;
+            } else {               
+                value = input.value || null;
+            }
+
+            house[key] = value;
+        });
+
+        // Валидация
+        const validation = HouseValidator.validate(house);
+        if (!validation.isValid) {
+            HouseValidator.displayErrors(validation.errors);
+            Modal.ShowNotification('Исправьте ошибки в форме', 'red');
+            return;
+        }
+
+        // Убираем ошибки перед попыткой отправки
+        HouseValidator.displayErrors({});
+
+        let isCreateHouseSuccessfull = await this.CreateHouse(house);
+
+        if (isCreateHouseSuccessfull) {
+            Modal.ShowNotification('Данные о доме успешно сохранены', 'green');
+            console.log(`собранные данные о доме`);
+            console.log(house);
+        } else {
+            Modal.ShowNotification('Ошибка сохранения данных', 'red');
+        }
     }
 
     async CollectHouseDataAndCreate () {
@@ -349,138 +398,171 @@ export class ApartmentHouses {
         }
     }
 
+    // ========================================
+    // API МЕТОДЫ - ИЗМЕНЕНИЕ 3: Используем window.apiCall для авторизации
+    // ========================================
+
     // 1. Получить все дома
     async GetHouses() {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House`, {
+            // ИЗМЕНЕНИЕ: Используем window.apiCall вместо fetch
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Ошибка получения домов');
+            }
+            
             const data = await response.json();
-            if (!response.ok) throw new Error(data);
             console.log('Дома:', data);
             return data;
         } catch (error) {
             console.error('Ошибка получения списка домов:', error);
+            throw error;
         }
     }
 
     // 2. Получить дом по ID
     async GetHouse(id) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${id}`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${id}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || `Ошибка получения дома ${id}`);
+            }
+            
             const data = await response.json();
-            if (!response.ok) throw new Error(data);            
             return data;
         } catch (error) {
             console.error(`Ошибка получения дома ${id}:`, error);
+            throw error;
         }
     }
 
     // 3. Создать новый дом
     async CreateHouse(houseData) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(houseData)
             });
-            const data = await response.json();
+            
             if (response.ok) {
-                //return data;
+                const data = await response.json();
                 console.log('Дом создан:', data);
                 return true;
             } else {
+                const error = await response.json();
+                console.error('Ошибка создания дома:', error);
                 return false;
-                //throw new Error(data);
             }
         } catch (error) {
             console.error('Ошибка создания дома:', error);
+            return false;
         }
     }
 
     // 4. Обновить дом
     async UpdateHouse(id, houseData) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${id}`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(houseData)
             });
-            if (!response.ok) {
-                const error = await response.text();
-                console.log(error);
-                //throw new Error(error);
-                return false;
-            } else {
+            
+            if (response.ok) {
+                console.log(`Дом ${id} обновлен`);
                 return true;
+            } else {
+                const error = await response.text();
+                console.error('Ошибка обновления дома:', error);
+                return false;
             }
-            console.log(`Дом ${id} обновлен`);
         } catch (error) {
             console.error(`Ошибка обновления дома ${id}:`, error);
+            return false;
         }
     }
 
     // 5. Удалить дом
     async DeleteHouse(id) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${id}`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
-            if (!response.ok) throw new Error(await response.text());
+            
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(error);
+            }
+            
             console.log(`Дом ${id} удален`);
+            return true;
         } catch (error) {
             console.error(`Ошибка удаления дома ${id}:`, error);
+            throw error;
         }
     }
 
     // 6. Назначить старшего по дому
     async AssignHead(houseId, userId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/head/${userId}`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${houseId}/head/${userId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' }
             });
-            const data = await response.text();
-            if (!response.ok) 
-            {
-                console.log(data);
-                return false;
-                //throw new Error(data);
-            }
-            else {
-                console.log(`старший по дому назначен:`);
-                console.log(data);
+            
+            if (response.ok) {
+                const data = await response.text();
+                console.log(`Старший по дому назначен:`, data);
                 return true;
-            }            
+            } else {
+                const error = await response.text();
+                console.error('Ошибка назначения старшего:', error);
+                return false;
+            }
         } catch (error) {
             console.error(`Ошибка назначения старшего по дому ${houseId}:`, error);
+            return false;
         }
     }
 
     // 7. Отозвать старшего по дому
     async RevokeHead(houseId) {
         try {
-                const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/head`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${houseId}/head`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
+            
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(error);
+            }
+            
             const data = await response.text();
-            if (!response.ok) throw new Error(data);
             console.log(data);
+            return true;
         } catch (error) {
             console.error(`Ошибка отзыва старшего по дому ${houseId}:`, error);
+            throw error;
         }
     }
 
     // 8. Получить информацию о старшем по дому
     async GetHead(houseId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/head`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${houseId}/head`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -496,7 +578,7 @@ export class ApartmentHouses {
                 data = JSON.parse(text);
                 isJson = true;
             } catch (e) {
-                // Это не JSON — значит, это просто строка (например, из return NotFound("сообщение"))
+                // Это не JSON — значит, это просто строка
                 data = { message: text };
             }
 
@@ -506,48 +588,97 @@ export class ApartmentHouses {
 
                 if (response.status === 404) {
                     console.log(errorMessage);
-                    data = errorMessage;
+                    return null; // Старшего нет
                 }
-            }
-
-            // На случай, если успешный ответ тоже пришёл как plain text (маловероятно)
-            if (!isJson) {                
-                console.log(`Старший по дому отсутствует: ${data}`);
+                throw new Error(errorMessage);
             }
 
             console.log(`Старший по дому ${houseId}:`, data);
             return data;
         } catch (error) {
             console.error(`Ошибка получения старшего по дому ${houseId}:`, error.message);
-            throw error;
+            return null;
+        }
+    }
+
+    // Получить информацию о старшем по дому по id квартиры
+    async GetHeadByApartmentId(apartmentId) {
+        try {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/apartment/${apartmentId}/head`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // Читаем тело ОДИН раз как текст
+            const text = await response.text();
+
+            let data;
+            let isJson = false;
+
+            // Пытаемся распарсить как JSON
+            try {
+                data = JSON.parse(text);
+                isJson = true;
+            } catch (e) {
+                // Это не JSON — значит, это просто строка
+                data = { message: text };
+            }
+
+            if (!response.ok) {
+                const errorMessage = data.message || data.Message || (isJson ? JSON.stringify(data) : text);
+                console.error(`Ошибка ${response.status}:`, errorMessage);
+
+                if (response.status === 404) {
+                    console.log(errorMessage);
+                    return null; // Старшего нет
+                }
+                throw new Error(errorMessage);
+            }
+
+            console.log(`Старший по дому:`, data);
+            return data;
+        } catch (error) {
+            console.error(`Ошибка получения старшего по дому:`, error.message);
+            return null;
         }
     }
 
     // 9. Получить дома по ID пользователя
     async GetHousesByUserId(userId) {
         try {
-                const response = await fetch(`${this.ApartmentAPIAddress}/api/House/user/${userId}`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/user/${userId}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || `Ошибка получения домов пользователя ${userId}`);
+            }
+            
             const data = await response.json();
-            if (!response.ok) throw new Error(data);
             console.log(`Дома пользователя ${userId}:`, data);
             return data;
         } catch (error) {
             console.error(`Ошибка получения домов для пользователя ${userId}:`, error);
+            throw error;
         }
     }
 
     // 10. Получить все квартиры по ID дома
     async GetApartmentsByHouseId(houseId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/Apartment/house/${houseId}`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/apartment/house/${houseId}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error?.message || 'Ошибка при загрузке квартир');
+            }
+            
             const data = await response.json();
-            if (!response.ok) throw new Error(data?.message || 'Ошибка при загрузке квартир');
             console.log(`Квартиры в доме ${houseId}:`, data);
             return data;
         } catch (error) {
@@ -559,16 +690,19 @@ export class ApartmentHouses {
     // 11. Получить владельцев квартир в доме с их номерами (массивами)
     async GetHouseOwnersWithApartments(houseId) {
         try {
-            const response = await fetch(`${this.ApartmentAPIAddress}/api/House/${houseId}/owners`, {
+            const response = await window.apiCall(`${this.gatewayUrl}/api/house/${houseId}/owners`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
-            const data = await response.json();
+            
             if (!response.ok) {
-                throw new Error(data?.message || `Ошибка при загрузке владельцев дома ${houseId}`);
+                const error = await response.json();
+                throw new Error(error?.message || `Ошибка при загрузке владельцев дома ${houseId}`);
             }
+            
+            const data = await response.json();
             console.log(`Владельцы с квартирами в доме ${houseId}:`, data);
-            return data; // [{ userId, fullName, phoneNumber, apartmentNumbers: [12, 15] }, ...]
+            return data;
         } catch (error) {
             console.error(`Ошибка получения владельцев с квартирами для дома ${houseId}:`, error);
             throw error;

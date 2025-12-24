@@ -1,5 +1,36 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div id="vote-profile" class="vote">
+	<div class="container py-5">
+		<div class="profile-group dashboard-card my-4" data-group="vote">
+			<h3 class="card-header card-header_vote w-100">Профиль голосования</h3>
+			<div class="w-100 text-start">
+				<h3 id="question-put" class="my-4"></h3>
+				<div><span id="voting-end"></span> <span id="voting-end-time"></span></div>
+				<div id="decision-container" class="d-none">Вынесенное решение по итогам голосования: <span id="decision-result"></span></div>
+
+				<div class="my-5" data-group="voting-options"></div>
+				<div data-group="voting-stats"></div>
+			</div>
+		</div>
+		<div class="mt-4 text-center">
+			<div class="btn btn_primary" data-action="send-vote">Проголосовать</div>
+			<div class="btn btn_primary d-none" data-modal="open">Вынести решение</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal-overview">
+	<div class="modal-inner">
+		<div class="modal-content-wrapper car-modal">
+			<div class="modal-close" title="Закрыть"></div>
+			<h4 class="text-center my-4">Введите вынесенное решение</h4>
+			<div class="form-group">
+				<textarea placeholder="" name="decision" id="decision" value=""></textarea>
+				<label for="decision">Решение по итогам голосования</label>
+				<div class="error invisible" data-error="decision">Неверно заполненное решение</div>
+			</div>
+			<div class="mt-4 text-center">
+				<div class="btn btn_secondary" data-action="determ-decision">Вынести решение</div>
+			</div>
+		</div>
+	</div>
+</div>
